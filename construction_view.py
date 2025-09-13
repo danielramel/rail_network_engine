@@ -30,10 +30,35 @@ def get_construction_buttons(surface):
         buttons.append((mode, rect))
     return buttons
 
+
 def snap_to_grid(x, y):
     snapped_x = round(x / GRID_SIZE) * GRID_SIZE
     snapped_y = round(y / GRID_SIZE) * GRID_SIZE
     return Point(snapped_x, snapped_y)
+
+def snap_to_axis(start: Point, end: Point) -> Point:
+    """Snap end point to the closest of vertical, horizontal, or 45-degree from start."""
+    dx = end.x - start.x
+    dy = end.y - start.y
+    if dx == 0:
+        return Point(start.x, end.y)
+    if dy == 0:
+        return Point(end.x, start.y)
+    # Calculate angles to axes
+    angle = abs(dy / dx) if dx != 0 else float('inf')
+    # Threshold for snapping (tan(22.5°) ≈ 0.414, tan(67.5°) ≈ 2.414)
+    if angle < 0.414:
+        # Closer to horizontal
+        return Point(end.x, start.y)
+    elif angle > 2.414:
+        # Closer to vertical
+        return Point(start.x, end.y)
+    else:
+        # Snap to 45-degree
+        sign_x = 1 if dx >= 0 else -1
+        sign_y = 1 if dy >= 0 else -1
+        d = min(abs(dx), abs(dy))
+        return Point(start.x + sign_x * d, start.y + sign_y * d)
 
 
 def handle_construction_view(construction_toggle_button, surface, camera, network):
@@ -78,15 +103,12 @@ def handle_construction_view(construction_toggle_button, surface, camera, networ
                 if x == camera.drag_start_x and y == camera.drag_start_y:
                     world_x, world_y = camera.screen_to_world(x, y)
                     snapped = snap_to_grid(world_x, world_y)
-                    if selected_mode == ConstructionMode.NODE:
-                        network.add_node(len(network.nodes), snapped)
-                    elif selected_mode == ConstructionMode.RAIL:
-                        node = network.find_node_at(snapped)
+                    if selected_mode == ConstructionMode.RAIL:
+                        node = network.add_node(snapped)
                         if start_rail_node is None:
                             start_rail_node = node
                         else:
-                            if node is not None:
-                                network.add_segment(start_rail_node.id, node.id, [start_rail_node.pos, node.pos])
+                            network.add_segment(start_rail_node.id, node.id, [start_rail_node.pos, node.pos])
                             start_rail_node = None
                 camera.stop_drag()
 
@@ -152,10 +174,9 @@ def render_construction_view(surface, camera, network):
         mouse_x, mouse_y = pygame.mouse.get_pos()
         world_x, world_y = camera.screen_to_world(mouse_x, mouse_y)
         snapped = snap_to_grid(world_x, world_y)
-        
+        fit = snap_to_axis(start_rail_node.pos, snapped)
         start_screen_x, start_screen_y = camera.world_to_screen(start_rail_node.pos.x, start_rail_node.pos.y)
-        end_screen_x, end_screen_y = camera.world_to_screen(snapped.x, snapped.y)
-        
+        end_screen_x, end_screen_y = camera.world_to_screen(fit.x, fit.y)
         pygame.draw.line(surface, (100, 100, 0), 
                         (start_screen_x, start_screen_y), 
                         (end_screen_x, end_screen_y), 

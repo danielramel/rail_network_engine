@@ -28,13 +28,13 @@ class RailNetwork:
     def __init__(self):
         self.nodes = {}
         self.segments = []
-
-    def add_node(self, node_id, pos):
-        if node_id in self.nodes:
-            raise ValueError("Node ID already exists")
-        if self.find_node_at(pos):
-            return
+    
+    def add_node(self, pos):
+        existing_node = self.find_node_at(pos)
+        if existing_node:
+            return existing_node
         
+        node_id = len(self.nodes)
         node = RailNode(node_id, pos)
         self.nodes[node_id] = node
         return node
