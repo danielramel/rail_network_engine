@@ -1,4 +1,10 @@
 import pygame
+from enum import Enum
+from construction_view import handle_construction_view, render_construction_view
+
+class View(Enum):
+    NORMAL = 0
+    CONSTRUCTION = 1
 
 pygame.init()
 screen = pygame.display.set_mode((0, 0), pygame.NOFRAME)
@@ -10,33 +16,32 @@ GRAY = (100, 100, 100)
 GREEN = (0, 200, 0)
 
 button_size = 50
-button_rect = pygame.Rect(10, 10, button_size, button_size)
+construction_toggle_button = pygame.Rect(10, 10, button_size, button_size)
 font = pygame.font.SysFont(None, 40)
 
-construction_mode = False
+view = View.NORMAL
 clock = pygame.time.Clock()
 running = True
 
-def handle_construction_mode():
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT or (
-            event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
-        ):
-            return "quit"
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            x, y = event.pos
-            if button_rect.collidepoint(x, y):
-                return "toggle"
-            # Add construction-specific logic here
-    return "continue"
+def render_normal_view(surface):
+    # Stub for normal view rendering
+    pass
+
+def draw_common_ui(surface):
+    button_color = GREEN if view == View.CONSTRUCTION else GRAY
+    pygame.draw.rect(surface, button_color, construction_toggle_button, border_radius=8)
+    text_surface = font.render("C", True, WHITE)
+    text_rect = text_surface.get_rect(center=construction_toggle_button.center)
+    surface.blit(text_surface, text_rect)
 
 while running:
-    if construction_mode:
-        action = handle_construction_mode()
+    # Event handling
+    if view == View.CONSTRUCTION:
+        action = handle_construction_view(construction_toggle_button)
         if action == "quit":
             running = False
         elif action == "toggle":
-            construction_mode = False
+            view = View.NORMAL
     else:
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (
@@ -45,15 +50,17 @@ while running:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
-                if button_rect.collidepoint(x, y):
-                    construction_mode = True
+                if construction_toggle_button.collidepoint(x, y):
+                    view = View.CONSTRUCTION
 
+    # Rendering
     screen.fill(BLACK)
-    button_color = GREEN if construction_mode else GRAY
-    pygame.draw.rect(screen, button_color, button_rect, border_radius=8)
-    text_surface = font.render("C", True, WHITE)
-    text_rect = text_surface.get_rect(center=button_rect.center)
-    screen.blit(text_surface, text_rect)
+    if view == View.CONSTRUCTION:
+        render_construction_view(screen)
+    else:
+        render_normal_view(screen)
+
+    draw_common_ui(screen)
 
     pygame.display.flip()
     clock.tick(60)
