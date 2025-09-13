@@ -37,7 +37,7 @@ def draw_common_ui(surface):
 while running:
     # Event handling
     if view == View.CONSTRUCTION:
-        action = handle_construction_view(construction_toggle_button)
+        action = handle_construction_view(construction_toggle_button, screen)
         if action == "quit":
             running = False
         elif action == "toggle":
