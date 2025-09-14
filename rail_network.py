@@ -1,13 +1,7 @@
 from dataclasses import dataclass, field
 from math import sqrt
 from typing import List, Tuple, Optional
-
-
-@dataclass(frozen=True)
-class Point:
-    x: float
-    y: float
-
+from models import Point
 
 @dataclass(frozen=True)
 class RailNode:
@@ -62,7 +56,6 @@ class RailNetwork:
         start_node = self.nodes[start_id]
         end_node = self.nodes[end_id]
         segment = RailSegment(start_node, end_node, tuple(points))
-        print(f"Added segment: {segment}")
         self.segments.append(segment)
         return segment
 

@@ -1,15 +1,14 @@
-# construction/view.py
 import pygame
 
 from .ui_helpers import get_zoom_box, get_construction_buttons
 from colors import *
-from core_funcs import find_path
+from pathfinding import find_path
 from construction.state import ConstructionState
-from .geometry_utils import snap_to_grid, snap_to_axis
+from utils import snap_to_grid, get_direction_between_points
 from constants import GRID_SIZE
+from models import State
 
 def render_construction_view(surface, camera, network, state: ConstructionState):
-    # Draw grid (assume draw_grid defined elsewhere)
     draw_grid(surface, camera)
 
     # Draw all rails
@@ -27,23 +26,22 @@ def render_construction_view(surface, camera, network, state: ConstructionState)
         pygame.draw.circle(surface, BLACK, (int(screen_x), int(screen_y)), inner_radius)
 
     # Draw preview polyline
-    if state.selected_mode.name == "RAIL" and state.rail_construction_points:
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        world_x, world_y = camera.screen_to_world(mouse_x, mouse_y)
-        snapped = snap_to_grid(world_x, world_y)
-        preview_points = state.rail_construction_points[:]
-        if preview_points:
-            snapped_to_axis = snap_to_axis(preview_points[-1], snapped)
-            found_path = find_path(preview_points[-1], snapped_to_axis)
-            preview_points.extend(found_path[1:])
-        screen_points = [camera.world_to_screen(pt.x, pt.y) for pt in preview_points]
+    if state.Mode == ConstructionState.Mode.RAIL and state.rail_construction_points:
+        snapped = snap_to_grid(*camera.screen_to_world(*pygame.mouse.get_pos()))
+        if len(state.rail_construction_points) > 1:
+            last_state = State(state.rail_construction_points[-1], get_direction_between_points(state.rail_construction_points[-2], state.rail_construction_points[-1]))
+            found_path = find_path(last_state, snapped)
+        else:
+            found_path = find_path(state.rail_construction_points[0], snapped) # this will consider all directions, so no need to pass direction
+
+        screen_points = [camera.world_to_screen(pt.x, pt.y) for pt in tuple(state.rail_construction_points) + found_path[1:]]
         if len(screen_points) >= 2:
             pygame.draw.lines(surface, GRAY, False, screen_points, max(1, int(3 * camera.scale)))
 
     # Draw buttons
     font = pygame.font.SysFont(None, 40)
     for mode, rect in get_construction_buttons(surface):
-        color = GREEN if state.selected_mode == mode else GRAY
+        color = GREEN if state.Mode == mode else GRAY
         pygame.draw.rect(surface, color, rect, border_radius=8)
         text = font.render(mode.value, True, WHITE)
         surface.blit(text, text.get_rect(center=rect.center))

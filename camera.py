@@ -33,17 +33,11 @@ class Camera:
     
     def update_drag(self, mouse_x, mouse_y):
         """Update camera position during drag"""
-        if self.is_dragging:
-            dx = mouse_x - self.drag_start_x
-            dy = mouse_y - self.drag_start_y
-            self.x = self.drag_start_cam_x + dx / self.scale
-            self.y = self.drag_start_cam_y + dy / self.scale
-            
-    def is_dragged(self, mouse_x, mouse_y):
-        """Return True if the mouse has moved since drag started, else False"""
-        if not self.is_dragging:
-            return False
-        return (mouse_x != self.drag_start_x) or (mouse_y != self.drag_start_y)
+        dx = mouse_x - self.drag_start_x
+        dy = mouse_y - self.drag_start_y
+        self.x = self.drag_start_cam_x + dx / self.scale
+        self.y = self.drag_start_cam_y + dy / self.scale
+        
     
     def stop_drag(self):
         """Stop dragging the camera"""
