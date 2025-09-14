@@ -1,6 +1,6 @@
 import pygame
 
-def handle_normal_view(construction_toggle_button, surface, camera, network):
+def handle_normal_events(construction_toggle_button, surface, camera, network):
     for event in pygame.event.get():
         if event.type == pygame.QUIT or (
             event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):

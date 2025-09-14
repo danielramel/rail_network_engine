@@ -38,6 +38,12 @@ class Camera:
             dy = mouse_y - self.drag_start_y
             self.x = self.drag_start_cam_x + dx / self.scale
             self.y = self.drag_start_cam_y + dy / self.scale
+            
+    def is_dragged(self, mouse_x, mouse_y):
+        """Return True if the mouse has moved since drag started, else False"""
+        if not self.is_dragging:
+            return False
+        return (mouse_x != self.drag_start_x) or (mouse_y != self.drag_start_y)
     
     def stop_drag(self):
         """Stop dragging the camera"""
@@ -83,3 +89,5 @@ class Camera:
         # This would be used if pygame supported matrix transforms
         # For now we'll transform coordinates manually
         pass
+    
+    
