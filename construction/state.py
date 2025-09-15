@@ -1,10 +1,9 @@
 # construction/state.py
 from dataclasses import dataclass, field
-from typing import List
-from rail_network import Point
+from models import PointWithDirection
 from .ui_helpers import ConstructionMode
 
 @dataclass
 class ConstructionState:
     Mode: ConstructionMode = ConstructionMode.RAIL
-    rail_construction_points: List[Point] = field(default_factory=list)
+    construction_anchor: PointWithDirection | None = None

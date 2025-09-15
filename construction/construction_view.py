@@ -6,13 +6,13 @@ from pathfinding import find_path
 from construction.state import ConstructionState
 from utils import snap_to_grid, get_direction_between_points
 from constants import GRID_SIZE
-from models import State
+from models import PointWithDirection
 
 def render_construction_view(surface, camera, network, state: ConstructionState):
     draw_grid(surface, camera)
 
     # Draw all rails
-    for segment in network.segments:
+    for segment in network.segments.values():
         screen_points = [camera.world_to_screen(p.x, p.y) for p in segment.points]
         if len(screen_points) >= 2:
             pygame.draw.lines(surface, WHITE, False, screen_points, max(1, int(5 * camera.scale)))
@@ -26,15 +26,11 @@ def render_construction_view(surface, camera, network, state: ConstructionState)
         pygame.draw.circle(surface, BLACK, (int(screen_x), int(screen_y)), inner_radius)
 
     # Draw preview polyline
-    if state.Mode == ConstructionState.Mode.RAIL and state.rail_construction_points:
+    if state.Mode == ConstructionState.Mode.RAIL and state.construction_anchor is not None:
         snapped = snap_to_grid(*camera.screen_to_world(*pygame.mouse.get_pos()))
-        if len(state.rail_construction_points) > 1:
-            last_state = State(state.rail_construction_points[-1], get_direction_between_points(state.rail_construction_points[-2], state.rail_construction_points[-1]))
-            found_path = find_path(last_state, snapped)
-        else:
-            found_path = find_path(state.rail_construction_points[0], snapped) # this will consider all directions, so no need to pass direction
-
-        screen_points = [camera.world_to_screen(pt.x, pt.y) for pt in tuple(state.rail_construction_points) + found_path[1:]]
+        found_path = find_path(state.construction_anchor, snapped)
+        print("Found path:", found_path)
+        screen_points = [camera.world_to_screen(pt.x, pt.y) for pt in found_path]
         if len(screen_points) >= 2:
             pygame.draw.lines(surface, GRAY, False, screen_points, max(1, int(3 * camera.scale)))
 

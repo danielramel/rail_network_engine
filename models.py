@@ -11,7 +11,7 @@ class Point:
     y: float
     
 
-class State(NamedTuple):
-    """State represents a position and the direction we arrived from."""
+class PointWithDirection(NamedTuple):
+    """PointWithDirection represents a position and the direction we arrived from."""
     point: Point
     direction: Tuple[int, int]  # (dx, dy) normalized direction

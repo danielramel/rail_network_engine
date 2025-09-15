@@ -1,10 +1,9 @@
 from constants import GRID_SIZE
 from rail_network import Point
 import heapq
-from typing import List, Tuple, Dict, Union
-from models import State
+from typing import List, Tuple, Dict
+from models import PointWithDirection
 from utils import get_direction_between_points
-
 
 # Movement directions
 ORTHOGONAL_DIRECTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
@@ -37,7 +36,7 @@ def get_direction_cost(direction: Tuple[int, int]) -> float:
     else:
         return ORTHOGONAL_COST
 
-def get_valid_turn_neighbors(state: State) -> List[Tuple[State, float]]:
+def get_valid_turn_neighbors(state: PointWithDirection) -> List[Tuple[PointWithDirection, float]]:
     """
     Get valid neighboring states from current state, respecting 45° turn limit.
     
@@ -52,7 +51,7 @@ def get_valid_turn_neighbors(state: State) -> List[Tuple[State, float]]:
     for dx, dy in valid_directions:
         nx = state.point.x + dx * GRID_SIZE
         ny = state.point.y + dy * GRID_SIZE
-        new_state = State(Point(nx, ny), (dx, dy))
+        new_state = PointWithDirection(Point(nx, ny), (dx, dy))
         cost = get_direction_cost((dx, dy))
         neighbors.append((new_state, cost))
     return neighbors
@@ -94,7 +93,7 @@ def simplify_path(points: List[Point]) -> Tuple[Point, ...]:
     simplified.append(points[-1])
     return tuple(simplified)
 
-def reconstruct_path(came_from: Dict[State, State], current_state: State) -> Tuple[Point, ...]:
+def reconstruct_path(came_from: Dict[PointWithDirection, PointWithDirection], current_state: PointWithDirection) -> Tuple[Point, ...]:
     """Reconstruct and simplify the path from states."""
     path = [current_state.point]
     
@@ -106,7 +105,7 @@ def reconstruct_path(came_from: Dict[State, State], current_state: State) -> Tup
     path.reverse()
     return simplify_path(path)
 
-def find_path(start: Union[Point, State], end: Point) -> Tuple[Point, ...]:
+def find_path(start: PointWithDirection, end: Point) -> Tuple[Point, ...]:
     """
     Find optimal path using A* algorithm with 45° turn constraint.
     
@@ -120,24 +119,20 @@ def find_path(start: Union[Point, State], end: Point) -> Tuple[Point, ...]:
         Empty tuple if no path found.
     """
     # Handle the case where start and end are the same
-    start_point = start.point if isinstance(start, State) else start
-    if start_point == end:
-        return (start_point,)
-    
+    if start.point == end:
+        return (start.point,)
+
     # Priority queue: (f_score, current_g, state)
     open_set = []
-    came_from: Dict[State, State] = {}
-    g_score: Dict[State, float] = {}
-    f_score: Dict[State, float] = {}
+    came_from: Dict[PointWithDirection, PointWithDirection] = {}
+    g_score: Dict[PointWithDirection, float] = {}
+    f_score: Dict[PointWithDirection, float] = {}
 
-    # Initialize starting states
-    if isinstance(start, State):
-        # Single starting state with specific direction
-        initial_states = [start]
+    if start.direction == (0, 0):
+        initial_states = [PointWithDirection(start.point, direction) for direction in ALL_DIRECTIONS]
     else:
-        # Multiple starting states for all possible directions
-        initial_states = [State(start, direction) for direction in ALL_DIRECTIONS]
-    
+        initial_states = [start]
+        
     for initial_state in initial_states:
         g_score[initial_state] = 0
         f_score[initial_state] = heuristic(initial_state.point, end)
