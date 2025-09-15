@@ -4,22 +4,21 @@ from .ui_helpers import get_zoom_box, get_construction_buttons
 from colors import *
 from pathfinding import find_path
 from construction.state import ConstructionState
-from utils import snap_to_grid, get_direction_between_points
+from utils import snap_to_grid
 from constants import GRID_SIZE
-from models import PointWithDirection
 
 def render_construction_view(surface, camera, network, state: ConstructionState):
     draw_grid(surface, camera)
 
     # Draw all rails
-    for segment in network.segments.values():
-        screen_points = [camera.world_to_screen(p.x, p.y) for p in segment.points]
+    for segment in network.get_segments():
+        screen_points = [camera.world_to_screen(p.x, p.y) for p in segment[2]['geometry']]
         if len(screen_points) >= 2:
             pygame.draw.lines(surface, WHITE, False, screen_points, max(1, int(5 * camera.scale)))
 
     # Draw nodes
-    for node in network.nodes.values():
-        screen_x, screen_y = camera.world_to_screen(node.pos.x, node.pos.y)
+    for node in network.get_nodes():
+        screen_x, screen_y = camera.world_to_screen(node.x, node.y)
         outer_radius = max(2, int(6 * camera.scale))
         inner_radius = max(1, int(3 * camera.scale))
         pygame.draw.circle(surface, WHITE, (int(screen_x), int(screen_y)), outer_radius)
@@ -29,7 +28,6 @@ def render_construction_view(surface, camera, network, state: ConstructionState)
     if state.Mode == ConstructionState.Mode.RAIL and state.construction_anchor is not None:
         snapped = snap_to_grid(*camera.screen_to_world(*pygame.mouse.get_pos()))
         found_path = find_path(state.construction_anchor, snapped)
-        print("Found path:", found_path)
         screen_points = [camera.world_to_screen(pt.x, pt.y) for pt in found_path]
         if len(screen_points) >= 2:
             pygame.draw.lines(surface, GRAY, False, screen_points, max(1, int(3 * camera.scale)))

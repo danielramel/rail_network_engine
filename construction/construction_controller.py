@@ -45,16 +45,14 @@ def handle_construction_events(state: ConstructionState, construction_toggle_but
                         state.construction_anchor = None
                     else:
                         found_path = find_path(state.construction_anchor, snapped)
-                        print("Found path to add:", found_path)
                         
                         network.add_segment(
-                            network.add_node(found_path[0]).id,
-                            network.add_node(found_path[-1]).id,
+                            network.add_node(found_path[0]),
+                            network.add_node(found_path[-1]),
                             found_path
                         )
-                        state.construction_anchor = PointWithDirection(snapped, get_direction_between_points(state.construction_anchor.point, snapped))
+                        state.construction_anchor = PointWithDirection(snapped, get_direction_between_points(found_path[-2], snapped))
                 camera.stop_drag() # has to say here to avoid issues with button clicks
-
             
         elif event.type == pygame.MOUSEMOTION:
             if camera.is_dragging:

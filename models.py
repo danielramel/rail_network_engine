@@ -10,6 +10,10 @@ class Point:
     x: float
     y: float
     
+    def __iter__(self):
+        yield self.x
+        yield self.y
+    
 
 class PointWithDirection(NamedTuple):
     """PointWithDirection represents a position and the direction we arrived from."""

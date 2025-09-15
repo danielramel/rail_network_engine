@@ -21,7 +21,7 @@ VALID_TURNS = {
     ( 1,  1): [( 1,  1), ( 1, 0), (0,  1)],
     
     (-1, 0): [(-1, 0), (-1, -1), (-1,  1)],
-    ( 1, 0): [( 1, 0), ( 1, -1), ( 1,  1)], 
+    ( 1, 0): [( 1, 0), ( 1, -1), ( 1,  1)],
     (0, -1): [(0, -1), (-1, -1), ( 1, -1)],
     (0,  1): [(0,  1), (-1,  1), ( 1,  1)],
 }
@@ -131,6 +131,7 @@ def find_path(start: PointWithDirection, end: Point) -> Tuple[Point, ...]:
     if start.direction == (0, 0):
         initial_states = [PointWithDirection(start.point, direction) for direction in ALL_DIRECTIONS]
     else:
+        print(start)
         initial_states = [start]
         
     for initial_state in initial_states:
