@@ -25,4 +25,16 @@ class RailNetwork:
         # Connect each neighboring pair of points
         for a, b in zip(points[:-1], points[1:]):
             self.graph.add_edge(a, b)
-
+            
+    def remove_node_at(self, pos: tuple[int, int]):
+        """Remove a node at the given position (if exists)."""
+        point = Point(*pos)
+        if point not in self.graph:
+            raise ValueError("No node at given position")
+        
+        # Remove leaf nodes connected to this node
+        for node in tuple(self.graph.neighbors(point)):
+            if self.graph.degree[node] == 1: 
+                self.graph.remove_node(node)
+                
+        self.graph.remove_node(point)
