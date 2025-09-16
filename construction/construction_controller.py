@@ -1,10 +1,9 @@
 import pygame
 from camera import Camera
-from construction.modes.rail import handle_rail_click
+from construction.modes import handle_rail_click, handle_signal_click, handle_bulldoze_click
 from rail_network import RailNetwork
 from .models import ConstructionState
 from .ui_helpers import get_zoom_box, get_construction_buttons
-from construction.modes.bulldoze import handle_bulldoze_click
 
 def handle_construction_events(state: ConstructionState, construction_toggle_button, surface, camera: Camera, network: RailNetwork):
     for event in pygame.event.get():
@@ -38,8 +37,11 @@ def handle_construction_events(state: ConstructionState, construction_toggle_but
                 if camera.is_click(event.pos):
                     if state.Mode == ConstructionState.Mode.RAIL:
                         handle_rail_click(state, camera, network, event.pos)
+                    elif state.Mode == ConstructionState.Mode.SIGNAL:
+                        handle_signal_click(state, camera, network, event.pos)
                     elif state.Mode == ConstructionState.Mode.BULLDOZE:
                         handle_bulldoze_click(state, camera, network, event.pos)
+                    
                 
                 camera.stop_drag() # should be after click check
             

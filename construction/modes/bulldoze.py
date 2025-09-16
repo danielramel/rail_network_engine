@@ -8,4 +8,7 @@ def handle_bulldoze_click(state: ConstructionState, camera: Camera, network: Rai
     snapped = snap_to_grid(*camera.screen_to_world(*pos))
     if snapped not in network.graph: # empty click
         return
+    if 'signal' in network.graph.nodes[snapped]:
+        network.remove_signal_at(snapped)
+        return
     network.remove_node_at(snapped)

@@ -5,7 +5,7 @@ from models import PointWithDirection
 
 class ConstructionMode(Enum):
     RAIL = 'R'
-    LIGHT = 'L'
+    SIGNAL = 'S'
     PLATFORM = 'P'
     STATION = 'S'
     BULLDOZE = 'B'
