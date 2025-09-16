@@ -1,14 +1,14 @@
 import pygame
 from enum import Enum
-from camera import Camera
-from rail_network import RailNetwork
+from graphics.camera import Camera
+from network import RailNetwork
 from construction import (
     handle_construction_events,
     render_construction_view,
     ConstructionState
 )
 from normal_view import handle_normal_events, render_normal_view
-from colors import *
+from config.colors import *
 
 class View(Enum):
     NORMAL = 0

@@ -1,6 +1,6 @@
-from camera import Camera
+from graphics.camera import Camera
 from construction.models import ConstructionState
-from rail_network import RailNetwork
+from network import RailNetwork
 from utils import snap_to_grid
 
 #todo: figure out how to delete edges too

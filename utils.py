@@ -1,5 +1,5 @@
-from models import Point
-from constants import GRID_SIZE
+from network import Point
+from config.settings import GRID_SIZE
 
 def get_direction_between_points(p1: Point, p2: Point) -> tuple[int, int]:
     return (signum(p2.x - p1.x), signum(p2.y - p1.y))

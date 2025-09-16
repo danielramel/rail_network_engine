@@ -1,8 +1,8 @@
 from utils import snap_to_grid, get_direction_between_points
-from camera import Camera
-from rail_network import RailNetwork
+from graphics.camera import Camera
+from network import RailNetwork
 from construction.models import ConstructionState
-from models import PointWithDirection
+from network import PointWithDirection
 
 def handle_signal_click(state: ConstructionState, camera: Camera, network: RailNetwork, pos):
     snapped = snap_to_grid(*camera.screen_to_world(*pos))

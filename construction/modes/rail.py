@@ -1,8 +1,8 @@
 from utils import get_direction_between_points, snap_to_grid
 import pygame
-from pathfinding import find_path
-from colors import GRAY
-from models import PointWithDirection
+from network import find_path
+from config.colors import GRAY
+from network import PointWithDirection
 
 def handle_rail_click(state, camera, network, pos):
     snapped = snap_to_grid(*camera.screen_to_world(*pos))

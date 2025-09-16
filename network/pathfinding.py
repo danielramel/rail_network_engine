@@ -1,8 +1,8 @@
-from constants import GRID_SIZE
-from rail_network import Point
+from config.settings import GRID_SIZE
+from network import Point
 import heapq
 from typing import List, Tuple, Dict
-from models import PointWithDirection
+from network import PointWithDirection
 from utils import get_valid_turns
 
 

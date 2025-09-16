@@ -1,7 +1,7 @@
 import pygame
-from camera import Camera
+from graphics.camera import Camera
 from construction.modes import handle_rail_click, handle_signal_click, handle_bulldoze_click
-from rail_network import RailNetwork
+from network import RailNetwork
 from .models import ConstructionState
 from .ui_helpers import get_zoom_box, get_construction_buttons
 

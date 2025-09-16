@@ -1,8 +1,6 @@
-
 from dataclasses import dataclass
 from typing import Tuple
 from typing import NamedTuple
-
 
 
 @dataclass(frozen=True, order=True)

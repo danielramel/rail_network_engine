@@ -1,12 +1,11 @@
 # construction/models.py
 from dataclasses import dataclass
 from enum import Enum
-from models import PointWithDirection
+from network import PointWithDirection
 
 class ConstructionMode(Enum):
     RAIL = 'R'
     SIGNAL = 'S'
-    PLATFORM = 'P'
     STATION = 'S'
     BULLDOZE = 'B'
     
