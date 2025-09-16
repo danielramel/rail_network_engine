@@ -1,23 +1,23 @@
 import pygame
 
+from camera import Camera
+from construction.modes import render_rail_construction
+
 from .ui_helpers import get_zoom_box, get_construction_buttons
 from colors import *
-from pathfinding import find_path
-from construction.state import ConstructionState
-from utils import snap_to_grid
+from construction.models import ConstructionState
 from constants import GRID_SIZE
 
-def render_construction_view(surface, camera, network, state: ConstructionState):
+def render_construction_view(surface, camera: Camera, network, state: ConstructionState):
     draw_grid(surface, camera)
 
     # Draw all rails
-    for segment in network.get_segments():
-        screen_points = [camera.world_to_screen(p.x, p.y) for p in segment[2]['geometry']]
-        if len(screen_points) >= 2:
-            pygame.draw.lines(surface, WHITE, False, screen_points, max(1, int(5 * camera.scale)))
+    for edge in network.get_edges():
+        screen_points = [camera.world_to_screen(p.x, p.y) for p in edge]
+        pygame.draw.lines(surface, WHITE, False, screen_points, max(1, int(5 * camera.scale)))
 
     # Draw nodes
-    for node in network.get_nodes():
+    for node in network.get_intersections():
         screen_x, screen_y = camera.world_to_screen(node.x, node.y)
         outer_radius = max(2, int(6 * camera.scale))
         inner_radius = max(1, int(3 * camera.scale))
@@ -25,12 +25,8 @@ def render_construction_view(surface, camera, network, state: ConstructionState)
         pygame.draw.circle(surface, BLACK, (int(screen_x), int(screen_y)), inner_radius)
 
     # Draw preview polyline
-    if state.Mode == ConstructionState.Mode.RAIL and state.construction_anchor is not None:
-        snapped = snap_to_grid(*camera.screen_to_world(*pygame.mouse.get_pos()))
-        found_path = find_path(state.construction_anchor, snapped)
-        screen_points = [camera.world_to_screen(pt.x, pt.y) for pt in found_path]
-        if len(screen_points) >= 2:
-            pygame.draw.lines(surface, GRAY, False, screen_points, max(1, int(3 * camera.scale)))
+    if state.Mode == ConstructionState.Mode.RAIL:
+        render_rail_construction(surface, camera, state, network)
 
     # Draw buttons
     font = pygame.font.SysFont(None, 40)

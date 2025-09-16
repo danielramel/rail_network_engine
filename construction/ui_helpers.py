@@ -1,10 +1,7 @@
 import pygame
-from enum import Enum
 
-class ConstructionMode(Enum):
-    RAIL = 'R'
-    LIGHT = 'L'
-    PLATFORM = 'P'
+from construction.models import ConstructionMode
+
 
 def get_zoom_box(surface: pygame.Surface) -> pygame.Rect:
     return pygame.Rect(surface.get_width() - 100, 10, 80, 30)

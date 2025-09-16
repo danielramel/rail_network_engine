@@ -33,6 +33,8 @@ class Camera:
     
     def update_drag(self, mouse_x, mouse_y):
         """Update camera position during drag"""
+        if not self.is_dragging:
+            return
         dx = mouse_x - self.drag_start_x
         dy = mouse_y - self.drag_start_y
         self.x = self.drag_start_cam_x + dx / self.scale
@@ -43,8 +45,11 @@ class Camera:
         """Stop dragging the camera"""
         self.is_dragging = False
     
-    def zoom(self, mouse_x, mouse_y, zoom_direction, screen_width, screen_height):
+    def zoom(self, pos, zoom_direction, surface):
         """Zoom in/out centered on mouse position"""
+        mouse_x, mouse_y = pos
+        screen_width, screen_height = surface.get_size()
+        
         zoom_factor = 1.1 if zoom_direction > 0 else 1.0 / 1.1
         
         # Calculate new scale with limits
@@ -77,7 +82,11 @@ class Camera:
         self.x = 0.0
         self.y = 0.0
         self.scale = 1.0
-    
+
+    def is_click(self, pos):
+        x, y = pos
+        return self.is_dragging and x == self.drag_start_x and y == self.drag_start_y
+
     def apply_transform(self, surface):
         """Apply camera transform to surface (for drawing)"""
         # This would be used if pygame supported matrix transforms
