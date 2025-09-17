@@ -1,5 +1,5 @@
 import networkx as nx
-from network import Point, PointWithDirection
+from models.geometry import Point, PointWithDirection
 from utils import get_direction_between_points
 
 class RailNetwork:

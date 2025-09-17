@@ -1,9 +1,11 @@
 import pygame
+from ui_elements.construction_buttons import get_zoom_box, get_construction_buttons
+from .rail import handle_rail_click
+from .signal import handle_signal_click
+from .bulldoze import handle_bulldoze_click
 from graphics.camera import Camera
-from construction.modes import handle_rail_click, handle_signal_click, handle_bulldoze_click
-from network import RailNetwork
-from .models import ConstructionState
-from .ui_helpers import get_zoom_box, get_construction_buttons
+from models.network import RailNetwork
+from models.construction import ConstructionState
 
 def handle_construction_events(state: ConstructionState, construction_toggle_button, surface, camera: Camera, network: RailNetwork):
     for event in pygame.event.get():

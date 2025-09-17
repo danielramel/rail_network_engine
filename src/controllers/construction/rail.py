@@ -1,10 +1,13 @@
+
 from utils import get_direction_between_points, snap_to_grid
 import pygame
-from network import find_path
 from config.colors import GRAY
-from network import PointWithDirection
+from graphics.camera import Camera
+from models.network import RailNetwork, find_path
+from models.construction import ConstructionState
+from models.geometry import PointWithDirection
 
-def handle_rail_click(state, camera, network, pos):
+def handle_rail_click(state: ConstructionState, camera: Camera, network: RailNetwork, pos: tuple[int, int]):
     snapped = snap_to_grid(*camera.screen_to_world(*pos))
     if state.construction_anchor is None:
         state.construction_anchor = PointWithDirection(snapped, (0,0))
@@ -20,13 +23,3 @@ def handle_rail_click(state, camera, network, pos):
         )
         state.construction_anchor = PointWithDirection(snapped, get_direction_between_points(found_path[-2], snapped))
 
-def render_rail_construction(surface, camera, state, network):
-    # Draw preview polyline
-    if state.construction_anchor is None:
-        return
-
-    snapped = snap_to_grid(*camera.screen_to_world(*pygame.mouse.get_pos()))
-    found_path = find_path(state.construction_anchor, snapped)
-    screen_points = [camera.world_to_screen(pt.x, pt.y) for pt in found_path]
-    if len(screen_points) >= 2:
-        pygame.draw.lines(surface, GRAY, False, screen_points, max(1, int(3 * camera.scale)))

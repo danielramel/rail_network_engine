@@ -1,7 +1,7 @@
 # construction/models.py
 from dataclasses import dataclass
 from enum import Enum
-from network import PointWithDirection
+from models.geometry import PointWithDirection
 
 class ConstructionMode(Enum):
     RAIL = 'R'

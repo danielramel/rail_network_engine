@@ -1,4 +1,4 @@
-from network import Point
+from models.geometry import Point
 from config.settings import GRID_SIZE
 
 def get_direction_between_points(p1: Point, p2: Point) -> tuple[int, int]:

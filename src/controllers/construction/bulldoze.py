@@ -1,7 +1,7 @@
-from graphics.camera import Camera
-from construction.models import ConstructionState
-from network import RailNetwork
 from utils import snap_to_grid
+from graphics.camera import Camera
+from models.construction import ConstructionState
+from models.network import RailNetwork
 
 #todo: figure out how to delete edges too
 def handle_bulldoze_click(state: ConstructionState, camera: Camera, network: RailNetwork, pos: tuple[int, int]):

@@ -1,15 +1,14 @@
 import pygame
 
 from graphics.camera import Camera
-from construction.modes import render_rail_construction
-from network import RailNetwork
-
-from .ui_helpers import get_zoom_box, get_construction_buttons
-from config.colors import *
-from construction.models import ConstructionState
+from views.construction.rail import render_rail_construction
+from models.network import RailNetwork
+from ui_elements.construction_buttons import get_zoom_box, get_construction_buttons
+from config.colors import WHITE, BLACK, GRAY, GREEN
 from config.settings import GRID_SIZE
+from models.construction import ConstructionState
 
-def render_construction_view(surface, camera: Camera, network: RailNetwork, state: ConstructionState):
+def render_construction_view(surface: pygame.Surface, camera: Camera, network: RailNetwork, state: ConstructionState):
     draw_grid(surface, camera)
 
     # Draw all rails

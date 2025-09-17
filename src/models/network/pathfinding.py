@@ -1,15 +1,13 @@
 from config.settings import GRID_SIZE
-from network import Point
+from models.geometry import Point, PointWithDirection
 import heapq
-from typing import List, Tuple, Dict
-from network import PointWithDirection
 from utils import get_valid_turns
 
 
 ORTHOGONAL_COST = 1.0
 DIAGONAL_COST = 1.414  # Approximate sqrt(2)
 
-def get_direction_cost(direction: Tuple[int, int]) -> float:
+def get_direction_cost(direction: tuple[int, int]) -> float:
     """Get the cost for moving in a given direction."""
     dx, dy = direction
     if dx != 0 and dy != 0:
@@ -17,7 +15,7 @@ def get_direction_cost(direction: Tuple[int, int]) -> float:
     else:
         return ORTHOGONAL_COST
 
-def get_valid_turn_neighbors(state: PointWithDirection) -> List[Tuple[PointWithDirection, float]]:
+def get_valid_turn_neighbors(state: PointWithDirection) -> list[tuple[PointWithDirection, float]]:
     """
     Get valid neighboring states from current state, respecting 45° turn limit.
     
@@ -46,7 +44,7 @@ def heuristic(a: Point, b: Point) -> float:
     dy = abs(a.y - b.y) / GRID_SIZE
     return max(dx, dy)
 
-def reconstruct_path(came_from: Dict[PointWithDirection, PointWithDirection], current_state: PointWithDirection) -> Tuple[Point, ...]:
+def reconstruct_path(came_from: dict[PointWithDirection, PointWithDirection], current_state: PointWithDirection) -> tuple[Point, ...]:
     """Reconstruct and simplify the path from states."""
     path = [current_state.point]
     
@@ -57,7 +55,7 @@ def reconstruct_path(came_from: Dict[PointWithDirection, PointWithDirection], cu
     # Reverse to get start -> end order, then simplify
     return tuple(reversed(path))
 
-def find_path(start: PointWithDirection, end: Point) -> Tuple[Point, ...]:
+def find_path(start: PointWithDirection, end: Point) -> tuple[Point, ...]:
     """
     Find optimal path using A* algorithm with 45° turn constraint.
     
@@ -76,10 +74,10 @@ def find_path(start: PointWithDirection, end: Point) -> Tuple[Point, ...]:
 
     # Priority queue: (f_score, current_g, state)
     open_set = []
-    came_from: Dict[PointWithDirection, PointWithDirection] = {}
-    g_score: Dict[PointWithDirection, float] = {}
-    f_score: Dict[PointWithDirection, float] = {}
-    
+    came_from: dict[PointWithDirection, PointWithDirection] = {}
+    g_score: dict[PointWithDirection, float] = {}
+    f_score: dict[PointWithDirection, float] = {}
+
 
     g_score[start] = 0
     f_score[start] = heuristic(start.point, end)

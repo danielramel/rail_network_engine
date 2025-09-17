@@ -1,6 +1,5 @@
 import pygame
-
-from construction.models import ConstructionMode
+from models.construction import ConstructionMode
 
 
 def get_zoom_box(surface: pygame.Surface) -> pygame.Rect:
