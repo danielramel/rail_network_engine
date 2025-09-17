@@ -4,15 +4,19 @@ from config.colors import GRAY
 from graphics.camera import Camera
 from models.network import RailNetwork, find_path
 from models.construction import ConstructionState
+from ui_elements import draw_node
 
 
-def render_rail_construction(surface : pygame.Surface, camera: Camera, state: ConstructionState, network: RailNetwork):
-    # Draw preview polyline
+def render_rail_construction(surface : pygame.Surface, camera: Camera, state: ConstructionState, network: RailNetwork, pos: tuple[int, int]):
+    snapped = snap_to_grid(*camera.screen_to_world(*pos))
     if state.construction_anchor is None:
+        draw_node(surface, camera, snapped)
         return
-
-    snapped = snap_to_grid(*camera.screen_to_world(*pygame.mouse.get_pos()))
+    
+    if state.construction_anchor.point == snapped:
+        return
     found_path = find_path(state.construction_anchor, snapped)
     screen_points = [camera.world_to_screen(pt.x, pt.y) for pt in found_path]
-    if len(screen_points) >= 2:
-        pygame.draw.lines(surface, GRAY, False, screen_points, max(1, int(3 * camera.scale)))
+    pygame.draw.lines(surface, GRAY, False, screen_points, max(1, int(3 * camera.scale)))
+    draw_node(surface, camera, snapped)
+    draw_node(surface, camera, state.construction_anchor.point)
