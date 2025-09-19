@@ -51,14 +51,10 @@ class RailNetwork:
         # Signals can be represented as a special attribute on the node
         self.graph.nodes[signal.point]['signal'] = signal.direction
         
-    def get_signals(self) -> list[PointWithDirection]:
+    def get_signals(self) -> tuple[PointWithDirection]:
         """Return all signals in the network."""
-        signals = []
-        for node, data in self.graph.nodes(data=True):
-            if 'signal' in data:
-                signals.append(PointWithDirection(point=node, direction=data['signal']))
-        return signals
-    
+        return tuple(PointWithDirection(point=node, direction=data['signal']) for node, data in self.graph.nodes(data=True) if 'signal' in data)
+
     def toggle_signal_at(self, pos: Point):
         if pos not in self.graph:
             raise ValueError("No node at given position")
@@ -80,5 +76,3 @@ class RailNetwork:
             raise ValueError("No signal at given position")
         
         del self.graph.nodes[pos]['signal']
-
-        

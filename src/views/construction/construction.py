@@ -1,26 +1,29 @@
 import pygame
 
 from graphics.camera import Camera
+from utils import snap_to_grid
 from views.construction.rail import render_rail_construction
 from models.network import RailNetwork
 from ui_elements import get_zoom_box, get_construction_buttons, draw_node, draw_signal
 
-from config.colors import WHITE, GRAY, GREEN
+from config.colors import WHITE, GRAY, GREEN, YELLOW
 from config.settings import GRID_SIZE
 from models.construction import ConstructionState
+from views.construction.signal import render_signal_construction
 
 def render_construction_view(surface: pygame.Surface, camera: Camera, network: RailNetwork, state: ConstructionState):
     draw_grid(surface, camera)
 
+    pos = pygame.mouse.get_pos()
+    if state.Mode == ConstructionState.Mode.RAIL:
+        render_rail_construction(surface, camera, state, network, pos)
+    elif state.Mode == ConstructionState.Mode.SIGNAL:
+        render_signal_construction(surface, camera, state, network, pos)
+        
     # Draw all rails
     for edge in network.get_edges():
         screen_points = [camera.world_to_screen(p.x, p.y) for p in edge]
         pygame.draw.lines(surface, WHITE, False, screen_points, max(1, int(5 * camera.scale)))
-    
-    pos = pygame.mouse.get_pos()
-    # Draw preview polyline
-    if state.Mode == ConstructionState.Mode.RAIL:
-        render_rail_construction(surface, camera, state, network, pos)        
         
     # Draw nodes
     for node in network.get_intersections():
