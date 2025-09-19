@@ -1,7 +1,7 @@
 import pygame
 from enum import Enum
 from graphics.camera import Camera
-from models.network import RailNetwork
+from models.map import RailMap
 from controllers.construction import handle_construction_events
 from views.normal_view import handle_normal_events, render_normal_view
 from views.construction import render_construction_view
@@ -18,7 +18,7 @@ class Game:
         self.screen = pygame.display.set_mode((0, 0), pygame.NOFRAME)
         pygame.display.set_caption("Rail Simulator")
 
-        self.network = RailNetwork()
+        self.network = RailMap()
         self.camera = Camera()
         self.construction_state = ConstructionState()
         self.view = View.NORMAL

@@ -1,11 +1,10 @@
 from utils import snap_to_grid, get_direction_between_points
 from models.geometry import PointWithDirection
-from graphics.camera import Camera
-from models.network import RailNetwork
+from models.map import RailMap
 from models.construction import ConstructionState
 
-def handle_signal_click(state: ConstructionState, camera: Camera, network: RailNetwork, pos: tuple[int, int]):
-    snapped = snap_to_grid(*camera.screen_to_world(*pos))
+def handle_signal_click(state: ConstructionState, network: RailMap, pos: tuple[int, int]):
+    snapped = snap_to_grid(*pos)
     if snapped not in network.graph: # empty click
         return
     

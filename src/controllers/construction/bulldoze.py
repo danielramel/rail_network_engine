@@ -1,11 +1,10 @@
 from utils import snap_to_grid
-from graphics.camera import Camera
 from models.construction import ConstructionState
-from models.network import RailNetwork
+from models.map import RailMap
 
 #todo: figure out how to delete edges too
-def handle_bulldoze_click(state: ConstructionState, camera: Camera, network: RailNetwork, pos: tuple[int, int]):
-    snapped = snap_to_grid(*camera.screen_to_world(*pos))
+def handle_bulldoze_click(state: ConstructionState, network: RailMap, pos: tuple[int, int]):
+    snapped = snap_to_grid(*pos)
     if snapped not in network.graph: # empty click
         return
     if 'signal' in network.graph.nodes[snapped]:

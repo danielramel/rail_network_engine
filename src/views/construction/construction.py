@@ -2,16 +2,18 @@ import pygame
 
 from graphics.camera import Camera
 from utils import snap_to_grid
-from views.construction.rail import render_rail_construction
-from models.network import RailNetwork
+
+from models.map import RailMap
 from ui_elements import get_zoom_box, get_construction_buttons, draw_node, draw_signal
 
 from config.colors import WHITE, GRAY, GREEN, YELLOW
 from config.settings import GRID_SIZE
 from models.construction import ConstructionState
-from views.construction.signal import render_signal_construction
+from .signal import render_signal_construction
+from .station import render_station_construction
+from .rail import render_rail_construction
 
-def render_construction_view(surface: pygame.Surface, camera: Camera, network: RailNetwork, state: ConstructionState):
+def render_construction_view(surface: pygame.Surface, camera: Camera, network: RailMap, state: ConstructionState):
     draw_grid(surface, camera)
 
     pos = pygame.mouse.get_pos()
@@ -19,6 +21,8 @@ def render_construction_view(surface: pygame.Surface, camera: Camera, network: R
         render_rail_construction(surface, camera, state, network, pos)
     elif state.Mode == ConstructionState.Mode.SIGNAL:
         render_signal_construction(surface, camera, state, network, pos)
+    elif state.Mode == ConstructionState.Mode.STATION:
+        render_station_construction(surface, camera, state, network, pos)
         
     # Draw all rails
     for edge in network.get_edges():
@@ -39,7 +43,7 @@ def render_construction_view(surface: pygame.Surface, camera: Camera, network: R
     for mode, rect in get_construction_buttons(surface):
         color = GREEN if state.Mode == mode else GRAY
         pygame.draw.rect(surface, color, rect, border_radius=8)
-        text = font.render(mode.value, True, WHITE)
+        text = font.render(mode.name[0], True, WHITE)
         surface.blit(text, text.get_rect(center=rect.center))
 
     # Zoom indicator

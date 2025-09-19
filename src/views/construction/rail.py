@@ -2,12 +2,12 @@ import pygame
 from utils import snap_to_grid
 from config.colors import YELLOW
 from graphics.camera import Camera
-from models.network import RailNetwork, find_path
+from models.map import RailMap, find_path
 from models.construction import ConstructionState
 from ui_elements import draw_node
 
 
-def render_rail_construction(surface : pygame.Surface, camera: Camera, state: ConstructionState, network: RailNetwork, pos: tuple[int, int]):
+def render_rail_construction(surface : pygame.Surface, camera: Camera, state: ConstructionState, network: RailMap, pos: tuple[int, int]):
     snapped = snap_to_grid(*camera.screen_to_world(*pos))
     if state.construction_anchor is None:
         draw_node(surface, camera, snapped, color=YELLOW)

@@ -2,9 +2,10 @@ import networkx as nx
 from models.geometry import Point, PointWithDirection
 from utils import get_direction_between_points
 
-class RailNetwork:
+class RailMap:
     def __init__(self):
         self.graph = nx.Graph()
+        self.stations = {}
 
     def get_intersections(self):
         """Return all intersection nodes (degree > 2) in the network."""

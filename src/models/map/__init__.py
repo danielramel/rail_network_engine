@@ -1,7 +1,7 @@
 from .pathfinding import find_path
-from .rail_network import RailNetwork
+from .rail_map import RailMap
 
 __all__ = [
-    "RailNetwork",
+    "RailMap",
     "find_path",
 ]

@@ -4,10 +4,10 @@ from enum import Enum
 from models.geometry import PointWithDirection
 
 class ConstructionMode(Enum):
-    RAIL = 'R'
-    SIGNAL = 'S'
-    STATION = 'S'
-    BULLDOZE = 'B'
+    RAIL = 1
+    SIGNAL = 2
+    STATION = 3
+    BULLDOZE = 4
     
 @dataclass
 class ConstructionState:

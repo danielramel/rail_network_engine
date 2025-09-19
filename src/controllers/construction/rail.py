@@ -1,14 +1,10 @@
-
 from utils import get_direction_between_points, snap_to_grid
-import pygame
-from config.colors import GRAY
-from graphics.camera import Camera
-from models.network import RailNetwork, find_path
+from models.map import RailMap, find_path
 from models.construction import ConstructionState
 from models.geometry import PointWithDirection
 
-def handle_rail_click(state: ConstructionState, camera: Camera, network: RailNetwork, pos: tuple[int, int]):
-    snapped = snap_to_grid(*camera.screen_to_world(*pos))
+def handle_rail_click(state: ConstructionState, network: RailMap, pos: tuple[int, int]):
+    snapped = snap_to_grid(*pos)
     if state.construction_anchor is None:
         state.construction_anchor = PointWithDirection(snapped, (0,0))
     elif snapped == state.construction_anchor.point:

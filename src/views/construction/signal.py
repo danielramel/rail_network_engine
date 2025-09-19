@@ -4,11 +4,11 @@ from ui_elements.draw_utils import draw_signal
 from utils import get_direction_between_points, snap_to_grid
 from config.colors import GRAY, RED, YELLOW
 from graphics.camera import Camera
-from models.network import RailNetwork
+from models.map import RailMap
 from models.construction import ConstructionState
 
 
-def render_signal_construction(surface : pygame.Surface, camera: Camera, state: ConstructionState, network: RailNetwork, pos: tuple[int, int]):
+def render_signal_construction(surface : pygame.Surface, camera: Camera, state: ConstructionState, network: RailMap, pos: tuple[int, int]):
     snapped = snap_to_grid(*camera.screen_to_world(*pos))
     
     if snapped not in network.graph or network.graph.degree[snapped] > 2:
@@ -19,7 +19,7 @@ def render_signal_construction(surface : pygame.Surface, camera: Camera, state: 
         if 'signal' in network.graph.nodes[snapped]:
             if len(network.graph[snapped]) == 1:
                 signal_preview = PointWithDirection(point=snapped, direction=network.graph.nodes[snapped]['signal'])
-                draw_signal(surface, camera, signal_preview, color=RED, offset=True)
+                draw_signal(surface, camera, signal_preview, color=YELLOW, offset=True)
                 return # dead end, cannot toggle
             
             current_direction = network.graph.nodes[snapped]['signal']
