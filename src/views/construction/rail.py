@@ -7,7 +7,7 @@ from models.construction import ConstructionState
 from ui_elements import draw_node
 
 
-def render_rail_construction(surface : pygame.Surface, camera: Camera, state: ConstructionState, network: RailMap, pos: tuple[int, int]):
+def render_rail_construction(surface : pygame.Surface, camera: Camera, state: ConstructionState, map: RailMap, pos: tuple[int, int]):
     snapped = snap_to_grid(*camera.screen_to_world(*pos))
     if state.construction_anchor is None:
         draw_node(surface, camera, snapped, color=YELLOW)

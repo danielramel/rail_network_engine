@@ -1,6 +1,7 @@
 import pygame
 
 from graphics.camera import Camera
+from ui_elements.draw_utils import draw_station
 from utils import snap_to_grid
 
 from models.map import RailMap
@@ -12,30 +13,34 @@ from models.construction import ConstructionState
 from .signal import render_signal_construction
 from .station import render_station_construction
 from .rail import render_rail_construction
+from views.construction import station
 
-def render_construction_view(surface: pygame.Surface, camera: Camera, network: RailMap, state: ConstructionState):
+def render_construction_view(surface: pygame.Surface, camera: Camera, map: RailMap, state: ConstructionState):
     draw_grid(surface, camera)
 
     pos = pygame.mouse.get_pos()
     if state.Mode == ConstructionState.Mode.RAIL:
-        render_rail_construction(surface, camera, state, network, pos)
+        render_rail_construction(surface, camera, state, map, pos)
     elif state.Mode == ConstructionState.Mode.SIGNAL:
-        render_signal_construction(surface, camera, state, network, pos)
+        render_signal_construction(surface, camera, state, map, pos)
     elif state.Mode == ConstructionState.Mode.STATION:
-        render_station_construction(surface, camera, state, network, pos)
+        render_station_construction(surface, camera, state, map, pos)
         
     # Draw all rails
-    for edge in network.get_edges():
+    for edge in map.get_edges():
         screen_points = [camera.world_to_screen(p.x, p.y) for p in edge]
         pygame.draw.lines(surface, WHITE, False, screen_points, max(1, int(5 * camera.scale)))
         
     # Draw nodes
-    for node in network.get_intersections():
+    for node in map.get_intersections():
         draw_node(surface, camera, node)
         
     # Draw signals as triangles
-    for signal in network.get_signals():
+    for signal in map.get_signals():
         draw_signal(surface, camera, signal)
+        
+    for pos, name in map.stations.items():
+        draw_station(surface, camera, pos, name)
 
 
     # Draw buttons

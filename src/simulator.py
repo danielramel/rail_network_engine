@@ -18,7 +18,7 @@ class Game:
         self.screen = pygame.display.set_mode((0, 0), pygame.NOFRAME)
         pygame.display.set_caption("Rail Simulator")
 
-        self.network = RailMap()
+        self.map = RailMap()
         self.camera = Camera()
         self.construction_state = ConstructionState()
         self.view = View.NORMAL
@@ -43,21 +43,21 @@ class Game:
                 self.construction_toggle_button,
                 self.screen,
                 self.camera,
-                self.network
+                self.map
             )
         else:
             return handle_normal_events(
                 self.construction_toggle_button,
                 self.screen,
                 self.camera,
-                self.network
+                self.map
             )
 
     def render_view(self):
         if self.view == View.CONSTRUCTION:
-            render_construction_view(self.screen, self.camera, self.network, self.construction_state)
+            render_construction_view(self.screen, self.camera, self.map, self.construction_state)
         else:
-            render_normal_view(self.screen, self.camera, self.network)
+            render_normal_view(self.screen, self.camera, self.map)
 
     # --- Main loop ---
     def run(self):

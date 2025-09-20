@@ -3,7 +3,7 @@ from turtle import color
 import pygame
 from config.colors import WHITE, BLACK, YELLOW
 
-from config.settings import GRID_SIZE
+from config.settings import GRID_SIZE, STATION_RECT_SIZE
 from graphics.camera import Camera
 from models.geometry import Point, PointWithDirection
 
@@ -53,14 +53,14 @@ def draw_signal(surface: pygame.Surface, camera: Camera, alignment: PointWithDir
     surface.blit(rotated_surf, rect)
     
     
-def draw_station(surface: pygame.Surface, camera: Camera, position: Point, color=WHITE):
-    rect_size = GRID_SIZE * camera.scale  # size of the rectangle (can be adjusted)
-    rect = pygame.Rect(0, 0, rect_size*3, rect_size*1)
+def draw_station(surface: pygame.Surface, camera: Camera, position: Point, name, color=WHITE):
+    w, h = STATION_RECT_SIZE
+    rect = pygame.Rect(0, 0, w * camera.scale, h * camera.scale)
     rect.center = camera.world_to_screen(*position)
-    pygame.draw.rect(surface, YELLOW, rect, 3)
+    pygame.draw.rect(surface, color, rect, 3)
 
-    # Render "STATION" text in the middle of the rect
-    font = pygame.font.SysFont(None, int(rect_size * 0.6))
-    text_surface = font.render("STATION", True, YELLOW)
+    # Render station name text in the middle of the rect
+    font = pygame.font.SysFont(None, int(rect.height * 0.6))
+    text_surface = font.render(name, True, color)
     text_rect = text_surface.get_rect(center=rect.center)
     surface.blit(text_surface, text_rect)

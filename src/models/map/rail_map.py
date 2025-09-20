@@ -77,3 +77,11 @@ class RailMap:
             raise ValueError("No signal at given position")
         
         del self.graph.nodes[pos]['signal']
+        
+    def add_station_at(self, pos: Point, name: str):
+        if pos in self.stations:
+            raise ValueError("Station already exists at this position")
+        if name in self.stations.values():
+            raise ValueError("Station name must be unique")
+        
+        self.stations[pos] = name

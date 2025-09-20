@@ -1,6 +1,6 @@
 import pygame
 
-def handle_normal_events(construction_toggle_button, surface, camera, network):
+def handle_normal_events(construction_toggle_button, surface, camera, map):
     for event in pygame.event.get():
         if event.type == pygame.QUIT or (
             event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
@@ -24,6 +24,6 @@ def handle_normal_events(construction_toggle_button, surface, camera, network):
                 camera.update_drag(x, y)
     return None
 
-def render_normal_view(surface, camera, network):
+def render_normal_view(surface, camera, map):
     # Stub for normal view rendering
     pass

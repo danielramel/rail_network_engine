@@ -8,7 +8,7 @@ from graphics.camera import Camera
 from models.map import RailMap
 from models.construction import ConstructionState
 
-def handle_construction_events(state: ConstructionState, construction_toggle_button, surface, camera: Camera, network: RailMap):
+def handle_construction_events(state: ConstructionState, construction_toggle_button, surface, camera: Camera, map: RailMap):
     for event in pygame.event.get():
         if event.type == pygame.QUIT or (
             event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
@@ -40,13 +40,13 @@ def handle_construction_events(state: ConstructionState, construction_toggle_but
                 if camera.is_click(event.pos):
                     pos = camera.screen_to_world(*event.pos)
                     if state.Mode == ConstructionState.Mode.RAIL:
-                        handle_rail_click(state, network, pos)
+                        handle_rail_click(state, map, pos)
                     elif state.Mode == ConstructionState.Mode.SIGNAL:
-                        handle_signal_click(state, network, pos)
+                        handle_signal_click(state, map, pos)
                     elif state.Mode == ConstructionState.Mode.BULLDOZE:
-                        handle_bulldoze_click(state, network, pos)
+                        handle_bulldoze_click(state, map, pos)
                     elif state.Mode == ConstructionState.Mode.STATION:
-                        handle_station_click(state, network, pos)
+                        handle_station_click(state, map, pos)
 
                 camera.stop_drag() # should be after click check
             
