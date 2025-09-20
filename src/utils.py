@@ -12,7 +12,7 @@ def snap_to_grid(x: float, y: float) -> Point:
     snapped_y = round(y / GRID_SIZE) * GRID_SIZE
     return Point(snapped_x, snapped_y)
 
-def rects_overlap(pos1: Point, pos2: Point) -> bool:
+def station_rects_overlap(pos1: Point, pos2: Point) -> bool:
     w, h = STATION_RECT_SIZE
     w += GRID_SIZE
     h += GRID_SIZE
@@ -20,4 +20,14 @@ def rects_overlap(pos1: Point, pos2: Point) -> bool:
     return (
         abs(pos1.x - pos2.x) < w  and
         abs(pos1.y - pos2.y) < h
+    )
+
+def point_within_station_rect(center: Point, point: Point) -> bool:
+    w, h = STATION_RECT_SIZE
+    w += GRID_SIZE
+    h += GRID_SIZE
+
+    return (
+        abs(center.x - point.x) * 2 < w and
+        abs(center.y - point.y) * 2 < h
     )
