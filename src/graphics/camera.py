@@ -1,3 +1,6 @@
+from shapely import Point
+
+
 class Camera:
     def __init__(self):
         self.x = 0.0
@@ -45,37 +48,29 @@ class Camera:
         """Stop dragging the camera"""
         self.is_dragging = False
     
-    def zoom(self, pos, zoom_direction, surface):
+    def zoom(self, mouse_pos: Point, zoom_direction):
         """Zoom in/out centered on mouse position"""
-        mouse_x, mouse_y = pos
-        screen_width, screen_height = surface.get_size()
-        
+
         zoom_factor = 1.1 if zoom_direction > 0 else 1.0 / 1.1
-        
-        # Calculate new scale with limits
         new_scale = self.scale * zoom_factor
-        if new_scale < self.min_scale:
-            zoom_factor = self.min_scale / self.scale
-            new_scale = self.min_scale
-        elif new_scale > self.max_scale:
-            zoom_factor = self.max_scale / self.scale
-            new_scale = self.max_scale
+        new_scale = max(self.min_scale, min(new_scale, self.max_scale))
         
         if new_scale == self.scale:
             return  # No change needed
-        
-        # Calculate zoom center relative to current view
-        center_x = screen_width / 2
-        center_y = screen_height / 2
-        
-        # Adjust camera position so mouse stays in same world position
-        mouse_offset_x = mouse_x - center_x
-        mouse_offset_y = mouse_y - center_y
-        
-        self.x += mouse_offset_x / self.scale * (1 - zoom_factor)
-        self.y += mouse_offset_y / self.scale * (1 - zoom_factor)
-        
+
+        world_x, world_y = self.screen_to_world(mouse_pos.x, mouse_pos.y)
+
         self.scale = new_scale
+
+        # Calculate where that world position would appear on screen with new scale
+        new_screen_x, new_screen_y = self.world_to_screen(world_x, world_y)
+        
+        # Adjust camera to keep world point under mouse
+        screen_dx = new_screen_x - mouse_pos.x
+        screen_dy = new_screen_y - mouse_pos.y
+
+        self.x -= screen_dx / self.scale
+        self.y -= screen_dy / self.scale
     
     def reset(self):
         """Reset camera to default position and scale"""
@@ -86,11 +81,5 @@ class Camera:
     def is_click(self, pos):
         x, y = pos
         return self.is_dragging and x == self.drag_start_x and y == self.drag_start_y
-
-    def apply_transform(self, surface):
-        """Apply camera transform to surface (for drawing)"""
-        # This would be used if pygame supported matrix transforms
-        # For now we'll transform coordinates manually
-        pass
     
     
