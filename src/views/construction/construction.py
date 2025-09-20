@@ -13,17 +13,17 @@ from models.construction import ConstructionState
 from .signal import render_signal_construction
 from .station import render_station_construction
 from .rail import render_rail_construction
-from views.construction import station
+from models.construction import ConstructionMode
 
 def render_construction_view(surface: pygame.Surface, camera: Camera, map: RailMap, state: ConstructionState):
     draw_grid(surface, camera)
 
     pos = pygame.mouse.get_pos()
-    if state.Mode == ConstructionState.Mode.RAIL:
+    if state.Mode == ConstructionMode.RAIL:
         render_rail_construction(surface, camera, state, map, pos)
-    elif state.Mode == ConstructionState.Mode.SIGNAL:
+    elif state.Mode == ConstructionMode.SIGNAL:
         render_signal_construction(surface, camera, state, map, pos)
-    elif state.Mode == ConstructionState.Mode.STATION:
+    elif state.Mode == ConstructionMode.STATION:
         render_station_construction(surface, camera, state, map, pos)
         
     # Draw all rails
@@ -35,32 +35,17 @@ def render_construction_view(surface: pygame.Surface, camera: Camera, map: RailM
     for node in map.get_intersections():
         draw_node(surface, camera, node)
         
-    # Draw signals as triangles
     for signal in map.get_signals():
         draw_signal(surface, camera, signal)
         
     for pos, name in map.stations.items():
         draw_station(surface, camera, pos, name)
+        
+    draw_construction_buttons(surface, state)
+    draw_zoom_indicator(surface, camera)
 
 
-    # Draw buttons
-    font = pygame.font.SysFont(None, 40)
-    for mode, rect in get_construction_buttons(surface):
-        color = GREEN if state.Mode == mode else GRAY
-        pygame.draw.rect(surface, color, rect, border_radius=8)
-        text = font.render(mode.name[0], True, WHITE)
-        surface.blit(text, text.get_rect(center=rect.center))
-
-    # Zoom indicator
-    if camera.scale != 1.0 or camera.x != 0 or camera.y != 0:
-        zoom_text = f"{int(camera.scale * 100)}%"
-        zoom_font = pygame.font.SysFont(None, 24)
-        zoom_surface = zoom_font.render(zoom_text, True, WHITE)
-        zoom_box = get_zoom_box(surface)
-        pygame.draw.rect(surface, (50, 50, 50), zoom_box, border_radius=4)
-        pygame.draw.rect(surface, (150, 150, 150), zoom_box, 2, border_radius=4)
-        surface.blit(zoom_surface, zoom_surface.get_rect(center=zoom_box.center))
-
+    
 
 
 def draw_grid(surface, camera):
@@ -90,3 +75,22 @@ def draw_grid(surface, camera):
         if 0 <= screen_y <= h:
             pygame.draw.line(surface, (60, 60, 60), (0, screen_y), (w, screen_y))
         y += GRID_SIZE
+        
+        
+def draw_construction_buttons(surface, state):
+    font = pygame.font.SysFont(None, 40)
+    for mode, rect in get_construction_buttons(surface):
+        color = GREEN if state.Mode == mode else GRAY
+        pygame.draw.rect(surface, color, rect, border_radius=8)
+        text = font.render(mode.name[0], True, WHITE)
+        surface.blit(text, text.get_rect(center=rect.center))
+
+def draw_zoom_indicator(surface, camera):
+    if camera.scale != 1.0 or camera.x != 0 or camera.y != 0:
+        zoom_text = f"{int(camera.scale * 100)}%"
+        zoom_font = pygame.font.SysFont(None, 24)
+        zoom_surface = zoom_font.render(zoom_text, True, WHITE)
+        zoom_box = get_zoom_box(surface)
+        pygame.draw.rect(surface, (50, 50, 50), zoom_box, border_radius=4)
+        pygame.draw.rect(surface, (150, 150, 150), zoom_box, 2, border_radius=4)
+        surface.blit(zoom_surface, zoom_surface.get_rect(center=zoom_box.center))
