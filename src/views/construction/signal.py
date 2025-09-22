@@ -8,7 +8,7 @@ from models.map import RailMap
 from models.construction import ConstructionState
 
 
-def render_signal_construction(surface : pygame.Surface, camera: Camera, state: ConstructionState, map: RailMap, pos: tuple[int, int]):
+def render_signal_preview(surface : pygame.Surface, camera: Camera, state: ConstructionState, map: RailMap, pos: tuple[int, int]):
     snapped = snap_to_grid(*camera.screen_to_world(*pos))
     
     if snapped not in map.graph or map.graph.degree[snapped] > 2:

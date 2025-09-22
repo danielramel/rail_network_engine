@@ -1,13 +1,17 @@
-from utils import snap_to_grid
+
+from services.bulldoze import BulldozeTargetType
 from models.construction import ConstructionState
 from models.map import RailMap
+from services.bulldoze import get_bulldoze_target
 
-#todo: figure out how to delete edges too
-def handle_bulldoze_click(state: ConstructionState, map: RailMap, pos: tuple[int, int]):
-    snapped = snap_to_grid(*pos)
-    if snapped not in map.graph: # empty click
-        return
-    if 'signal' in map.graph.nodes[snapped]:
-        map.remove_signal_at(snapped)
-        return
-    map.remove_node_at(snapped)
+def handle_bulldoze_click(state: ConstructionState, map: RailMap, pos: tuple[int, int], camera_scale):
+    target = get_bulldoze_target(map, pos, camera_scale)
+
+    if target.type == BulldozeTargetType.STATION:
+        map.remove_station(target.data)
+    elif target.type == BulldozeTargetType.SIGNAL:
+        map.remove_signal_at(target.data)
+    elif target.type == BulldozeTargetType.NODE:
+        map.remove_segment_at(target.data)
+    elif target.type == BulldozeTargetType.EDGE:
+        map.remove_segment_at(target.data)

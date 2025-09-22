@@ -7,20 +7,18 @@ from ui_elements.draw_utils import draw_station
 from config.colors import RED, YELLOW
 
 
-def render_station_construction(surface : pygame.Surface, camera: Camera, state: ConstructionState, map: RailMap, pos: tuple[int, int]):
+def render_station_preview(surface : pygame.Surface, camera: Camera, state: ConstructionState, map: RailMap, pos: tuple[int, int]):
     snapped = snap_to_grid(*camera.screen_to_world(*pos))
     
-    for pos in map.graph.nodes:
-        if point_within_station_rect(snapped, pos):
-            draw_station(surface, camera, snapped, "STATION", color=RED)
-            return
+    color = YELLOW
+    if any(point_within_station_rect(pos, snapped) for pos in map.graph.nodes):
+        color = RED
+    elif any(station_rects_overlap(station_pos, snapped) for station_pos in map.stations.keys()):
+        color = RED
+    else:
+        color = YELLOW
 
-    for station_pos in map.stations.keys():
-        if station_rects_overlap(station_pos, snapped):
-            draw_station(surface, camera, snapped, "STATION", color=RED)
-            return
-        
-    draw_station(surface, camera, snapped, "STATION", color=YELLOW)
+    draw_station(surface, camera, snapped, "STATION", color=color)
 
     
     

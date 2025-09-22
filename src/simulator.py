@@ -21,7 +21,7 @@ class Game:
         self.map = RailMap()
         self.camera = Camera()
         self.construction_state = ConstructionState()
-        self.view = View.NORMAL
+        self.view = View.CONSTRUCTION
         self.clock = pygame.time.Clock()
         self.running = True
 

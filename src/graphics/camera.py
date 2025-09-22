@@ -1,4 +1,4 @@
-from shapely import Point
+from models.geometry import Point
 
 
 class Camera:
@@ -18,13 +18,13 @@ class Camera:
         """Convert screen coordinates to world coordinates"""
         world_x = (screen_x / self.scale) - self.x
         world_y = (screen_y / self.scale) - self.y
-        return world_x, world_y
+        return Point(world_x, world_y)
     
     def world_to_screen(self, world_x, world_y):
         """Convert world coordinates to screen coordinates"""
         screen_x = (world_x + self.x) * self.scale
         screen_y = (world_y + self.y) * self.scale
-        return screen_x, screen_y
+        return Point(screen_x, screen_y)
     
     def start_drag(self, mouse_x, mouse_y):
         """Start dragging the camera"""

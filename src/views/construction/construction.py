@@ -7,29 +7,22 @@ from utils import snap_to_grid
 from models.map import RailMap
 from ui_elements import get_zoom_box, get_construction_buttons, draw_node, draw_signal
 
-from config.colors import WHITE, GRAY, GREEN, YELLOW
+from config.colors import RED, WHITE, GRAY, GREEN, YELLOW
 from config.settings import GRID_SIZE
 from models.construction import ConstructionState
-from .signal import render_signal_construction
-from .station import render_station_construction
-from .rail import render_rail_construction
+from .signal import render_signal_preview
+from .station import render_station_preview
+from .rail import render_rail_preview
+from .bulldoze import render_bulldoze_preview
 from models.construction import ConstructionMode
 
 def render_construction_view(surface: pygame.Surface, camera: Camera, map: RailMap, state: ConstructionState):
     draw_grid(surface, camera)
 
-    pos = pygame.mouse.get_pos()
-    if state.Mode == ConstructionMode.RAIL:
-        render_rail_construction(surface, camera, state, map, pos)
-    elif state.Mode == ConstructionMode.SIGNAL:
-        render_signal_construction(surface, camera, state, map, pos)
-    elif state.Mode == ConstructionMode.STATION:
-        render_station_construction(surface, camera, state, map, pos)
-        
     # Draw all rails
     for edge in map.get_edges():
-        screen_points = [camera.world_to_screen(p.x, p.y) for p in edge]
-        pygame.draw.lines(surface, WHITE, False, screen_points, max(1, int(5 * camera.scale)))
+        screen_points = [tuple(camera.world_to_screen(p.x, p.y)) for p in edge]
+        pygame.draw.line(surface, WHITE, *screen_points, max(1, int(5 * camera.scale)))
         
     # Draw nodes
     for node in map.get_intersections():
@@ -40,6 +33,16 @@ def render_construction_view(surface: pygame.Surface, camera: Camera, map: RailM
         
     for pos, name in map.stations.items():
         draw_station(surface, camera, pos, name)
+        
+    pos = pygame.mouse.get_pos()
+    if state.Mode == ConstructionMode.RAIL:
+        render_rail_preview(surface, camera, state, map, pos)
+    elif state.Mode == ConstructionMode.SIGNAL:
+        render_signal_preview(surface, camera, state, map, pos)
+    elif state.Mode == ConstructionMode.STATION:
+        render_station_preview(surface, camera, state, map, pos)
+    elif state.Mode == ConstructionMode.BULLDOZE:
+        render_bulldoze_preview(surface, camera, state, map, pos)
         
     draw_construction_buttons(surface, state)
     draw_zoom_indicator(surface, camera)
@@ -80,7 +83,12 @@ def draw_grid(surface, camera):
 def draw_construction_buttons(surface, state):
     font = pygame.font.SysFont(None, 40)
     for mode, rect in get_construction_buttons(surface):
-        color = GREEN if state.Mode == mode else GRAY
+        if state.Mode is ConstructionMode.BULLDOZE and mode is ConstructionMode.BULLDOZE:
+            color = RED
+        elif state.Mode is mode:
+            color = YELLOW
+        else:
+            color = GRAY
         pygame.draw.rect(surface, color, rect, border_radius=8)
         text = font.render(mode.name[0], True, WHITE)
         surface.blit(text, text.get_rect(center=rect.center))

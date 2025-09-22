@@ -11,6 +11,6 @@ class ConstructionMode(Enum):
     
 @dataclass
 class ConstructionState:
-    Mode: ConstructionMode | None = None
+    Mode: ConstructionMode | None = ConstructionMode.RAIL
     construction_anchor: PointWithDirection | None = None
 

@@ -56,7 +56,7 @@ def draw_signal(surface: pygame.Surface, camera: Camera, alignment: PointWithDir
 def draw_station(surface: pygame.Surface, camera: Camera, position: Point, name, color=WHITE):
     w, h = STATION_RECT_SIZE
     rect = pygame.Rect(0, 0, w * camera.scale, h * camera.scale)
-    rect.center = camera.world_to_screen(*position)
+    rect.center = tuple(camera.world_to_screen(*position))
     pygame.draw.rect(surface, color, rect, 3)
 
     # Render station name text in the middle of the rect

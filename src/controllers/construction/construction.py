@@ -42,15 +42,15 @@ def handle_construction_events(state: ConstructionState, construction_toggle_but
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
                 if camera.is_click(event.pos):
-                    pos = camera.screen_to_world(*event.pos)
+                    world_pos = camera.screen_to_world(*event.pos)
                     if state.Mode == ConstructionMode.RAIL:
-                        handle_rail_click(state, map, pos)
+                        handle_rail_click(state, map, world_pos)
                     elif state.Mode == ConstructionMode.SIGNAL:
-                        handle_signal_click(state, map, pos)
+                        handle_signal_click(state, map, world_pos)
                     elif state.Mode == ConstructionMode.BULLDOZE:
-                        handle_bulldoze_click(state, map, pos)
+                        handle_bulldoze_click(state, map, world_pos, camera.scale)
                     elif state.Mode == ConstructionMode.STATION:
-                        handle_station_click(state, map, pos)
+                        handle_station_click(state, map, world_pos)
 
                 camera.stop_drag() # should be after click check
             

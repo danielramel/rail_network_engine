@@ -11,11 +11,6 @@ def handle_rail_click(state: ConstructionState, map: RailMap, pos: tuple[int, in
         state.construction_anchor = None
     else:
         found_path = find_path(state.construction_anchor, snapped)
-        
-        map.add_segment(
-            map.add_node(found_path[0]),
-            map.add_node(found_path[-1]),
-            found_path
-        )
+        map.add_segment(found_path)
         state.construction_anchor = PointWithDirection(snapped, get_direction_between_points(found_path[-2], snapped))
 

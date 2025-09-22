@@ -9,8 +9,7 @@ class Point:
     y: float
     
     def __iter__(self):
-        yield self.x
-        yield self.y
+        return iter((self.x, self.y))
     
 
 class PointWithDirection(NamedTuple):
