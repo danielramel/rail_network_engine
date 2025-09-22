@@ -113,11 +113,16 @@ class RailMap:
             current = stack.popleft()
             for neighbor in self.graph.neighbors(current):
                 edges.add((current, neighbor))
-                if neighbor not in stack and neighbor not in nodes and self.graph.degree[neighbor] == 2:
-                    nodes.add(neighbor)    
-                    stack.append(neighbor)
+                if neighbor not in stack and neighbor not in nodes:
+                    if self.graph.degree[neighbor] == 1:
+                        nodes.add(neighbor)
+                    elif self.graph.degree[neighbor] == 2:
+                        nodes.add(neighbor)
+                        stack.append(neighbor)
+                    # If all neighbors are in the current segment, add the neighbor
+                    elif all(nbh in nodes for nbh in self.graph.neighbors(neighbor)):
+                        nodes.add(neighbor)
 
-                
         return nodes, edges
     
     

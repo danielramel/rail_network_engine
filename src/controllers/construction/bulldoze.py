@@ -11,7 +11,5 @@ def handle_bulldoze_click(state: ConstructionState, map: RailMap, pos: tuple[int
         map.remove_station(target.data)
     elif target.type == BulldozeTargetType.SIGNAL:
         map.remove_signal_at(target.data)
-    elif target.type == BulldozeTargetType.NODE:
-        map.remove_segment_at(target.data)
-    elif target.type == BulldozeTargetType.EDGE:
+    elif target.type == BulldozeTargetType.NODE or target.type == BulldozeTargetType.EDGE:
         map.remove_segment_at(target.data)
