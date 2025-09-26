@@ -1,10 +1,10 @@
-from utils import snap_to_grid, get_direction_between_points
-from models.geometry import PointWithDirection
+from models.position import PositionWithDirection
 from models.map import RailMap
 from models.construction import ConstructionState
+from models.position import Position
 
-def handle_signal_click(state: ConstructionState, map: RailMap, pos: tuple[int, int]):
-    snapped = snap_to_grid(*pos)
+def handle_signal_click(state: ConstructionState, map: RailMap, pos: Position):
+    snapped = pos.snap_to_grid()
     if snapped not in map.graph: # empty click
         return
     
@@ -17,9 +17,9 @@ def handle_signal_click(state: ConstructionState, map: RailMap, pos: tuple[int, 
         map.toggle_signal_at(snapped)
         return
 
-    direction = get_direction_between_points(snapped, next(map.graph.neighbors(snapped)))
+    direction = snapped.direction_to(next(map.graph.neighbors(snapped)))
     
-    signal = PointWithDirection(point=snapped, direction=direction)
+    signal = PositionWithDirection(position=snapped, direction=direction)
     
     map.add_signal_at(signal)
     

@@ -1,9 +1,8 @@
 import pygame
 
 from graphics.camera import Camera
+from models.position import Position
 from ui_elements.draw_utils import draw_station
-from utils import snap_to_grid
-
 from models.map import RailMap
 from ui_elements import get_zoom_box, get_construction_buttons, draw_node, draw_signal
 
@@ -14,15 +13,16 @@ from .signal import render_signal_preview
 from .station import render_station_preview
 from .rail import render_rail_preview
 from .bulldoze import render_bulldoze_preview
+from .platform import render_platform_preview
 from models.construction import ConstructionMode
 
-def render_construction_view(surface: pygame.Surface, camera: Camera, map: RailMap, state: ConstructionState):
+
+def render_construction_preview(surface: pygame.Surface, camera: Camera, map: RailMap, state: ConstructionState):
     draw_grid(surface, camera)
 
     # Draw all rails
     for edge in map.get_edges():
-        screen_points = [tuple(camera.world_to_screen(p.x, p.y)) for p in edge]
-        pygame.draw.line(surface, WHITE, *screen_points, max(1, int(5 * camera.scale)))
+        pygame.draw.aaline(surface, WHITE, tuple(camera.world_to_screen(edge[0])), tuple(camera.world_to_screen(edge[1])))
         
     # Draw nodes
     for node in map.get_intersections():
@@ -33,14 +33,16 @@ def render_construction_view(surface: pygame.Surface, camera: Camera, map: RailM
         
     for pos, name in map.stations.items():
         draw_station(surface, camera, pos, name)
-        
-    pos = pygame.mouse.get_pos()
+
+    pos = Position(*pygame.mouse.get_pos())
     if state.Mode == ConstructionMode.RAIL:
         render_rail_preview(surface, camera, state, map, pos)
     elif state.Mode == ConstructionMode.SIGNAL:
         render_signal_preview(surface, camera, state, map, pos)
     elif state.Mode == ConstructionMode.STATION:
         render_station_preview(surface, camera, state, map, pos)
+    elif state.Mode == ConstructionMode.PLATFORM:
+        render_platform_preview(surface, camera, state, map, pos)
     elif state.Mode == ConstructionMode.BULLDOZE:
         render_bulldoze_preview(surface, camera, state, map, pos)
         
@@ -56,9 +58,9 @@ def draw_grid(surface, camera):
     w, h = surface.get_size()
     
     # Calculate world bounds visible on screen
-    world_left, world_top = camera.screen_to_world(0, 0)
-    world_right, world_bottom = camera.screen_to_world(w, h)
-    
+    world_left, world_top = camera.screen_to_world(Position(0, 0))
+    world_right, world_bottom = camera.screen_to_world(Position(w, h))
+
     # Calculate grid line positions
     start_x = int(world_left // GRID_SIZE) * GRID_SIZE
     start_y = int(world_top // GRID_SIZE) * GRID_SIZE
@@ -66,17 +68,17 @@ def draw_grid(surface, camera):
     # Draw vertical grid lines
     x = start_x
     while x <= world_right + GRID_SIZE:
-        screen_x, _ = camera.world_to_screen(x, 0)
+        screen_x, _ = camera.world_to_screen(Position(x, 0))
         if 0 <= screen_x <= w:
-            pygame.draw.line(surface, (40, 40, 40), (screen_x, 0), (screen_x, h))
+            pygame.draw.aaline(surface, (40, 40, 40), (screen_x, 0), (screen_x, h))
         x += GRID_SIZE
     
     # Draw horizontal grid lines
     y = start_y
     while y <= world_bottom + GRID_SIZE:
-        _, screen_y = camera.world_to_screen(0, y)
+        _, screen_y = camera.world_to_screen(Position(0, y))
         if 0 <= screen_y <= h:
-            pygame.draw.line(surface, (60, 60, 60), (0, screen_y), (w, screen_y))
+            pygame.draw.aaline(surface, (60, 60, 60), (0, screen_y), (w, screen_y))
         y += GRID_SIZE
         
         

@@ -4,7 +4,7 @@ from graphics.camera import Camera
 from models.map import RailMap
 from controllers.construction import handle_construction_events
 from views.normal_view import handle_normal_events, render_normal_view
-from views.construction import render_construction_view
+from views.construction import render_construction_preview
 from models.construction import ConstructionState
 from config.colors import WHITE, BLACK, GRAY, GREEN
 
@@ -55,7 +55,7 @@ class Game:
 
     def render_view(self):
         if self.view == View.CONSTRUCTION:
-            render_construction_view(self.screen, self.camera, self.map, self.construction_state)
+            render_construction_preview(self.screen, self.camera, self.map, self.construction_state)
         else:
             render_normal_view(self.screen, self.camera, self.map)
 

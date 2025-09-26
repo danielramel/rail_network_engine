@@ -1,5 +1,5 @@
 from config.settings import GRID_SIZE
-from models.geometry import Point, PointWithDirection
+from models.position import Position, PositionWithDirection
 import heapq
 
 
@@ -14,7 +14,7 @@ def get_direction_cost(direction: tuple[int, int]) -> float:
     else:
         return ORTHOGONAL_COST
 
-def get_valid_turn_neighbors(state: PointWithDirection) -> list[tuple[PointWithDirection, float]]:
+def get_valid_turn_neighbors(state: PositionWithDirection) -> list[tuple[PositionWithDirection, float]]:
     """
     Get valid neighboring states from current state, respecting 45° turn limit.
     
@@ -27,14 +27,14 @@ def get_valid_turn_neighbors(state: PointWithDirection) -> list[tuple[PointWithD
     neighbors = []
     valid_directions = get_valid_turns(state.direction)
     for dx, dy in valid_directions:
-        nx = state.point.x + dx * GRID_SIZE
-        ny = state.point.y + dy * GRID_SIZE
-        new_state = PointWithDirection(Point(nx, ny), (dx, dy))
+        nx = state.position.x + dx * GRID_SIZE
+        ny = state.position.y + dy * GRID_SIZE
+        new_state = PositionWithDirection(Position(nx, ny), (dx, dy))
         cost = get_direction_cost((dx, dy))
         neighbors.append((new_state, cost))
     return neighbors
 
-def heuristic(a: Point, b: Point) -> float:
+def heuristic(a: Position, b: Position) -> float:
     """
     Calculate heuristic distance between two points.
     Uses Chebyshev distance for 8-directional movement.
@@ -43,18 +43,18 @@ def heuristic(a: Point, b: Point) -> float:
     dy = abs(a.y - b.y) / GRID_SIZE
     return max(dx, dy)
 
-def reconstruct_path(came_from: dict[PointWithDirection, PointWithDirection], current_state: PointWithDirection) -> tuple[Point, ...]:
+def reconstruct_path(came_from: dict[PositionWithDirection, PositionWithDirection], current_state: PositionWithDirection) -> tuple[Position, ...]:
     """Reconstruct and simplify the path from states."""
-    path = [current_state.point]
+    path = [current_state.position]
     
     while current_state in came_from:
         current_state = came_from[current_state]
-        path.append(current_state.point)
+        path.append(current_state.position)
     
     # Reverse to get start -> end order, then simplify
     return tuple(reversed(path))
 
-def find_path(start: PointWithDirection, end: Point) -> tuple[Point, ...]:
+def find_path(start: PositionWithDirection, end: Position) -> tuple[Position, ...]:
     """
     Find optimal path using A* algorithm with 45° turn constraint.
     
@@ -68,18 +68,18 @@ def find_path(start: PointWithDirection, end: Point) -> tuple[Point, ...]:
         Empty tuple if no path found.
     """
     # Handle the case where start and end are the same
-    if start.point == end:
-        return (start.point,)
+    if start.position == end:
+        return (start.position,)
 
     # Priority queue: (f_score, current_g, state)
     open_set = []
-    came_from: dict[PointWithDirection, PointWithDirection] = {}
-    g_score: dict[PointWithDirection, float] = {}
-    f_score: dict[PointWithDirection, float] = {}
+    came_from: dict[PositionWithDirection, PositionWithDirection] = {}
+    g_score: dict[PositionWithDirection, float] = {}
+    f_score: dict[PositionWithDirection, float] = {}
 
 
     g_score[start] = 0
-    f_score[start] = heuristic(start.point, end)
+    f_score[start] = heuristic(start.position, end)
     heapq.heappush(open_set, (f_score[start], g_score[start], start))
 
     while open_set:
@@ -89,7 +89,7 @@ def find_path(start: PointWithDirection, end: Point) -> tuple[Point, ...]:
         if current_state in g_score and current_g > g_score[current_state]:
             continue
         
-        if current_state.point == end:
+        if current_state.position == end:
             return reconstruct_path(came_from, current_state)
         
         for neighbor_state, cost in get_valid_turn_neighbors(current_state):
@@ -98,7 +98,7 @@ def find_path(start: PointWithDirection, end: Point) -> tuple[Point, ...]:
             if neighbor_state not in g_score or tentative_g_score < g_score[neighbor_state]:
                 came_from[neighbor_state] = current_state
                 g_score[neighbor_state] = tentative_g_score
-                f_score[neighbor_state] = tentative_g_score + heuristic(neighbor_state.point, end)
+                f_score[neighbor_state] = tentative_g_score + heuristic(neighbor_state.position, end)
                 
                 heapq.heappush(open_set, (f_score[neighbor_state], g_score[neighbor_state], neighbor_state))
     

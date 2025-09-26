@@ -1,16 +1,23 @@
 # construction/models.py
 from dataclasses import dataclass
 from enum import Enum
-from models.geometry import PointWithDirection
+from models.position import PositionWithDirection
 
 class ConstructionMode(Enum):
     RAIL = 1
     SIGNAL = 2
     STATION = 3
     BULLDOZE = 4
+    PLATFORM = 5
     
 @dataclass
 class ConstructionState:
     Mode: ConstructionMode | None = ConstructionMode.RAIL
-    construction_anchor: PointWithDirection | None = None
+    construction_anchor: PositionWithDirection | None = None
 
+class CursorTarget(Enum):
+    EDGE = 1
+    SIGNAL = 2
+    STATION = 3
+    NODE = 4
+    EMPTY = 5

@@ -1,6 +1,6 @@
 import pygame
+from models.position import Position
 from ui_elements.construction_buttons import get_zoom_box, get_construction_buttons
-from utils import snap_to_grid
 from .rail import handle_rail_click
 from .signal import handle_signal_click
 from .bulldoze import handle_bulldoze_click
@@ -9,29 +9,30 @@ from graphics.camera import Camera
 from models.map import RailMap
 from models.construction import ConstructionState, ConstructionMode
 
-def handle_construction_events(state: ConstructionState, construction_toggle_button, surface, camera: Camera, map: RailMap):
+def handle_construction_events(state: ConstructionState, construction_toggle_button: pygame.Rect, surface: pygame.Surface, camera: Camera, map: RailMap):
     for event in pygame.event.get():
+
         if event.type == pygame.QUIT or (
             event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             return "quit"
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            x, y = event.pos
+            pos = Position(*event.pos)
             if event.button == 1:
-                if construction_toggle_button.collidepoint(x, y):
+                if construction_toggle_button.collidepoint(*pos):
                     return "toggle"
                 for mode, rect in get_construction_buttons(surface):
-                    if rect.collidepoint(x, y):
+                    if rect.collidepoint(*pos):
                         if mode != state.Mode:
                             state.Mode = mode
                             state.construction_anchor = None
-                        return
-                if get_zoom_box(surface).collidepoint(x, y):
+                        return 
+                if get_zoom_box(surface).collidepoint(*pos):
                     camera.reset()
                     state.construction_anchor = None
                     return
-                
-                camera.start_drag(x, y)
+
+                camera.start_drag(pos)
 
             elif event.button == 3:
                 if state.Mode is ConstructionMode.RAIL and state.construction_anchor is not None:
@@ -40,9 +41,10 @@ def handle_construction_events(state: ConstructionState, construction_toggle_but
                     state.Mode = None
 
         elif event.type == pygame.MOUSEBUTTONUP:
+            pos = Position(*event.pos)
             if event.button == 1:
-                if camera.is_click(event.pos):
-                    world_pos = camera.screen_to_world(*event.pos)
+                if camera.is_click(pos):
+                    world_pos = camera.screen_to_world(pos)
                     if state.Mode == ConstructionMode.RAIL:
                         handle_rail_click(state, map, world_pos)
                     elif state.Mode == ConstructionMode.SIGNAL:
@@ -55,7 +57,7 @@ def handle_construction_events(state: ConstructionState, construction_toggle_but
                 camera.stop_drag() # should be after click check
             
         elif event.type == pygame.MOUSEMOTION:
-            camera.update_drag(event.pos[0], event.pos[1])
+            camera.update_drag(Position(*event.pos))
 
         elif event.type == pygame.MOUSEWHEEL:
-            camera.zoom(snap_to_grid(*pygame.mouse.get_pos()), event.y)
+            camera.zoom(Position(*pygame.mouse.get_pos()), event.y)

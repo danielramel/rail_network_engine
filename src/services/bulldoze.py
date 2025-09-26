@@ -1,39 +1,33 @@
-# services/bulldoze.py
 from dataclasses import dataclass
-from enum import Enum
+from models.construction import CursorTarget
 
-from utils import is_point_near_grid, point_line_intersection, point_within_station_rect, snap_to_grid
+from models.position import Position
 from models.map import RailMap
 
-class BulldozeTargetType(Enum):
-    EDGE = 1
-    SIGNAL = 2
-    STATION = 3
-    NODE = 4
-    EMPTY = 5
+
 
 @dataclass
 class BulldozeTarget:
-    type: BulldozeTargetType
+    type: CursorTarget
     data: object
 
-def get_bulldoze_target(map: RailMap, world_pos: tuple[int, int], camera_scale: float) -> BulldozeTarget:
+def get_bulldoze_target(map: RailMap, world_pos: Position, camera_scale: float) -> BulldozeTarget:
     # 1) If click isn't near the grid, check if it is on edge
-    if not is_point_near_grid(*world_pos, camera_scale):
+    if not world_pos.is_near_grid(camera_scale):
         for edge in map.graph.edges:
-            if point_line_intersection(world_pos, edge[0], edge[1], camera_scale):
-                return BulldozeTarget(BulldozeTargetType.EDGE, edge)
+            if world_pos.intersects_line(edge, camera_scale):
+                return BulldozeTarget(CursorTarget.EDGE, edge)
 
-    snapped = snap_to_grid(*world_pos)
+    snapped = world_pos.snap_to_grid()
 
     for station in map.stations.keys():
-        if point_within_station_rect(snapped, station):
-            return BulldozeTarget(BulldozeTargetType.STATION, station)
+        if snapped.station_rect_overlaps(station):
+            return BulldozeTarget(CursorTarget.STATION, station)
 
     if snapped not in map.graph:
-        return BulldozeTarget(BulldozeTargetType.EMPTY, snapped)
+        return BulldozeTarget(CursorTarget.EMPTY, snapped)
 
     if 'signal' in map.graph.nodes[snapped]:
-        return BulldozeTarget(BulldozeTargetType.SIGNAL, snapped)
+        return BulldozeTarget(CursorTarget.SIGNAL, snapped)
 
-    return BulldozeTarget(BulldozeTargetType.NODE, snapped)
+    return BulldozeTarget(CursorTarget.NODE, snapped)
