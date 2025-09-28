@@ -17,6 +17,8 @@ def get_bulldoze_target(map: RailMap, world_pos: Position, camera_scale: float) 
         for edge in map.graph.edges:
             if world_pos.intersects_line(edge, camera_scale):
                 return BulldozeTarget(CursorTarget.EDGE, edge)
+        else:
+            return BulldozeTarget(CursorTarget.EMPTY, world_pos)
 
     snapped = world_pos.snap_to_grid()
 

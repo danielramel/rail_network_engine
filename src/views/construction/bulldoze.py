@@ -13,7 +13,7 @@ def render_bulldoze_preview(surface : pygame.Surface, camera: Camera, state: Con
     
 
     if target.type == CursorTarget.EMPTY:
-        draw_node(surface, camera, world_pos.snap_to_grid(), color=RED)
+        draw_node(surface, camera, target.data, color=RED)
     elif target.type == CursorTarget.STATION:
         draw_station(surface, camera, target.data, map.stations[target.data], color=RED)
     elif target.type == CursorTarget.SIGNAL:
@@ -32,5 +32,3 @@ def render_bulldoze_preview(surface : pygame.Surface, camera: Camera, state: Con
         for node in nodes:
             if map.graph.degree[node] > 2:
                 draw_node(surface, camera, node, color=RED)
-                
-        draw_node(surface, camera, target.data, color=RED)

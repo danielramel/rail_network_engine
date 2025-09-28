@@ -21,8 +21,5 @@ def get_platform_context(map: RailMap, world_pos: Position, camera_scale: float)
         if world_pos.intersects_line(edge, camera_scale):
             return PlatformContext(CursorTarget.EDGE, edge, nearest_station)
 
-    snapped = world_pos.snap_to_grid()
-    if snapped in map.graph:
-        return PlatformContext(CursorTarget.NODE, snapped, nearest_station)
-
-    return PlatformContext(CursorTarget.EMPTY, snapped, nearest_station)
+    
+    return PlatformContext(CursorTarget.EMPTY, world_pos, nearest_station)
