@@ -11,7 +11,8 @@ def render_rail_preview(surface : pygame.Surface, world_pos: Position, anchor: P
     snapped = world_pos.snap_to_grid()
     if not can_be_part_of_path(snapped, map):
         draw_node(surface, camera, snapped, color=RED)
-        draw_node(surface, camera, anchor.position, color=RED)
+        if anchor is not None:
+            draw_node(surface, camera, anchor.position, color=RED)
         return
 
     if anchor is None:
@@ -23,8 +24,13 @@ def render_rail_preview(surface : pygame.Surface, world_pos: Position, anchor: P
         return
 
     found_path = find_path(anchor, snapped, map)
-    if found_path:
-        screen_points = [tuple(camera.world_to_screen(Position(*pt))) for pt in found_path]
-        pygame.draw.aalines(surface, YELLOW, False, screen_points)
+    if not found_path:
+        draw_node(surface, camera, snapped, color=RED)
+        draw_node(surface, camera, anchor.position, color=RED)
+        return
+    
+    
+    screen_points = [tuple(camera.world_to_screen(Position(*pt))) for pt in found_path]
+    pygame.draw.aalines(surface, YELLOW, False, screen_points)
     draw_node(surface, camera, snapped, color=YELLOW)
     draw_node(surface, camera, anchor.position, color=YELLOW)
