@@ -1,11 +1,9 @@
-
 from models.position import Position
 from services.bulldoze import CursorTarget
-from models.construction import ConstructionState
 from models.map import RailMap
 from services.bulldoze import get_bulldoze_target
 
-def handle_bulldoze_click(state: ConstructionState, map: RailMap, pos: Position, camera_scale):
+def handle_bulldoze_click(map: RailMap, pos: Position, camera_scale):
     target = get_bulldoze_target(map, pos, camera_scale)
 
     if target.type == CursorTarget.STATION:

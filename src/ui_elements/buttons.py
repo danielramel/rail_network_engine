@@ -22,7 +22,6 @@ def get_construction_buttons(surface: pygame.Surface):
     return buttons
 
 
-
 def draw_construction_buttons(surface, state):
     font = pygame.font.SysFont(None, 40)
     for mode, rect in get_construction_buttons(surface):

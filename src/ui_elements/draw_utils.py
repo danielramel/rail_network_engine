@@ -1,6 +1,6 @@
 import pygame
 from config.colors import WHITE, BLACK, YELLOW
-d
+
 from config.settings import GRID_SIZE, STATION_RECT_SIZE
 from graphics.camera import Camera
 from models.position import Position, PositionWithDirection

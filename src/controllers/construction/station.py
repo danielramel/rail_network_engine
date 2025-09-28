@@ -1,9 +1,8 @@
 from models.position import Position
 from models.map import RailMap
-from models.construction import ConstructionState
 from ui_elements.text_input import user_input
 
-def handle_station_click(state: ConstructionState, map: RailMap, pos: Position):
+def handle_station_click(map: RailMap, pos: Position):
     snapped = pos.snap_to_grid()
 
     inp = user_input()

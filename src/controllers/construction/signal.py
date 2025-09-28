@@ -3,7 +3,7 @@ from models.map import RailMap
 from models.construction import ConstructionState
 from models.position import Position
 
-def handle_signal_click(state: ConstructionState, map: RailMap, pos: Position):
+def handle_signal_click(map: RailMap, pos: Position):
     snapped = pos.snap_to_grid()
     if snapped not in map.graph: # empty click
         return

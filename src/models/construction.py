@@ -1,4 +1,3 @@
-# construction/models.py
 from dataclasses import dataclass
 from enum import Enum
 from models.position import PositionWithDirection

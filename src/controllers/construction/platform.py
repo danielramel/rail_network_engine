@@ -1,13 +1,18 @@
 from models.map import RailMap
-from models.construction import ConstructionState, CursorTarget
+from models.construction import CursorTarget
 from services.platform import get_platform_context
 from models.position import Position
 from config.settings import MINIMUM_PLATFORM_LENGTH
+from ui_elements.alert import alert
 
 
-def handle_platform_click(state: ConstructionState, map: RailMap, pos: Position, camera_scale):
+def handle_platform_click(map: RailMap, pos: Position, camera_scale):
     context = get_platform_context(map, pos, camera_scale)
     if context.type == CursorTarget.EDGE:
         nodes, edges = map.get_segments_at(context.data, endOnSignal=False) # can change endOnSignal to True if desired
-        if len(edges) >= MINIMUM_PLATFORM_LENGTH:   
-            map.add_platform(nodes, edges, context.nearest_station)
+        
+        if len(edges) <= MINIMUM_PLATFORM_LENGTH:
+            alert(f'Platform too short! Minimum length is {MINIMUM_PLATFORM_LENGTH} segments.')
+            return
+        map.add_platform(nodes, edges, context.nearest_station)
+        

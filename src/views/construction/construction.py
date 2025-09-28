@@ -33,7 +33,7 @@ def render_construction_preview(surface: pygame.Surface, camera: Camera, map: Ra
 
     world_pos = camera.screen_to_world(Position(*pygame.mouse.get_pos()))
     if state.Mode == ConstructionMode.RAIL:
-        render_rail_preview(surface, world_pos, state, map, camera)
+        render_rail_preview(surface, world_pos, state.construction_anchor, map, camera)
     elif state.Mode == ConstructionMode.SIGNAL:
         render_signal_preview(surface, world_pos, map, camera)
     elif state.Mode == ConstructionMode.STATION:
