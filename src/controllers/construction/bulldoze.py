@@ -12,5 +12,7 @@ def handle_bulldoze_click(state: ConstructionState, map: RailMap, pos: Position,
         map.remove_station(target.data)
     elif target.type == CursorTarget.SIGNAL:
         map.remove_signal_at(target.data)
+    elif target.type == CursorTarget.PLATFORM:
+        map.remove_platform_at(target.data)
     elif target.type == CursorTarget.NODE or target.type == CursorTarget.EDGE:
         map.remove_segment_at(target.data)

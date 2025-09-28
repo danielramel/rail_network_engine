@@ -16,9 +16,11 @@ def get_bulldoze_target(map: RailMap, world_pos: Position, camera_scale: float) 
     if not world_pos.is_near_grid(camera_scale):
         for edge in map.graph.edges:
             if world_pos.intersects_line(edge, camera_scale):
-                return BulldozeTarget(CursorTarget.EDGE, edge)
-        else:
-            return BulldozeTarget(CursorTarget.EMPTY, world_pos)
+                if map.is_edge_platform(edge):
+                    return BulldozeTarget(CursorTarget.PLATFORM, edge)
+                else:
+                    return BulldozeTarget(CursorTarget.EDGE, edge)
+
 
     snapped = world_pos.snap_to_grid()
 
@@ -26,10 +28,13 @@ def get_bulldoze_target(map: RailMap, world_pos: Position, camera_scale: float) 
         if snapped.station_rect_overlaps(station):
             return BulldozeTarget(CursorTarget.STATION, station)
 
-    if snapped not in map.graph:
-        return BulldozeTarget(CursorTarget.EMPTY, snapped)
-
-    if 'signal' in map.graph.nodes[snapped]:
+    if map.has_signal_at(snapped):
         return BulldozeTarget(CursorTarget.SIGNAL, snapped)
 
-    return BulldozeTarget(CursorTarget.NODE, snapped)
+    if map.has_platform_at(snapped):
+        return BulldozeTarget(CursorTarget.PLATFORM, snapped)
+
+    if snapped in map.graph:
+        return BulldozeTarget(CursorTarget.NODE, snapped)
+    
+    return BulldozeTarget(CursorTarget.EMPTY, world_pos)

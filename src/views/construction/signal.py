@@ -7,15 +7,15 @@ from models.map import RailMap
 from models.construction import ConstructionState
 
 
-def render_signal_preview(surface : pygame.Surface, camera: Camera, state: ConstructionState, map: RailMap, pos: Position):
-    snapped = camera.screen_to_world(pos).snap_to_grid()
+def render_signal_preview(surface : pygame.Surface, world_pos: Position, map: RailMap, camera: Camera):
+    snapped = world_pos.snap_to_grid()
 
     if snapped not in map.graph or map.graph.degree[snapped] > 2:
         signal_preview = PositionWithDirection(position=snapped, direction=(-1, 0))
         draw_signal(surface, camera, signal_preview, color=RED, offset=True)
 
     else:
-        if 'signal' in map.graph.nodes[snapped]:
+        if map.has_signal_at(snapped):
             if len(map.graph[snapped]) == 1:
                 signal_preview = PositionWithDirection(position=snapped, direction=map.graph.nodes[snapped]['signal'])
                 draw_signal(surface, camera, signal_preview, color=YELLOW, offset=True)

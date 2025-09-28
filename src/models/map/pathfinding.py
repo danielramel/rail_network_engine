@@ -1,4 +1,5 @@
 from config.settings import GRID_SIZE
+from models.map.rail_map import RailMap
 from models.position import Position, PositionWithDirection
 import heapq
 
@@ -54,7 +55,7 @@ def reconstruct_path(came_from: dict[PositionWithDirection, PositionWithDirectio
     # Reverse to get start -> end order, then simplify
     return tuple(reversed(path))
 
-def find_path(start: PositionWithDirection, end: Position) -> tuple[Position, ...]:
+def find_path(start: PositionWithDirection, end: Position, map: RailMap) -> tuple[Position, ...]:
     """
     Find optimal path using A* algorithm with 45° turn constraint.
     
@@ -67,9 +68,14 @@ def find_path(start: PositionWithDirection, end: Position) -> tuple[Position, ..
         Tuple of Point objects representing the path, simplified to direction changes only.
         Empty tuple if no path found.
     """
+    if not can_be_part_of_path(end, map) or not can_be_part_of_path(start.position, map):
+        return ()
+
+
     # Handle the case where start and end are the same
     if start.position == end:
         return (start.position,)
+
 
     # Priority queue: (f_score, current_g, state)
     open_set = []
@@ -93,6 +99,9 @@ def find_path(start: PositionWithDirection, end: Position) -> tuple[Position, ..
             return reconstruct_path(came_from, current_state)
         
         for neighbor_state, cost in get_valid_turn_neighbors(current_state):
+            if not can_be_part_of_path(neighbor_state.position, map):
+                continue  # Cannot pass through signals or platforms
+
             tentative_g_score = g_score[current_state] + cost
             
             if neighbor_state not in g_score or tentative_g_score < g_score[neighbor_state]:
@@ -123,3 +132,8 @@ def get_valid_turns(direction: tuple[int, int]) -> list[tuple[int, int]]:
                   (0, -1), (0, 1)]
     }
     return VALID_TURNS[direction]
+
+
+def can_be_part_of_path(pos: Position, map: RailMap) -> bool:
+    """Check if a position can be part of a path (i.e. not occupied by signal or platform)."""
+    return not (map.has_signal_at(pos) or map.has_platform_at(pos))

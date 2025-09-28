@@ -20,4 +20,5 @@ class CursorTarget(Enum):
     SIGNAL = 2
     STATION = 3
     NODE = 4
-    EMPTY = 5
+    PLATFORM = 5
+    EMPTY = 6

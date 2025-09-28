@@ -11,7 +11,7 @@ def handle_signal_click(state: ConstructionState, map: RailMap, pos: Position):
     if map.graph.degree[snapped] > 2: 
         return # intersection, no signals here
     
-    if 'signal' in map.graph.nodes[snapped]:
+    if map.has_signal_at(snapped):
         if len(map.graph[snapped]) == 1:
             return # dead end, cannot toggle
         map.toggle_signal_at(snapped)

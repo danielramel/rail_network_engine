@@ -1,8 +1,6 @@
-
-from turtle import color
 import pygame
 from config.colors import WHITE, BLACK, YELLOW
-
+d
 from config.settings import GRID_SIZE, STATION_RECT_SIZE
 from graphics.camera import Camera
 from models.position import Position, PositionWithDirection
@@ -81,3 +79,35 @@ def draw_dashed_line(surface: pygame.Surface, start_pos, end_pos, color, width=1
         end_x = x1 + (dx * min((i * (dash_length + gap_length) + dash_length) / distance, 1))
         end_y = y1 + (dy * min((i * (dash_length + gap_length) + dash_length) / distance, 1))
         pygame.draw.line(surface, color, (start_x, start_y), (end_x, end_y), width)
+        
+def draw_edges(surface: pygame.Surface, edges, camera: Camera, color=WHITE):
+    for edge in edges:
+        pygame.draw.aaline(surface, color, tuple(camera.world_to_screen(Position(*edge[0]))), tuple(camera.world_to_screen(Position(*edge[1]))))
+        
+def draw_grid(surface, camera):
+    """Draw grid lines with camera transform"""
+    w, h = surface.get_size()
+    
+    # Calculate world bounds visible on screen
+    world_left, world_top = camera.screen_to_world(Position(0, 0))
+    world_right, world_bottom = camera.screen_to_world(Position(w, h))
+
+    # Calculate grid line positions
+    start_x = int(world_left // GRID_SIZE) * GRID_SIZE
+    start_y = int(world_top // GRID_SIZE) * GRID_SIZE
+    
+    # Draw vertical grid lines
+    x = start_x
+    while x <= world_right + GRID_SIZE:
+        screen_x, _ = camera.world_to_screen(Position(x, 0))
+        if 0 <= screen_x <= w:
+            pygame.draw.aaline(surface, (40, 40, 40), (screen_x, 0), (screen_x, h))
+        x += GRID_SIZE
+    
+    # Draw horizontal grid lines
+    y = start_y
+    while y <= world_bottom + GRID_SIZE:
+        _, screen_y = camera.world_to_screen(Position(0, y))
+        if 0 <= screen_y <= h:
+            pygame.draw.aaline(surface, (60, 60, 60), (0, screen_y), (w, screen_y))
+        y += GRID_SIZE
