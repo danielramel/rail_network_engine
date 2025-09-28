@@ -151,3 +151,7 @@ class RailMap:
             if not self.graph.has_edge(*edge):
                 raise ValueError("No edge between the given nodes")
             self.graph.edges[edge]['platform'] = station
+            
+    def get_platforms(self) -> dict[tuple[Position, Position], Position]:
+        """Return all platforms in the network."""
+        return {edge: data['platform'] for edge, data in self.graph.edges.items() if 'platform' in data}

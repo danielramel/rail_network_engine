@@ -5,6 +5,7 @@ from .rail import handle_rail_click
 from .signal import handle_signal_click
 from .bulldoze import handle_bulldoze_click
 from .station import handle_station_click
+from .platform import handle_platform_click
 from graphics.camera import Camera
 from models.map import RailMap
 from models.construction import ConstructionState, ConstructionMode
@@ -53,6 +54,8 @@ def handle_construction_events(state: ConstructionState, construction_toggle_but
                         handle_bulldoze_click(state, map, world_pos, camera.scale)
                     elif state.Mode == ConstructionMode.STATION:
                         handle_station_click(state, map, world_pos)
+                    elif state.Mode == ConstructionMode.PLATFORM:
+                        handle_platform_click(state, map, world_pos, camera.scale)
 
                 camera.stop_drag() # should be after click check
             

@@ -1,5 +1,6 @@
 import pygame
 from config.colors import PURPLE, RED
+from config.settings import MINIMUM_PLATFORM_LENGTH
 from graphics.camera import Camera
 from models.map import RailMap
 from models.construction import ConstructionState, CursorTarget
@@ -13,7 +14,7 @@ def render_platform_preview(surface: pygame.Surface, camera: Camera, state: Cons
     context = get_platform_context(map, world_pos, camera.scale)
     if context.type == CursorTarget.EDGE:
         _, edges = map.get_segments_at(context.data, endOnSignal=True)
-        color = RED if len(edges) < 5 else PURPLE
+        color = RED if len(edges) < MINIMUM_PLATFORM_LENGTH else PURPLE
         for edge in edges:
             screen_points = [tuple(camera.world_to_screen(Position(*p))) for p in edge]
             pygame.draw.aaline(surface, color, *screen_points)

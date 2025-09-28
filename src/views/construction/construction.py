@@ -6,7 +6,7 @@ from ui_elements.draw_utils import draw_station
 from models.map import RailMap
 from ui_elements import get_zoom_box, get_construction_buttons, draw_node, draw_signal
 
-from config.colors import RED, WHITE, GRAY, GREEN, YELLOW
+from config.colors import PURPLE, RED, WHITE, GRAY, GREEN, YELLOW
 from config.settings import GRID_SIZE
 from models.construction import ConstructionState
 from .signal import render_signal_preview
@@ -33,6 +33,9 @@ def render_construction_preview(surface: pygame.Surface, camera: Camera, map: Ra
         
     for pos, name in map.stations.items():
         draw_station(surface, camera, pos, name)
+
+    for edge in map.get_platforms().keys():
+        pygame.draw.aaline(surface, PURPLE, tuple(camera.world_to_screen(edge[0])), tuple(camera.world_to_screen(edge[1])))
 
     pos = Position(*pygame.mouse.get_pos())
     if state.Mode == ConstructionMode.RAIL:
