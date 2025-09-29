@@ -93,13 +93,15 @@ class RailMap:
     def get_segments_at(self, start: Position | tuple[Position, Position], endOnSignal: bool = False, onlyPlatforms: bool = False) -> tuple[set[Position], set[tuple[Position, Position]]]:
         """Return all nodes and edges in the segment containing the given position."""
         
+        edges = set()
+        
         if isinstance(start, Position):
             if start not in self.graph:
                 raise ValueError("No node at given position")
             if onlyPlatforms and not self.has_platform_at(start):
                 raise ValueError("No platform at the given node")
-            pos = start
-            
+            initial_state = PositionWithDirection(start, (0, 0))
+        
         elif isinstance(start, tuple) and len(start) == 2:
             if start[0] not in self.graph or start[1] not in self.graph:
                 raise ValueError("No node at one of the given positions")
@@ -107,44 +109,60 @@ class RailMap:
                 raise ValueError("No edge between the given nodes")
             if onlyPlatforms and not self.is_edge_platform(start):
                 raise ValueError("No platform on the given edge")
-
             start_node, end_node = start
             if self.is_intersection(start_node) and self.is_intersection(end_node):
                 return set(), {start}
             if endOnSignal and self.has_signal_at(start_node) and self.has_signal_at(end_node):
                 return set(), {start}
-
             if self.is_intersection(start_node)\
                 or (endOnSignal and self.has_signal_at(start_node)):
-                pos = end_node
+                direction = start_node.direction_to(end_node)
+                initial_state = PositionWithDirection(end_node, direction)
             else:
-                pos = start_node
-            
+                if self.is_intersection(end_node)\
+                or (endOnSignal and self.has_signal_at(end_node)):
+                    direction = end_node.direction_to(start_node)
+                else:
+                    direction = (0, 0)
+                initial_state = PositionWithDirection(start_node, direction)
+            edges.add((start_node, end_node))
+                
+        
         else:
             raise ValueError("start must be a Point or a tuple of two Points")
 
+        nodes = set([initial_state.position])
 
-        nodes = set([pos])
-        edges = set()
-        stack = deque([pos])
+        stack = deque([initial_state])
+
         while stack:
-            current = stack.popleft()
-            for neighbor in self.graph.neighbors(current):
-                edges.add((current, neighbor))
-                if neighbor in stack or neighbor in nodes\
+            state = stack.popleft()
+
+            valid_turns = RailMap.get_valid_turns(state.direction)
+            for neighbor in self.graph.neighbors(state.position):
+                new_direction = state.position.direction_to(neighbor)
+                
+                if new_direction not in valid_turns:
+                    continue
+                
+                edge = (state.position, neighbor)
+                edges.add(edge)
+                
+                if neighbor in [state.position for state in stack] or neighbor in nodes\
                     or (endOnSignal and (self.has_signal_at(neighbor)))\
-                    or (onlyPlatforms and not self.is_edge_platform((current, neighbor))):
+                    or (onlyPlatforms and not self.is_edge_platform(edge)):
                         continue
                 
                 if self.graph.degree[neighbor] == 1:
                     nodes.add(neighbor)
                 elif self.graph.degree[neighbor] == 2:
                     nodes.add(neighbor)
-                    stack.append(neighbor)
+                    neighbor_state = PositionWithDirection(neighbor, new_direction)
+                    stack.append(neighbor_state)
                 # If all neighbors are in the current segment, add the neighbor
                 elif all(nbh in nodes for nbh in self.graph.neighbors(neighbor)):
                     nodes.add(neighbor)
-
+                    
         return nodes, edges
     
     
@@ -195,3 +213,23 @@ class RailMap:
     def get_platforms(self) -> dict[tuple[Position, Position], Position]:
         """Return all platforms in the network."""
         return {edge: data['platform'] for edge, data in self.graph.edges.items() if 'platform' in data}
+    
+    
+    @staticmethod
+    def get_valid_turns(direction: tuple[int, int]) -> list[tuple[int, int]]:
+        """Get valid directions we can turn to from the given direction, respecting 45° turn limit."""
+        VALID_TURNS = {
+            (-1, -1): [(-1, -1), (-1, 0), (0, -1)],
+            (-1,  1): [(-1,  1), (-1, 0), (0,  1)],  
+            ( 1, -1): [( 1, -1), ( 1, 0), (0, -1)], 
+            ( 1,  1): [( 1,  1), ( 1, 0), (0,  1)],
+            
+            (-1, 0): [(-1, 0), (-1, -1), (-1,  1)],
+            ( 1, 0): [( 1, 0), ( 1, -1), ( 1,  1)],
+            (0, -1): [(0, -1), (-1, -1), ( 1, -1)],
+            (0,  1): [(0,  1), (-1,  1), ( 1,  1)],
+            (0,  0): [(-1, -1), (-1, 0), (-1, 1),
+                    (1, -1), (1, 0), (1, 1),
+                    (0, -1), (0, 1)]
+        }
+        return VALID_TURNS[direction]

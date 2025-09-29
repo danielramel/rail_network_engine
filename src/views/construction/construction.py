@@ -14,9 +14,10 @@ from .rail import render_rail_preview
 from .bulldoze import render_bulldoze_preview
 from .platform import render_platform_preview
 from models.construction import ConstructionMode
+from ui_elements import get_construction_buttons
 
 
-def render_construction_preview(surface: pygame.Surface, camera: Camera, map: RailMap, state: ConstructionState):
+def render_construction_preview(surface: pygame.Surface, camera: Camera, map: RailMap, state: ConstructionState, icon_cache: dict[ConstructionMode, pygame.Surface]):
     draw_grid(surface, camera)
 
     draw_edges(surface, map.get_edges(), camera)
@@ -31,7 +32,14 @@ def render_construction_preview(surface: pygame.Surface, camera: Camera, map: Ra
 
     draw_edges(surface, map.get_platforms().keys(), camera, color=PURPLE)
 
-    world_pos = camera.screen_to_world(Position(*pygame.mouse.get_pos()))
+    pos = Position(*pygame.mouse.get_pos())
+    for _, rect in get_construction_buttons(surface):
+        if rect.collidepoint(*pos):
+            draw_construction_buttons(surface, state.Mode, icon_cache)
+            draw_zoom_indicator(surface, camera)
+            return # Skip preview if hovering over buttons
+        
+    world_pos = camera.screen_to_world(pos)
     if state.Mode == ConstructionMode.RAIL:
         render_rail_preview(surface, world_pos, state.construction_anchor, map, camera)
     elif state.Mode == ConstructionMode.SIGNAL:
@@ -43,5 +51,5 @@ def render_construction_preview(surface: pygame.Surface, camera: Camera, map: Ra
     elif state.Mode == ConstructionMode.BULLDOZE:
         render_bulldoze_preview(surface, world_pos, map, camera)
         
-    draw_construction_buttons(surface, state)
+    draw_construction_buttons(surface, state.Mode, icon_cache)
     draw_zoom_indicator(surface, camera)

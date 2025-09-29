@@ -7,6 +7,7 @@ from views.normal_view import handle_normal_events, render_normal_view
 from views.construction import render_construction_preview
 from models.construction import ConstructionState
 from config.colors import WHITE, BLACK, GRAY, GREEN
+from ui_elements.buttons import load_construction_icons
 
 class View(Enum):
     NORMAL = 0
@@ -28,6 +29,9 @@ class Game:
         self.button_size = 50
         self.construction_toggle_button = pygame.Rect(10, 10, self.button_size, self.button_size)
         self.font = pygame.font.SysFont(None, 40)
+        
+        self.construction_icon_cache = load_construction_icons()
+        
 
     def draw_common_ui(self):
         button_color = GREEN if self.view == View.CONSTRUCTION else GRAY
@@ -55,7 +59,7 @@ class Game:
 
     def render_view(self):
         if self.view == View.CONSTRUCTION:
-            render_construction_preview(self.screen, self.camera, self.map, self.construction_state)
+            render_construction_preview(self.screen, self.camera, self.map, self.construction_state, self.construction_icon_cache)
         else:
             render_normal_view(self.screen, self.camera, self.map)
 

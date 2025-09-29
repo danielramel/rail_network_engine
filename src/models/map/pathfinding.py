@@ -26,7 +26,7 @@ def get_valid_turn_neighbors(state: PositionWithDirection) -> list[tuple[Positio
         List of (new_state, cost) tuples
     """
     neighbors = []
-    valid_directions = get_valid_turns(state.direction)
+    valid_directions = RailMap.get_valid_turns(state.direction)
     for dx, dy in valid_directions:
         nx = state.position.x + dx * GRID_SIZE
         ny = state.position.y + dy * GRID_SIZE
@@ -114,24 +114,6 @@ def find_path(start: PositionWithDirection, end: Position, map: RailMap) -> tupl
     # No path found
     return ()
 
-
-def get_valid_turns(direction: tuple[int, int]) -> list[tuple[int, int]]:
-    """Get valid directions we can turn to from the given direction, respecting 45° turn limit."""
-    VALID_TURNS = {
-        (-1, -1): [(-1, -1), (-1, 0), (0, -1)],
-        (-1,  1): [(-1,  1), (-1, 0), (0,  1)],  
-        ( 1, -1): [( 1, -1), ( 1, 0), (0, -1)], 
-        ( 1,  1): [( 1,  1), ( 1, 0), (0,  1)],
-        
-        (-1, 0): [(-1, 0), (-1, -1), (-1,  1)],
-        ( 1, 0): [( 1, 0), ( 1, -1), ( 1,  1)],
-        (0, -1): [(0, -1), (-1, -1), ( 1, -1)],
-        (0,  1): [(0,  1), (-1,  1), ( 1,  1)],
-        (0,  0): [(-1, -1), (-1, 0), (-1, 1),
-                  (1, -1), (1, 0), (1, 1),
-                  (0, -1), (0, 1)]
-    }
-    return VALID_TURNS[direction]
 
 
 def can_be_part_of_path(pos: Position, map: RailMap) -> bool:
