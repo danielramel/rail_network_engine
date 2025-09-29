@@ -7,10 +7,10 @@ def handle_station_click(map: RailMap, pos: Position):
 
     inp = user_input()
     
-    if inp in map.stations.values():
+    if inp in map.get_all_stations().values():
         return # Station name must be unique
 
-    for station_pos in map.stations.keys():
+    for station_pos in map.get_all_stations().keys():
         if snapped.station_rect_overlaps(station_pos):
             return
         

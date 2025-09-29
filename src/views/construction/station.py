@@ -13,7 +13,7 @@ def render_station_preview(surface : pygame.Surface, world_pos: Position, map: R
     color = YELLOW
     if any(snapped.within_station_rect(node_pos) for node_pos in map.graph.nodes):
         color = RED
-    elif any(snapped.station_rect_overlaps(station_pos) for station_pos in map.stations.keys()):
+    elif any(snapped.station_rect_overlaps(station_pos) for station_pos in map.get_all_stations().keys()):
         color = RED
     else:
         color = YELLOW

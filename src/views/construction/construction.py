@@ -20,15 +20,15 @@ from ui_elements import get_construction_buttons
 def render_construction_preview(surface: pygame.Surface, camera: Camera, map: RailMap, state: ConstructionState, icon_cache: dict[ConstructionMode, pygame.Surface]):
     draw_grid(surface, camera)
 
-    draw_edges(surface, map.get_edges(), camera)
+    draw_edges(surface, map.get_all_edges(), camera)
     for node in map.get_intersections():
         draw_node(surface, camera, node)
         
     for signal in map.get_signals():
         draw_signal(surface, camera, signal)
         
-    for pos, name in map.stations.items():
-        draw_station(surface, camera, pos, name)
+    for pos, station in map.get_all_stations().items():
+        draw_station(surface, camera, pos, station.name)
 
     draw_edges(surface, map.get_platforms().keys(), camera, color=PURPLE)
 

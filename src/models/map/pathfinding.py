@@ -3,6 +3,8 @@ from models.map.rail_map import RailMap
 from models.position import Position, PositionWithDirection
 import heapq
 
+from services.rail.segment_finder import SegmentFinder
+
 
 ORTHOGONAL_COST = 1.0
 DIAGONAL_COST = 1.414  # Approximate sqrt(2)
@@ -26,7 +28,7 @@ def get_valid_turn_neighbors(state: PositionWithDirection) -> list[tuple[Positio
         List of (new_state, cost) tuples
     """
     neighbors = []
-    valid_directions = RailMap.get_valid_turns(state.direction)
+    valid_directions = SegmentFinder.get_valid_turns(state.direction)
     for dx, dy in valid_directions:
         nx = state.position.x + dx * GRID_SIZE
         ny = state.position.y + dy * GRID_SIZE
@@ -118,4 +120,4 @@ def find_path(start: PositionWithDirection, end: Position, map: RailMap) -> tupl
 
 def can_be_part_of_path(pos: Position, map: RailMap) -> bool:
     """Check if a position can be part of a path (i.e. not occupied by signal or platform)."""
-    return not (map.has_signal_at(pos) or map.has_platform_at(pos))
+    return not (map.has_node_at(pos) and map.has_signal_at(pos) and map.has_platform_at(pos))

@@ -1,235 +1,93 @@
-import networkx as nx
-from collections import deque
+from networkx import Graph
 from models.position import Position, PositionWithDirection
+from services.rail.segment_finder import SegmentFinder
+from services.rail.signal_service import SignalService
+from services.rail.platform_service import PlatformService
+from .station_repository import StationRepository, Station
 
 
 class RailMap:
     def __init__(self):
-        self.graph = nx.Graph()
-        self.stations : dict[Position, str] = {}
+        self.graph = Graph()
+        self.segment_finder = SegmentFinder(self.graph)
+        self.signal_service = SignalService(self.graph)
+        self.platform_service = PlatformService(self.graph, self.segment_finder)
+        self.stations = StationRepository()
+        
+    def has_node_at(self, pos: Position) -> bool:
+        return pos in self.graph
+        
+    def get_all_edges(self) -> tuple[tuple[Position, Position]]:
+        return tuple(self.graph.edges)
 
     def is_intersection(self, pos: Position) -> bool:
-        """Check if the given position is an intersection (degree > 2)."""
-        return pos in self.graph and self.graph.degree[pos] > 2
-    
-    def get_intersections(self):
-        """Return all intersection nodes (degree > 2) in the network."""
-        return [node for node in self.graph.nodes if self.graph.degree[node] > 2]
+        return pos in self.graph and self.graph.degree(pos) > 2
 
-    def get_edges(self):
-        """Return all edges in the network as tuples of Points."""
-        return list(self.graph.edges)
-    
-    def add_node(self, pos: Position) -> Position:
-        """Add a rail node. Uses the Point itself as the node key."""
-        self.graph.add_node(pos)
-        return pos
+    def get_intersections(self) -> list[Position]:
+        return [n for n in self.graph.nodes if self.graph.degree(n) > 2]
 
-    def add_segment(self, points: list[Position]) -> tuple:
-        for pt in points:
-            self.add_node(pt)
-
-        # Connect each neighboring pair of points
-        for a, b in zip(points[:-1], points[1:]):
-            self.graph.add_edge(a, b)
-            
+    # --- signals ---
     def has_signal_at(self, pos: Position) -> bool:
-        """Check if there is a signal at the given position."""
-        return pos in self.graph and 'signal' in self.graph.nodes[pos]
-        
-    def add_signal_at(self, signal: PositionWithDirection):
-        """Add a signal at the given position."""
-        if signal.position not in self.graph:
-            raise ValueError("No node at given position")
-        if self.graph.degree[signal.position] > 2:
-            raise ValueError("Cannot place signal at intersection")
-        if self.has_signal_at(signal.position):
-            raise ValueError("Signal already exists at this position")
-        
-        # Signals can be represented as a special attribute on the node
-        self.graph.nodes[signal.position]['signal'] = signal.direction
-        
-    def get_signals(self) -> tuple[PositionWithDirection]:
-        """Return all signals in the network."""
-        return tuple(PositionWithDirection(position=node, direction=data['signal']) for node, data in self.graph.nodes(data=True) if 'signal' in data)
+        return self.signal_service.has_signal_at(pos)
+    
+    def add_signal_at(self, signal: PositionWithDirection) -> None:
+        self.signal_service.add_signal(signal)
 
-    def toggle_signal_at(self, pos: Position):
-        if pos not in self.graph:
-            raise ValueError("No node at given position")
-        
-        if not self.has_signal_at(pos):
-            raise ValueError("No signal at given position")
-        
-        current_direction = self.graph.nodes[pos]['signal']
-        neighbors = tuple(self.graph.neighbors(pos))
-        if pos.direction_to(neighbors[0]) == current_direction:
-            self.graph.nodes[pos]['signal'] = pos.direction_to(neighbors[1])
-        else:
-            self.graph.nodes[pos]['signal'] = pos.direction_to(neighbors[0])
+    def toggle_signal_at(self, pos: Position) -> None:
+        self.signal_service.toggle_signal(pos)
 
-    def remove_signal_at(self, pos: Position):
-        if pos not in self.graph:
-            raise ValueError("No node at given position")
-        if not self.has_signal_at(pos):
-            raise ValueError("No signal at given position")
-        
-        del self.graph.nodes[pos]['signal']
-        
+    def remove_signal_at(self, pos: Position) -> None:
+        self.signal_service.remove_signal(pos)
+
+    def get_signals(self) -> tuple[PositionWithDirection, ...]:
+        return self.signal_service.get_all_signals()
+
+    # --- platforms ---
+    def add_platform(self, nodes: tuple[Position], edges: tuple[tuple[Position, Position]], station_pos: Position):
+        self.platform_service.add_platform(nodes, edges, station_pos)
+
+    def remove_platform_at(self, pos: Position | tuple[Position, Position]):
+        self.platform_service.remove_platform_at(pos)
+
+    def get_platforms(self) -> dict[tuple[Position, Position], Position]:
+        return self.platform_service.get_platforms()
+
+    # --- stations ---
     def add_station_at(self, pos: Position, name: str):
-        if pos in self.stations:
-            raise ValueError("Station already exists at this position")
-        if name in self.stations.values():
-            raise ValueError("Station name must be unique")
-        
-        self.stations[pos] = name
-        
+        self.stations.add(pos, name)
+
     def remove_station(self, pos: Position):
-        if pos not in self.stations:
-            raise ValueError("No station at given position")
-        
-        del self.stations[pos]
+        self.stations.remove(pos)
 
+    def get_station(self, pos: Position) -> Station:
+        return self.stations.get(pos)
 
-    def get_segments_at(self, start: Position | tuple[Position, Position], endOnSignal: bool = False, onlyPlatforms: bool = False) -> tuple[set[Position], set[tuple[Position, Position]]]:
-        """Return all nodes and edges in the segment containing the given position."""
-        
-        edges = set()
-        
-        if isinstance(start, Position):
-            if start not in self.graph:
-                raise ValueError("No node at given position")
-            if onlyPlatforms and not self.has_platform_at(start):
-                raise ValueError("No platform at the given node")
-            initial_state = PositionWithDirection(start, (0, 0))
-        
-        elif isinstance(start, tuple) and len(start) == 2:
-            if start[0] not in self.graph or start[1] not in self.graph:
-                raise ValueError("No node at one of the given positions")
-            if not self.graph.has_edge(start[0], start[1]):
-                raise ValueError("No edge between the given nodes")
-            if onlyPlatforms and not self.is_edge_platform(start):
-                raise ValueError("No platform on the given edge")
-            start_node, end_node = start
-            if self.is_intersection(start_node) and self.is_intersection(end_node):
-                return set(), {start}
-            if endOnSignal and self.has_signal_at(start_node) and self.has_signal_at(end_node):
-                return set(), {start}
-            if self.is_intersection(start_node)\
-                or (endOnSignal and self.has_signal_at(start_node)):
-                direction = start_node.direction_to(end_node)
-                initial_state = PositionWithDirection(end_node, direction)
-            else:
-                if self.is_intersection(end_node)\
-                or (endOnSignal and self.has_signal_at(end_node)):
-                    direction = end_node.direction_to(start_node)
-                else:
-                    direction = (0, 0)
-                initial_state = PositionWithDirection(start_node, direction)
-            edges.add((start_node, end_node))
-                
-        
-        else:
-            raise ValueError("start must be a Point or a tuple of two Points")
+    def get_all_stations(self) -> dict[Position, Station]:
+        return self.stations.all()
 
-        nodes = set([initial_state.position])
+    # --- segments ---
+    def get_segments_at(self, start: Position | tuple[Position, Position], end_on_signal: bool = False, only_platforms: bool = False) -> tuple[set[Position], set[tuple[Position, Position]]]:
+        return self.segment_finder.find_segment(start, end_on_signal=end_on_signal, only_platforms=only_platforms)
 
-        stack = deque([initial_state])
-
-        while stack:
-            state = stack.popleft()
-
-            valid_turns = RailMap.get_valid_turns(state.direction)
-            for neighbor in self.graph.neighbors(state.position):
-                new_direction = state.position.direction_to(neighbor)
-                
-                if new_direction not in valid_turns:
-                    continue
-                
-                edge = (state.position, neighbor)
-                edges.add(edge)
-                
-                if neighbor in [state.position for state in stack] or neighbor in nodes\
-                    or (endOnSignal and (self.has_signal_at(neighbor)))\
-                    or (onlyPlatforms and not self.is_edge_platform(edge)):
-                        continue
-                
-                if self.graph.degree[neighbor] == 1:
-                    nodes.add(neighbor)
-                elif self.graph.degree[neighbor] == 2:
-                    nodes.add(neighbor)
-                    neighbor_state = PositionWithDirection(neighbor, new_direction)
-                    stack.append(neighbor_state)
-                # If all neighbors are in the current segment, add the neighbor
-                elif all(nbh in nodes for nbh in self.graph.neighbors(neighbor)):
-                    nodes.add(neighbor)
-                    
-        return nodes, edges
-    
-    
-    def remove_segment_at(self, pos: Position | tuple[Position, Position]):
-        """Remove the entire segment containing the given position."""
-        nodes, edges = self.get_segments_at(pos)
-        
+    def remove_segment_at(self, start: Position | tuple[Position, Position]) -> None:
+        nodes, edges = self.get_segments_at(start)
         if not nodes and len(edges) == 1:
             # Special case: single edge between two intersections
             self.graph.remove_edge(*next(iter(edges)))
             return
         
-        for node in nodes:
-            self.graph.remove_node(node)
+        for n in nodes:
+            self.graph.remove_node(n)
+            
+    def add_segment(self, points: list[Position]) -> None:
+        for p in points:
+            self.graph.add_node(p)
+        for a, b in zip(points[:-1], points[1:]):
+            self.graph.add_edge(a, b)
+
 
     def has_platform_at(self, pos: Position) -> bool:
-        """Check if there is a platform at the given position."""
-        return pos in self.graph and 'platform' in self.graph.nodes[pos]
-    
+        return self.platform_service.is_node_platform(pos)
+
     def is_edge_platform(self, edge: tuple[Position, Position]) -> bool:
-        """Check if there is a platform on the given edge."""
-        return self.graph.has_edge(*edge) and 'platform' in self.graph.edges[edge]
-    
-    def add_platform(self, nodes: set[Position], edges: set[tuple[Position, Position]], station: Position):
-        for node in nodes:
-            if node not in self.graph:
-                raise ValueError("No node at given position")
-            self.graph.nodes[node]['platform'] = station
-        
-        for edge in edges:
-            if not self.graph.has_edge(*edge):
-                raise ValueError("No edge between the given nodes")
-            self.graph.edges[edge]['platform'] = station
-            
-    def remove_platform_at(self, pos: Position | tuple[Position, Position]):
-        """Remove the entire platform containing the given position."""
-        nodes, edges = self.get_segments_at(pos, onlyPlatforms=True)
-
-        for node in nodes:
-            if 'platform' in self.graph.nodes[node]:
-                del self.graph.nodes[node]['platform']
-
-        for edge in edges:
-            if 'platform' in self.graph.edges[edge]:
-                del self.graph.edges[edge]['platform']
-        
-            
-    def get_platforms(self) -> dict[tuple[Position, Position], Position]:
-        """Return all platforms in the network."""
-        return {edge: data['platform'] for edge, data in self.graph.edges.items() if 'platform' in data}
-    
-    
-    @staticmethod
-    def get_valid_turns(direction: tuple[int, int]) -> list[tuple[int, int]]:
-        """Get valid directions we can turn to from the given direction, respecting 45° turn limit."""
-        VALID_TURNS = {
-            (-1, -1): [(-1, -1), (-1, 0), (0, -1)],
-            (-1,  1): [(-1,  1), (-1, 0), (0,  1)],  
-            ( 1, -1): [( 1, -1), ( 1, 0), (0, -1)], 
-            ( 1,  1): [( 1,  1), ( 1, 0), (0,  1)],
-            
-            (-1, 0): [(-1, 0), (-1, -1), (-1,  1)],
-            ( 1, 0): [( 1, 0), ( 1, -1), ( 1,  1)],
-            (0, -1): [(0, -1), (-1, -1), ( 1, -1)],
-            (0,  1): [(0,  1), (-1,  1), ( 1,  1)],
-            (0,  0): [(-1, -1), (-1, 0), (-1, 1),
-                    (1, -1), (1, 0), (1, 1),
-                    (0, -1), (0, 1)]
-        }
-        return VALID_TURNS[direction]
+        return self.platform_service.is_edge_platform(edge)

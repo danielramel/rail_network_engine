@@ -1,14 +1,13 @@
 from models.position import PositionWithDirection
 from models.map import RailMap
-from models.construction import ConstructionState
 from models.position import Position
 
 def handle_signal_click(map: RailMap, pos: Position):
     snapped = pos.snap_to_grid()
-    if snapped not in map.graph: # empty click
+    if not map.has_node_at(snapped):  # empty click
         return
     
-    if map.graph.degree[snapped] > 2: 
+    if map.is_intersection(snapped): 
         return # intersection, no signals here
     
     if map.has_signal_at(snapped):

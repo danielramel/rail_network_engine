@@ -51,7 +51,7 @@ def draw_signal(surface: pygame.Surface, camera: Camera, alignment: PositionWith
     surface.blit(rotated_surf, rect)
     
     
-def draw_station(surface: pygame.Surface, camera: Camera, position: Position, name, color=WHITE):
+def draw_station(surface: pygame.Surface, camera: Camera, position: Position, name: str, color=WHITE):
     w, h = STATION_RECT_SIZE
     rect = pygame.Rect(0, 0, w * camera.scale, h * camera.scale)
     rect.center = tuple(camera.world_to_screen(position))
