@@ -16,6 +16,11 @@ class Position:
         """Get direction from this point to another point."""
         def signum(x: float) -> int:
             return (x > 0) - (x < 0)
+        
+        if self == other:
+            return ValueError("Same Point")
+        if abs(self.x - other.x) / GRID_SIZE > 1 or abs(self.y - other.y) / GRID_SIZE > 1:
+            raise ValueError("Points are not adjacent")
        
         return (signum(other.x - self.x), signum(other.y - self.y))
     
@@ -55,27 +60,37 @@ class Position:
             abs(center.y - self.y) * 2 < h
         )
 
-    def intersects_line(self, edge : tuple['Position', 'Position'], camera_scale: float) -> bool:
+    def intersects_line(self, edge: tuple['Position', 'Position'], camera_scale: float) -> tuple[bool, float]:
         """
         Check if this point is within 'BULLDOZE_SENSITIVITY' pixels of line segment ab.
+        Returns (is_within_sensitivity, distance).
         """
         a, b = edge
         # Line vector
         dx, dy = b.x - a.x, b.y - a.y
-        t = ((self.x - a.x) * dx + (self.y - a.y) * dy) / (dx*dx + dy*dy)
+        length_squared = dx*dx + dy*dy
+
+        t = ((self.x - a.x) * dx + (self.y - a.y) * dy) / length_squared
         t = max(0, min(1, t))  # clamp to segment
+        
         # Closest point on the segment
         cx, cy = a.x + t * dx, a.y + t * dy
+        
         # Distance from this point to that closest point
         dist = hypot(self.x - cx, self.y - cy)
-        return dist <= BULLDOZE_SENSITIVITY / camera_scale
+        return dist <= BULLDOZE_SENSITIVITY / camera_scale, dist
     
     def midpoint(self, other: 'Position') -> 'Position':
         """Return the midpoint between this position and another."""
         return Position((self.x + other.x) / 2, (self.y + other.y) / 2)
     
 
-class PositionWithDirection(NamedTuple):
+class Pose(NamedTuple):
     """PointWithDirection represents a position and the direction we arrived from."""
     position: Position
     direction: tuple[int, int]  # (dx, dy) normalized direction
+    
+    @classmethod
+    def from_positions(cls, previous: Position, current: Position) -> 'Pose':
+        """Create a Pose given two positions."""
+        return cls(current, previous.direction_to(current))

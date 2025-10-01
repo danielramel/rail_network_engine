@@ -4,10 +4,10 @@ from graphics.camera import Camera
 from models.map import RailMap, find_path
 from models.map.pathfinding import can_be_part_of_path
 from ui_elements import draw_node
-from models.position import Position, PositionWithDirection
+from models.position import Position, Pose
 
 
-def render_rail_preview(surface : pygame.Surface, world_pos: Position, anchor: PositionWithDirection, map: RailMap, camera: Camera):
+def render_rail_preview(surface : pygame.Surface, world_pos: Position, anchor: Pose, map: RailMap, camera: Camera):
     snapped = world_pos.snap_to_grid()
     if not can_be_part_of_path(snapped, map):
         draw_node(surface, camera, snapped, color=RED)

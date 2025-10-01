@@ -1,4 +1,4 @@
-from models.position import PositionWithDirection
+from models.position import Pose
 from models.map import RailMap
 from models.position import Position
 
@@ -18,7 +18,7 @@ def handle_signal_click(map: RailMap, pos: Position):
 
     direction = snapped.direction_to(next(map.graph.neighbors(snapped)))
     
-    signal = PositionWithDirection(position=snapped, direction=direction)
+    signal = Pose(position=snapped, direction=direction)
     
     map.add_signal_at(signal)
     

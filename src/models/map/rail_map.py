@@ -1,6 +1,6 @@
 from networkx import Graph
-from models.position import Position, PositionWithDirection
-from services.rail.segment_finder import SegmentFinder
+from models.position import Position, Pose
+from services.rail.segment_finder import NetworkExplorer
 from services.rail.signal_service import SignalService
 from services.rail.platform_service import PlatformService
 from .station_repository import StationRepository, Station
@@ -9,7 +9,7 @@ from .station_repository import StationRepository, Station
 class RailMap:
     def __init__(self):
         self.graph = Graph()
-        self.segment_finder = SegmentFinder(self.graph)
+        self.segment_finder = NetworkExplorer(self.graph)
         self.signal_service = SignalService(self.graph)
         self.platform_service = PlatformService(self.graph, self.segment_finder)
         self.stations = StationRepository()
@@ -30,7 +30,7 @@ class RailMap:
     def has_signal_at(self, pos: Position) -> bool:
         return self.signal_service.has_signal_at(pos)
     
-    def add_signal_at(self, signal: PositionWithDirection) -> None:
+    def add_signal_at(self, signal: Pose) -> None:
         self.signal_service.add_signal(signal)
 
     def toggle_signal_at(self, pos: Position) -> None:
@@ -39,7 +39,7 @@ class RailMap:
     def remove_signal_at(self, pos: Position) -> None:
         self.signal_service.remove_signal(pos)
 
-    def get_signals(self) -> tuple[PositionWithDirection, ...]:
+    def get_signals(self) -> tuple[Pose, ...]:
         return self.signal_service.get_all_signals()
 
     # --- platforms ---
@@ -66,14 +66,14 @@ class RailMap:
         return self.stations.all()
 
     # --- segments ---
-    def get_segments_at(self, start: Position | tuple[Position, Position], end_on_signal: bool = False, only_platforms: bool = False) -> tuple[set[Position], set[tuple[Position, Position]]]:
-        return self.segment_finder.find_segment(start, end_on_signal=end_on_signal, only_platforms=only_platforms)
+    def get_segments_at(self, edge: tuple[Position, Position], end_on_signal: bool = False, only_platforms: bool = False) -> tuple[set[Position], set[tuple[Position, Position]]]:
+        return self.segment_finder.get_segment(edge, end_on_signal=end_on_signal, only_platforms=only_platforms)
 
-    def remove_segment_at(self, start: Position | tuple[Position, Position]) -> None:
-        nodes, edges = self.get_segments_at(start)
-        if not nodes and len(edges) == 1:
+    def remove_segment_at(self, edge: tuple[Position, Position]) -> None:
+        nodes, edges = self.get_segments_at(edge)
+        if len(nodes) == 0 and len(edges) == 1:
             # Special case: single edge between two intersections
-            self.graph.remove_edge(*next(iter(edges)))
+            self.graph.remove_edge(*edges.pop())
             return
         
         for n in nodes:

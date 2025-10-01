@@ -1,5 +1,5 @@
 from networkx import Graph
-from models.position import Position, PositionWithDirection
+from models.position import Position, Pose
 
 
 class SignalService:
@@ -12,7 +12,7 @@ class SignalService:
             return False
         return 'signal' in self._graph.nodes[pos]
 
-    def add_signal(self, signal: PositionWithDirection) -> None:
+    def add_signal(self, signal: Pose) -> None:
         if self._graph.degree(signal.position) > 2: raise ValueError("Cannot place signal at intersection")
         if self.has_signal_at(signal.position): raise ValueError("Signal already exists at this position")
 
@@ -31,6 +31,6 @@ class SignalService:
         else:
             self._graph.nodes[pos]['signal'] = pos.direction_to(neighbors[0])
 
-    def get_all_signals(self) -> tuple[PositionWithDirection]:
-        return tuple(PositionWithDirection(node, data['signal']) for node, data in self._graph.nodes(data=True) if 'signal' in data)
+    def get_all_signals(self) -> tuple[Pose]:
+        return tuple(Pose(node, data['signal']) for node, data in self._graph.nodes(data=True) if 'signal' in data)
 

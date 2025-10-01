@@ -12,31 +12,31 @@ class BulldozeTarget:
     data: object
 
 def get_bulldoze_target(map: RailMap, world_pos: Position, camera_scale: float) -> BulldozeTarget:
-    # 1) If click isn't near the grid, check if it is on edge
-    if not world_pos.is_near_grid(camera_scale):
-        for edge in map.get_all_edges():
-            if world_pos.intersects_line(edge, camera_scale):
-                if map.is_edge_platform(edge):
-                    return BulldozeTarget(CursorTarget.PLATFORM, edge)
-                else:
-                    return BulldozeTarget(CursorTarget.EDGE, edge)
-
-
     snapped = world_pos.snap_to_grid()
-
+    if map.has_signal_at(snapped):
+        return BulldozeTarget(CursorTarget.SIGNAL, snapped)
+    
     for station in map.get_all_stations().keys():
         if snapped.station_rect_overlaps(station):
             return BulldozeTarget(CursorTarget.STATION, station)
 
-    if not map.has_node_at(snapped):
-        return BulldozeTarget(CursorTarget.EMPTY, snapped)
+    closest_edge = None
+    closest_dist = float('inf')
 
-    if map.has_signal_at(snapped):
-        return BulldozeTarget(CursorTarget.SIGNAL, snapped)
+    for edge in map.get_all_edges():
+        is_within, dist = world_pos.intersects_line(edge, camera_scale)
+        if is_within and dist < closest_dist:
+            closest_dist = dist
+            closest_edge = edge
 
-    if map.has_platform_at(snapped):
-        return BulldozeTarget(CursorTarget.PLATFORM, snapped)
+    if closest_edge is not None:
+        if map.is_edge_platform(closest_edge):
+            return BulldozeTarget(CursorTarget.PLATFORM, closest_edge)
+        else:
+            return BulldozeTarget(CursorTarget.EDGE, closest_edge)
+            
+    return BulldozeTarget(CursorTarget.EMPTY, world_pos)
 
-    return BulldozeTarget(CursorTarget.NODE, snapped)
+
     
 

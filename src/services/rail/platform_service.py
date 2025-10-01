@@ -1,11 +1,11 @@
 
-from models.map.rail_map import SegmentFinder
+from models.map.rail_map import NetworkExplorer
 from models.position import Position
 from networkx import Graph
 
 
 class PlatformService:
-    def __init__(self, graph: Graph, segment_finder: SegmentFinder):
+    def __init__(self, graph: Graph, segment_finder: NetworkExplorer):
         self._graph = graph
         self._segfinder = segment_finder
 
@@ -16,14 +16,14 @@ class PlatformService:
         for a, b in edges:
             self._graph.edges[a, b]['station'] = station_pos
 
-    def remove_platform_at(self, pos: Position | tuple[Position, Position]) -> None:
-        seg = self._segfinder.find_segment(pos, end_on_signal=False, only_platforms=True)
+    def remove_platform_at(self, edge: tuple[Position, Position]) -> None:
+        nodes, edges = self._segfinder.get_segment(edge, end_on_signal=False, only_platforms=True)
 
-        for n in seg.nodes:
+        for n in nodes:
             del self._graph.nodes[n]['station']
 
-        for a, b in seg.edges:
-            del self._graph.edges[a, b]['station']
+        for edge in edges:
+            del self._graph.edges[edge]['station']
 
     def get_platforms(self) -> dict[tuple[Position, Position], Position]:
         return {edge: data['station'] for edge, data in self._graph.edges.items() if 'station' in data}

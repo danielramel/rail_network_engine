@@ -1,9 +1,9 @@
 from config.settings import GRID_SIZE
 from models.map.rail_map import RailMap
-from models.position import Position, PositionWithDirection
+from models.position import Position, Pose
 import heapq
 
-from services.rail.segment_finder import SegmentFinder
+from services.rail.segment_finder import NetworkExplorer
 
 
 ORTHOGONAL_COST = 1.0
@@ -17,7 +17,7 @@ def get_direction_cost(direction: tuple[int, int]) -> float:
     else:
         return ORTHOGONAL_COST
 
-def get_valid_turn_neighbors(state: PositionWithDirection) -> list[tuple[PositionWithDirection, float]]:
+def get_valid_turn_neighbors(state: Pose) -> list[tuple[Pose, float]]:
     """
     Get valid neighboring states from current state, respecting 45° turn limit.
     
@@ -28,11 +28,11 @@ def get_valid_turn_neighbors(state: PositionWithDirection) -> list[tuple[Positio
         List of (new_state, cost) tuples
     """
     neighbors = []
-    valid_directions = SegmentFinder.get_valid_turns(state.direction)
+    valid_directions = NetworkExplorer.get_valid_turns(state.direction)
     for dx, dy in valid_directions:
         nx = state.position.x + dx * GRID_SIZE
         ny = state.position.y + dy * GRID_SIZE
-        new_state = PositionWithDirection(Position(nx, ny), (dx, dy))
+        new_state = Pose(Position(nx, ny), (dx, dy))
         cost = get_direction_cost((dx, dy))
         neighbors.append((new_state, cost))
     return neighbors
@@ -46,7 +46,7 @@ def heuristic(a: Position, b: Position) -> float:
     dy = abs(a.y - b.y) / GRID_SIZE
     return max(dx, dy)
 
-def reconstruct_path(came_from: dict[PositionWithDirection, PositionWithDirection], current_state: PositionWithDirection) -> tuple[Position, ...]:
+def reconstruct_path(came_from: dict[Pose, Pose], current_state: Pose) -> tuple[Position, ...]:
     """Reconstruct and simplify the path from states."""
     path = [current_state.position]
     
@@ -57,7 +57,7 @@ def reconstruct_path(came_from: dict[PositionWithDirection, PositionWithDirectio
     # Reverse to get start -> end order, then simplify
     return tuple(reversed(path))
 
-def find_path(start: PositionWithDirection, end: Position, map: RailMap) -> tuple[Position, ...]:
+def find_path(start: Pose, end: Position, map: RailMap) -> tuple[Position, ...]:
     """
     Find optimal path using A* algorithm with 45° turn constraint.
     
@@ -81,9 +81,9 @@ def find_path(start: PositionWithDirection, end: Position, map: RailMap) -> tupl
 
     # Priority queue: (f_score, current_g, state)
     open_set = []
-    came_from: dict[PositionWithDirection, PositionWithDirection] = {}
-    g_score: dict[PositionWithDirection, float] = {}
-    f_score: dict[PositionWithDirection, float] = {}
+    came_from: dict[Pose, Pose] = {}
+    g_score: dict[Pose, float] = {}
+    f_score: dict[Pose, float] = {}
 
 
     g_score[start] = 0

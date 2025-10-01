@@ -3,7 +3,7 @@ from config.colors import WHITE, BLACK, YELLOW
 
 from config.settings import GRID_SIZE, STATION_RECT_SIZE
 from graphics.camera import Camera
-from models.position import Position, PositionWithDirection
+from models.position import Position, Pose
 
 def draw_node(surface: pygame.Surface, camera: Camera, node: Position, color=WHITE):
     """Draw a node on the given surface using the camera."""
@@ -14,7 +14,7 @@ def draw_node(surface: pygame.Surface, camera: Camera, node: Position, color=WHI
     pygame.draw.circle(surface, BLACK, (int(screen_x), int(screen_y)), inner_radius)
 
 
-def draw_signal(surface: pygame.Surface, camera: Camera, alignment: PositionWithDirection, color=WHITE, offset=False):
+def draw_signal(surface: pygame.Surface, camera: Camera, alignment: Pose, color=WHITE, offset=False):
     def get_rotation_angle(direction_vector):
         angle_map = {
             (0, 1): 0,
