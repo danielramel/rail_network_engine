@@ -3,15 +3,17 @@ from models.geometry import Position, Pose
 from services.rail.network_explorer import NetworkExplorer
 from services.rail.signal_service import SignalService
 from services.rail.platform_service import PlatformService
+from services.rail.path_finder import Pathfinder
 from .station_repository import StationRepository, Station
 
 
 class RailMap:
     def __init__(self):
         self._graph = nx.Graph()
-        self.explorer = NetworkExplorer(self._graph)
-        self.signal_service = SignalService(self._graph, self)
-        self.platform_service = PlatformService(self._graph, self.explorer)
+        self._explorer = NetworkExplorer(self._graph)
+        self._signal_service = SignalService(self._graph, self)
+        self._platform_service = PlatformService(self._graph, self._explorer)
+        self._pathfinder = Pathfinder(self)
         self._stations = StationRepository()
 
     
@@ -37,7 +39,7 @@ class RailMap:
     
      # --- segments ---
     def get_segment(self, edge: tuple[Position, Position], end_on_signal: bool = False, only_platforms: bool = False, only_straight: bool = False) -> tuple[set[Position], set[tuple[Position, Position]]]:
-        return self.explorer.get_segment(edge, end_on_signal=end_on_signal, only_platforms=only_platforms, only_straight=only_straight)
+        return self._explorer.get_segment(edge, end_on_signal=end_on_signal, only_platforms=only_platforms, only_straight=only_straight)
 
     def remove_segment_at(self, edge: tuple[Position, Position]) -> None:
         nodes, edges = self.get_segment(edge)
@@ -54,47 +56,54 @@ class RailMap:
             self._graph.add_node(p)
         for a, b in zip(points[:-1], points[1:]):
             self._graph.add_edge(a, b)
+            
+            
+    # --- pathfinding ---
+    def is_blocked(self, pos: Position) -> bool:
+        return self._pathfinder.is_blocked(pos)
 
+    def find_path(self, start: Pose, end: Position) -> list[Position] | None:
+        return self._pathfinder.find_path(start, end)
 
     # --- signals ---
     def has_signal_at(self, pos: Position) -> bool:
-        return self.signal_service.has_signal_at(pos)
+        return self._signal_service.has_signal_at(pos)
     
     def add_signal_at(self, signal: Pose) -> None:
-        self.signal_service.add(signal)
+        self._signal_service.add(signal)
         
     def get_signal_at(self, pos: Position) -> Pose:
-        return self.signal_service.get(pos)
+        return self._signal_service.get(pos)
 
     def toggle_signal_at(self, pos: Position) -> None:
-        self.signal_service.toggle(pos)
+        self._signal_service.toggle(pos)
 
     def remove_signal_at(self, pos: Position) -> None:
-        self.signal_service.remove(pos)
+        self._signal_service.remove(pos)
         
     def get_signal_at(self, pos: Position) -> Pose | None:
         return Pose(pos, self._graph.nodes[pos]['signal'])
 
     @property
     def signals(self) -> tuple[Pose, ...]:
-        return self.signal_service.all()
+        return self._signal_service.all()
 
     # --- platforms ---
     def add_platform_on(self, edges: tuple[tuple[Position, Position]], station_pos: Position):
-        self.platform_service.add(edges, station_pos)
+        self._platform_service.add(edges, station_pos)
 
     def remove_platform_at(self, edge: tuple[Position, Position]):
-        self.platform_service.remove(edge)
+        self._platform_service.remove(edge)
 
     @property
     def platforms(self) -> dict[tuple[Position, Position], Position]:
-        return self.platform_service.all()
+        return self._platform_service.all()
     
     def is_platform_at(self, pos: Position) -> bool:
-        return self.platform_service.is_platform_at(pos)
+        return self._platform_service.is_platform_at(pos)
 
     def is_edge_platform(self, edge: tuple[Position, Position]) -> bool:
-        return self.platform_service.is_edge_platform(edge)
+        return self._platform_service.is_edge_platform(edge)
 
     # --- stations ---
     def add_station_at(self, pos: Position, name: str):

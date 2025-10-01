@@ -1,15 +1,14 @@
 import pygame
 from config.colors import RED, YELLOW
 from graphics.camera import Camera
-from models.map import RailMap, find_path
-from models.map.pathfinding import can_be_part_of_path
+from models.map import RailMap
 from ui_elements import draw_node
 from models.geometry import Position, Pose
 
 
 def render_rail_preview(surface : pygame.Surface, world_pos: Position, anchor: Pose, map: RailMap, camera: Camera):
     snapped = world_pos.snap_to_grid()
-    if not can_be_part_of_path(snapped, map):
+    if map.is_blocked(snapped):
         draw_node(surface, snapped, camera, color=RED)
         if anchor is not None:
             draw_node(surface, anchor.position, camera, color=RED)
@@ -23,7 +22,7 @@ def render_rail_preview(surface : pygame.Surface, world_pos: Position, anchor: P
         draw_node(surface, snapped, camera, color=YELLOW)
         return
 
-    found_path = find_path(anchor, snapped, map)
+    found_path = map.find_path(anchor, snapped)
     if not found_path:
         draw_node(surface, snapped, camera, color=RED)
         draw_node(surface, anchor.position, camera, color=RED)

@@ -5,8 +5,6 @@ from ui_elements.text_input import user_input
 def handle_station_click(map: RailMap, pos: Position):
     snapped = pos.snap_to_grid()
 
-    
-    
     if any(snapped.within_station_rect(node_pos) for node_pos in map.nodes):
         return
     

@@ -1,4 +1,3 @@
-from typing import Generator
 from networkx import Graph
 from models.geometry import Position, Pose
 from collections import deque
@@ -7,28 +6,9 @@ from collections import deque
 class NetworkExplorer:
     """Finds a connected segment following traversal rules."""
 
-    VALID_TURNS = {
-        (-1, -1): [(-1, -1), (-1, 0), (0, -1)],
-        (-1, 1): [(-1, 1), (-1, 0), (0, 1)],
-        (1, -1): [(1, -1), (1, 0), (0, -1)],
-        (1, 1): [(1, 1), (1, 0), (0, 1)],
-        (-1, 0): [(-1, 0), (-1, -1), (-1, 1)],
-        (1, 0): [(1, 0), (1, -1), (1, 1)],
-        (0, -1): [(0, -1), (-1, -1), (1, -1)],
-        (0, 1): [(0, 1), (-1, 1), (1, 1)],
-        (0, 0): [
-            (-1, -1), (-1, 0), (-1, 1),
-            (1, -1), (1, 0), (1, 1),
-            (0, -1), (0, 1)
-        ]
-    }
 
     def __init__(self, graph: Graph):
         self._graph = graph
-
-    @staticmethod
-    def get_valid_turns(direction: tuple[int, int]) -> list[tuple[int, int]]:
-        return NetworkExplorer.VALID_TURNS[direction]
     
     def is_junction(self, pos: Position) -> bool:
         if self._graph.degree[pos] > 2: return True
@@ -37,7 +17,7 @@ class NetworkExplorer:
         neighbors = tuple(self._graph.neighbors(pos))
         inbound = neighbors[0].direction_to(pos)
         outbound = pos.direction_to(neighbors[1])
-        return outbound not in self.get_valid_turns(inbound)      
+        return outbound not in Pose.get_valid_turns(inbound)      
 
     def get_connections_from_pose(self, pose: Pose, only_straight: bool = False) -> tuple[Pose]:
         connections = []
@@ -45,7 +25,7 @@ class NetworkExplorer:
             direction = pose.position.direction_to(neighbor)
             if only_straight and direction != pose.direction:
                 continue
-            if direction in self.get_valid_turns(pose.direction):
+            if direction in Pose.get_valid_turns(pose.direction):
                 connections.append(Pose(neighbor, direction))
         return tuple(connections)
 

@@ -17,4 +17,3 @@ def handle_signal_click(map: RailMap, pos: Position):
         return
     
     map.add_signal_at(snapped)
-    

@@ -6,7 +6,7 @@ from controllers.construction import handle_construction_events
 from views.normal_view import handle_normal_events, render_normal_view
 from views.construction import render_construction_preview
 from models.construction import ConstructionState
-from config.colors import WHITE, BLACK, GRAY, GREEN
+from config.colors import WHITE, BLACK, GRAY, LIGHTBLUE
 from ui_elements.buttons import load_construction_icons
 
 class View(Enum):
@@ -34,7 +34,7 @@ class Game:
         
 
     def draw_common_ui(self):
-        button_color = GREEN if self.view == View.CONSTRUCTION else GRAY
+        button_color = LIGHTBLUE if self.view == View.CONSTRUCTION else GRAY
         pygame.draw.rect(self.screen, button_color, self.construction_toggle_button, border_radius=8)
         text_surface = self.font.render("C", True, WHITE)
         text_rect = text_surface.get_rect(center=self.construction_toggle_button.center)

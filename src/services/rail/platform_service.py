@@ -1,4 +1,3 @@
-
 from models.map.rail_map import NetworkExplorer
 from models.geometry import Position
 from networkx import Graph

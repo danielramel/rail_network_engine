@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import NamedTuple
 from config.settings import BULLDOZE_SENSITIVITY, GRID_SIZE, STATION_RECT_SIZE
 from math import hypot
 
@@ -104,12 +103,3 @@ class Position:
         return Position((self.x + other.x) / 2, (self.y + other.y) / 2)
     
 
-class Pose(NamedTuple):
-    """PointWithDirection represents a position and the direction we arrived from."""
-    position: Position
-    direction: tuple[int, int]  # (dx, dy) normalized direction
-    
-    @classmethod
-    def from_positions(cls, previous: Position, current: Position) -> 'Pose':
-        """Create a Pose given two positions."""
-        return cls(current, previous.direction_to(current))
