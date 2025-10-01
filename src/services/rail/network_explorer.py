@@ -39,15 +39,17 @@ class NetworkExplorer:
         outbound = pos.direction_to(neighbors[1])
         return outbound not in self.get_valid_turns(inbound)      
 
-    def get_connections_from_pose(self, pose: Pose) -> tuple[Pose]:
+    def get_connections_from_pose(self, pose: Pose, only_straight: bool = False) -> tuple[Pose]:
         connections = []
         for neighbor in self._graph.neighbors(pose.position):
             direction = pose.position.direction_to(neighbor)
+            if only_straight and direction != pose.direction:
+                continue
             if direction in self.get_valid_turns(pose.direction):
                 connections.append(Pose(neighbor, direction))
         return tuple(connections)
 
-    def get_segment(self, edge: tuple[Position, Position], end_on_signal: bool = False, only_platforms: bool = False
+    def get_segment(self, edge: tuple[Position, Position], end_on_signal: bool = False, only_platforms: bool = False, only_straight: bool = False
     ) -> tuple[tuple[Position], tuple[tuple[Position, Position]]]:
         
         
@@ -77,7 +79,7 @@ class NetworkExplorer:
 
         while stack:
             pose = stack.popleft()
-            connections = self.get_connections_from_pose(pose)
+            connections = self.get_connections_from_pose(pose, only_straight=only_straight)
             
             nodes.add(pose.position)
 

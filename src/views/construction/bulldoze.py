@@ -13,7 +13,7 @@ def render_bulldoze_preview(surface: Surface, world_pos: Position, map: RailMap,
         draw_node(surface, target.data, camera, color=RED)
     elif target.type == CursorTarget.STATION:
         station = map.get_station_at(target.data)
-        draw_station(surface, station.position, station.name, camera, color=RED)
+        draw_station(surface, station, camera, color=RED)
     elif target.type == CursorTarget.SIGNAL:
         signal = map.get_signal_at(target.data)
         draw_signal(surface, signal, camera, color=RED)

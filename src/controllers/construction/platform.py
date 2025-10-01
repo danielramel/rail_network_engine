@@ -9,8 +9,7 @@ from ui_elements.alert import alert
 def handle_platform_click(map: RailMap, pos: Position, camera_scale):
     context = get_platform_context(map, pos, camera_scale)
     if context.type == CursorTarget.EDGE:
-        _, edges = map.get_segment(context.data, end_on_signal=False)  # can change end_on_signal to True if desired
-        
+        edges, _ = context.data
         if len(edges) < MINIMUM_PLATFORM_LENGTH:
             alert(f'Platform too short! Minimum length is {MINIMUM_PLATFORM_LENGTH} segments.')
             return

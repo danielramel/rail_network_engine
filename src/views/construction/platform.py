@@ -12,18 +12,18 @@ from models.geometry import Position
 def render_platform_preview(surface: Surface, world_pos: Position, map: RailMap, camera: Camera):
     context = get_platform_context(map, world_pos, camera.scale)
     
+    start = context.station.position
     if context.type == CursorTarget.EMPTY:
+        end = context.data
         draw_node(surface, context.data, camera, color=ORANGE)
-
-    else:  # EDGE
-        _, edges = map.get_segment(context.data, end_on_signal=False)  # can change end_on_signal to True if desired
+        
+    else:  # CursorTarget.EDGE
+        edges, closest_edge = context.data
+        end = world_pos.closest_point_to_edge(closest_edge)
+        
         color = RED if len(edges) < MINIMUM_PLATFORM_LENGTH else ORANGE
         draw_edges(surface, edges, camera, color=color)
 
-    draw_station(surface, context.station.position, context.station.name, camera, color=ORANGE)
-    start = context.station.position
-    if context.type == CursorTarget.EDGE:
-        end = world_pos.closest_point_to_edge(context.data)
-    else:
-        end = context.data
+
+    draw_station(surface, context.station, camera, color=ORANGE)
     draw_dashed_line(surface, start, end, camera, ORANGE)

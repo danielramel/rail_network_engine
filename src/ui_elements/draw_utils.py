@@ -4,6 +4,7 @@ from config.colors import WHITE, BLACK, YELLOW
 from config.settings import GRID_SIZE, STATION_RECT_SIZE
 from graphics.camera import Camera
 from models.geometry import Position, Pose
+from models.map.station_repository import Station
 
 def draw_node(surface: pygame.Surface, node: Position, camera: Camera, color=WHITE):
     """Draw a node on the given surface using the camera."""
@@ -50,16 +51,16 @@ def draw_signal(surface: pygame.Surface, alignment: Pose, camera: Camera,color=W
     rect = rotated_surf.get_rect(center=(screen_x, screen_y))
     surface.blit(rotated_surf, rect)
 
-
-def draw_station(surface: pygame.Surface, position: Position, name: str, camera: Camera, color=WHITE):
+    
+def draw_station(surface: pygame.Surface, station: Station, camera: Camera, color=WHITE):
     w, h = STATION_RECT_SIZE
     rect = pygame.Rect(0, 0, w * camera.scale, h * camera.scale)
-    rect.center = tuple(camera.world_to_screen(position))
+    rect.center = tuple(camera.world_to_screen(station.position))
     pygame.draw.rect(surface, color, rect, 3)
 
     # Render station name text in the middle of the rect
     font = pygame.font.SysFont(None, int(rect.height * 0.6))
-    text_surface = font.render(name, True, color)
+    text_surface = font.render(station.name, True, color)
     text_rect = text_surface.get_rect(center=rect.center)
     surface.blit(text_surface, text_rect)
 

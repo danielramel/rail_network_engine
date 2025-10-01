@@ -36,8 +36,8 @@ class RailMap:
         return self._graph.degree[pos]
     
      # --- segments ---
-    def get_segment(self, edge: tuple[Position, Position], end_on_signal: bool = False, only_platforms: bool = False) -> tuple[set[Position], set[tuple[Position, Position]]]:
-        return self.explorer.get_segment(edge, end_on_signal=end_on_signal, only_platforms=only_platforms)
+    def get_segment(self, edge: tuple[Position, Position], end_on_signal: bool = False, only_platforms: bool = False, only_straight: bool = False) -> tuple[set[Position], set[tuple[Position, Position]]]:
+        return self.explorer.get_segment(edge, end_on_signal=end_on_signal, only_platforms=only_platforms, only_straight=only_straight)
 
     def remove_segment_at(self, edge: tuple[Position, Position]) -> None:
         nodes, edges = self.get_segment(edge)

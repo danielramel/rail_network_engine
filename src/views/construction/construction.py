@@ -26,9 +26,9 @@ def render_construction_preview(surface: pygame.Surface, camera: Camera, map: Ra
         
     for signal in map.signals:
         draw_signal(surface, signal, camera)
-        
-    for pos, station in map.stations.items():
-        draw_station(surface, pos, station.name, camera)
+
+    for station in map.stations.values():
+        draw_station(surface, station, camera)
 
     draw_edges(surface, map.platforms.keys(), camera, color=ORANGE)
 

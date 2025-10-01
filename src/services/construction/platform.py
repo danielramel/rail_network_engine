@@ -18,7 +18,8 @@ def get_platform_context(map: RailMap, world_pos: Position, camera_scale: float)
         )
     closest_edge = world_pos.closest_edge(map.edges, camera_scale)
     if closest_edge is not None:
-        return PlatformContext(CursorTarget.EDGE, closest_edge, nearest_station)
+        _, edges = map.get_segment(closest_edge, end_on_signal=False, only_straight=True)  # can change end_on_signal to True if desired
+        return PlatformContext(CursorTarget.EDGE, (edges, closest_edge), nearest_station)
 
     
     return PlatformContext(CursorTarget.EMPTY, world_pos, nearest_station)

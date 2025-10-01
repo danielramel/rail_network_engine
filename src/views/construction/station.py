@@ -3,6 +3,7 @@ from graphics.camera import Camera
 from models.geometry import Position
 from models.map import RailMap
 from models.construction import ConstructionState
+from models.map.station_repository import Station
 from ui_elements.draw_utils import draw_station
 from config.colors import RED, YELLOW
 
@@ -18,4 +19,4 @@ def render_station_preview(surface : pygame.Surface, world_pos: Position, map: R
     else:
         color = YELLOW
 
-    draw_station(surface, snapped, "STATION", camera, color=color)
+    draw_station(surface, Station("STATION", snapped), camera, color=color)
