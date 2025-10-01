@@ -76,7 +76,7 @@ def set_construction_mode(state: ConstructionState, map: RailMap, mode: Construc
         if mode == ConstructionMode.RAIL:
             state.construction_anchor = None
         elif mode == ConstructionMode.PLATFORM:
-            if len(map.get_all_stations()) == 0:
+            if len(map.stations) == 0:
                 alert("You need to build a station first!")
                 state.Mode = None
                 return

@@ -1,4 +1,4 @@
-from networkx import Graph
+import networkx as nx
 from models.geometry import Position, Pose
 from services.rail.segment_finder import NetworkExplorer
 from services.rail.signal_service import SignalService
@@ -8,86 +8,104 @@ from .station_repository import StationRepository, Station
 
 class RailMap:
     def __init__(self):
-        self.graph = Graph()
-        self.segment_finder = NetworkExplorer(self.graph)
-        self.signal_service = SignalService(self.graph)
-        self.platform_service = PlatformService(self.graph, self.segment_finder)
-        self.stations = StationRepository()
-        
+        self._graph = nx.Graph()
+        self.explorer = NetworkExplorer(self._graph)
+        self.signal_service = SignalService(self._graph, self)
+        self.platform_service = PlatformService(self._graph, self.explorer)
+        self._stations = StationRepository()
+
+    
+    def is_junction(self, pos: Position) -> bool:
+        return NetworkExplorer(self._graph).is_junction(pos)
+
+    def get_junctions(self) -> list[Position]:
+        return [n for n in self._graph.nodes if self.is_junction(n)]
+    
+    @property
+    def edges(self):
+        return self._graph.edges
+    
+    @property
+    def nodes(self):
+        return self._graph.nodes
+    
     def has_node_at(self, pos: Position) -> bool:
-        return pos in self.graph
+        return pos in self._graph.nodes
+    
+    def degree_at(self, pos: Position) -> int:
+        return self._graph.degree[pos]
+    
+     # --- segments ---
+    def get_segment(self, edge: tuple[Position, Position], end_on_signal: bool = False, only_platforms: bool = False) -> tuple[set[Position], set[tuple[Position, Position]]]:
+        return self.explorer.get_segment(edge, end_on_signal=end_on_signal, only_platforms=only_platforms)
+
+    def remove_segment_at(self, edge: tuple[Position, Position]) -> None:
+        nodes, edges = self.get_segment(edge)
+        if len(nodes) == 0 and len(edges) == 1:
+            # Special case: single edge between two intersections
+            self._graph.remove_edge(*edges.pop())
+            return
         
-    def get_all_edges(self) -> tuple[tuple[Position, Position]]:
-        return tuple(self.graph.edges)
+        for n in nodes:
+            self._graph.remove_node(n)
+            
+    def add_segment(self, points: list[Position]) -> None:
+        for p in points:
+            self._graph.add_node(p)
+        for a, b in zip(points[:-1], points[1:]):
+            self._graph.add_edge(a, b)
 
-    def is_intersection(self, pos: Position) -> bool:
-        return pos in self.graph and self.graph.degree(pos) > 2
-
-    def get_intersections(self) -> list[Position]:
-        return [n for n in self.graph.nodes if self.graph.degree(n) > 2]
 
     # --- signals ---
     def has_signal_at(self, pos: Position) -> bool:
         return self.signal_service.has_signal_at(pos)
     
     def add_signal_at(self, signal: Pose) -> None:
-        self.signal_service.add_signal(signal)
+        self.signal_service.add(signal)
+        
+    def get_signal_at(self, pos: Position) -> Pose:
+        return self.signal_service.get(pos)
 
     def toggle_signal_at(self, pos: Position) -> None:
-        self.signal_service.toggle_signal(pos)
+        self.signal_service.toggle(pos)
 
     def remove_signal_at(self, pos: Position) -> None:
-        self.signal_service.remove_signal(pos)
+        self.signal_service.remove(pos)
+        
+    def get_signal_at(self, pos: Position) -> Pose | None:
+        return Pose(pos, self._graph.nodes[pos]['signal'])
 
-    def get_signals(self) -> tuple[Pose, ...]:
-        return self.signal_service.get_all_signals()
+    @property
+    def signals(self) -> tuple[Pose, ...]:
+        return self.signal_service.all()
 
     # --- platforms ---
-    def add_platform(self, nodes: tuple[Position], edges: tuple[tuple[Position, Position]], station_pos: Position):
-        self.platform_service.add_platform(nodes, edges, station_pos)
+    def add_platform_on(self, edges: tuple[tuple[Position, Position]], station_pos: Position):
+        self.platform_service.add(edges, station_pos)
 
-    def remove_platform_at(self, pos: Position | tuple[Position, Position]):
-        self.platform_service.remove_platform_at(pos)
+    def remove_platform_at(self, edge: tuple[Position, Position]):
+        self.platform_service.remove(edge)
 
-    def get_platforms(self) -> dict[tuple[Position, Position], Position]:
-        return self.platform_service.get_platforms()
-
-    # --- stations ---
-    def add_station_at(self, pos: Position, name: str):
-        self.stations.add(pos, name)
-
-    def remove_station_at(self, pos: Position):
-        self.stations.remove(pos)
-
-    def get_station(self, pos: Position) -> Station:
-        return self.stations.get(pos)
-
-    def get_all_stations(self) -> dict[Position, Station]:
-        return self.stations.all()
-
-    # --- segments ---
-    def get_segments_at(self, edge: tuple[Position, Position], end_on_signal: bool = False, only_platforms: bool = False) -> tuple[set[Position], set[tuple[Position, Position]]]:
-        return self.segment_finder.get_segment(edge, end_on_signal=end_on_signal, only_platforms=only_platforms)
-
-    def remove_segment_at(self, edge: tuple[Position, Position]) -> None:
-        nodes, edges = self.get_segments_at(edge)
-        if len(nodes) == 0 and len(edges) == 1:
-            # Special case: single edge between two intersections
-            self.graph.remove_edge(*edges.pop())
-            return
-        
-        for n in nodes:
-            self.graph.remove_node(n)
-            
-    def add_segment(self, points: list[Position]) -> None:
-        for p in points:
-            self.graph.add_node(p)
-        for a, b in zip(points[:-1], points[1:]):
-            self.graph.add_edge(a, b)
-
-
-    def has_platform_at(self, pos: Position) -> bool:
+    @property
+    def platforms(self) -> dict[tuple[Position, Position], Position]:
+        return self.platform_service.all()
+    
+    def is_platform_at(self, pos: Position) -> bool:
         return self.platform_service.is_platform_at(pos)
 
     def is_edge_platform(self, edge: tuple[Position, Position]) -> bool:
         return self.platform_service.is_edge_platform(edge)
+
+    # --- stations ---
+    def add_station_at(self, pos: Position, name: str):
+        self._stations.add(pos, name)
+
+    def remove_station_at(self, pos: Position):
+        self._stations.remove(pos)
+
+    def get_station_at(self, pos: Position) -> Station:
+        return self._stations.get(pos)
+
+    @property
+    def stations(self) -> dict[Position, Station]:
+        return self._stations.all()

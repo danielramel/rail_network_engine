@@ -120,4 +120,4 @@ def find_path(start: Pose, end: Position, map: RailMap) -> tuple[Position, ...]:
 
 def can_be_part_of_path(pos: Position, map: RailMap) -> bool:
     """Check if a position can be part of a path (i.e. not occupied by signal or platform)."""
-    return not (map.has_node_at(pos) and map.has_signal_at(pos) and map.has_platform_at(pos))
+    return not (map.has_node_at(pos) and map.has_signal_at(pos) and map.is_platform_at(pos))

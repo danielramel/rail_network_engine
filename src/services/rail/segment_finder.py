@@ -30,15 +30,14 @@ class NetworkExplorer:
     def get_valid_turns(direction: tuple[int, int]) -> list[tuple[int, int]]:
         return NetworkExplorer.VALID_TURNS[direction]
     
-    def is_junction(self, pose: Pose) -> bool:
-        if self._graph.degree(pose.position) > 2: return True
-        opposite_direction = (-pose.direction[0], -pose.direction[1])
-        for neighbor in self._graph.neighbors(pose.position):
-            direction = pose.position.direction_to(neighbor)
-            if direction not in self.get_valid_turns(pose.direction) and direction != opposite_direction:
-                return True
-            
-        return False
+    def is_junction(self, pos: Position) -> bool:
+        if self._graph.degree[pos] > 2: return True
+        if self._graph.degree[pos] < 2: return False
+        
+        neighbors = tuple(self._graph.neighbors(pos))
+        inbound = neighbors[0].direction_to(pos)
+        outbound = pos.direction_to(neighbors[1])
+        return outbound not in self.get_valid_turns(inbound)      
 
     def get_connections_from_pose(self, pose: Pose) -> tuple[Pose]:
         connections = []
@@ -63,10 +62,10 @@ class NetworkExplorer:
         
         a_has_signal = 'signal' in self._graph[a]
         b_has_signal = 'signal' in self._graph[b]
+        is_a_junction = self.is_junction(a)
+        is_b_junction = self.is_junction(b)
         pose_to_a = Pose.from_positions(b, a)
         pose_to_b = Pose.from_positions(a, b)
-        is_a_junction = self.is_junction(pose_to_a)
-        is_b_junction = self.is_junction(pose_to_b)
 
 
 
@@ -90,8 +89,7 @@ class NetworkExplorer:
                 if neighbor in nodes or neighbor in {s.position for s in stack}:
                     continue
                 
-                pose_to_neighbor = Pose(neighbor, direction)
-                if self.is_junction(pose_to_neighbor):
+                if self.is_junction(neighbor):
                     continue
                 
                 if end_on_signal and 'signal' in self._graph[neighbor]:
@@ -100,6 +98,6 @@ class NetworkExplorer:
                 if only_platforms and 'station' not in self._graph.edges[edge]:
                     continue
                 
-                stack.append(pose_to_neighbor)
+                stack.append(Pose(neighbor, direction))
 
         return nodes, edges

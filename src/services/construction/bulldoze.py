@@ -10,14 +10,14 @@ class BulldozeTarget:
 
 def get_bulldoze_target(map: RailMap, world_pos: Position, camera_scale: float) -> BulldozeTarget:
     snapped = world_pos.snap_to_grid()
-    if map.has_signal_at(snapped):
+    if map.has_node_at(snapped) and map.has_signal_at(snapped):
         return BulldozeTarget(CursorTarget.SIGNAL, snapped)
     
-    for station in map.get_all_stations().keys():
+    for station in map.stations.keys():
         if snapped.station_rect_overlaps(station):
             return BulldozeTarget(CursorTarget.STATION, station)
 
-    closest_edge = world_pos.closest_edge(map.get_all_edges(), camera_scale)
+    closest_edge = world_pos.closest_edge(map.edges, camera_scale)
 
     if closest_edge is not None:
         if map.is_edge_platform(closest_edge):

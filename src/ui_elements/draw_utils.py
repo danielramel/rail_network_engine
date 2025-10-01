@@ -5,7 +5,7 @@ from config.settings import GRID_SIZE, STATION_RECT_SIZE
 from graphics.camera import Camera
 from models.geometry import Position, Pose
 
-def draw_node(surface: pygame.Surface, camera: Camera, node: Position, color=WHITE):
+def draw_node(surface: pygame.Surface, node: Position, camera: Camera, color=WHITE):
     """Draw a node on the given surface using the camera."""
     screen_x, screen_y = camera.world_to_screen(node)
     outer_radius = max(2, int(6 * camera.scale))
@@ -14,7 +14,7 @@ def draw_node(surface: pygame.Surface, camera: Camera, node: Position, color=WHI
     pygame.draw.circle(surface, BLACK, (int(screen_x), int(screen_y)), inner_radius)
 
 
-def draw_signal(surface: pygame.Surface, camera: Camera, alignment: Pose, color=WHITE, offset=False):
+def draw_signal(surface: pygame.Surface, alignment: Pose, camera: Camera,color=WHITE, offset=False):
     def get_rotation_angle(direction_vector):
         angle_map = {
             (0, 1): 0,
@@ -32,7 +32,7 @@ def draw_signal(surface: pygame.Surface, camera: Camera, alignment: Pose, color=
     screen_x, screen_y = camera.world_to_screen(alignment.position)
 
     if offset:
-        draw_node(surface, camera, alignment.position, color=YELLOW)
+        draw_node(surface, alignment.position, camera, color=YELLOW)
         screen_y -= GRID_SIZE * camera.scale//1.25
 
     surf = pygame.Surface((size, size), pygame.SRCALPHA)
@@ -49,9 +49,9 @@ def draw_signal(surface: pygame.Surface, camera: Camera, alignment: Pose, color=
 
     rect = rotated_surf.get_rect(center=(screen_x, screen_y))
     surface.blit(rotated_surf, rect)
-    
-    
-def draw_station(surface: pygame.Surface, camera: Camera, position: Position, name: str, color=WHITE):
+
+
+def draw_station(surface: pygame.Surface, position: Position, name: str, camera: Camera, color=WHITE):
     w, h = STATION_RECT_SIZE
     rect = pygame.Rect(0, 0, w * camera.scale, h * camera.scale)
     rect.center = tuple(camera.world_to_screen(position))
@@ -63,8 +63,11 @@ def draw_station(surface: pygame.Surface, camera: Camera, position: Position, na
     text_rect = text_surface.get_rect(center=rect.center)
     surface.blit(text_surface, text_rect)
 
-def draw_dashed_line(surface: pygame.Surface, start_pos, end_pos, color, width=1, dash_length=10, gap_length=5):
+def draw_dashed_line(surface: pygame.Surface, start_pos: Position, end_pos: Position, camera: Camera, color, width=1, dash_length=10, gap_length=5):
     """Draw a dashed line on the surface from start_pos to end_pos."""
+    start_pos = camera.world_to_screen(start_pos)
+    end_pos = camera.world_to_screen(end_pos)
+
     x1, y1 = start_pos
     x2, y2 = end_pos
     dx = x2 - x1

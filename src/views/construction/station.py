@@ -11,15 +11,11 @@ def render_station_preview(surface : pygame.Surface, world_pos: Position, map: R
     snapped = world_pos.snap_to_grid()
 
     color = YELLOW
-    if any(snapped.within_station_rect(node_pos) for node_pos in map.graph.nodes):
+    if any(snapped.within_station_rect(node_pos) for node_pos in map.nodes):
         color = RED
-    elif any(snapped.station_rect_overlaps(station_pos) for station_pos in map.get_all_stations().keys()):
+    elif any(snapped.station_rect_overlaps(station_pos) for station_pos in map.stations.keys()):
         color = RED
     else:
         color = YELLOW
 
-    draw_station(surface, camera, snapped, "STATION", color=color)
-
-    
-    
-    
+    draw_station(surface, snapped, "STATION", camera, color=color)

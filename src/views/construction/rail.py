@@ -10,27 +10,27 @@ from models.geometry import Position, Pose
 def render_rail_preview(surface : pygame.Surface, world_pos: Position, anchor: Pose, map: RailMap, camera: Camera):
     snapped = world_pos.snap_to_grid()
     if not can_be_part_of_path(snapped, map):
-        draw_node(surface, camera, snapped, color=RED)
+        draw_node(surface, snapped, camera, color=RED)
         if anchor is not None:
-            draw_node(surface, camera, anchor.position, color=RED)
+            draw_node(surface, anchor.position, camera, color=RED)
         return
 
     if anchor is None:
-        draw_node(surface, camera, snapped, color=YELLOW)
+        draw_node(surface, snapped, camera, color=YELLOW)
         return
 
     if anchor.position == snapped:
-        draw_node(surface, camera, snapped, color=YELLOW)
+        draw_node(surface, snapped, camera, color=YELLOW)
         return
 
     found_path = find_path(anchor, snapped, map)
     if not found_path:
-        draw_node(surface, camera, snapped, color=RED)
-        draw_node(surface, camera, anchor.position, color=RED)
+        draw_node(surface, snapped, camera, color=RED)
+        draw_node(surface, anchor.position, camera, color=RED)
         return
     
     
     screen_points = [tuple(camera.world_to_screen(Position(*pt))) for pt in found_path]
     pygame.draw.aalines(surface, YELLOW, False, screen_points)
-    draw_node(surface, camera, snapped, color=YELLOW)
-    draw_node(surface, camera, anchor.position, color=YELLOW)
+    draw_node(surface, snapped, camera, color=YELLOW)
+    draw_node(surface, anchor.position, camera, color=YELLOW)

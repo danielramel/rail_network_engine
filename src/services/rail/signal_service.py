@@ -4,24 +4,26 @@ from models.geometry import Position, Pose
 
 class SignalService:
     """Service responsible for adding / toggling / removing signals."""
-    def __init__(self, graph: Graph):
+    def __init__(self, graph: Graph, map):
         self._graph = graph
+        self._map = map
 
     def has_signal_at(self, pos: Position) -> bool:
-        if not self._graph.has_node(pos):
-            return False
         return 'signal' in self._graph.nodes[pos]
+    
+    def get(self, pos: Position) -> Pose | None:
+        return Pose(pos, self._graph.nodes[pos]['signal'])
 
-    def add_signal(self, signal: Pose) -> None:
-        if self._graph.degree(signal.position) > 2: raise ValueError("Cannot place signal at intersection")
-        if self.has_signal_at(signal.position): raise ValueError("Signal already exists at this position")
+    def add(self, pos: Position) -> None:
+        if self._map.is_junction(pos): raise ValueError("Cannot place signal at junction")
+        if self.has_signal_at(pos): raise ValueError("Signal already exists at this position")
 
-        self._graph.nodes[signal.position]['signal'] = signal.direction
+        self._graph.nodes[pos]['signal'] = pos.direction_to(next(self._graph.neighbors(pos)))
 
-    def remove_signal(self, pos: Position) -> None:
+    def remove(self, pos: Position) -> None:
         del self._graph.nodes[pos]['signal']
 
-    def toggle_signal(self, pos: Position) -> None:
+    def toggle(self, pos: Position) -> None:
         current_direction = self._graph.nodes[pos]['signal']
         neighbors = tuple(self._graph.neighbors(pos))
         if len(neighbors) < 2: raise ValueError("Cannot toggle signal at dead end")
@@ -31,6 +33,6 @@ class SignalService:
         else:
             self._graph.nodes[pos]['signal'] = pos.direction_to(neighbors[0])
 
-    def get_all_signals(self) -> tuple[Pose]:
+    def all(self) -> tuple[Pose]:
         return tuple(Pose(node, data['signal']) for node, data in self._graph.nodes(data=True) if 'signal' in data)
 
