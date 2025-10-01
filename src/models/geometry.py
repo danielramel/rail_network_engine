@@ -59,12 +59,8 @@ class Position:
             abs(center.x - self.x) * 2 < w and
             abs(center.y - self.y) * 2 < h
         )
-
-    def intersects_line(self, edge: tuple['Position', 'Position'], camera_scale: float) -> tuple[bool, float]:
-        """
-        Check if this point is within 'BULLDOZE_SENSITIVITY' pixels of line segment ab.
-        Returns (is_within_sensitivity, distance).
-        """
+    def closest_point_to_edge(self, edge: tuple['Position', 'Position']) -> 'Position':
+        """Get the closest point on the line segment defined by edge to this point."""
         a, b = edge
         # Line vector
         dx, dy = b.x - a.x, b.y - a.y
@@ -75,9 +71,17 @@ class Position:
         
         # Closest point on the segment
         cx, cy = a.x + t * dx, a.y + t * dy
+        return Position(cx, cy)
+    
+    def intersects_line(self, edge: tuple['Position', 'Position'], camera_scale: float) -> tuple[bool, float]:
+        """
+        Check if this point is within 'BULLDOZE_SENSITIVITY' pixels of line segment ab.
+        Returns (is_within_sensitivity, distance).
+        """
+        closest_point = self.closest_point_to_edge(edge)
         
         # Distance from this point to that closest point
-        dist = hypot(self.x - cx, self.y - cy)
+        dist = hypot(self.x - closest_point.x, self.y - closest_point.y)
         return dist <= BULLDOZE_SENSITIVITY / camera_scale, dist
     
     def closest_edge(self, edges: list[tuple['Position', 'Position']], camera_scale: float) -> tuple['Position', 'Position'] | None:
@@ -92,6 +96,8 @@ class Position:
                 closest_edge = edge
         
         return closest_edge
+    
+
     
     def midpoint(self, other: 'Position') -> 'Position':
         """Return the midpoint between this position and another."""

@@ -28,8 +28,8 @@ class PlatformService:
     def get_platforms(self) -> dict[tuple[Position, Position], Position]:
         return {edge: data['station'] for edge, data in self._graph.edges.items() if 'station' in data}
     
-    def is_node_platform(self, pos: Position) -> bool:
-        return 'station' in self._graph.nodes[pos]
+    def is_platform_at(self, pos: Position) -> bool:
+        return all('station' in self._graph.edges[edge] for edge in self._graph.edges(pos))
     
     def is_edge_platform(self, edge: tuple[Position, Position]) -> bool:
         return 'station' in self._graph.edges[edge]

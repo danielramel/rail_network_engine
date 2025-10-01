@@ -14,5 +14,5 @@ def handle_platform_click(map: RailMap, pos: Position, camera_scale):
         if len(edges) < MINIMUM_PLATFORM_LENGTH:
             alert(f'Platform too short! Minimum length is {MINIMUM_PLATFORM_LENGTH} segments.')
             return
-        map.add_platform(nodes, edges, context.nearest_station)
+        map.add_platform(nodes, edges, context.station)
         

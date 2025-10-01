@@ -56,7 +56,7 @@ class RailMap:
     def add_station_at(self, pos: Position, name: str):
         self.stations.add(pos, name)
 
-    def remove_station(self, pos: Position):
+    def remove_station_at(self, pos: Position):
         self.stations.remove(pos)
 
     def get_station(self, pos: Position) -> Station:
@@ -87,7 +87,7 @@ class RailMap:
 
 
     def has_platform_at(self, pos: Position) -> bool:
-        return self.platform_service.is_node_platform(pos)
+        return self.platform_service.is_platform_at(pos)
 
     def is_edge_platform(self, edge: tuple[Position, Position]) -> bool:
         return self.platform_service.is_edge_platform(edge)

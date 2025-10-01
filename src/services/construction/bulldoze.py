@@ -1,10 +1,7 @@
 from dataclasses import dataclass
 from models.construction import CursorTarget
-
 from models.geometry import Position
 from models.map import RailMap
-
-
 
 @dataclass
 class BulldozeTarget:

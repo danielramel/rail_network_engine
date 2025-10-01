@@ -57,7 +57,7 @@ class NetworkExplorer:
         stack: deque[Pose] = deque()
 
         a, b = edge
-        if only_platforms and 'platform' not in self._graph.edges[edge]: raise ValueError("No platform on the given edge")
+        if only_platforms and 'station' not in self._graph.edges[edge]: raise ValueError("No platform on the given edge")
         
         edges.add((a, b))
         
@@ -97,7 +97,7 @@ class NetworkExplorer:
                 if end_on_signal and 'signal' in self._graph[neighbor]:
                     continue
                 
-                if only_platforms and 'platform' not in self._graph.edges[edge]:
+                if only_platforms and 'station' not in self._graph.edges[edge]:
                     continue
                 
                 stack.append(pose_to_neighbor)
