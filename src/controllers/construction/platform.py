@@ -1,7 +1,7 @@
 from models.map import RailMap
 from models.construction import CursorTarget
-from services.platform import get_platform_context
-from models.position import Position
+from services.construction.platform import get_platform_context
+from models.geometry import Position
 from config.settings import MINIMUM_PLATFORM_LENGTH
 from ui_elements.alert import alert
 

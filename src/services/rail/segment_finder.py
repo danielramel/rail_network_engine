@@ -1,6 +1,6 @@
 from typing import Generator
 from networkx import Graph
-from models.position import Position, Pose
+from models.geometry import Position, Pose
 from collections import deque
 
 

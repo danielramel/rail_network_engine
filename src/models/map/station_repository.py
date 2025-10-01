@@ -1,4 +1,4 @@
-from models.position import Position
+from models.geometry import Position
 
 class Station:
     name: str

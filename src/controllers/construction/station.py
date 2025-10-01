@@ -1,4 +1,4 @@
-from models.position import Position
+from models.geometry import Position
 from models.map import RailMap
 from ui_elements.text_input import user_input
 

@@ -1,6 +1,6 @@
 import pygame
 from graphics.camera import Camera
-from models.position import Position
+from models.geometry import Position
 from models.map import RailMap
 from models.construction import ConstructionState
 from ui_elements.draw_utils import draw_station

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from models.construction import CursorTarget
 
-from models.position import Position
+from models.geometry import Position
 from models.map import RailMap
 
 
@@ -20,14 +20,7 @@ def get_bulldoze_target(map: RailMap, world_pos: Position, camera_scale: float) 
         if snapped.station_rect_overlaps(station):
             return BulldozeTarget(CursorTarget.STATION, station)
 
-    closest_edge = None
-    closest_dist = float('inf')
-
-    for edge in map.get_all_edges():
-        is_within, dist = world_pos.intersects_line(edge, camera_scale)
-        if is_within and dist < closest_dist:
-            closest_dist = dist
-            closest_edge = edge
+    closest_edge = world_pos.closest_edge(map.get_all_edges(), camera_scale)
 
     if closest_edge is not None:
         if map.is_edge_platform(closest_edge):

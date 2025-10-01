@@ -5,8 +5,8 @@ from graphics.camera import Camera
 from models.map import RailMap
 from models.construction import CursorTarget
 from ui_elements.draw_utils import draw_dashed_line, draw_edges, draw_node, draw_station
-from services.platform import get_platform_context
-from models.position import Position
+from services.construction.platform import get_platform_context
+from models.geometry import Position
     
 
 def render_platform_preview(surface: Surface, world_pos: Position, map: RailMap, camera: Camera):

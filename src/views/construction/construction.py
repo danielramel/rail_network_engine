@@ -1,7 +1,7 @@
 import pygame
 
 from graphics.camera import Camera
-from models.position import Position
+from models.geometry import Position
 from ui_elements.draw_utils import draw_station, draw_edges
 from models.map import RailMap
 from ui_elements import draw_construction_buttons, draw_zoom_indicator, draw_grid, draw_node, draw_signal

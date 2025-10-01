@@ -1,5 +1,5 @@
 import pygame
-from models.position import Position
+from models.geometry import Position
 from ui_elements.alert import alert
 from ui_elements import get_zoom_box, get_construction_buttons
 from .rail import handle_rail_click

@@ -1,7 +1,7 @@
-from models.position import Position
-from services.bulldoze import CursorTarget
+from models.geometry import Position
+from services.construction.bulldoze import CursorTarget
 from models.map import RailMap
-from services.bulldoze import get_bulldoze_target
+from services.construction.bulldoze import get_bulldoze_target
 
 def handle_bulldoze_click(map: RailMap, pos: Position, camera_scale):
     target = get_bulldoze_target(map, pos, camera_scale)

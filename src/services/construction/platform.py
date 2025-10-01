@@ -1,5 +1,5 @@
 
-from models.position import Position
+from models.geometry import Position
 from models.map import RailMap
 from models.construction import CursorTarget
 from dataclasses import dataclass

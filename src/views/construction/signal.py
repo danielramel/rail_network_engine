@@ -1,5 +1,5 @@
 import pygame
-from models.position import Position, Pose
+from models.geometry import Position, Pose
 from ui_elements.draw_utils import draw_signal
 from config.colors import GRAY, RED, YELLOW
 from graphics.camera import Camera

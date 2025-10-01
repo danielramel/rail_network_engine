@@ -1,7 +1,7 @@
 from models.map import RailMap, find_path
 from models.construction import ConstructionState
 from models.map.pathfinding import can_be_part_of_path
-from models.position import Position, Pose
+from models.geometry import Position, Pose
 
 def handle_rail_click(state: ConstructionState, map: RailMap, pos: Position):
     snapped = pos.snap_to_grid()

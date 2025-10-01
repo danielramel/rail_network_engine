@@ -80,6 +80,19 @@ class Position:
         dist = hypot(self.x - cx, self.y - cy)
         return dist <= BULLDOZE_SENSITIVITY / camera_scale, dist
     
+    def closest_edge(self, edges: list[tuple['Position', 'Position']], camera_scale: float) -> tuple['Position', 'Position'] | None:
+        """Get the closest edge from a list of edges to this point."""
+        closest_edge = None
+        closest_dist = float('inf')
+        
+        for edge in edges:
+            is_within, dist = self.intersects_line(edge, camera_scale)
+            if is_within and dist < closest_dist:
+                closest_dist = dist
+                closest_edge = edge
+        
+        return closest_edge
+    
     def midpoint(self, other: 'Position') -> 'Position':
         """Return the midpoint between this position and another."""
         return Position((self.x + other.x) / 2, (self.y + other.y) / 2)

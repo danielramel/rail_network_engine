@@ -1,6 +1,6 @@
 from config.settings import GRID_SIZE
 from models.map.rail_map import RailMap
-from models.position import Position, Pose
+from models.geometry import Position, Pose
 import heapq
 
 from services.rail.segment_finder import NetworkExplorer

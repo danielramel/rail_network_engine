@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from models.position import Pose
+from models.geometry import Pose
 
 class ConstructionMode(Enum):
     RAIL = 1

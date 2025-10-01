@@ -1,6 +1,6 @@
-from models.position import Pose
+from models.geometry import Pose
 from models.map import RailMap
-from models.position import Position
+from models.geometry import Position
 
 def handle_signal_click(map: RailMap, pos: Position):
     snapped = pos.snap_to_grid()

@@ -1,5 +1,5 @@
 from networkx import Graph
-from models.position import Position, Pose
+from models.geometry import Position, Pose
 from services.rail.segment_finder import NetworkExplorer
 from services.rail.signal_service import SignalService
 from services.rail.platform_service import PlatformService
