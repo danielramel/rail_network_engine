@@ -14,10 +14,7 @@ class PlatformService:
             self._graph.edges[a, b]['station'] = station_pos
 
     def remove(self, edge: tuple[Position, Position]) -> None:
-        nodes, edges = self._segfinder.get_segment(edge, end_on_signal=False, only_platforms=True)
-
-        for n in nodes:
-            del self._graph.nodes[n]['station']
+        _, edges = self._segfinder.get_segment(edge, end_on_signal=False, only_platforms=True)
 
         for edge in edges:
             del self._graph.edges[edge]['station']

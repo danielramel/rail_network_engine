@@ -3,7 +3,7 @@ from models.map.rail_map import RailMap
 from models.geometry import Position, Pose
 import heapq
 
-from services.rail.segment_finder import NetworkExplorer
+from services.rail.network_explorer import NetworkExplorer
 
 
 ORTHOGONAL_COST = 1.0

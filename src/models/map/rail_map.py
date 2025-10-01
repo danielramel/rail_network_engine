@@ -1,6 +1,6 @@
 import networkx as nx
 from models.geometry import Position, Pose
-from services.rail.segment_finder import NetworkExplorer
+from services.rail.network_explorer import NetworkExplorer
 from services.rail.signal_service import SignalService
 from services.rail.platform_service import PlatformService
 from .station_repository import StationRepository, Station

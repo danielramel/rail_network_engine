@@ -33,11 +33,14 @@ def load_construction_icons():
 
 def get_construction_buttons(surface: pygame.Surface) -> list[tuple[ConstructionMode, pygame.Rect]]:
     button_margin = CONSTRUCTION_BUTTON_SIZE // 5
-    w, h = surface.get_size()
+    _, h = surface.get_size()
     buttons = []
     for i, mode in enumerate(ConstructionMode):
+        offset = (CONSTRUCTION_BUTTON_SIZE + button_margin) * i
+        if mode is ConstructionMode.BULLDOZE:
+            offset += (CONSTRUCTION_BUTTON_SIZE + button_margin)
         rect = pygame.Rect(
-            button_margin + i * (CONSTRUCTION_BUTTON_SIZE + button_margin),
+            button_margin + offset,
             h - CONSTRUCTION_BUTTON_SIZE - button_margin,
             CONSTRUCTION_BUTTON_SIZE,
             CONSTRUCTION_BUTTON_SIZE

@@ -1,5 +1,5 @@
 from pygame import Surface
-from config.colors import PURPLE, RED
+from config.colors import ORANGE, RED
 from config.settings import MINIMUM_PLATFORM_LENGTH
 from graphics.camera import Camera
 from models.map import RailMap
@@ -13,17 +13,17 @@ def render_platform_preview(surface: Surface, world_pos: Position, map: RailMap,
     context = get_platform_context(map, world_pos, camera.scale)
     
     if context.type == CursorTarget.EMPTY:
-        draw_node(surface, context.data, camera, color=PURPLE)
+        draw_node(surface, context.data, camera, color=ORANGE)
 
     else:  # EDGE
         _, edges = map.get_segment(context.data, end_on_signal=False)  # can change end_on_signal to True if desired
-        color = RED if len(edges) < MINIMUM_PLATFORM_LENGTH else PURPLE
+        color = RED if len(edges) < MINIMUM_PLATFORM_LENGTH else ORANGE
         draw_edges(surface, edges, camera, color=color)
 
-    draw_station(surface, context.station.position, context.station.name, camera, color=PURPLE)
+    draw_station(surface, context.station.position, context.station.name, camera, color=ORANGE)
     start = context.station.position
     if context.type == CursorTarget.EDGE:
         end = world_pos.closest_point_to_edge(context.data)
     else:
         end = context.data
-    draw_dashed_line(surface, start, end, camera, PURPLE)
+    draw_dashed_line(surface, start, end, camera, ORANGE)

@@ -6,7 +6,7 @@ from ui_elements.draw_utils import draw_station, draw_edges
 from models.map import RailMap
 from ui_elements import draw_construction_buttons, draw_zoom_indicator, draw_grid, draw_node, draw_signal
 
-from config.colors import PURPLE
+from config.colors import ORANGE
 from models.construction import ConstructionState
 from .signal import render_signal_preview
 from .station import render_station_preview
@@ -30,7 +30,7 @@ def render_construction_preview(surface: pygame.Surface, camera: Camera, map: Ra
     for pos, station in map.stations.items():
         draw_station(surface, pos, station.name, camera)
 
-    draw_edges(surface, map.platforms.keys(), camera, color=PURPLE)
+    draw_edges(surface, map.platforms.keys(), camera, color=ORANGE)
 
     pos = Position(*pygame.mouse.get_pos())
     for _, rect in get_construction_buttons(surface):

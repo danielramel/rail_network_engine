@@ -6,8 +6,8 @@ class ConstructionMode(Enum):
     RAIL = 1
     SIGNAL = 2
     STATION = 3
-    BULLDOZE = 4
-    PLATFORM = 5
+    PLATFORM = 4
+    BULLDOZE = 5
     
 @dataclass
 class ConstructionState:

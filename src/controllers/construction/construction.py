@@ -25,9 +25,9 @@ def handle_construction_events(state: ConstructionState, construction_toggle_but
             elif event.key == pygame.K_3:
                 set_construction_mode(state, map, ConstructionMode.STATION)
             elif event.key == pygame.K_4:
-                set_construction_mode(state, map, ConstructionMode.BULLDOZE)
-            elif event.key == pygame.K_5:
                 set_construction_mode(state, map, ConstructionMode.PLATFORM)
+            elif event.key == pygame.K_5:
+                set_construction_mode(state, map, ConstructionMode.BULLDOZE)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             pos = Position(*event.pos)
             if event.button == 1:
