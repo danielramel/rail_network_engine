@@ -20,6 +20,7 @@ class RailMap:
     def is_junction(self, pos: Position) -> bool:
         return NetworkExplorer(self._graph).is_junction(pos)
 
+    
     def get_junctions(self) -> list[Position]:
         return [n for n in self._graph.nodes if self.is_junction(n)]
     

@@ -72,12 +72,14 @@ def handle_construction_events(state: ConstructionState, construction_toggle_but
 
 def set_construction_mode(state: ConstructionState, map: RailMap, mode: ConstructionMode):
     """Helper function to set construction mode with proper validation"""
-    if mode != state.Mode:
-        if mode == ConstructionMode.RAIL:
-            state.construction_anchor = None
-        elif mode == ConstructionMode.PLATFORM:
-            if len(map.stations) == 0:
-                alert("You need to build a station first!")
-                state.Mode = None
-                return
-        state.Mode = mode
+    if mode == state.Mode:
+        return
+    
+    if mode == ConstructionMode.RAIL:
+        state.construction_anchor = None
+    elif mode == ConstructionMode.PLATFORM:
+        if len(map.stations) == 0:
+            alert("You need to build a station first!")
+            state.Mode = None
+            return
+    state.Mode = mode

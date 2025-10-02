@@ -4,9 +4,6 @@ from collections import deque
 
 
 class NetworkExplorer:
-    """Finds a connected segment following traversal rules."""
-
-
     def __init__(self, graph: Graph):
         self._graph = graph
     
@@ -17,7 +14,7 @@ class NetworkExplorer:
         neighbors = tuple(self._graph.neighbors(pos))
         inbound = neighbors[0].direction_to(pos)
         outbound = pos.direction_to(neighbors[1])
-        return outbound not in Pose.get_valid_turns(inbound)      
+        return outbound not in Pose.get_valid_turns(inbound)
 
     def get_connections_from_pose(self, pose: Pose, only_straight: bool = False) -> tuple[Pose]:
         connections = []
