@@ -1,6 +1,6 @@
 import networkx as nx
 from models.geometry import Position, Pose
-from services.rail.network_explorer import NetworkExplorer
+from services.rail.graph_query_service import GraphQueryService
 from services.rail.signal_service import SignalService
 from services.rail.platform_service import PlatformService
 from services.rail.path_finder import Pathfinder
@@ -10,27 +10,20 @@ from .station_repository import StationRepository, Station
 class RailMap:
     def __init__(self):
         self._graph = nx.Graph()
-        self._explorer = NetworkExplorer(self._graph)
+        self._query_service = GraphQueryService(self._graph)
         self._signal_service = SignalService(self._graph, self)
-        self._platform_service = PlatformService(self._graph, self._explorer)
+        self._platform_service = PlatformService(self._graph, self._query_service)
         self._pathfinder = Pathfinder(self)
         self._stations = StationRepository()
-
     
-    def is_junction(self, pos: Position) -> bool:
-        return NetworkExplorer(self._graph).is_junction(pos)
-
-    
-    def get_junctions(self) -> list[Position]:
-        return [n for n in self._graph.nodes if self.is_junction(n)]
+    @property
+    def nodes(self):
+        return self._graph.nodes
     
     @property
     def edges(self):
         return self._graph.edges
     
-    @property
-    def nodes(self):
-        return self._graph.nodes
     
     def has_node_at(self, pos: Position) -> bool:
         return pos in self._graph.nodes
@@ -38,10 +31,19 @@ class RailMap:
     def degree_at(self, pos: Position) -> int:
         return self._graph.degree[pos]
     
-     # --- segments ---
-    def get_segment(self, edge: tuple[Position, Position], end_on_signal: bool = False, only_platforms: bool = False, only_straight: bool = False) -> tuple[set[Position], set[tuple[Position, Position]]]:
-        return self._explorer.get_segment(edge, end_on_signal=end_on_signal, only_platforms=only_platforms, only_straight=only_straight)
+    # -- graph queries ---
+    def is_junction(self, pos: Position) -> bool:
+        return self._query_service.is_junction(pos)
 
+    @property
+    def junctions(self) -> list[Position]:
+        return [n for n in self._graph.nodes if self.is_junction(n)]
+    
+    def get_segment(self, edge: tuple[Position, Position], end_on_signal: bool = False, only_platforms: bool = False, only_straight: bool = False) -> tuple[set[Position], set[tuple[Position, Position]]]:
+        return self._query_service.get_segment(edge, end_on_signal=end_on_signal, only_platforms=only_platforms, only_straight=only_straight)
+
+
+    # -- graph modifications ---
     def remove_segment_at(self, edge: tuple[Position, Position]) -> None:
         nodes, edges = self.get_segment(edge)
         if len(nodes) == 0 and len(edges) == 1:
@@ -64,9 +66,16 @@ class RailMap:
         return self._pathfinder.is_blocked(pos)
 
     def find_path(self, start: Pose, end: Position) -> list[Position] | None:
-        return self._pathfinder.find_path(start, end)
+        return self._pathfinder.find_grid_path(start, end)
+
+    def find_network_path(self, start: Position, end: Position, only_straight: bool) -> list[Position] | None:
+        return self._pathfinder.find_network_path(start, end, only_straight)
 
     # --- signals ---
+    @property
+    def signals(self) -> tuple[Pose, ...]:
+        return self._signal_service.all()
+    
     def has_signal_at(self, pos: Position) -> bool:
         return self._signal_service.has_signal_at(pos)
     
@@ -85,21 +94,17 @@ class RailMap:
     def get_signal_at(self, pos: Position) -> Pose | None:
         return Pose(pos, self._graph.nodes[pos]['signal'])
 
-    @property
-    def signals(self) -> tuple[Pose, ...]:
-        return self._signal_service.all()
-
     # --- platforms ---
+    @property
+    def platforms(self) -> dict[tuple[Position, Position], Position]:
+        return self._platform_service.all()
+    
     def add_platform_on(self, edges: tuple[tuple[Position, Position]], station_pos: Position):
         self._platform_service.add(edges, station_pos)
 
     def remove_platform_at(self, edge: tuple[Position, Position]):
         self._platform_service.remove(edge)
 
-    @property
-    def platforms(self) -> dict[tuple[Position, Position], Position]:
-        return self._platform_service.all()
-    
     def is_platform_at(self, pos: Position) -> bool:
         return self._platform_service.is_platform_at(pos)
 
@@ -107,6 +112,14 @@ class RailMap:
         return self._platform_service.is_edge_platform(edge)
 
     # --- stations ---
+    @property
+    def stations(self) -> tuple[Station, ...]:
+        return self._stations.all().values()
+
+    @property
+    def station_positions(self) -> tuple[Position, ...]:
+        return self._stations.all().keys()
+    
     def add_station_at(self, pos: Position, name: str):
         self._stations.add(pos, name)
 
@@ -119,6 +132,3 @@ class RailMap:
     def is_within_station_rect(self, pos: Position) -> bool:
         return self._stations.is_within_station_rect(pos)
 
-    @property
-    def stations(self) -> dict[Position, Station]:
-        return self._stations.all()

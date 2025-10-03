@@ -3,7 +3,7 @@ from models.geometry import Position, Pose
 from collections import deque
 
 
-class NetworkExplorer:
+class GraphQueryService:
     def __init__(self, graph: Graph):
         self._graph = graph
     

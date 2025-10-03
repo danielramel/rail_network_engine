@@ -1,10 +1,10 @@
-from models.map.rail_map import NetworkExplorer
+from models.map.rail_map import GraphQueryService
 from models.geometry import Position
 from networkx import Graph
 
 
 class PlatformService:
-    def __init__(self, graph: Graph, segment_finder: NetworkExplorer):
+    def __init__(self, graph: Graph, segment_finder: GraphQueryService):
         self._graph = graph
         self._segfinder = segment_finder
 

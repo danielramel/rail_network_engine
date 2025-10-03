@@ -11,6 +11,10 @@ class Pose(NamedTuple):
         """Create a Pose given two positions."""
         return cls(current, previous.direction_to(current))
     
+    def get_valid_turns(self) -> list[tuple[int, int]]:
+        """Get valid turn directions from the current direction."""
+        return self.get_valid_turns(self.direction)
+    
     @staticmethod
     def get_valid_turns(direction: tuple[int, int]) -> list[tuple[int, int]]:
         """Get valid turn directions from the current direction."""

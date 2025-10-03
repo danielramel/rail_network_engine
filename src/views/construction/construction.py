@@ -21,13 +21,13 @@ def render_construction_preview(surface: pygame.Surface, camera: Camera, map: Ra
     draw_grid(surface, camera)
 
     draw_edges(surface, map.edges, camera)
-    for node in map.get_junctions():
+    for node in map.junctions:
         draw_node(surface, node, camera)
         
     for signal in map.signals:
         draw_signal(surface, signal, camera)
 
-    for station in map.stations.values():
+    for station in map.stations:
         draw_station(surface, station, camera)
 
     draw_edges(surface, map.platforms.keys(), camera, color=LIGHTBLUE)

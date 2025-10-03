@@ -12,7 +12,7 @@ class PlatformContext:
 
 def get_platform_context(map: RailMap, world_pos: Position, camera_scale: float) -> PlatformContext:
     nearest_station = min(
-        map.stations.values(),
+        map.stations,
         key=lambda s: math.hypot(s.position.x - world_pos.x, s.position.y - world_pos.y)
         )
     closest_edge = world_pos.closest_edge(map.edges, camera_scale)

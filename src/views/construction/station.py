@@ -11,14 +11,14 @@ from config.colors import BLUE, RED, YELLOW
 def render_station_preview(surface : pygame.Surface, world_pos: Position, moving_station: Station | None, map: RailMap, camera: Camera):    
     snapped = world_pos.snap_to_grid()
     if not moving_station:
-        for station_pos in map.stations.keys():
+        for station_pos in map.station_positions:
             if world_pos.is_within_station_rect(station_pos):
-                draw_station(surface, map.stations[station_pos], camera, color=BLUE)
+                draw_station(surface, map.get_station_at(station_pos), camera, color=BLUE)
                 return
             
     if any(snapped.is_within_station_rect(node_pos) for node_pos in map.nodes):
         color = RED        
-    elif any(snapped.station_rect_overlaps(station_pos) for station_pos in map.stations.keys()):
+    elif any(snapped.station_rect_overlaps(station_pos) for station_pos in map.station_positions):
         color = RED
     else:
         color = BLUE if moving_station else YELLOW

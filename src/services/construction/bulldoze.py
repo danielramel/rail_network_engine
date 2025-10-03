@@ -13,7 +13,7 @@ def get_bulldoze_target(map: RailMap, world_pos: Position, camera_scale: float) 
     if map.has_node_at(snapped) and map.has_signal_at(snapped):
         return BulldozeTarget(CursorTarget.SIGNAL, snapped)
     
-    for station in map.stations.keys():
+    for station in map.station_positions:
         if snapped.station_rect_overlaps(station):
             return BulldozeTarget(CursorTarget.STATION, station)
 

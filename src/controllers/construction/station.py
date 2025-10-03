@@ -7,7 +7,7 @@ from ui_elements.text_input import user_input
 def handle_station_click(map: RailMap, world_pos: Position, construction_state: ConstructionState):
     snapped = world_pos.snap_to_grid()
     if not construction_state.moving_station:
-        for station_pos in map.stations.keys():
+        for station_pos in map.station_positions:
             if world_pos.is_within_station_rect(station_pos):
                 station = map.get_station_at(station_pos)
                 map.remove_station_at(station.position)
@@ -16,7 +16,7 @@ def handle_station_click(map: RailMap, world_pos: Position, construction_state: 
 
     if any(snapped.is_within_station_rect(node_pos) for node_pos in map.nodes):
         return
-    elif any(snapped.station_rect_overlaps(station_pos) for station_pos in map.stations.keys()):
+    elif any(snapped.station_rect_overlaps(station_pos) for station_pos in map.station_positions):
         return
     elif construction_state.moving_station:
         map.add_station_at(snapped, construction_state.moving_station.name)
