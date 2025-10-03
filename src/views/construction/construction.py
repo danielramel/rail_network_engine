@@ -2,22 +2,21 @@ import pygame
 
 from graphics.camera import Camera
 from models.geometry import Position
-from ui_elements.draw_utils import draw_station, draw_edges
+from ui.utils import draw_station, draw_edges, draw_node, draw_signal, draw_grid
 from models.map import RailMap
-from ui_elements import draw_construction_buttons, draw_zoom_indicator, draw_grid, draw_node, draw_signal
 
 from config.colors import LIGHTBLUE
 from models.construction import ConstructionState
+from ui.core.ui_layer import UILayer
 from .signal import render_signal_preview
 from .station import render_station_preview
-from .rail import render_rail_preview
+from .rail import draw_rail_panel, render_rail_preview
 from .bulldoze import render_bulldoze_preview
 from .platform import render_platform_preview
 from models.construction import ConstructionMode
-from ui_elements import get_construction_buttons
 
 
-def render_construction_preview(surface: pygame.Surface, camera: Camera, map: RailMap, state: ConstructionState, icon_cache: dict[ConstructionMode, pygame.Surface]):
+def render_construction_preview(ui_layer: UILayer, surface: pygame.Surface, camera: Camera, map: RailMap, state: ConstructionState):
     draw_grid(surface, camera)
 
     draw_edges(surface, map.edges, camera)
@@ -33,23 +32,20 @@ def render_construction_preview(surface: pygame.Surface, camera: Camera, map: Ra
     draw_edges(surface, map.platforms.keys(), camera, color=LIGHTBLUE)
 
     pos = Position(*pygame.mouse.get_pos())
-    for _, rect in get_construction_buttons(surface):
-        if rect.collidepoint(*pos):
-            draw_construction_buttons(surface, state.Mode, icon_cache)
-            draw_zoom_indicator(surface, camera)
-            return # Skip preview if hovering over buttons
-        
     world_pos = camera.screen_to_world(pos)
-    if state.Mode == ConstructionMode.RAIL:
+        
+    if ui_layer.is_over_ui(pos):
+        pass
+    elif state.mode == ConstructionMode.RAIL:
         render_rail_preview(surface, world_pos, state.construction_anchor, map, camera)
-    elif state.Mode == ConstructionMode.SIGNAL:
+        draw_rail_panel(surface, state.Rail)
+    elif state.mode == ConstructionMode.SIGNAL:
         render_signal_preview(surface, world_pos, map, camera)
-    elif state.Mode == ConstructionMode.STATION:
+    elif state.mode == ConstructionMode.STATION:
         render_station_preview(surface, world_pos, state.moving_station, map, camera)
-    elif state.Mode == ConstructionMode.PLATFORM:
+    elif state.mode == ConstructionMode.PLATFORM:
         render_platform_preview(surface, world_pos, map, camera)
-    elif state.Mode == ConstructionMode.BULLDOZE:
+    elif state.mode == ConstructionMode.BULLDOZE:
         render_bulldoze_preview(surface, world_pos, map, camera)
         
-    draw_construction_buttons(surface, state.Mode, icon_cache)
-    draw_zoom_indicator(surface, camera)
+    ui_layer.draw()

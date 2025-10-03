@@ -2,7 +2,7 @@ from config.colors import RED
 from models.construction import ConstructionState
 from models.geometry import Position
 from models.map import RailMap
-from ui_elements.text_input import user_input
+from ui.popups import user_input
 
 def handle_station_click(map: RailMap, world_pos: Position, construction_state: ConstructionState):
     snapped = world_pos.snap_to_grid()

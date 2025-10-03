@@ -3,7 +3,7 @@ from models.construction import CursorTarget
 from services.construction.platform import get_platform_context
 from models.geometry import Position
 from config.settings import MINIMUM_PLATFORM_LENGTH
-from ui_elements.alert import alert
+from ui.popups import alert
 
 
 def handle_platform_click(map: RailMap, pos: Position, camera_scale):

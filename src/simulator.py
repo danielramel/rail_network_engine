@@ -3,15 +3,15 @@ from enum import Enum
 from graphics.camera import Camera
 from models.map import RailMap
 from controllers.construction import handle_construction_events
+from ui.construction_buttons import ConstructionButtons
+from ui.zoom_box import ZoomBox
 from views.normal_view import handle_normal_events, render_normal_view
 from views.construction import render_construction_preview
 from models.construction import ConstructionState
 from config.colors import WHITE, BLACK, GRAY, LIGHTBLUE
-from ui_elements.buttons import load_construction_icons
-
-class View(Enum):
-    NORMAL = 0
-    CONSTRUCTION = 1
+from ui.core.ui_layer import UILayer
+from models.view import ViewMode
+from ui.mode_selector_buttons import ModeSelectorButtons
 
 class Game:
     def __init__(self):
@@ -22,44 +22,36 @@ class Game:
         self.map = RailMap()
         self.camera = Camera()
         self.construction_state = ConstructionState()
-        self.view = View.CONSTRUCTION
+        self.ui_layer = UILayer()
+        self.view = ViewMode.CONSTRUCTION
         self.clock = pygame.time.Clock()
         self.running = True
-
-        self.button_size = 50
-        self.construction_toggle_button = pygame.Rect(10, 10, self.button_size, self.button_size)
-        self.font = pygame.font.SysFont(None, 40)
         
-        self.construction_icon_cache = load_construction_icons()
+        self.ui_layer.add(
+            ModeSelectorButtons(self.view),
+            ConstructionButtons(self.screen, self.construction_state),
+            ZoomBox(self.screen, self.camera)
+        )
         
-
-    def draw_common_ui(self):
-        button_color = LIGHTBLUE if self.view == View.CONSTRUCTION else GRAY
-        pygame.draw.rect(self.screen, button_color, self.construction_toggle_button, border_radius=8)
-        text_surface = self.font.render("C", True, WHITE)
-        text_rect = text_surface.get_rect(center=self.construction_toggle_button.center)
-        self.screen.blit(text_surface, text_rect)
 
     def handle_events(self):
-        if self.view == View.CONSTRUCTION:
+        if self.view == ViewMode.CONSTRUCTION:
             return handle_construction_events(
+                self.ui_layer,
                 self.construction_state,
-                self.construction_toggle_button,
-                self.screen,
                 self.camera,
                 self.map
             )
         else:
             return handle_normal_events(
-                self.construction_toggle_button,
                 self.screen,
                 self.camera,
                 self.map
             )
 
     def render_view(self):
-        if self.view == View.CONSTRUCTION:
-            render_construction_preview(self.screen, self.camera, self.map, self.construction_state, self.construction_icon_cache)
+        if self.view == ViewMode.CONSTRUCTION:
+            render_construction_preview(self.ui_layer, self.screen, self.camera, self.map, self.construction_state)
         else:
             render_normal_view(self.screen, self.camera, self.map)
 
@@ -69,12 +61,9 @@ class Game:
             action = self.handle_events()
             if action == "quit":
                 self.running = False
-            elif action == "toggle":
-                self.view = View.NORMAL if self.view == View.CONSTRUCTION else View.CONSTRUCTION
-
+                
             self.screen.fill(BLACK)
             self.render_view()
-            self.draw_common_ui()
 
             pygame.display.flip()
             self.clock.tick(60)

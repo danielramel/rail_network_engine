@@ -1,6 +1,6 @@
 import pygame
 from models.geometry import Position, Pose
-from ui_elements.draw_utils import draw_signal
+from ui.utils import draw_signal
 from config.colors import GRAY, RED, YELLOW
 from graphics.camera import Camera
 from models.map import RailMap

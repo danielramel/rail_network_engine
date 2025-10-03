@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import simpledialog
+from tkinter import messagebox
 
 def user_input(prompt="Enter input: "):
     root = tk.Tk()
@@ -7,3 +8,10 @@ def user_input(prompt="Enter input: "):
     user_input = simpledialog.askstring("Input", prompt)
     root.destroy()
     return user_input
+
+
+def alert(text="Alert!"):
+    root = tk.Tk()
+    root.withdraw()  # Hide the main window
+    messagebox.showinfo("Alert", text)
+    root.destroy()

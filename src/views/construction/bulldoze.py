@@ -2,7 +2,7 @@ from pygame import Surface
 from config.colors import RED, WHITE
 from models.geometry import Position
 from services.construction.bulldoze import CursorTarget, get_bulldoze_target
-from ui_elements.draw_utils import draw_node, draw_signal, draw_station, draw_edges
+from ui.utils import draw_node, draw_signal, draw_station, draw_edges
 from graphics.camera import Camera
 from models.map import RailMap
 

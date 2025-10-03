@@ -1,7 +1,8 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from models.geometry import Pose
 from models.station import Station
+from collections import defaultdict
 
 class ConstructionMode(Enum):
     RAIL = 1
@@ -12,9 +13,10 @@ class ConstructionMode(Enum):
     
 @dataclass
 class ConstructionState:
-    Mode: ConstructionMode | None = ConstructionMode.RAIL
+    mode: ConstructionMode | None = ConstructionMode.RAIL
     construction_anchor: Pose | None = None
     moving_station: Station | None = None
+    Rail: dict[str, Pose | int | None] = field(default_factory=lambda: defaultdict(lambda: None, {"anchor": None, "track_speed": 120}))
 
 class CursorTarget(Enum):
     EDGE = 1

@@ -4,7 +4,7 @@ from models.geometry import Position
 from models.map import RailMap
 from models.construction import ConstructionState
 from models.map.station_repository import Station
-from ui_elements.draw_utils import draw_station
+from ui.utils import draw_station
 from config.colors import BLUE, RED, YELLOW
 
 

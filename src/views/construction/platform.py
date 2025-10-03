@@ -4,7 +4,7 @@ from config.settings import MINIMUM_PLATFORM_LENGTH
 from graphics.camera import Camera
 from models.map import RailMap
 from models.construction import CursorTarget
-from ui_elements.draw_utils import draw_dashed_line, draw_edges, draw_node, draw_station
+from ui.utils import draw_dashed_line, draw_edges, draw_node, draw_station
 from services.construction.platform import get_platform_context
 from models.geometry import Position
     
