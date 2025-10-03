@@ -2,9 +2,13 @@ from config.settings import GRID_SIZE
 from models.geometry import Position, Pose
 import heapq
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from models.map import RailMap
+
 
 class Pathfinder:
-    def __init__(self, map):
+    def __init__(self, map: 'RailMap'):
         self._map = map
 
     def get_direction_cost(self, direction: tuple[int, int]) -> float:
@@ -44,8 +48,9 @@ class Pathfinder:
         return tuple(reversed(path))
 
     def is_blocked(self, pos: Position) -> bool:
-        return (self._map.has_node_at(pos)
-            and (self._map.has_signal_at(pos) or self._map.is_platform_at(pos)))
+        return (self._map.has_node_at(pos) and 
+                (self._map.has_signal_at(pos) 
+                 or self._map.is_platform_at(pos))) or self._map.is_within_station_rect(pos)
 
     def find_path(self, start: Pose, end: Position) -> tuple[Position, ...]:
         """

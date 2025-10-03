@@ -115,6 +115,9 @@ class RailMap:
 
     def get_station_at(self, pos: Position) -> Station:
         return self._stations.get(pos)
+    
+    def is_within_station_rect(self, pos: Position) -> bool:
+        return self._stations.is_within_station_rect(pos)
 
     @property
     def stations(self) -> dict[Position, Station]:

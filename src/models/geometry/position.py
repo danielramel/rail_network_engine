@@ -49,14 +49,12 @@ class Position:
             abs(self.y - other.y) < h
         )
     
-    def within_station_rect(self, center: 'Position') -> bool:
+    def is_within_station_rect(self, center: 'Position') -> bool:
         """Check if this point is within the station rectangle centered at another point."""
         w, h = STATION_RECT_SIZE
-        w += GRID_SIZE
-        h += GRID_SIZE
         return (
-            abs(center.x - self.x) * 2 < w and
-            abs(center.y - self.y) * 2 < h
+            abs(center.x - self.x) * 2 < w + 1 and
+            abs(center.y - self.y) * 2 < h + 1
         )
     def closest_point_to_edge(self, edge: tuple['Position', 'Position']) -> 'Position':
         """Get the closest point on the line segment defined by edge to this point."""

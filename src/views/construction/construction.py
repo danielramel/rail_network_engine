@@ -45,7 +45,7 @@ def render_construction_preview(surface: pygame.Surface, camera: Camera, map: Ra
     elif state.Mode == ConstructionMode.SIGNAL:
         render_signal_preview(surface, world_pos, map, camera)
     elif state.Mode == ConstructionMode.STATION:
-        render_station_preview(surface, world_pos, map, camera)
+        render_station_preview(surface, world_pos, state.moving_station, map, camera)
     elif state.Mode == ConstructionMode.PLATFORM:
         render_platform_preview(surface, world_pos, map, camera)
     elif state.Mode == ConstructionMode.BULLDOZE:

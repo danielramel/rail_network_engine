@@ -2,7 +2,7 @@ from models.map import RailMap
 from models.construction import ConstructionState
 from models.geometry import Position, Pose
 
-def handle_rail_click(state: ConstructionState, map: RailMap, pos: Position):
+def handle_rail_click(map: RailMap, pos: Position, state: ConstructionState):
     snapped = pos.snap_to_grid()
     if map.is_blocked(snapped):
         return

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 from models.geometry import Pose
+from models.station import Station
 
 class ConstructionMode(Enum):
     RAIL = 1
@@ -13,6 +14,7 @@ class ConstructionMode(Enum):
 class ConstructionState:
     Mode: ConstructionMode | None = ConstructionMode.RAIL
     construction_anchor: Pose | None = None
+    moving_station: Station | None = None
 
 class CursorTarget(Enum):
     EDGE = 1

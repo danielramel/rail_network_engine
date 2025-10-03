@@ -22,3 +22,5 @@ class StationRepository:
     def all(self) -> dict[Position, Station]:
         return self._by_pos
     
+    def is_within_station_rect(self, pos: Position) -> bool:
+        return any(pos.is_within_station_rect(station_pos) for station_pos in self._by_pos.keys())
