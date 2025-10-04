@@ -73,6 +73,8 @@ class GraphQueryService:
                 if end_on_platform and 'station' in self._graph.edges[edge]:
                     continue
                 
+                if only_platforms and 'station' not in self._graph.edges[edge]:
+                    continue
                 
                 edges.add(edge)
 
@@ -88,8 +90,7 @@ class GraphQueryService:
                 if end_on_signal and 'signal' in self._graph[neighbor]:
                     continue
                 
-                if only_platforms and 'station' not in self._graph.edges[edge]:
-                    continue
+                
                 
                 stack.append(Pose(neighbor, direction))
 
