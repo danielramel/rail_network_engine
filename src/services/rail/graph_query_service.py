@@ -1,4 +1,5 @@
 from networkx import Graph
+from config.settings import GRID_SIZE
 from models.geometry import Position, Pose
 from collections import deque
 
@@ -15,6 +16,7 @@ class GraphQueryService:
         inbound = neighbors[0].direction_to(pos)
         outbound = pos.direction_to(neighbors[1])
         return outbound not in Pose.get_valid_turns(inbound)
+    
 
     def get_connections_from_pose(self, pose: Pose, only_straight: bool = False) -> tuple[Pose]:
         connections = []
@@ -53,7 +55,6 @@ class GraphQueryService:
         pose_to_b = Pose.from_positions(a, b)
 
 
-
         if not (is_a_junction or (end_on_signal and a_has_signal)):
             stack.append(pose_to_a)
 
@@ -72,9 +73,10 @@ class GraphQueryService:
                 if end_on_platform and 'station' in self._graph.edges[edge]:
                     continue
                 
+                
                 edges.add(edge)
 
-                if max_nr is not None and len(edges) >= max_nr:
+                if max_nr is not None and only_straight and edge[0].distance_to(edge[1]) * len(edges) >= max_nr * GRID_SIZE:
                     return nodes, edges
                 # skip conditions
                 if neighbor in nodes or neighbor in {s.position for s in stack}:

@@ -24,7 +24,7 @@ def render_bulldoze_preview(surface: Surface, world_pos: Position, mode_info: di
         nodes, edges = map.get_segment(target.data)
         mode_info['preview_edges'].update(edges)
         mode_info['preview_nodes'].update(nodes)
-        mode_info['preview_type'] = 'bulldoze'
+        mode_info['preview_type'] = 'red'
     elif target.type == CursorTarget.PLATFORM:
         _, edges = map.get_segment(target.data)
         draw_edges(surface, edges, camera, color=WHITE)

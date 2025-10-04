@@ -1,3 +1,4 @@
+from config.settings import PLATFORM_LENGTH
 from models.map.rail_map import GraphQueryService
 from models.geometry import Position
 from networkx import Graph
@@ -28,9 +29,15 @@ class PlatformService:
         return 'station' in self._graph.edges[edge]
     
     def calculate_platform_preview(self, edge: tuple[Position, Position]) -> Position | None:
-        _, edges = self._segfinder.get_segment(edge, end_on_platform=True, only_straight=True, max_nr=7)
+        _, edges = self._segfinder.get_segment(edge, end_on_platform=True, only_straight=True, max_nr=PLATFORM_LENGTH)
         return edges
     
-    def get_platform(self, edge: tuple[Position, Position]) -> Position | None:
+    def get_platform(self, edge: tuple[Position, Position]) -> set[tuple[Position, Position]]:
         _, edges = self._segfinder.get_segment(edge, end_on_signal=False, only_platforms=True)
         return edges
+
+    def get_middle_of_platform(self, edges: tuple[tuple[Position, Position]]) -> Position | None:
+        sorted_edges = sorted(edges, key=lambda e: (e[0].x, e[0].y, e[1].x, e[1].y))
+        # get middle edge
+        mid_edge = sorted_edges[len(sorted_edges) // 2]
+        return mid_edge[0].midpoint(mid_edge[1])

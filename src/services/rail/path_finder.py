@@ -16,6 +16,15 @@ class Pathfinder:
                 (self._map.has_signal_at(pos) 
                  or self._map.is_platform_at(pos))) or self._map.is_within_station_rect(pos)
 
+    def is_cutting_through_platform(self, current_state: Pose, neighbor_state: Pose) -> bool:
+        if neighbor_state.direction not in [(1, 1), (1, -1), (-1, 1), (-1, -1)]:
+            return False
+        # Check for corner cutting
+        corner1 = Position(current_state.position.x + neighbor_state.direction[0] * GRID_SIZE, current_state.position.y)
+        corner2 = Position(current_state.position.x, current_state.position.y + neighbor_state.direction[1] * GRID_SIZE)
+        return self._map.has_edge((corner1, corner2)) and self._map.is_edge_platform((corner1, corner2))
+
+        
     def find_grid_path(self, start: Pose, end: Position) -> tuple[Position, ...]:
         """
         Find optimal path using A* algorithm with 45° turn constraint.
@@ -69,6 +78,9 @@ class Pathfinder:
 
             for neighbor_state, cost in get_valid_turn_neighbors(current_state):
                 if self.is_blocked(neighbor_state.position):
+                    continue
+                
+                if self.is_cutting_through_platform(current_state, neighbor_state):
                     continue
 
                 tentative_g_score = g_score[current_state] + cost

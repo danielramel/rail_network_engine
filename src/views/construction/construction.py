@@ -37,6 +37,9 @@ def render_construction_preview(ui_layer: UILayer, surface: pygame.Surface, came
             draw_signal(surface, signal, camera)
 
     for station in map.stations:
+        if state.is_station_being_moved(station):
+            continue
+            
         draw_station(surface, station, camera)
 
     pos = Position(*pygame.mouse.get_pos())

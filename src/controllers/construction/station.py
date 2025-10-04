@@ -10,9 +10,7 @@ def handle_station_click(map: RailMap, world_pos: Position, mode_info: dict):
     if not moving_station:
         for station_pos in map.station_positions:
             if world_pos.is_within_station_rect(station_pos):
-                station = map.get_station_at(station_pos)
-                map.remove_station_at(station.position)
-                mode_info["moving_station"] = station
+                mode_info["moving_station"] = map.get_station_at(station_pos)
                 return
 
     if any(snapped.is_within_station_rect(node_pos) for node_pos in map.nodes):
@@ -20,6 +18,7 @@ def handle_station_click(map: RailMap, world_pos: Position, mode_info: dict):
     elif any(snapped.station_rect_overlaps(station_pos) for station_pos in map.station_positions):
         return
     elif moving_station:
+        map.remove_station_at(moving_station.position)
         map.add_station_at(snapped, moving_station.name)
         mode_info["moving_station"] = None
     else:

@@ -30,6 +30,9 @@ class RailMap:
     def degree_at(self, pos: Position) -> int:
         return self._graph.degree[pos]
     
+    def has_edge(self, edge: tuple[Position, Position]) -> bool:
+        return self._graph.has_edge(*edge)
+    
     # -- graph queries ---
     def is_junction(self, pos: Position) -> bool:
         return self._query_service.is_junction(pos)
@@ -116,6 +119,14 @@ class RailMap:
     def platforms(self) -> dict[tuple[Position, Position], Position]:
         return self._platform_service.all()
     
+    
+    def get_platform_middle_points(self) -> set[Position]:
+        middle_points = set()
+        for edge in self.platforms:
+            edges = self.get_platform(edge)
+            middle_points.add(self.get_middle_of_platform(edges))
+        return middle_points
+    
     def add_platform_on(self, station_pos: Position, edges: tuple[tuple[Position, Position]]):
         self._platform_service.add(station_pos, edges)
 
@@ -131,8 +142,11 @@ class RailMap:
     def calculate_platform_preview(self, edge: tuple[Position, Position]) -> Position | None:
         return self._platform_service.calculate_platform_preview(edge)
     
-    def get_platform(self, edge: tuple[Position, Position]) -> Position | None:
+    def get_platform(self, edge: tuple[Position, Position]) -> set[tuple[Position, Position]] | None:
         return self._platform_service.get_platform(edge)
+
+    def get_middle_of_platform(self, edges: tuple[tuple[Position, Position]]) -> Position | None:
+        return self._platform_service.get_middle_of_platform(edges)
 
     # --- stations ---
     @property

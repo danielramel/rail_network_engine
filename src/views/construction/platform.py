@@ -1,14 +1,17 @@
 from pygame import Surface
-from config.colors import LIGHTBLUE
+from config.colors import LIGHTBLUE, YELLOW
 from config.settings import GRID_SIZE, PLATFORM_LENGTH
 from graphics.camera import Camera
 from models.map import RailMap
 from ui.utils import draw_node, draw_station
-from services.construction.platform import get_platform_context
 from models.geometry import Position
     
 
 def render_platform_preview(surface: Surface, world_pos: Position, mode_info: dict, map: RailMap, camera: Camera):
+    for platform in map.get_platform_middle_points():
+        draw_node(surface, platform, camera, color=YELLOW)
+    
+    
     if mode_info['state'] == 'select_station':
         for station in map.station_positions:
             if world_pos.is_within_station_rect(station):
@@ -19,10 +22,7 @@ def render_platform_preview(surface: Surface, world_pos: Position, mode_info: di
     mode_info['preview_edges'].clear()
     mode_info['edge_type'] = None
     closest_edge = world_pos.closest_edge(map.edges, camera.scale)
-    if closest_edge is None:
-        draw_node(surface, world_pos, camera, color=LIGHTBLUE)
-        return
-    if map.is_edge_platform(closest_edge):
+    if closest_edge is None or map.is_edge_platform(closest_edge):
         draw_node(surface, world_pos, camera, color=LIGHTBLUE)
         return
     

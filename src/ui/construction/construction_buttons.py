@@ -20,7 +20,7 @@ class ConstructionButtons(UIElement):
     def handle_click(self, pos: Position) -> bool:
         for mode, btn in self.buttons:
             if btn.collidepoint(pos.x, pos.y):
-                self.construction_state.mode = mode
+                self.construction_state.switch_mode(mode)
                 return True
         return False
 

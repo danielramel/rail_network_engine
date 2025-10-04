@@ -10,8 +10,8 @@ def user_input(prompt="Enter input: "):
     return user_input
 
 
-def alert(text="Alert!"):
+def alert(title="Alert!", text="This is an alert"):
     root = tk.Tk()
     root.withdraw()  # Hide the main window
-    messagebox.showinfo("Alert", text)
+    messagebox.showinfo(title, text)
     root.destroy()

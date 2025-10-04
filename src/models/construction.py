@@ -46,6 +46,9 @@ class ConstructionState:
 
     def is_bulldoze_preview_node(self, pos: Position) -> bool:
         return self.mode is ConstructionMode.BULLDOZE and pos in self.mode_info['preview_nodes']
+    
+    def is_station_being_moved(self, station: Station) -> bool:
+        return self.mode_info['moving_station'] == station
 
 class CursorTarget(Enum):
     EDGE = 1

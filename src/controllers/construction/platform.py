@@ -2,6 +2,7 @@ from models.map import RailMap
 from models.geometry import Position
 from config.settings import PLATFORM_LENGTH
 from ui.popups import alert
+from config.settings import GRID_SIZE
 
 
 def handle_platform_click(map: RailMap, pos: Position, camera_scale, mode_info: dict):
@@ -22,7 +23,8 @@ def handle_platform_click(map: RailMap, pos: Position, camera_scale, mode_info: 
     
     edges = map.calculate_platform_preview(closest_edge)
 
-    if len(edges) < PLATFORM_LENGTH:
+    edge = next(iter(edges))
+    if edge[0].distance_to(edge[1]) * len(edges) < PLATFORM_LENGTH * GRID_SIZE:
         alert(f'Platform too short! Minimum length is {PLATFORM_LENGTH} segments.')
         return
     

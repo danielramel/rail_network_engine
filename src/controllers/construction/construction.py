@@ -21,8 +21,7 @@ def handle_construction_events(ui_layer: UILayer, state: ConstructionState, came
                 return "quit"
             
             if event.key in CONSTRUCTION_MODE_KEYS:
-                set_construction_mode(state, map, CONSTRUCTION_MODE_KEYS[event.key], ui_layer)
-                
+                state.switch_mode(CONSTRUCTION_MODE_KEYS[event.key])                
         elif event.type == pygame.MOUSEBUTTONDOWN:
             pos = Position(*event.pos)
             if event.button == 1:
@@ -33,7 +32,6 @@ def handle_construction_events(ui_layer: UILayer, state: ConstructionState, came
                 if state.mode is ConstructionMode.RAIL and state.mode_info['construction_anchor'] is not None:
                     state.mode_info['construction_anchor'] = None
                 elif state.mode is ConstructionMode.STATION and state.mode_info['moving_station'] is not None:
-                    map.add_station_at(state.mode_info['moving_station'].position, state.mode_info['moving_station'].name)
                     state.mode_info['moving_station'] = None
                 elif state.mode is ConstructionMode.PLATFORM and state.mode_info['state'] == 'select_station':
                     state.mode_info['state'] = None
@@ -69,11 +67,3 @@ CONSTRUCTION_MODE_KEYS = {
     pygame.K_4: ConstructionMode.PLATFORM,
     pygame.K_5: ConstructionMode.BULLDOZE,
 }
-
-def set_construction_mode(state: ConstructionState, map: RailMap, mode: ConstructionMode, ui_layer: UILayer):
-    """Helper function to set construction mode with proper validation"""   
-    if mode == ConstructionMode.PLATFORM and len(map.stations) == 0:
-        alert("You need to build a station first!")
-        mode = None
-        
-    state.switch_mode(mode)
