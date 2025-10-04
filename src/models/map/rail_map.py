@@ -38,8 +38,23 @@ class RailMap:
     def junctions(self) -> list[Position]:
         return [n for n in self._graph.nodes if self.is_junction(n)]
     
-    def get_segment(self, edge: tuple[Position, Position], end_on_signal: bool = False, only_platforms: bool = False, only_straight: bool = False) -> tuple[set[Position], set[tuple[Position, Position]]]:
-        return self._query_service.get_segment(edge, end_on_signal=end_on_signal, only_platforms=only_platforms, only_straight=only_straight)
+    def get_segment(
+        self, 
+        edge: tuple[Position, Position], 
+        end_on_signal: bool = False, 
+        only_platforms: bool = False, 
+        only_straight: bool = False,
+        end_on_platform: bool = False,
+        max_nr: int | None = None
+    ):
+        return self._query_service.get_segment(
+            edge, 
+            end_on_signal=end_on_signal, 
+            only_platforms=only_platforms, 
+            only_straight=only_straight, 
+            max_nr=max_nr,
+            end_on_platform=end_on_platform
+        )
 
     def set_edge_attrs(self, edges: set[tuple[Position, Position]], attr: str) -> None:
         for edge in edges:
@@ -101,8 +116,8 @@ class RailMap:
     def platforms(self) -> dict[tuple[Position, Position], Position]:
         return self._platform_service.all()
     
-    def add_platform_on(self, edges: tuple[tuple[Position, Position]], station_pos: Position):
-        self._platform_service.add(edges, station_pos)
+    def add_platform_on(self, station_pos: Position, edges: tuple[tuple[Position, Position]]):
+        self._platform_service.add(station_pos, edges)
 
     def remove_platform_at(self, edge: tuple[Position, Position]):
         self._platform_service.remove(edge)
@@ -112,6 +127,12 @@ class RailMap:
 
     def is_edge_platform(self, edge: tuple[Position, Position]) -> bool:
         return self._platform_service.is_edge_platform(edge)
+
+    def calculate_platform_preview(self, edge: tuple[Position, Position]) -> Position | None:
+        return self._platform_service.calculate_platform_preview(edge)
+    
+    def get_platform(self, edge: tuple[Position, Position]) -> Position | None:
+        return self._platform_service.get_platform(edge)
 
     # --- stations ---
     @property

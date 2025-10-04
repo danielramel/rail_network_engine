@@ -1,5 +1,5 @@
 import pygame
-from config.colors import WHITE, BLACK, YELLOW
+from config.colors import BLUE, LIGHTBLUE, RED, WHITE, BLACK, YELLOW
 
 from config.settings import GRID_SIZE, STATION_RECT_SIZE
 from graphics.camera import Camera
@@ -15,7 +15,7 @@ def draw_node(surface: pygame.Surface, node: Position, camera: Camera, color=WHI
     pygame.draw.circle(surface, BLACK, (int(screen_x), int(screen_y)), inner_radius)
 
 
-def draw_signal(surface: pygame.Surface, alignment: Pose, camera: Camera,color=WHITE, offset=False):
+def draw_signal(surface: pygame.Surface, alignment: Pose, camera: Camera, color=WHITE, offset=False):
     def get_rotation_angle(direction_vector):
         angle_map = {
             (0, 1): 0,
@@ -88,6 +88,16 @@ def draw_edges(surface: pygame.Surface, edges, camera: Camera, color=WHITE):
     for edge in edges:
         pygame.draw.aaline(surface, color, tuple(camera.world_to_screen(Position(*edge[0]))), tuple(camera.world_to_screen(Position(*edge[1]))))
 
+def draw_edge(surface: pygame.Surface, edge: tuple[Position, Position], camera: Camera, color=WHITE, edge_type=None):
+    if edge_type == 'red':
+        pygame.draw.line(surface, RED, tuple(camera.world_to_screen(Position(*edge[0]))), tuple(camera.world_to_screen(Position(*edge[1]))), width=3)
+    elif edge_type == 'platform_preview':
+        draw_platform(surface, edge, camera, color=LIGHTBLUE)
+    elif edge_type == 'platform':
+        draw_platform(surface, edge, camera, color=BLUE)
+    else:
+        pygame.draw.line(surface, color, tuple(camera.world_to_screen(Position(*edge[0]))), tuple(camera.world_to_screen(Position(*edge[1]))), width=3)
+
 def draw_grid(surface, camera):
     """Draw grid lines with camera transform"""
     w, h = surface.get_size()
@@ -115,6 +125,34 @@ def draw_grid(surface, camera):
         if 0 <= screen_y <= h:
             pygame.draw.aaline(surface, (60, 60, 60), (0, screen_y), (w, screen_y))
         y += GRID_SIZE
+        
+        
+def draw_platform(surface: pygame.Surface, edge: list[tuple[Position, Position]], camera: Camera, color=BLUE):
+    a, b = edge
+    offset = 2  # pixels of separation
+    # Calculate direction vector
+    ax, ay = camera.world_to_screen(Position(*a))
+    bx, by = camera.world_to_screen(Position(*b))
+    dx, dy = bx - ax, by - ay
+    length = (dx**2 + dy**2) ** 0.5
+    if length != 0:
+        # Perpendicular vector (normalized)
+        perp_x = -dy / length
+        perp_y = dx / length
+    else:
+        perp_x = perp_y = 0
+
+    # Offset both lines in opposite perpendicular directions
+    pygame.draw.aaline(
+        surface, color,
+        (ax + perp_x * offset, ay + perp_y * offset),
+        (bx + perp_x * offset, by + perp_y * offset)
+    )
+    pygame.draw.aaline(
+        surface, color,
+        (ax - perp_x * offset, ay - perp_y * offset),
+        (bx - perp_x * offset, by - perp_y * offset)
+    )
         
         
 def color_from_speed(speed: int) -> tuple[int, int, int]:

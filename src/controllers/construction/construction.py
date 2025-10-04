@@ -35,8 +35,10 @@ def handle_construction_events(ui_layer: UILayer, state: ConstructionState, came
                 elif state.mode is ConstructionMode.STATION and state.mode_info['moving_station'] is not None:
                     map.add_station_at(state.mode_info['moving_station'].position, state.mode_info['moving_station'].name)
                     state.mode_info['moving_station'] = None
+                elif state.mode is ConstructionMode.PLATFORM and state.mode_info['state'] == 'select_station':
+                    state.mode_info['state'] = None
                 else:
-                    state.mode = None
+                    state.switch_mode(None)
         elif event.type == pygame.MOUSEBUTTONUP:
             pos = Position(*event.pos)
             if event.button == 1:
@@ -51,7 +53,7 @@ def handle_construction_events(ui_layer: UILayer, state: ConstructionState, came
                     elif state.mode == ConstructionMode.STATION:
                         handle_station_click(map, world_pos, state.mode_info)
                     elif state.mode == ConstructionMode.PLATFORM:
-                        handle_platform_click(map, world_pos, camera.scale)
+                        handle_platform_click(map, world_pos, camera.scale, state.mode_info)
                 camera.stop_drag() # should be after click check
            
         elif event.type == pygame.MOUSEMOTION:

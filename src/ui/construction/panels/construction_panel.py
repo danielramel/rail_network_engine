@@ -1,4 +1,7 @@
 from models.construction import ConstructionMode
+from ui.construction.panels.platform_panel_content import PlatformPanelContent
+from .station_panel_content import StationPanelContent
+from .signal_panel_content import SignalPanelContent
 from ui.core.ui_element import RectangleUIElement
 import pygame
 from config.colors import BLACK, WHITE
@@ -11,6 +14,9 @@ class ConstructionPanel(RectangleUIElement):
         self._rect = self._get_panel_rect()
         self._panels = {
             ConstructionMode.RAIL: RailPanelContent(self._surface, self._rect),
+            ConstructionMode.SIGNAL: SignalPanelContent(self._surface, self._rect),
+            ConstructionMode.STATION: StationPanelContent(self._surface, self._rect),
+            ConstructionMode.PLATFORM: PlatformPanelContent(self._surface, self._rect),
         }
 
     def draw(self) -> None:

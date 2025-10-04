@@ -8,7 +8,7 @@ class PlatformService:
         self._graph = graph
         self._segfinder = segment_finder
 
-    def add(self, edges: tuple[Position, Position], station_pos: Position) -> None:
+    def add(self, station_pos: Position, edges: tuple[Position, Position]) -> None:
         for a, b in edges:
             self._graph.edges[a, b]['station'] = station_pos
 
@@ -26,3 +26,11 @@ class PlatformService:
     
     def is_edge_platform(self, edge: tuple[Position, Position]) -> bool:
         return 'station' in self._graph.edges[edge]
+    
+    def calculate_platform_preview(self, edge: tuple[Position, Position]) -> Position | None:
+        _, edges = self._segfinder.get_segment(edge, end_on_platform=True, only_straight=True, max_nr=7)
+        return edges
+    
+    def get_platform(self, edge: tuple[Position, Position]) -> Position | None:
+        _, edges = self._segfinder.get_segment(edge, end_on_signal=False, only_platforms=True)
+        return edges

@@ -76,9 +76,8 @@ class Position:
         Returns (is_within_sensitivity, distance).
         """
         closest_point = self.closest_point_to_edge(edge)
+        dist = self.distance_to(closest_point)
         
-        # Distance from this point to that closest point
-        dist = hypot(self.x - closest_point.x, self.y - closest_point.y)
         return dist <= BULLDOZE_SENSITIVITY / camera_scale, dist
     
     def closest_edge(self, edges: list[tuple['Position', 'Position']], camera_scale: float) -> tuple['Position', 'Position'] | None:
@@ -94,10 +93,11 @@ class Position:
         
         return closest_edge
     
-
     
     def midpoint(self, other: 'Position') -> 'Position':
         """Return the midpoint between this position and another."""
         return Position((self.x + other.x) / 2, (self.y + other.y) / 2)
     
-
+    def distance_to(self, other: 'Position') -> float:
+        """Calculate the Euclidean distance to another position."""
+        return hypot(self.x - other.x, self.y - other.y)

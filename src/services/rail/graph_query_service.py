@@ -26,9 +26,15 @@ class GraphQueryService:
                 connections.append(Pose(neighbor, direction))
         return tuple(connections)
 
-    def get_segment(self, edge: tuple[Position, Position], end_on_signal: bool = False, only_platforms: bool = False, only_straight: bool = False
+    def get_segment(
+        self,
+        edge: tuple[Position, Position],
+        end_on_signal: bool = False,
+        only_platforms: bool = False,
+        only_straight: bool = False,
+        max_nr: int | None = None,
+        end_on_platform: bool = False
     ) -> tuple[tuple[Position], tuple[tuple[Position, Position]]]:
-        
         
         edges: set[tuple[Position, Position]] = set()
         nodes: set[Position] = set()
@@ -62,8 +68,14 @@ class GraphQueryService:
 
             for neighbor, direction in connections:
                 edge = (pose.position, neighbor)
+                
+                if end_on_platform and 'station' in self._graph.edges[edge]:
+                    continue
+                
                 edges.add(edge)
 
+                if max_nr is not None and len(edges) >= max_nr:
+                    return nodes, edges
                 # skip conditions
                 if neighbor in nodes or neighbor in {s.position for s in stack}:
                     continue
