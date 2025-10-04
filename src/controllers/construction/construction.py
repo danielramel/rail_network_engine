@@ -1,6 +1,5 @@
 import pygame
 from models.geometry import Position
-from ui.construction.panel import Panel
 from ui.core.ui_layer import UILayer
 from .rail import handle_rail_click
 from .signal import handle_signal_click

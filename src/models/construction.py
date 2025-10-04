@@ -13,21 +13,21 @@ class ConstructionMode(Enum):
     
 @dataclass
 class ConstructionState:
-    mode: ConstructionMode | None = None
-    mode_info: dict = field(default_factory=lambda: defaultdict(dict))
+    mode: ConstructionMode | None = ConstructionMode.RAIL
+    mode_info: dict = None
     
     def __post_init__(self):
-        self.switch_mode(ConstructionMode.RAIL)
+        self.mode_info = {
+            'construction_anchor': None,  # type: Pose | None
+            'track_speed': 120,             # type: int
+            'moving_station': None,        # type: Station | None
+        }
         
     def switch_mode(self, new_mode: ConstructionMode):
         if new_mode == self.mode:
             return
-        if new_mode is ConstructionMode.RAIL:
-            self.mode_info = {"construction_anchor": None, "track_speed": 120}
-        elif new_mode is ConstructionMode.STATION:
-            self.mode_info = {"moving_station": None}
-        else:
-            self.mode_info = {} 
+        self.mode_info['construction_anchor'] = None
+        self.mode_info['moving_station'] = None
             
         self.mode = new_mode
         

@@ -12,7 +12,7 @@ from config.colors import BLACK
 from ui.core.ui_layer import UILayer
 from models.view import ViewMode
 from ui.mode_selector_buttons import ModeSelectorButtons
-from ui.construction.panel import Panel
+from ui.construction.panels.construction_panel import ConstructionPanel
 
 class Game:
     def __init__(self):
@@ -32,7 +32,7 @@ class Game:
             ModeSelectorButtons(self.view),
             ZoomBox(self.screen, self.camera),
             ConstructionButtons(self.screen, self.construction_state),
-            Panel(self.screen, self.construction_state)
+            ConstructionPanel(self.screen, self.construction_state)
         )
         
 

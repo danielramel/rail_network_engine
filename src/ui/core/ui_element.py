@@ -17,18 +17,20 @@ class UIElement(ABC):
     @abstractmethod
     def draw(self, *args: Any) -> None:
         """Draw this UI element."""
-        pass
     
     
 class RectangleUIElement(UIElement):
     """A rectangular UI element defined by a pygame.Rect."""
     def __init__(self, rect: pygame.Rect, surface: pygame.Surface):
-        self.rect = rect
+        self._rect = rect
         self._surface = surface
+        self.is_visible = True
 
     def handle_click(self, pos: Position, *args: Any) -> bool:
         """Default: not clickable."""
         return False
     
     def contains(self, pos: Position) -> bool:
-        return self.rect.collidepoint(pos.x, pos.y)
+        if not self.is_visible:
+            return False
+        return self._rect.collidepoint(*pos)
