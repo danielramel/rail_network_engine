@@ -10,7 +10,7 @@ from models.construction import ConstructionState
 from ui.core.ui_layer import UILayer
 from .signal import render_signal_preview
 from .station import render_station_preview
-from .rail import draw_rail_panel, render_rail_preview
+from .rail import render_rail_preview
 from .bulldoze import render_bulldoze_preview
 from .platform import render_platform_preview
 from models.construction import ConstructionMode
@@ -37,12 +37,11 @@ def render_construction_preview(ui_layer: UILayer, surface: pygame.Surface, came
     if ui_layer.is_over_ui(pos):
         pass
     elif state.mode == ConstructionMode.RAIL:
-        render_rail_preview(surface, world_pos, state.construction_anchor, map, camera)
-        draw_rail_panel(surface, state.Rail)
+        render_rail_preview(surface, world_pos, state.mode_info, map, camera)
     elif state.mode == ConstructionMode.SIGNAL:
         render_signal_preview(surface, world_pos, map, camera)
     elif state.mode == ConstructionMode.STATION:
-        render_station_preview(surface, world_pos, state.moving_station, map, camera)
+        render_station_preview(surface, world_pos, state.mode_info, map, camera)
     elif state.mode == ConstructionMode.PLATFORM:
         render_platform_preview(surface, world_pos, map, camera)
     elif state.mode == ConstructionMode.BULLDOZE:

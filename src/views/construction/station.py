@@ -8,8 +8,10 @@ from ui.utils import draw_station
 from config.colors import BLUE, RED, YELLOW
 
 
-def render_station_preview(surface : pygame.Surface, world_pos: Position, moving_station: Station | None, map: RailMap, camera: Camera):    
+def render_station_preview(surface : pygame.Surface, world_pos: Position, mode_info: dict, map: RailMap, camera: Camera):    
     snapped = world_pos.snap_to_grid()
+    moving_station = mode_info['moving_station']
+    
     if not moving_station:
         for station_pos in map.station_positions:
             if world_pos.is_within_station_rect(station_pos):

@@ -3,15 +3,16 @@ from enum import Enum
 from graphics.camera import Camera
 from models.map import RailMap
 from controllers.construction import handle_construction_events
-from ui.construction_buttons import ConstructionButtons
+from ui.construction.construction_buttons import ConstructionButtons
 from ui.zoom_box import ZoomBox
 from views.normal_view import handle_normal_events, render_normal_view
 from views.construction import render_construction_preview
 from models.construction import ConstructionState
-from config.colors import WHITE, BLACK, GRAY, LIGHTBLUE
+from config.colors import BLACK
 from ui.core.ui_layer import UILayer
 from models.view import ViewMode
 from ui.mode_selector_buttons import ModeSelectorButtons
+from ui.construction.panel import Panel
 
 class Game:
     def __init__(self):
@@ -29,8 +30,9 @@ class Game:
         
         self.ui_layer.add(
             ModeSelectorButtons(self.view),
+            ZoomBox(self.screen, self.camera),
             ConstructionButtons(self.screen, self.construction_state),
-            ZoomBox(self.screen, self.camera)
+            Panel(self.screen, self.construction_state)
         )
         
 

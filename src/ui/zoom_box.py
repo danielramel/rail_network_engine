@@ -1,18 +1,15 @@
 import pygame
 from models.geometry.position import Position
-from ui.core.ui_element import UIElement
+from ui.core.ui_element import RectangleUIElement
 from config.colors import WHITE
 from graphics.camera import Camera
 
 
-class ZoomBox(UIElement):
+class ZoomBox(RectangleUIElement):
     def __init__(self, surface: pygame.Surface, camera: Camera):
         self.rect = self._get_zoom_box(surface)
-        self._camera = camera
+        self._camera = camera 
         self._surface = surface
-
-    def contains(self, pos: Position) -> bool:
-        return self.rect.collidepoint(pos.x, pos.y)
 
     def draw(self) -> None:
         if self._camera.scale != 1.0 or self._camera.x != 0 or self._camera.y != 0:
