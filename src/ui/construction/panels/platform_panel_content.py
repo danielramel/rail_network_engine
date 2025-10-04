@@ -1,5 +1,5 @@
 import pygame
-from config.colors import BLACK, WHITE, YELLOW
+from config.colors import WHITE, YELLOW
 
 class PlatformPanelContent:
     """Platform control panel with no additional options.

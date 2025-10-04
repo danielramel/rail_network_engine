@@ -1,31 +1,27 @@
-from pygame import Surface
-from config.colors import RED, WHITE
+import pygame
+from config.colors import RED
 from models.geometry import Position
-from services.construction.bulldoze import CursorTarget, get_bulldoze_target
-from ui.utils import draw_node, draw_signal, draw_station, draw_edges
+from ui.utils import draw_node, draw_signal, draw_station
 from graphics.camera import Camera
 from models.map import RailMap
+from services.construction.bulldoze_target import find_bulldoze_target
 
-def render_bulldoze_preview(surface: Surface, world_pos: Position, mode_info: dict, map: RailMap, camera: Camera):
-    target = get_bulldoze_target(map, world_pos, camera.scale)
-    
+def render_bulldoze_preview(surface: pygame.Surface, world_pos: Position, mode_info: dict, map: RailMap, camera: Camera):
+    target = find_bulldoze_target(map, world_pos, camera.scale)
     mode_info['preview_edges'] = set()
     mode_info['preview_nodes'] = set()
-    mode_info['preview_type'] = None
-    if target.type == CursorTarget.EMPTY:
-        draw_node(surface, target.data, camera, color=RED)
-    elif target.type == CursorTarget.STATION:
-        station = map.get_station_at(target.data)
-        draw_station(surface, station, camera, color=RED)
-    elif target.type == CursorTarget.SIGNAL:
-        signal = map.get_signal_at(target.data)
-        draw_signal(surface, signal, camera, color=RED)
-    elif target.type == CursorTarget.EDGE:
-        nodes, edges = map.get_segment(target.data)
-        mode_info['preview_edges'].update(edges)
-        mode_info['preview_nodes'].update(nodes)
-        mode_info['preview_type'] = 'red'
-    elif target.type == CursorTarget.PLATFORM:
-        _, edges = map.get_segment(target.data)
-        draw_edges(surface, edges, camera, color=WHITE)
-    
+    mode_info['edge_type'] = None
+
+    if target.kind == 'signal':
+        draw_signal(surface, map.get_signal_at(target.pos), camera, color=RED)
+    elif target.kind == 'station':
+        draw_station(surface, map.get_station_at(target.pos), camera, color=RED)
+    elif target.kind == 'node':
+        draw_node(surface, world_pos, camera, color=RED)
+    elif target.kind == 'platform':
+        mode_info['preview_edges'] = target.edges
+        mode_info['edge_type']='normal'
+    elif target.kind == 'segment':
+        mode_info['preview_edges'] = target.edges
+        mode_info['edge_type']='red'
+        mode_info['preview_nodes'] = target.nodes

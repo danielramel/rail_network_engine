@@ -88,15 +88,15 @@ def draw_edges(surface: pygame.Surface, edges, camera: Camera, color=WHITE):
     for edge in edges:
         pygame.draw.aaline(surface, color, tuple(camera.world_to_screen(Position(*edge[0]))), tuple(camera.world_to_screen(Position(*edge[1]))))
 
-def draw_edge(surface: pygame.Surface, edge: tuple[Position, Position], camera: Camera, color=WHITE, edge_type=None):
+def draw_edge(surface: pygame.Surface, edge: tuple[Position, Position], camera: Camera, edge_type=None, speed=None):
     if edge_type == 'red':
         pygame.draw.line(surface, RED, tuple(camera.world_to_screen(Position(*edge[0]))), tuple(camera.world_to_screen(Position(*edge[1]))), width=3)
     elif edge_type == 'platform_preview':
         draw_platform(surface, edge, camera, color=LIGHTBLUE)
     elif edge_type == 'platform':
         draw_platform(surface, edge, camera, color=BLUE)
-    else:
-        pygame.draw.line(surface, color, tuple(camera.world_to_screen(Position(*edge[0]))), tuple(camera.world_to_screen(Position(*edge[1]))), width=3)
+    elif edge_type is None or edge_type == 'normal':
+        pygame.draw.line(surface, color_from_speed(speed), tuple(camera.world_to_screen(Position(*edge[0]))), tuple(camera.world_to_screen(Position(*edge[1]))), width=3)
 
 def draw_grid(surface, camera):
     """Draw grid lines with camera transform"""

@@ -1,18 +1,26 @@
 from models.map import RailMap
 from models.geometry import Position, Pose
+from services.construction.rail_target import find_rail_target
 
 def handle_rail_click(map: RailMap, pos: Position, mode_info: dict):
-    snapped = pos.snap_to_grid()
-    construction_anchor: Pose = mode_info['construction_anchor']
-    if map.is_blocked(snapped):
+    construction_anchor: Pose = mode_info.get('construction_anchor')
+    target = find_rail_target(map, pos, construction_anchor)
+
+    if target.kind == 'blocked':
         return
-    if not construction_anchor:
-        mode_info['construction_anchor'] = Pose(snapped, (0,0))
-    elif snapped == construction_anchor.position:
+
+    if target.kind == 'node':
+        mode_info['construction_anchor'] = Pose(target.snapped, (0, 0))
+        return
+
+    if target.kind == 'anchor_same':
         mode_info['construction_anchor'] = None
-    else:
-        found_path = map.find_path(mode_info['construction_anchor'], snapped)
-        if not found_path:
-            return
-        map.add_segment(found_path, mode_info['track_speed'])
-        mode_info['construction_anchor'] = Pose(snapped, found_path[-2].direction_to(snapped))
+        return
+
+    if target.kind == 'no_path':
+        return
+
+    if target.kind == 'path':
+        map.add_segment(target.found_path, mode_info['track_speed'])
+        mode_info['construction_anchor'] = Pose(target.snapped, target.found_path[-2].direction_to(target.snapped))
+        return

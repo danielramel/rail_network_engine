@@ -1,16 +1,15 @@
 from models.geometry import Position
-from services.construction.bulldoze import CursorTarget
 from models.map import RailMap
-from services.construction.bulldoze import get_bulldoze_target
+from services.construction.bulldoze_target import BulldozeTarget, find_bulldoze_target
 
-def handle_bulldoze_click(map: RailMap, pos: Position, camera_scale):
-    target = get_bulldoze_target(map, pos, camera_scale)
-
-    if target.type == CursorTarget.SIGNAL:
-        map.remove_signal_at(target.data)
-    elif target.type == CursorTarget.STATION:
-        map.remove_station_at(target.data)
-    elif target.type == CursorTarget.PLATFORM:
-        map.remove_platform_at(target.data)
-    elif target.type == CursorTarget.EDGE:
-        map.remove_segment_at(target.data)
+def handle_bulldoze_click(map: RailMap, world_pos: Position, camera_scale):
+    target = find_bulldoze_target(map, world_pos, camera_scale)
+    if target.kind == 'signal':
+        map.remove_signal_at(target.pos)
+    elif target.kind == 'station':
+        map.remove_station_at(target.pos)
+    elif target.kind == 'platform':
+        map.remove_platform_at(target.edge)
+    elif target.kind == 'segment':
+        map.remove_segment_at(target.edge)
+    # node/none -> nothing to do

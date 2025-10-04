@@ -1,19 +1,12 @@
-from models.geometry import Pose
-from models.map import RailMap
 from models.geometry import Position
+from models.map import RailMap
+from services.construction.signal_target import find_signal_target
 
 def handle_signal_click(map: RailMap, pos: Position):
-    snapped = pos.snap_to_grid()
-    if not map.has_node_at(snapped):  # empty click
-        return
-    
-    if map.is_junction(snapped): 
-        return # intersection, no signals here
-    
-    if map.has_signal_at(snapped):
-        if map.degree_at(snapped) == 1:
-            return # dead end, cannot toggle
-        map.toggle_signal_at(snapped)
-        return
-    
-    map.add_signal_at(snapped)
+    target = find_signal_target(map, pos)
+
+    if target.kind == 'toggle':
+        map.toggle_signal_at(target.snapped)
+        
+    elif target.kind == 'add':
+        map.add_signal_at(target.snapped)

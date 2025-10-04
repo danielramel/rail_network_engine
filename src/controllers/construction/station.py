@@ -1,26 +1,24 @@
-from config.colors import RED
-from models.construction import ConstructionState
 from models.geometry import Position
 from models.map import RailMap
 from ui.popups import user_input
+from services.construction.station_target import find_station_target
 
 def handle_station_click(map: RailMap, world_pos: Position, mode_info: dict):
-    snapped = world_pos.snap_to_grid()
-    moving_station = mode_info["moving_station"]
-    if not moving_station:
-        for station_pos in map.station_positions:
-            if world_pos.is_within_station_rect(station_pos):
-                mode_info["moving_station"] = map.get_station_at(station_pos)
-                return
+    moving_station = mode_info.get("moving_station")
+    target = find_station_target(map, world_pos)
 
-    if any(snapped.is_within_station_rect(node_pos) for node_pos in map.nodes):
+    if not moving_station and target.hovered_station_pos is not None:
+        mode_info["moving_station"] = map.get_station_at(target.hovered_station_pos)
         return
-    elif any(snapped.station_rect_overlaps(station_pos) for station_pos in map.station_positions):
+
+    if target.blocked_by_node or target.overlaps_station:
         return
-    elif moving_station:
+
+    if moving_station:
         map.remove_station_at(moving_station.position)
-        map.add_station_at(snapped, moving_station.name)
+        map.add_station_at(target.snapped, moving_station.name)
         mode_info["moving_station"] = None
-    else:
-        name = user_input()
-        map.add_station_at(snapped, name)
+        return
+
+    name = user_input()
+    map.add_station_at(target.snapped, name)

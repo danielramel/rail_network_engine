@@ -2,7 +2,7 @@ import pygame
 
 from graphics.camera import Camera
 from models.geometry import Position
-from ui.utils import draw_edge, draw_station,  draw_node, draw_signal, draw_grid, color_from_speed
+from ui.utils import draw_edge, draw_station,  draw_node, draw_signal, draw_grid
 from models.map import RailMap
 
 from config.colors import RED
@@ -21,11 +21,11 @@ def render_construction_preview(ui_layer: UILayer, surface: pygame.Surface, came
 
     for *edge, data in map.edges.data():
         if state.is_edge_in_preview(edge):
-            draw_edge(surface, edge, camera, edge_type=state.mode_info['edge_type'])
+            draw_edge(surface, edge, camera, edge_type=state.mode_info['edge_type'], speed=data['speed'])
         elif map.is_edge_platform(edge):
             draw_edge(surface, edge, camera, edge_type='platform')
         else:
-            draw_edge(surface, edge, camera, color=color_from_speed(data['speed']))
+            draw_edge(surface, edge, camera, speed=data['speed'])
         
     for node in map.junctions:
         draw_node(surface, node, camera)

@@ -1,5 +1,4 @@
 import pygame
-from enum import Enum
 from graphics.camera import Camera
 from models.map import RailMap
 from controllers.construction import handle_construction_events

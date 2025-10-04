@@ -1,38 +1,34 @@
 import pygame
-from config.colors import YELLOW, RED
+from config.colors import RED
 from graphics.camera import Camera
 from models.map import RailMap
 from ui.utils import color_from_speed, draw_node
 from models.geometry import Position, Pose
-
+from services.construction.rail_target import find_rail_target
 
 def render_rail_preview(surface: pygame.Surface, world_pos: Position, state_info: dict, map: RailMap, camera: Camera):
-    snapped = world_pos.snap_to_grid()
-    construction_anchor: Pose = state_info['construction_anchor']
-    
-    if map.is_blocked(snapped):
-        draw_node(surface, snapped, camera, color=RED)
+    construction_anchor: Pose = state_info.get('construction_anchor')
+    target = find_rail_target(map, world_pos, construction_anchor)
+
+    if target.kind == 'blocked':
+        draw_node(surface, target.snapped, camera, color=RED)
         if construction_anchor is not None:
             draw_node(surface, construction_anchor.position, camera, color=RED)
         return
 
     color = color_from_speed(state_info['track_speed'])
-    if not construction_anchor:
-        draw_node(surface, snapped, camera, color=color)
+
+    if target.kind in ('node', 'anchor_same'):
+        draw_node(surface, target.snapped, camera, color=color)
         return
 
-    if construction_anchor.position == snapped:
-        draw_node(surface, snapped, camera, color=color)
-        return
-
-    found_path = map.find_path(construction_anchor, snapped)
-    if not found_path:
-        draw_node(surface, snapped, camera, color=RED)
+    if target.kind == 'no_path':
+        draw_node(surface, target.snapped, camera, color=RED)
         draw_node(surface, construction_anchor.position, camera, color=RED)
         return
-    
-    
-    screen_points = [tuple(camera.world_to_screen(Position(*pt))) for pt in found_path]
+
+    # path
+    screen_points = [tuple(camera.world_to_screen(Position(*pt))) for pt in target.found_path]
     pygame.draw.aalines(surface, color, False, screen_points)
-    draw_node(surface, snapped, camera, color=color)
+    draw_node(surface, target.snapped, camera, color=color)
     draw_node(surface, construction_anchor.position, camera, color=color)
