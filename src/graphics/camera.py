@@ -78,6 +78,9 @@ class Camera:
         self.x = 0.0
         self.y = 0.0
         self.scale = 1.0
+        
+    def is_reset(self) -> bool:
+        return self.x == 0.0 and self.y == 0.0 and self.scale == 1.0
 
     def is_click(self, pos: Position) -> bool:
         return self.is_dragging and pos.x == self.drag_start_x and pos.y == self.drag_start_y
