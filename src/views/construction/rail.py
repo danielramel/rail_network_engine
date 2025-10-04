@@ -2,7 +2,7 @@ import pygame
 from config.colors import YELLOW, RED
 from graphics.camera import Camera
 from models.map import RailMap
-from ui.utils import draw_node
+from ui.utils import color_from_speed, draw_node
 from models.geometry import Position, Pose
 
 
@@ -16,12 +16,13 @@ def render_rail_preview(surface: pygame.Surface, world_pos: Position, state_info
             draw_node(surface, construction_anchor.position, camera, color=RED)
         return
 
+    color = color_from_speed(state_info['track_speed'])
     if not construction_anchor:
-        draw_node(surface, snapped, camera, color=YELLOW)
+        draw_node(surface, snapped, camera, color=color)
         return
 
     if construction_anchor.position == snapped:
-        draw_node(surface, snapped, camera, color=YELLOW)
+        draw_node(surface, snapped, camera, color=color)
         return
 
     found_path = map.find_path(construction_anchor, snapped)
@@ -32,6 +33,6 @@ def render_rail_preview(surface: pygame.Surface, world_pos: Position, state_info
     
     
     screen_points = [tuple(camera.world_to_screen(Position(*pt))) for pt in found_path]
-    pygame.draw.aalines(surface, YELLOW, False, screen_points)
-    draw_node(surface, snapped, camera, color=YELLOW)
-    draw_node(surface, construction_anchor.position, camera, color=YELLOW)
+    pygame.draw.aalines(surface, color, False, screen_points)
+    draw_node(surface, snapped, camera, color=color)
+    draw_node(surface, construction_anchor.position, camera, color=color)

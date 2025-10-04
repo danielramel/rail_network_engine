@@ -2,10 +2,10 @@ import pygame
 
 from graphics.camera import Camera
 from models.geometry import Position
-from ui.utils import draw_station, draw_edges, draw_node, draw_signal, draw_grid
+from ui.utils import draw_station, draw_edges, draw_node, draw_signal, draw_grid, color_from_speed
 from models.map import RailMap
 
-from config.colors import LIGHTBLUE, BLUE, GREEN, YELLOW
+from config.colors import LIGHTBLUE
 from models.construction import ConstructionState
 from ui.core.ui_layer import UILayer
 from .signal import render_signal_preview
@@ -24,7 +24,7 @@ def render_construction_preview(ui_layer: UILayer, surface: pygame.Surface, came
             continue
         pygame.draw.line(
             surface,
-            calculate_color_from_speed(data['speed']),
+            color_from_speed(data['speed']),
             tuple(camera.world_to_screen(Position(*a))),
             tuple(camera.world_to_screen(Position(*b))),
             width=3
@@ -58,25 +58,4 @@ def render_construction_preview(ui_layer: UILayer, surface: pygame.Surface, came
         render_bulldoze_preview(surface, world_pos, state.mode_info, map, camera)
         
     ui_layer.draw()
-    
-    
-def calculate_color_from_speed(speed: int) -> tuple[int, int, int]:
-    """Calculate a color from a speed value (0-200)"""
-    # Clamp speed between 0 and 200
-    speed = max(0, min(200, speed))
-    colors = [
-        BLUE,      # Blue
-        GREEN,      # Green
-        YELLOW,    # Yellow
-    ]
-    stops = [0, 100, 200]
 
-    for i in range(len(stops) - 1):
-        if stops[i] <= speed <= stops[i + 1]:
-            t = (speed - stops[i]) / (stops[i + 1] - stops[i])
-            c1, c2 = colors[i], colors[i + 1]
-            r = int(c1[0] + (c2[0] - c1[0]) * t)
-            g = int(c1[1] + (c2[1] - c1[1]) * t)
-            b = int(c1[2] + (c2[2] - c1[2]) * t)
-            return (r, g, b)
-    return colors[-1]

@@ -28,7 +28,11 @@ class ConstructionPanel(RectangleUIElement):
     def handle_click(self, pos) -> bool:
         if self._state.mode not in self._panels:
             return False
-        return self._panels.get(self._state.mode).handle_click(pos, self._state.mode_info)
+        if not self._rect.collidepoint(*pos):
+            return False
+        
+        self._panels.get(self._state.mode).handle_click(pos, self._state.mode_info)
+        return True
 
     @property
     def is_visible(self) -> bool:
