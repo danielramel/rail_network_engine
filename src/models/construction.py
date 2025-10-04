@@ -20,7 +20,8 @@ class ConstructionState:
         self.mode_info = {
             'construction_anchor': None,  # type: Pose | None
             'track_speed': 120,             # type: int
-            'moving_station': None,        # type: Station | None
+            'moving_station': None,      # type: Station | None
+            'hidden_edges': set(),      # type: set[tuple[Pose, Pose]]
         }
         
     def switch_mode(self, new_mode: ConstructionMode):
@@ -28,6 +29,7 @@ class ConstructionState:
             return
         self.mode_info['construction_anchor'] = None
         self.mode_info['moving_station'] = None
+        self.mode_info['hidden_edges'].clear()
             
         self.mode = new_mode
         

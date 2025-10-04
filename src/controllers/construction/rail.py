@@ -14,5 +14,5 @@ def handle_rail_click(map: RailMap, pos: Position, mode_info: dict):
         found_path = map.find_path(mode_info['construction_anchor'], snapped)
         if not found_path:
             return
-        map.add_segment(found_path)
+        map.add_segment(found_path, mode_info['track_speed'])
         mode_info['construction_anchor'] = Pose(snapped, found_path[-2].direction_to(snapped))

@@ -58,9 +58,10 @@ class RailPanelContent:
         self._surface.blit(self.label_surface, self.label_rect)
         
         # Minus button
-        pygame.draw.rect(self._surface, BLACK, self.minus_rect, border_radius=6)
-        pygame.draw.rect(self._surface, WHITE, self.minus_rect, width=2, border_radius=6)
-        self._surface.blit(self.minus_text, self.minus_text.get_rect(center=self.minus_rect.center))
+        if mode_info['track_speed'] > 10:
+            pygame.draw.rect(self._surface, BLACK, self.minus_rect, border_radius=6)
+            pygame.draw.rect(self._surface, WHITE, self.minus_rect, width=2, border_radius=6)
+            self._surface.blit(self.minus_text, self.minus_text.get_rect(center=self.minus_rect.center))
         
         # Speed value (only dynamic part)
         speed_val = str(mode_info.get('track_speed', 0))
@@ -68,16 +69,19 @@ class RailPanelContent:
         self._surface.blit(speed_surface, speed_surface.get_rect(center=self.speed_center))
         
         # Plus button
-        pygame.draw.rect(self._surface, BLACK, self.plus_rect, border_radius=6)
-        pygame.draw.rect(self._surface, WHITE, self.plus_rect, width=2, border_radius=6)
-        self._surface.blit(self.plus_text, self.plus_text.get_rect(center=self.plus_rect.center))
+        if mode_info['track_speed'] < 200:
+            pygame.draw.rect(self._surface, BLACK, self.plus_rect, border_radius=6)
+            pygame.draw.rect(self._surface, WHITE, self.plus_rect, width=2, border_radius=6)
+            self._surface.blit(self.plus_text, self.plus_text.get_rect(center=self.plus_rect.center))
     
     def handle_click(self, pos: tuple[int, int], mode_info: dict) -> bool:
         """Handle +/- clicks; return True if the event was consumed."""
         if self.minus_rect.collidepoint(*pos):
             mode_info['track_speed'] -= 10
+            mode_info['track_speed'] = max(10, mode_info['track_speed'])
             return True
         if self.plus_rect.collidepoint(*pos):
             mode_info['track_speed'] += 10
+            mode_info['track_speed'] = min(200, mode_info['track_speed'])
             return True
         return False

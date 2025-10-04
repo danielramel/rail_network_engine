@@ -24,7 +24,6 @@ class RailMap:
     def edges(self):
         return self._graph.edges
     
-    
     def has_node_at(self, pos: Position) -> bool:
         return pos in self._graph.nodes
     
@@ -42,7 +41,10 @@ class RailMap:
     def get_segment(self, edge: tuple[Position, Position], end_on_signal: bool = False, only_platforms: bool = False, only_straight: bool = False) -> tuple[set[Position], set[tuple[Position, Position]]]:
         return self._query_service.get_segment(edge, end_on_signal=end_on_signal, only_platforms=only_platforms, only_straight=only_straight)
 
-
+    def set_edge_attrs(self, edges: set[tuple[Position, Position]], attr: str) -> None:
+        for edge in edges:
+            self._graph.edges[edge][attr] = True
+                    
     # -- graph modifications ---
     def remove_segment_at(self, edge: tuple[Position, Position]) -> None:
         nodes, edges = self.get_segment(edge)
@@ -54,11 +56,11 @@ class RailMap:
         for n in nodes:
             self._graph.remove_node(n)
             
-    def add_segment(self, points: list[Position]) -> None:
+    def add_segment(self, points: list[Position], speed: int) -> None:
         for p in points:
             self._graph.add_node(p)
         for a, b in zip(points[:-1], points[1:]):
-            self._graph.add_edge(a, b)
+            self._graph.add_edge(a, b, weight=1/speed, speed=speed)
             
             
     # --- pathfinding ---

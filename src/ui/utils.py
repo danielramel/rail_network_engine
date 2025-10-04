@@ -87,7 +87,7 @@ def draw_dashed_line(surface: pygame.Surface, start_pos: Position, end_pos: Posi
 def draw_edges(surface: pygame.Surface, edges, camera: Camera, color=WHITE):
     for edge in edges:
         pygame.draw.aaline(surface, color, tuple(camera.world_to_screen(Position(*edge[0]))), tuple(camera.world_to_screen(Position(*edge[1]))))
-        
+
 def draw_grid(surface, camera):
     """Draw grid lines with camera transform"""
     w, h = surface.get_size()
