@@ -5,16 +5,16 @@ from networkx import Graph
 
 
 class PlatformService:
-    def __init__(self, graph: Graph, segment_finder: GraphQueryService):
+    def __init__(self, graph: Graph, query_service: GraphQueryService):
         self._graph = graph
-        self._segfinder = segment_finder
+        self.query_service = query_service
 
     def add(self, station_pos: Position, edges: tuple[Position, Position]) -> None:
         for a, b in edges:
             self._graph.edges[a, b]['station'] = station_pos
 
     def remove(self, edge: tuple[Position, Position]) -> None:
-        _, edges = self._segfinder.get_segment(edge, end_on_signal=False, only_platforms=True)
+        _, edges = self.query_service.get_segment(edge, end_on_signal=False, only_platforms=True)
 
         for edge in edges:
             del self._graph.edges[edge]['station']
@@ -29,11 +29,13 @@ class PlatformService:
         return 'station' in self._graph.edges[edge]
     
     def calculate_platform_preview(self, edge: tuple[Position, Position]) -> Position | None:
-        _, edges = self._segfinder.get_segment(edge, end_on_platform=True, only_straight=True, max_nr=PLATFORM_LENGTH)
-        return edges
+        # add 2 to max_nr to account for the edges that will be cut off at the ends
+        _, edges = self.query_service.get_segment(edge, end_on_platform=True, only_straight=True, max_nr=PLATFORM_LENGTH+2)
+        sorted_edges = sorted(edges, key=lambda e: (e[0].x, e[0].y, e[1].x, e[1].y))[1:-1]
+        return sorted_edges
     
     def get_platform(self, edge: tuple[Position, Position]) -> set[tuple[Position, Position]]:
-        _, edges = self._segfinder.get_segment(edge, end_on_signal=False, only_platforms=True)
+        _, edges = self.query_service.get_segment(edge, end_on_signal=False, only_platforms=True)
         return edges
 
     def get_middle_of_platform(self, edges: tuple[tuple[Position, Position]]) -> Position | None:

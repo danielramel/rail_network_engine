@@ -80,6 +80,7 @@ class GraphQueryService:
 
                 if max_nr is not None and only_straight and edge[0].distance_to(edge[1]) * len(edges) >= max_nr * GRID_SIZE:
                     return nodes, edges
+                
                 # skip conditions
                 if neighbor in nodes or neighbor in {s.position for s in stack}:
                     continue
