@@ -5,7 +5,7 @@ from services.construction.station_target import find_station_target
 
 def handle_station_click(map: RailMap, world_pos: Position, mode_info: dict):
     moving_station = mode_info.get("moving_station")
-    target = find_station_target(map, world_pos)
+    target = find_station_target(map, world_pos, moving_station)
 
     if not moving_station and target.hovered_station_pos is not None:
         mode_info["moving_station"] = map.get_station_at(target.hovered_station_pos)

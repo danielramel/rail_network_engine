@@ -2,10 +2,10 @@ import pygame
 
 from graphics.camera import Camera
 from models.geometry import Position
-from ui.utils import draw_edge, draw_station,  draw_node, draw_signal, draw_grid
+from ui.utils import draw_dashed_line, draw_edge, draw_station,  draw_node, draw_signal, draw_grid
 from models.map import RailMap
 
-from config.colors import RED
+from config.colors import BLUE, RED
 from models.construction import ConstructionState
 from ui.core.ui_layer import UILayer
 from .signal import render_signal_preview
@@ -39,8 +39,11 @@ def render_construction_preview(ui_layer: UILayer, surface: pygame.Surface, came
     for station in map.stations:
         if state.is_station_being_moved(station):
             continue
-            
         draw_station(surface, station, camera)
+        
+    if state.mode in (ConstructionMode.PLATFORM, ConstructionMode.STATION):
+        for middle_point, station_pos in map.get_platform_middle_points():
+            draw_dashed_line(surface, middle_point, station_pos, camera, color=BLUE)
 
     pos = Position(*pygame.mouse.get_pos())
     world_pos = camera.screen_to_world(pos)

@@ -22,3 +22,4 @@ def handle_platform_click(map: RailMap, pos: Position, camera_scale, mode_info: 
         return
 
     mode_info['state'] = 'select_station'
+    mode_info['edge_type'] = 'platform_selected'

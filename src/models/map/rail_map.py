@@ -119,13 +119,15 @@ class RailMap:
     def platforms(self) -> dict[tuple[Position, Position], Position]:
         return self._platform_service.all()
     
-    
-    def get_platform_middle_points(self) -> set[Position]:
-        middle_points = set()
+
+    def get_platform_middle_points(self) -> dict[tuple[Position, Position], Position]:
+        middle_points = dict()
         for edge in self.platforms:
-            edges = self.get_platform(edge)
-            middle_points.add(self.get_middle_of_platform(edges))
-        return middle_points
+            platform = self.get_platform(edge)
+            middle_point = self.get_middle_of_platform(platform)
+            station_pos = self.edges[edge]['station']
+            middle_points[middle_point] = station_pos
+        return middle_points.items()
     
     def add_platform_on(self, station_pos: Position, edges: tuple[tuple[Position, Position]]):
         self._platform_service.add(station_pos, edges)
@@ -144,9 +146,11 @@ class RailMap:
     
     def get_platform(self, edge: tuple[Position, Position]) -> set[tuple[Position, Position]] | None:
         return self._platform_service.get_platform(edge)
-
+    
     def get_middle_of_platform(self, edges: tuple[tuple[Position, Position]]) -> Position | None:
-        return self._platform_service.get_middle_of_platform(edges)
+        sorted_edges = sorted(edges)
+        mid_edge = sorted_edges[len(sorted_edges) // 2]
+        return mid_edge[0].midpoint(mid_edge[1])
 
     # --- stations ---
     @property

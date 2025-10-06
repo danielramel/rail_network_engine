@@ -52,7 +52,7 @@ def draw_signal(surface: pygame.Surface, alignment: Pose, camera: Camera, color=
     surface.blit(rotated_surf, rect)
 
     
-def draw_station(surface: pygame.Surface, station: Station, camera: Camera, color=WHITE):
+def draw_station(surface: pygame.Surface, station: Station, camera: Camera, color=BLUE):
     w, h = STATION_RECT_SIZE
     rect = pygame.Rect(0, 0, w * camera.scale, h * camera.scale)
     rect.center = tuple(camera.world_to_screen(station.position))
@@ -91,7 +91,7 @@ def draw_edges(surface: pygame.Surface, edges, camera: Camera, color=WHITE):
 def draw_edge(surface: pygame.Surface, edge: tuple[Position, Position], camera: Camera, edge_type=None, speed=None):
     if edge_type == 'red':
         pygame.draw.line(surface, RED, tuple(camera.world_to_screen(Position(*edge[0]))), tuple(camera.world_to_screen(Position(*edge[1]))), width=3)
-    elif edge_type == 'platform_preview':
+    elif edge_type == 'platform_selected':
         draw_platform(surface, edge, camera, color=LIGHTBLUE)
     elif edge_type == 'platform':
         draw_platform(surface, edge, camera, color=BLUE)

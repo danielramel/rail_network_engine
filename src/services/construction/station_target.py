@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 from models.geometry import Position
 from models.map import RailMap
+from models.station import Station
 
 @dataclass
 class StationTarget:
@@ -10,7 +11,7 @@ class StationTarget:
     blocked_by_node: bool = False
     overlaps_station: bool = False
 
-def find_station_target(rail_map: RailMap, world_pos: Position) -> StationTarget:
+def find_station_target(rail_map: RailMap, world_pos: Position, moving_station: Station) -> StationTarget:
     snapped = world_pos.snap_to_grid()
 
     hovered = None
@@ -20,7 +21,7 @@ def find_station_target(rail_map: RailMap, world_pos: Position) -> StationTarget
             break
 
     blocked = any(snapped.is_within_station_rect(node_pos) for node_pos in rail_map.nodes)
-    overlaps = any(snapped.station_rect_overlaps(station_pos) for station_pos in rail_map.station_positions)
+    overlaps = any(snapped.station_rect_overlaps(station_pos) for station_pos in rail_map.station_positions if station_pos != (moving_station.position if moving_station else None))
 
     return StationTarget(
         snapped=snapped,
