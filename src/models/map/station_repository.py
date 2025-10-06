@@ -15,6 +15,11 @@ class StationRepository:
 
     def remove(self, pos: Position) -> None:
         del self._by_pos[pos]
+        
+    def move(self, old_pos: Position, new_pos: Position) -> None:
+        station = self._by_pos.pop(old_pos)
+        station.position = new_pos
+        self._by_pos[new_pos] = station
 
     def get(self, pos: Position) -> Station:
         return self._by_pos[pos]

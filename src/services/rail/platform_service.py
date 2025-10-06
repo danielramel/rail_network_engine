@@ -3,15 +3,17 @@ from models.map.rail_map import GraphQueryService
 from models.geometry import Position
 from networkx import Graph
 
+from models.station import Station
+
 
 class PlatformService:
     def __init__(self, graph: Graph, query_service: GraphQueryService):
         self._graph = graph
         self.query_service = query_service
 
-    def add(self, station_pos: Position, edges: tuple[Position, Position]) -> None:
+    def add(self, station: Station, edges: tuple[Position, Position]) -> None:
         for a, b in edges:
-            self._graph.edges[a, b]['station'] = station_pos
+            self._graph.edges[a, b]['station'] = station
 
     def remove(self, edge: tuple[Position, Position]) -> None:
         _, edges = self.query_service.get_segment(edge, end_on_signal=False, only_platforms=True)

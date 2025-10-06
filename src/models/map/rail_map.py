@@ -114,23 +114,47 @@ class RailMap:
     def get_signal_at(self, pos: Position) -> Pose | None:
         return Pose(pos, self._graph.nodes[pos]['signal'])
 
+    # --- stations ---
+    @property
+    def stations(self) -> tuple[Station, ...]:
+        return self._stations.all().values()
+
+    @property
+    def station_positions(self) -> tuple[Position, ...]:
+        return self._stations.all().keys()
+    
+    def add_station_at(self, pos: Position, name: str):
+        self._stations.add(pos, name)
+
+    def remove_station_at(self, pos: Position):
+        self._stations.remove(pos)
+        
+    def move_station(self, old_pos: Position, new_pos: Position):
+        self._stations.move(old_pos, new_pos)
+
+    def get_station_at(self, pos: Position) -> Station:
+        return self._stations.get(pos)
+    
+    def is_within_station_rect(self, pos: Position) -> bool:
+        return self._stations.is_within_station_rect(pos)
+    
     # --- platforms ---
     @property
     def platforms(self) -> dict[tuple[Position, Position], Position]:
         return self._platform_service.all()
     
 
-    def get_platform_middle_points(self) -> dict[tuple[Position, Position], Position]:
+    def get_platform_middle_points_with_corresponding_station_positions(self) -> dict[tuple[Position, Position], Position]:
         middle_points = dict()
         for edge in self.platforms:
             platform = self.get_platform(edge)
             middle_point = self.get_middle_of_platform(platform)
-            station_pos = self.edges[edge]['station']
+            station_pos = self.edges[edge]['station'].position
             middle_points[middle_point] = station_pos
         return middle_points.items()
-    
-    def add_platform_on(self, station_pos: Position, edges: tuple[tuple[Position, Position]]):
-        self._platform_service.add(station_pos, edges)
+
+    def add_platform_on(self, station: Station, edges: tuple[tuple[Position, Position]]):
+        self._platform_service.add(station, edges)
 
     def remove_platform_at(self, edge: tuple[Position, Position]):
         self._platform_service.remove(edge)
@@ -152,24 +176,4 @@ class RailMap:
         mid_edge = sorted_edges[len(sorted_edges) // 2]
         return mid_edge[0].midpoint(mid_edge[1])
 
-    # --- stations ---
-    @property
-    def stations(self) -> tuple[Station, ...]:
-        return self._stations.all().values()
-
-    @property
-    def station_positions(self) -> tuple[Position, ...]:
-        return self._stations.all().keys()
-    
-    def add_station_at(self, pos: Position, name: str):
-        self._stations.add(pos, name)
-
-    def remove_station_at(self, pos: Position):
-        self._stations.remove(pos)
-
-    def get_station_at(self, pos: Position) -> Station:
-        return self._stations.get(pos)
-    
-    def is_within_station_rect(self, pos: Position) -> bool:
-        return self._stations.is_within_station_rect(pos)
 

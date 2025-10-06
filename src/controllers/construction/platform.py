@@ -8,7 +8,7 @@ def handle_platform_click(map: RailMap, pos: Position, camera_scale, mode_info: 
     if mode_info.get('state') == 'select_station':
         for station_pos in map.station_positions:
             if pos.is_within_station_rect(station_pos):
-                map.add_platform_on(station_pos, list(mode_info['preview_edges']))
+                map.add_platform_on(map.get_station_at(station_pos), list(mode_info['preview_edges']))
                 break
         mode_info['state'] = None
         return

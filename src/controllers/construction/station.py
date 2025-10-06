@@ -15,8 +15,7 @@ def handle_station_click(map: RailMap, world_pos: Position, mode_info: dict):
         return
 
     if moving_station:
-        map.remove_station_at(moving_station.position)
-        map.add_station_at(target.snapped, moving_station.name)
+        map.move_station(moving_station.position, target.snapped)
         mode_info["moving_station"] = None
         return
 
