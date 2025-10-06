@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 from typing import Optional, Set, Any
 
+from models.geometry.position import Position
+from models.map.rail_map import RailMap
+
 @dataclass
 class BulldozeTarget:
     kind: str                    # 'signal' | 'station' | 'platform' | 'segment' | 'node' | 'none'
@@ -9,7 +12,7 @@ class BulldozeTarget:
     edges: Optional[Set[Any]] = None  # set of edges for preview
     nodes: Optional[Set[Any]] = None  # set of nodes for preview
 
-def find_bulldoze_target(map, world_pos, camera_scale) -> BulldozeTarget:
+def find_bulldoze_target(map: RailMap, world_pos: Position, camera_scale) -> BulldozeTarget:
     snapped = world_pos.snap_to_grid()
     if map.has_node_at(snapped) and map.has_signal_at(snapped):
         return BulldozeTarget(kind='signal', pos=snapped)

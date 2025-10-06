@@ -34,8 +34,7 @@ class GraphQueryService:
         end_on_signal: bool = False,
         only_platforms: bool = False,
         only_straight: bool = False,
-        max_nr: int | None = None,
-        end_on_platform: bool = False
+        max_nr: int | None = None
     ) -> tuple[tuple[Position], tuple[tuple[Position, Position]]]:
         
         edges: set[tuple[Position, Position]] = set()
@@ -69,12 +68,12 @@ class GraphQueryService:
 
             for neighbor, direction in connections:
                 edge = (pose.position, neighbor)
-                
-                if end_on_platform and 'station' in self._graph.edges[edge]:
+                                
+                if 'station' in self._graph.edges[edge] and not only_platforms:
                     continue
-                
                 if only_platforms and 'station' not in self._graph.edges[edge]:
                     continue
+                
                 
                 edges.add(edge)
 
@@ -90,8 +89,6 @@ class GraphQueryService:
                 
                 if end_on_signal and 'signal' in self._graph[neighbor]:
                     continue
-                
-                
                 
                 stack.append(Pose(neighbor, direction))
 

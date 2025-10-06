@@ -32,10 +32,24 @@ class PlatformService:
     
     def calculate_platform_preview(self, edge: tuple[Position, Position]) -> Position | None:
         # add 2 to max_nr to account for the edges that will be cut off at the ends
-        _, edges = self.query_service.get_segment(edge, end_on_platform=True, only_straight=True, max_nr=PLATFORM_LENGTH+2)
+        _, edges = self.query_service.get_segment(edge, only_straight=True, max_nr=PLATFORM_LENGTH+2)
         sorted_edges = sorted(edges)[1:-1]  # remove the first and last edge to create a margin
         return sorted_edges
     
     def get_platform(self, edge: tuple[Position, Position]) -> set[tuple[Position, Position]]:
         _, edges = self.query_service.get_segment(edge, end_on_signal=False, only_platforms=True)
         return edges
+    
+    def middle_points_with_corresponding_station_positions(self) -> dict[tuple[Position, Position], Position]:
+        middle_points = dict()
+        for edge in self.all():
+            platform = self.get_platform(edge)
+            middle_point = self.get_middle_of_platform(platform)
+            station_pos = self._graph.edges[edge]['station'].position
+            middle_points[middle_point] = station_pos
+        return middle_points.items()
+    
+    def get_middle_of_platform(self, edges: tuple[tuple[Position, Position]]) -> Position | None:
+        sorted_edges = sorted(edges)
+        mid_edge = sorted_edges[len(sorted_edges) // 2]
+        return mid_edge[0].midpoint(mid_edge[1])

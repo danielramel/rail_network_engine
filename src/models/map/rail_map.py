@@ -47,7 +47,6 @@ class RailMap:
         end_on_signal: bool = False, 
         only_platforms: bool = False, 
         only_straight: bool = False,
-        end_on_platform: bool = False,
         max_nr: int | None = None
     ):
         return self._query_service.get_segment(
@@ -55,9 +54,7 @@ class RailMap:
             end_on_signal=end_on_signal, 
             only_platforms=only_platforms, 
             only_straight=only_straight, 
-            max_nr=max_nr,
-            end_on_platform=end_on_platform
-        )
+            max_nr=max_nr)
 
     def set_edge_attrs(self, edges: set[tuple[Position, Position]], attr: str) -> None:
         for edge in edges:
@@ -143,15 +140,8 @@ class RailMap:
     def platforms(self) -> dict[tuple[Position, Position], Position]:
         return self._platform_service.all()
     
-
     def get_platform_middle_points_with_corresponding_station_positions(self) -> dict[tuple[Position, Position], Position]:
-        middle_points = dict()
-        for edge in self.platforms:
-            platform = self.get_platform(edge)
-            middle_point = self.get_middle_of_platform(platform)
-            station_pos = self.edges[edge]['station'].position
-            middle_points[middle_point] = station_pos
-        return middle_points.items()
+        return self._platform_service.middle_points_with_corresponding_station_positions()
 
     def add_platform_on(self, station: Station, edges: tuple[tuple[Position, Position]]):
         self._platform_service.add(station, edges)
@@ -172,8 +162,5 @@ class RailMap:
         return self._platform_service.get_platform(edge)
     
     def get_middle_of_platform(self, edges: tuple[tuple[Position, Position]]) -> Position | None:
-        sorted_edges = sorted(edges)
-        mid_edge = sorted_edges[len(sorted_edges) // 2]
-        return mid_edge[0].midpoint(mid_edge[1])
-
+        return self._platform_service.get_middle_of_platform(edges)
 
