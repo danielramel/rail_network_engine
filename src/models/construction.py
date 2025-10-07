@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
-from models.geometry import Position, Pose, Edge
+from models.geometry import Position, Pose
 from models.station import Station
 
 
@@ -24,7 +24,7 @@ class ConstructionState:
     construction_anchor: Pose | None = None
     track_speed: int = 120
     moving_station: Optional[Station] = None
-    preview_edges: set[Edge] = field(default_factory=set)
+    preview_edges: set[tuple[Position, Position]] = field(default_factory=set)
     preview_nodes: set[Position] = field(default_factory=set)
     edge_type: Optional[EdgeType] = None
     state: Optional[str] = None
