@@ -1,7 +1,10 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
-from models.geometry.position import Position
+from typing import Optional
+from models.geometry import Position, Pose, Edge
 from models.station import Station
+
+
 
 class ConstructionMode(Enum):
     RAIL = 1
@@ -10,47 +13,43 @@ class ConstructionMode(Enum):
     PLATFORM = 4
     BULLDOZE = 5
     
+class EdgeType(Enum):
+    PLATFORM = 1
+    PLATFORM_SELECTED = 2
+
 @dataclass
 class ConstructionState:
-    mode: ConstructionMode | None = ConstructionMode.RAIL
-    mode_info: dict = None
+    """Manages the current construction mode and associated state."""
+    mode: ConstructionMode = ConstructionMode.RAIL
+    construction_anchor: Pose | None = None
+    track_speed: int = 120
+    moving_station: Optional[Station] = None
+    preview_edges: set[Edge] = field(default_factory=set)
+    preview_nodes: set[Position] = field(default_factory=set)
+    edge_type: Optional[EdgeType] = None
+    state: Optional[str] = None
     
-    def __post_init__(self):
-        self.mode_info = {
-            'construction_anchor': None,  # type: Pose | None
-            'track_speed': 120,             # type: int
-            'moving_station': None,      # type: Station | None
-            'preview_edges': set(),      # type: set[tuple[Pose, Pose]]
-            'preview_nodes': set(),      # type: set[Position]
-            'edge_type': None,        # type: str | None
-            'state': None
-        }
-        
-    def switch_mode(self, new_mode: ConstructionMode):
+    def switch_mode(self, new_mode: ConstructionMode) -> None:
+        """Switch to a new construction mode, clearing previous state."""
         if new_mode == self.mode:
             return
-        self.mode_info['construction_anchor'] = None
-        self.mode_info['moving_station'] = None
-        self.mode_info['preview_edges'].clear()
-        self.mode_info['preview_nodes'].clear()
-        self.mode_info['edge_type'] = None
-        self.mode_info['state'] = None
-            
+        
+        self.construction_anchor = None
+        self.moving_station = None
+        self.preview_edges.clear()
+        self.preview_nodes.clear()
+        self.edge_type = None
+        self.state = None
         self.mode = new_mode
-
-    def is_edge_in_preview(self, edge: tuple[Position, Position]) -> bool:
-        a, b = edge
-        return ((a, b) in self.mode_info['preview_edges'] or (b, a) in self.mode_info['preview_edges'])
+    
+    def is_edge_in_preview(self, edge: Edge) -> bool:
+        """Check if an edge (in either direction) is in the preview set."""
+        return edge in self.preview_edges
 
     def is_bulldoze_preview_node(self, pos: Position) -> bool:
-        return self.mode is ConstructionMode.BULLDOZE and pos in self.mode_info['preview_nodes']
+        """Check if a position is marked for bulldozing."""
+        return self.mode is ConstructionMode.BULLDOZE and pos in self.preview_nodes
     
     def is_station_being_moved(self, station: Station) -> bool:
-        return self.mode_info['moving_station'] == station
-
-class CursorTarget(Enum):
-    EDGE = 1
-    SIGNAL = 2
-    STATION = 3
-    PLATFORM = 4
-    EMPTY = 5
+        """Check if a specific station is currently being moved."""
+        return self.moving_station == station

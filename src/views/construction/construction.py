@@ -2,7 +2,7 @@ import pygame
 
 from graphics.camera import Camera
 from models.geometry import Position
-from ui.utils import draw_dashed_line, draw_edge, draw_station,  draw_node, draw_signal, draw_grid
+from ui.utils import draw_dotted_line, draw_edge, draw_station,  draw_node, draw_signal, draw_grid
 from domain.rail_map import RailMap
 
 from config.colors import BLUE, LIGHTBLUE, RED
@@ -49,9 +49,9 @@ def render_construction_preview(ui_layer: UILayer, surface: pygame.Surface, came
         moving_station = state.mode_info['moving_station'] if state.mode == ConstructionMode.STATION else None
         for middle_point, station_pos in map.get_platform_middle_points().items():
             if moving_station and (moving_station.position == station_pos):
-                draw_dashed_line(surface, middle_point, world_pos.snap_to_grid(), camera, color=LIGHTBLUE)
+                draw_dotted_line(surface, middle_point, world_pos.snap_to_grid(), camera, color=LIGHTBLUE)
                 continue
-            draw_dashed_line(surface, middle_point, station_pos, camera, color=BLUE)
+            draw_dotted_line(surface, middle_point, station_pos, camera, color=BLUE)
 
     if ui_layer.is_over_ui(pos):
         pass

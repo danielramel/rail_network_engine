@@ -64,8 +64,8 @@ def draw_station(surface: pygame.Surface, station: Station, camera: Camera, colo
     text_rect = text_surface.get_rect(center=rect.center)
     surface.blit(text_surface, text_rect)
 
-def draw_dashed_line(surface: pygame.Surface, start_pos: Position, end_pos: Position, camera: Camera, color, width=1, dash_length=10, gap_length=5):
-    """Draw a dashed line on the surface from start_pos to end_pos."""
+def draw_dotted_line(surface: pygame.Surface, start_pos: Position, end_pos: Position, camera: Camera, color):
+    """Draw a dotted line on the surface from start_pos to end_pos."""
     start_pos = camera.world_to_screen(start_pos)
     end_pos = camera.world_to_screen(end_pos)
 
@@ -73,21 +73,14 @@ def draw_dashed_line(surface: pygame.Surface, start_pos: Position, end_pos: Posi
     x2, y2 = end_pos
     dx = x2 - x1
     dy = y2 - y1
-    distance = (dx**2 + dy**2) ** 0.5
-    if distance == 0:
-        return
-    dash_count = int(distance // (dash_length + gap_length))
-    for i in range(dash_count + 1):
-        start_x = x1 + (dx * (i * (dash_length + gap_length)) / distance)
-        start_y = y1 + (dy * (i * (dash_length + gap_length)) / distance)
-        end_x = x1 + (dx * min((i * (dash_length + gap_length) + dash_length) / distance, 1))
-        end_y = y1 + (dy * min((i * (dash_length + gap_length) + dash_length) / distance, 1))
-        pygame.draw.line(surface, color, (start_x, start_y), (end_x, end_y), width)
+    distance = start_pos.distance_to(end_pos)
+    dot_spacing = 8
+    dot_count = int(distance // dot_spacing)
+    for i in range(dot_count + 1):
+        dot_x = x1 + (dx * (i * dot_spacing) / distance)
+        dot_y = y1 + (dy * (i * dot_spacing) / distance)
+        pygame.draw.circle(surface, color, (int(dot_x), int(dot_y)), 1)
         
-def draw_edges(surface: pygame.Surface, edges, camera: Camera, color=WHITE):
-    for edge in edges:
-        pygame.draw.aaline(surface, color, tuple(camera.world_to_screen(Position(*edge[0]))), tuple(camera.world_to_screen(Position(*edge[1]))))
-
 def draw_edge(surface: pygame.Surface, edge: tuple[Position, Position], camera: Camera, edge_type=None, speed=None):
     if edge_type == 'red':
         pygame.draw.line(surface, RED, tuple(camera.world_to_screen(Position(*edge[0]))), tuple(camera.world_to_screen(Position(*edge[1]))), width=3)

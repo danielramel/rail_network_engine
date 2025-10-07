@@ -2,7 +2,7 @@ from pygame import Surface
 from config.colors import BLUE, LIGHTBLUE, YELLOW
 from graphics.camera import Camera
 from domain.rail_map import RailMap
-from ui.utils import draw_node, draw_station, draw_dashed_line
+from ui.utils import draw_node, draw_station, draw_dotted_line
 from models.geometry import Position
 from services.construction.platform_target import find_platform_target
 
@@ -12,10 +12,10 @@ def render_platform_preview(surface: Surface, world_pos: Position, mode_info: di
         for station_pos in map.station_positions:
             if world_pos.is_within_station_rect(station_pos):
                 draw_station(surface, map.get_station_at(station_pos), camera, color=LIGHTBLUE)
-                draw_dashed_line(surface, station_pos, middle_point, camera, color=LIGHTBLUE)
+                draw_dotted_line(surface, station_pos, middle_point, camera, color=LIGHTBLUE)
                 break
         else:
-            draw_dashed_line(surface, world_pos, middle_point, camera, color=LIGHTBLUE)
+            draw_dotted_line(surface, world_pos, middle_point, camera, color=LIGHTBLUE)
         return
 
     mode_info['preview_edges'].clear()
