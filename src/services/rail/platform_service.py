@@ -34,11 +34,11 @@ class PlatformService:
     def is_edge_platform(self, edge: tuple[Position, Position]) -> bool:
         return 'station' in self._graph.edges[edge]
     
-    def calculate_platform_preview(self, edge: tuple[Position, Position]) -> Position | None:
+    def calculate_platform_preview(self, edge: tuple[Position, Position]) -> set[tuple[Position, Position]] | None:
         # add 2 to max_nr to account for the edges that will be cut off at the ends
         _, edges = self.query_service.get_segment(edge, only_straight=True, max_nr=PLATFORM_LENGTH+2)
         sorted_edges = sorted(edges)[1:-1]  # remove the first and last edge to create a margin
-        return sorted_edges
+        return set(sorted_edges)
     
     def get_platform(self, edge: tuple[Position, Position]) -> set[tuple[Position, Position]]:
         _, edges = self.query_service.get_segment(edge, only_platforms=True)

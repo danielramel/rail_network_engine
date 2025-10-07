@@ -26,8 +26,8 @@ class ConstructionState:
     moving_station: Optional[Station] = None
     preview_edges: set[tuple[Position, Position]] = field(default_factory=set)
     preview_nodes: set[Position] = field(default_factory=set)
-    edge_type: Optional[EdgeType] = None
-    state: Optional[str] = None
+    preview_edges_type: Optional[EdgeType] = None
+    platform_state: Optional[str] = None
     
     def switch_mode(self, new_mode: ConstructionMode) -> None:
         """Switch to a new construction mode, clearing previous state."""
@@ -38,11 +38,11 @@ class ConstructionState:
         self.moving_station = None
         self.preview_edges.clear()
         self.preview_nodes.clear()
-        self.edge_type = None
+        self.preview_edges_type = None
         self.state = None
         self.mode = new_mode
     
-    def is_edge_in_preview(self, edge: Edge) -> bool:
+    def is_edge_in_preview(self, edge: tuple[Position, Position]) -> bool:
         """Check if an edge (in either direction) is in the preview set."""
         return edge in self.preview_edges
 

@@ -1,5 +1,6 @@
 import pygame
 from graphics.camera import Camera
+from models.construction import ConstructionState
 from models.geometry import Position
 from domain.rail_map import RailMap
 from models.station import Station
@@ -7,8 +8,8 @@ from ui.utils import draw_station
 from config.colors import LIGHTBLUE, RED, YELLOW
 from services.construction.station_target import find_station_target
 
-def render_station_preview(surface: pygame.Surface, world_pos: Position, mode_info: dict, map: RailMap, camera: Camera):
-    moving_station = mode_info.get('moving_station')
+def render_station_preview(surface: pygame.Surface, world_pos: Position, state: ConstructionState, map: RailMap, camera: Camera):
+    moving_station = state.moving_station
     target = find_station_target(map, world_pos, moving_station)
 
     if not moving_station and target.hovered_station_pos is not None:

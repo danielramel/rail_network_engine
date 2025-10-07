@@ -29,12 +29,12 @@ def handle_construction_events(ui_layer: UILayer, state: ConstructionState, came
                     return
                 camera.start_drag(pos)
             elif event.button == 3:
-                if state.mode is ConstructionMode.RAIL and state.mode_info['construction_anchor'] is not None:
-                    state.mode_info['construction_anchor'] = None
-                elif state.mode is ConstructionMode.STATION and state.mode_info['moving_station'] is not None:
-                    state.mode_info['moving_station'] = None
-                elif state.mode is ConstructionMode.PLATFORM and state.mode_info['state'] == 'select_station':
-                    state.mode_info['state'] = None
+                if state.mode is ConstructionMode.RAIL and state.construction_anchor is not None:
+                    state.construction_anchor = None
+                elif state.mode is ConstructionMode.STATION and state.moving_station is not None:
+                    state.moving_station = None
+                elif state.mode is ConstructionMode.PLATFORM and state.platform_state == 'select_station':
+                    state.platform_state = None
                 else:
                     state.switch_mode(None)
         elif event.type == pygame.MOUSEBUTTONUP:
@@ -43,15 +43,15 @@ def handle_construction_events(ui_layer: UILayer, state: ConstructionState, came
                 if camera.is_click(pos):
                     world_pos = camera.screen_to_world(pos)
                     if state.mode == ConstructionMode.RAIL:
-                        handle_rail_click(map, world_pos, state.mode_info)
+                        handle_rail_click(map, world_pos, state)
                     elif state.mode == ConstructionMode.SIGNAL:
                         handle_signal_click(map, world_pos)
                     elif state.mode == ConstructionMode.BULLDOZE:
                         handle_bulldoze_click(map, world_pos, camera.scale)
                     elif state.mode == ConstructionMode.STATION:
-                        handle_station_click(map, world_pos, state.mode_info)
+                        handle_station_click(map, world_pos, state)
                     elif state.mode == ConstructionMode.PLATFORM:
-                        handle_platform_click(map, world_pos, camera.scale, state.mode_info)
+                        handle_platform_click(map, world_pos, camera.scale, state)
                 camera.stop_drag() # should be after click check
            
         elif event.type == pygame.MOUSEMOTION:

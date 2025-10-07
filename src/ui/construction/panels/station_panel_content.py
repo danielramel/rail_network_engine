@@ -1,5 +1,6 @@
 import pygame
 from config.colors import WHITE, YELLOW
+from models.construction import ConstructionState
 
 class StationPanelContent:
     """Station control panel with no additional options.
@@ -33,7 +34,7 @@ class StationPanelContent:
             top=self.title_rect.bottom + 20
         )
         
-    def draw(self, mode_info: dict) -> None:
+    def draw(self, state: ConstructionState) -> None:
         """Minimal draw method - just blit pre-computed surfaces."""
         # Title
         self._surface.blit(self.title_surface, self.title_rect)

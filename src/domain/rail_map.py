@@ -154,7 +154,7 @@ class RailMap:
     def is_edge_platform(self, edge: tuple[Position, Position]) -> bool:
         return self._platform_service.is_edge_platform(edge)
 
-    def calculate_platform_preview(self, edge: tuple[Position, Position]) -> Position | None:
+    def calculate_platform_preview(self, edge: tuple[Position, Position]) -> tuple[tuple[Position, Position]] | None:
         return self._platform_service.calculate_platform_preview(edge)
 
     def get_platform(self, edge: tuple[Position, Position]) -> set[tuple[Position, Position]] | None:

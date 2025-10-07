@@ -1,4 +1,4 @@
-from models.construction import ConstructionMode
+from models.construction import ConstructionMode, ConstructionState
 from ui.construction.panels.platform_panel_content import PlatformPanelContent
 from .station_panel_content import StationPanelContent
 from .signal_panel_content import SignalPanelContent
@@ -8,7 +8,7 @@ from config.colors import BLACK, WHITE
 from .rail_panel_content import RailPanelContent
 
 class ConstructionPanel(RectangleUIElement):        
-    def __init__(self, surface: pygame.Surface, state: dict):
+    def __init__(self, surface: pygame.Surface, state: ConstructionState):
         self._surface = surface
         self._state = state
         self._rect = self._get_panel_rect()
@@ -29,7 +29,7 @@ class ConstructionPanel(RectangleUIElement):
         # Draw the content using the context drawer
         content_drawer = self._panels.get(self._state.mode)
         if content_drawer:
-            content_drawer.draw(self._state.mode_info)
+            content_drawer.draw(self._state)
             
     def handle_click(self, pos) -> bool:
         if self._state.mode not in self._panels:
@@ -37,7 +37,7 @@ class ConstructionPanel(RectangleUIElement):
         if not self._rect.collidepoint(*pos):
             return False
         
-        self._panels.get(self._state.mode).handle_click(pos, self._state.mode_info)
+        self._panels.get(self._state.mode).handle_click(pos, self._state)
         return True
 
     @property

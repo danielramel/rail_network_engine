@@ -20,8 +20,9 @@ def render_construction_preview(ui_layer: UILayer, surface: pygame.Surface, came
     draw_grid(surface, camera)
 
     for *edge, data in map.edges.data():
+        edge = tuple(edge)
         if state.is_edge_in_preview(edge):
-            draw_edge(surface, edge, camera, edge_type=state.mode_info['edge_type'], speed=data['speed'])
+            draw_edge(surface, edge, camera, edge_type=state.preview_edges_type, speed=data['speed'])
         elif map.is_edge_platform(edge):
             draw_edge(surface, edge, camera, edge_type='platform')
         else:
@@ -46,7 +47,7 @@ def render_construction_preview(ui_layer: UILayer, surface: pygame.Surface, came
     world_pos = camera.screen_to_world(pos)
     
     if state.mode in (ConstructionMode.PLATFORM, ConstructionMode.STATION):
-        moving_station = state.mode_info['moving_station'] if state.mode == ConstructionMode.STATION else None
+        moving_station = state.moving_station if state.mode == ConstructionMode.STATION else None
         for middle_point, station_pos in map.get_platform_middle_points().items():
             if moving_station and (moving_station.position == station_pos):
                 draw_dotted_line(surface, middle_point, world_pos.snap_to_grid(), camera, color=LIGHTBLUE)
@@ -56,15 +57,15 @@ def render_construction_preview(ui_layer: UILayer, surface: pygame.Surface, came
     if ui_layer.is_over_ui(pos):
         pass
     elif state.mode == ConstructionMode.RAIL:
-        render_rail_preview(surface, world_pos, state.mode_info, map, camera)
+        render_rail_preview(surface, world_pos, state, map, camera)
     elif state.mode == ConstructionMode.SIGNAL:
         render_signal_preview(surface, world_pos, map, camera)
     elif state.mode == ConstructionMode.STATION:
-        render_station_preview(surface, world_pos, state.mode_info, map, camera)
+        render_station_preview(surface, world_pos, state, map, camera)
     elif state.mode == ConstructionMode.PLATFORM:
-        render_platform_preview(surface, world_pos, state.mode_info, map, camera)
+        render_platform_preview(surface, world_pos, state, map, camera)
     elif state.mode == ConstructionMode.BULLDOZE:
-        render_bulldoze_preview(surface, world_pos, state.mode_info, map, camera)
+        render_bulldoze_preview(surface, world_pos, state, map, camera)
         
     ui_layer.draw()
 
