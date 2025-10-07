@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Optional, Set, Any
 from config.settings import PLATFORM_LENGTH, GRID_SIZE
 from models.geometry import Position
-from models.map import RailMap
+from domain.rail_map import RailMap
 
 @dataclass
 class PlatformTarget:

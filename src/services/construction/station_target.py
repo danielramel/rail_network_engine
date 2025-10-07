@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 from models.geometry import Position
-from models.map import RailMap
+from domain.rail_map import RailMap
 from models.station import Station
 
 @dataclass

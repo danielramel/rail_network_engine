@@ -1,6 +1,6 @@
 import pygame
 from graphics.camera import Camera
-from models.map import RailMap
+from domain.rail_map import RailMap
 from controllers.construction import handle_construction_events
 from ui.construction.construction_buttons import ConstructionButtons
 from ui.zoom_box import ZoomBox

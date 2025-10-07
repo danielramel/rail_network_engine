@@ -1,4 +1,4 @@
-from models.map import RailMap
+from domain.rail_map import RailMap
 from models.geometry import Position, Pose
 from services.construction.rail_target import find_rail_target
 

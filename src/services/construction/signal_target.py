@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 from models.geometry import Position, Pose
-from models.map import RailMap
+from domain.rail_map import RailMap
 
 @dataclass
 class SignalTarget:

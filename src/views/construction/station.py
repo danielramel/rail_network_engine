@@ -1,8 +1,8 @@
 import pygame
 from graphics.camera import Camera
 from models.geometry import Position
-from models.map.rail_map import RailMap
-from models.map.station_repository import Station
+from domain.rail_map import RailMap
+from models.station import Station
 from ui.utils import draw_station
 from config.colors import LIGHTBLUE, RED, YELLOW
 from services.construction.station_target import find_station_target

@@ -1,4 +1,4 @@
-from models.map import RailMap
+from domain.rail_map import RailMap
 from models.geometry import Position
 from config.settings import PLATFORM_LENGTH
 from ui.popups import alert

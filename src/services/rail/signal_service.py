@@ -1,10 +1,10 @@
-from networkx import Graph
+import networkx as nx
 from models.geometry import Position, Pose
 
 
 class SignalService:
     """Service responsible for adding / toggling / removing signals."""
-    def __init__(self, graph: Graph, map):
+    def __init__(self, graph: nx.Graph, map):
         self._graph = graph
         self._map = map
 

@@ -1,6 +1,6 @@
 from models.geometry import Position
-from models.map import RailMap
-from services.construction.bulldoze_target import BulldozeTarget, find_bulldoze_target
+from domain.rail_map import RailMap
+from services.construction.bulldoze_target import find_bulldoze_target
 
 def handle_bulldoze_click(map: RailMap, world_pos: Position, camera_scale):
     target = find_bulldoze_target(map, world_pos, camera_scale)

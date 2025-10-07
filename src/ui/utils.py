@@ -4,7 +4,7 @@ from config.colors import BLUE, LIGHTBLUE, RED, WHITE, BLACK, YELLOW
 from config.settings import GRID_SIZE, STATION_RECT_SIZE
 from graphics.camera import Camera
 from models.geometry import Position, Pose
-from models.map.station_repository import Station
+from models.station import Station
 
 def draw_node(surface: pygame.Surface, node: Position, camera: Camera, color=WHITE):
     """Draw a node on the given surface using the camera."""

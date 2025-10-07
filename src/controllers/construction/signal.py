@@ -1,5 +1,5 @@
 from models.geometry import Position
-from models.map import RailMap
+from domain.rail_map import RailMap
 from services.construction.signal_target import find_signal_target
 
 def handle_signal_click(map: RailMap, pos: Position):

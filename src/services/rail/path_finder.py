@@ -4,7 +4,7 @@ import heapq
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from models.map import RailMap
+    from domain.rail_map import RailMap
 
 
 class Pathfinder:

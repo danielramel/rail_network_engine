@@ -1,5 +1,5 @@
 from models.geometry import Position
-from models.map import RailMap
+from domain.rail_map import RailMap
 from ui.popups import user_input
 from services.construction.station_target import find_station_target
 

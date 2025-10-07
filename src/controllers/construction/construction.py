@@ -7,7 +7,7 @@ from .bulldoze import handle_bulldoze_click
 from .station import handle_station_click
 from .platform import handle_platform_click
 from graphics.camera import Camera
-from models.map import RailMap
+from domain.rail_map import RailMap
 from models.construction import ConstructionState, ConstructionMode
 from ui.popups import alert
 

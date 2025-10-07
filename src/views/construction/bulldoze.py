@@ -3,7 +3,7 @@ from config.colors import RED
 from models.geometry import Position
 from ui.utils import draw_node, draw_signal, draw_station
 from graphics.camera import Camera
-from models.map import RailMap
+from domain.rail_map import RailMap
 from services.construction.bulldoze_target import find_bulldoze_target
 
 def render_bulldoze_preview(surface: pygame.Surface, world_pos: Position, mode_info: dict, map: RailMap, camera: Camera):

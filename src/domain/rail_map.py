@@ -1,10 +1,12 @@
 import networkx as nx
 from models.geometry import Position, Pose
+from models.station import Station
 from services.rail.graph_query_service import GraphQueryService
 from services.rail.signal_service import SignalService
-from services.rail.platform_service import PlatformService
 from services.rail.path_finder import Pathfinder
-from .station_repository import StationRepository, Station
+from services.rail.platform_service import PlatformService
+from infrastructure.station_repository import StationRepository
+
 
 
 class RailMap:
@@ -14,7 +16,7 @@ class RailMap:
         self._signal_service = SignalService(self._graph, self)
         self._platform_service = PlatformService(self._graph, self._query_service)
         self._pathfinder = Pathfinder(self)
-        self._stations = StationRepository()
+        self._station_repository = StationRepository()
     
     @property
     def nodes(self):
@@ -114,34 +116,31 @@ class RailMap:
     # --- stations ---
     @property
     def stations(self) -> tuple[Station, ...]:
-        return self._stations.all().values()
+        return self._station_repository.all().values()
 
     @property
     def station_positions(self) -> tuple[Position, ...]:
-        return self._stations.all().keys()
+        return self._station_repository.all().keys()
     
     def add_station_at(self, pos: Position, name: str):
-        self._stations.add(pos, name)
+        self._station_repository.add(pos, name)
 
     def remove_station_at(self, pos: Position):
-        self._stations.remove(pos)
+        self._station_repository.remove(pos)
         
     def move_station(self, old_pos: Position, new_pos: Position):
-        self._stations.move(old_pos, new_pos)
+        self._station_repository.move(old_pos, new_pos)
 
     def get_station_at(self, pos: Position) -> Station:
-        return self._stations.get(pos)
+        return self._station_repository.get(pos)
     
     def is_within_station_rect(self, pos: Position) -> bool:
-        return self._stations.is_within_station_rect(pos)
+        return self._station_repository.is_within_station_rect(pos)
     
     # --- platforms ---
     @property
-    def platforms(self) -> dict[tuple[Position, Position], Position]:
+    def platforms(self) -> dict[tuple[Position, Position], Station]:
         return self._platform_service.all()
-    
-    def get_platform_middle_points_with_corresponding_station_positions(self) -> dict[tuple[Position, Position], Position]:
-        return self._platform_service.middle_points_with_corresponding_station_positions()
 
     def add_platform_on(self, station: Station, edges: tuple[tuple[Position, Position]]):
         self._platform_service.add(station, edges)
@@ -157,10 +156,12 @@ class RailMap:
 
     def calculate_platform_preview(self, edge: tuple[Position, Position]) -> Position | None:
         return self._platform_service.calculate_platform_preview(edge)
-    
+
     def get_platform(self, edge: tuple[Position, Position]) -> set[tuple[Position, Position]] | None:
         return self._platform_service.get_platform(edge)
-    
+
     def get_middle_of_platform(self, edges: tuple[tuple[Position, Position]]) -> Position | None:
         return self._platform_service.get_middle_of_platform(edges)
 
+    def get_platform_middle_points(self) -> dict[tuple[Position, Position], Position]:
+        return self._platform_service.platform_middle_points()

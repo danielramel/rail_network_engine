@@ -1,7 +1,7 @@
 import pygame
 from config.colors import RED
 from graphics.camera import Camera
-from models.map import RailMap
+from domain.rail_map import RailMap
 from ui.utils import color_from_speed, draw_node
 from models.geometry import Position, Pose
 from services.construction.rail_target import find_rail_target

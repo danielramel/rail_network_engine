@@ -1,21 +1,38 @@
+from infrastructure.station_repository import StationRepository
 from config.settings import PLATFORM_LENGTH
 from domain.rail_map import GraphQueryService
 from models.geometry import Position
+from models.station import Station
 from networkx import Graph
 
-from models.station import Station
 
-
-class PlatformService:
+class StationPlatformService:
     def __init__(self, graph: Graph, query_service: GraphQueryService):
+        self._repo = StationRepository()
         self._graph = graph
-        self.query_service = query_service
+        self._query_service = query_service
+
+    def add_station(self, pos: Position, name: str) -> Station:
+        return self._repo.add(pos, name)
+    
+    def remove_station(self, pos: Position) -> None:
+        self._repo.remove(pos)
+        
+    def move_station(self, old_pos: Position, new_pos: Position) -> None:
+        self._repo.move(old_pos, new_pos)
+    
+    def get_station(self, pos: Position) -> Station:
+        return self._repo.get(pos)
+    
+    def all_stations(self) -> dict[Position, Station]:
+        return self._repo.all()
+
 
     def add(self, station: Station, edges: tuple[Position, Position]) -> None:
         for edge in edges:
             self._graph.edges[edge]['station'] = station
             
-        station.platforms.add(tuple(edges))
+        station.platforms.add(edges)
 
     def remove(self, edge: tuple[Position, Position]) -> None:
         station = self._graph.edges[edge]['station']
@@ -44,14 +61,14 @@ class PlatformService:
         _, edges = self.query_service.get_segment(edge, only_platforms=True)
         return edges
     
-    def platform_middle_points(self) -> dict[tuple[Position, Position], Position]:
+    def middle_points_with_corresponding_station_positions(self) -> dict[tuple[Position, Position], Position]:
         middle_points = dict()
         for edge in self.all():
             platform = self.get_platform(edge)
             middle_point = self.get_middle_of_platform(platform)
             station_pos = self._graph.edges[edge]['station'].position
             middle_points[middle_point] = station_pos
-        return middle_points
+        return middle_points.items()
     
     def get_middle_of_platform(self, edges: tuple[tuple[Position, Position]]) -> Position | None:
         sorted_edges = sorted(edges)

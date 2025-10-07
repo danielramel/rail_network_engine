@@ -1,7 +1,7 @@
 from pygame import Surface
 from config.colors import BLUE, LIGHTBLUE, YELLOW
 from graphics.camera import Camera
-from models.map import RailMap
+from domain.rail_map import RailMap
 from ui.utils import draw_node, draw_station, draw_dashed_line
 from models.geometry import Position
 from services.construction.platform_target import find_platform_target

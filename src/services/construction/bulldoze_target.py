@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional, Set, Any
 
 from models.geometry.position import Position
-from models.map.rail_map import RailMap
+from domain.rail_map import RailMap
 
 @dataclass
 class BulldozeTarget:
