@@ -1,3 +1,4 @@
+import math
 from config.settings import GRID_SIZE
 from models.geometry import Position, Pose
 import heapq
@@ -43,7 +44,7 @@ class Pathfinder:
             return neighbors
 
         def heuristic(a: Position, b: Position) -> float:
-            return max(abs(a.x - b.x) / GRID_SIZE, abs(a.y - b.y) / GRID_SIZE)
+            return (b.x - a.x) ** 2 + (b.y - a.y) ** 2  # Squared Euclidean distance
         
         
         if self.is_blocked(end) or self.is_blocked(start.position):
