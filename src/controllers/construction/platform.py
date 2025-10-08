@@ -18,7 +18,7 @@ def handle_platform_click(map: RailMap, pos: Position, camera_scale, state: Cons
     if target.kind in ('none', 'existing_platform'):
         return
 
-    if target.too_short:
+    if not target.is_valid:
         alert(f'Platform too short! Minimum length is {PLATFORM_LENGTH} segments.')
         return
 

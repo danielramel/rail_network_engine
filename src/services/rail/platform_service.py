@@ -37,8 +37,10 @@ class PlatformService:
     def calculate_platform_preview(self, edge: tuple[Position, Position]) -> set[tuple[Position, Position]] | None:
         # add 2 to max_nr to account for the edges that will be cut off at the ends
         _, edges = self.query_service.get_segment(edge, only_straight=True, max_nr=PLATFORM_LENGTH+2)
+        if len(edges) < PLATFORM_LENGTH+2:
+            return False, edges  # too short, return full segment to indicate error
         sorted_edges = sorted(edges)[1:-1]  # remove the first and last edge to create a margin
-        return set(sorted_edges)
+        return True, set(sorted_edges)
     
     def get_platform(self, edge: tuple[Position, Position]) -> set[tuple[Position, Position]]:
         _, edges = self.query_service.get_segment(edge, only_platforms=True)

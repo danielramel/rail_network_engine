@@ -44,7 +44,7 @@ class ConstructionState:
     
     def is_edge_in_preview(self, edge: tuple[Position, Position]) -> bool:
         """Check if an edge (in either direction) is in the preview set."""
-        return edge in self.preview_edges
+        return edge in self.preview_edges or (edge[1], edge[0]) in self.preview_edges
 
     def is_bulldoze_preview_node(self, pos: Position) -> bool:
         """Check if a position is marked for bulldozing."""

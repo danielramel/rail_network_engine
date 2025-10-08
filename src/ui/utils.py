@@ -82,7 +82,7 @@ def draw_dotted_line(surface: pygame.Surface, start_pos: Position, end_pos: Posi
         pygame.draw.circle(surface, color, (int(dot_x), int(dot_y)), 1)
         
 def draw_edge(surface: pygame.Surface, edge: tuple[Position, Position], camera: Camera, edge_type=None, speed=None):
-    if edge_type == 'red':
+    if edge_type == 'red' or edge_type == 'invalid_platform':
         pygame.draw.line(surface, RED, tuple(camera.world_to_screen(Position(*edge[0]))), tuple(camera.world_to_screen(Position(*edge[1]))), width=3)
     elif edge_type == 'platform_selected':
         draw_platform(surface, edge, camera, color=LIGHTBLUE)

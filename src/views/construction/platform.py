@@ -28,4 +28,4 @@ def render_platform_preview(surface: Surface, world_pos: Position, state: Constr
         return
 
     state.preview_edges = t.edges
-    state.preview_edges_type = 'red' if t.too_short else 'platform'
+    state.preview_edges_type = 'platform' if t.is_valid else 'invalid_platform'
