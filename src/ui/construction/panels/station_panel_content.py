@@ -42,3 +42,6 @@ class StationPanelContent:
         # Label
         self.label_surface = self.data_font.render("Click to place station. Click on station to move it.", True, WHITE)
         self._surface.blit(self.label_surface, self.label_rect)
+        
+    def handle_click(self, pos, state: ConstructionState) -> None:
+        return False

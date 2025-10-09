@@ -41,18 +41,12 @@ def render_construction_preview(ui_layer: UILayer, surface: pygame.Surface, came
         if state.is_station_being_moved(station):
             continue
         draw_station(surface, station, camera)
+        for middle_point in map.get_platforms_middle_points(station):
+            draw_dotted_line(surface, middle_point, station.position, camera, color=BLUE)
         
         
     pos = Position(*pygame.mouse.get_pos())
     world_pos = camera.screen_to_world(pos)
-    
-    if state.mode in (ConstructionMode.PLATFORM, ConstructionMode.STATION):
-        moving_station = state.moving_station if state.mode == ConstructionMode.STATION else None
-        for middle_point, station_pos in map.get_platform_middle_points().items():
-            if moving_station and (moving_station.position == station_pos):
-                draw_dotted_line(surface, middle_point, world_pos.snap_to_grid(), camera, color=LIGHTBLUE)
-                continue
-            draw_dotted_line(surface, middle_point, station_pos, camera, color=BLUE)
 
     if ui_layer.is_over_ui(pos):
         pass
@@ -68,4 +62,3 @@ def render_construction_preview(ui_layer: UILayer, surface: pygame.Surface, came
         render_bulldoze_preview(surface, world_pos, state, map, camera)
         
     ui_layer.draw()
-

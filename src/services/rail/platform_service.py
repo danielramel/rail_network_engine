@@ -39,19 +39,13 @@ class PlatformService:
         
         return False, edges
 
-    def get_platform(self, edge: Edge) -> frozenset[Edge]:
+    def get_platform_from_edge(self, edge: Edge) -> frozenset[Edge]:
         _, edges = self.query_service.get_segment(edge, only_platforms=True)
         return edges
 
-    def platform_middle_points(self) -> dict[Edge, Position]:
-        middle_points = dict()
-        for edge in self.all():
-            platform = self.get_platform(edge)
-            middle_point = self.get_middle_of_platform(platform)
-            station_pos = self._graph.edges[edge]['station'].position
-            middle_points[middle_point] = station_pos
-        return middle_points
-
+    def platforms_middle_points(self, station: Station) -> set[Position]:
+        return {self.get_middle_of_platform(platform) for platform in station.platforms}
+        
     def get_middle_of_platform(self, edges: frozenset[Edge]) -> Position | None:
         sorted_edges = sorted(edges)
         mid_edge = sorted_edges[len(sorted_edges) // 2]

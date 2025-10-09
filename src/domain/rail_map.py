@@ -148,7 +148,7 @@ class RailMap:
         self._platform_service.add(station, edges)
 
     def remove_platform_at(self, edge: frozenset[Position, Position]):
-        platform_edges = self.get_platform(edge)
+        platform_edges = self.get_platform_from_edge(edge)
         station = self._graph.edges[edge]['station']
         self._platform_service.remove(platform_edges)
         self._station_repository.remove_platform_from_station(station, platform_edges)
@@ -162,11 +162,11 @@ class RailMap:
     def calculate_platform_preview(self, edge: frozenset[Position, Position]) -> tuple[frozenset[Position, Position]] | None:
         return self._platform_service.calculate_platform_preview(edge)
 
-    def get_platform(self, edge: frozenset[Position, Position]) -> set[frozenset[Position, Position]] | None:
-        return self._platform_service.get_platform(edge)
+    def get_platform_from_edge(self, edge: frozenset[Position, Position]) -> set[frozenset[Position, Position]] | None:
+        return self._platform_service.get_platform_from_edge(edge)
 
     def get_middle_of_platform(self, edges: set[frozenset[Position, Position]]) -> Position | None:
         return self._platform_service.get_middle_of_platform(edges)
 
-    def get_platform_middle_points(self) -> dict[frozenset[Position, Position], Position]:
-        return self._platform_service.platform_middle_points()
+    def get_platforms_middle_points(self, station: Station) -> set[Position]:
+        return self._platform_service.platforms_middle_points(station)

@@ -26,7 +26,7 @@ def find_bulldoze_target(map: RailMap, world_pos: Position, camera_scale) -> Bul
         return BulldozeTarget(kind='node', pos=world_pos)
 
     if map.is_edge_platform(closest_edge):
-        edges = map.get_platform(closest_edge)
+        edges = map.get_platform_from_edge(closest_edge)
         return BulldozeTarget(kind='platform', edge=closest_edge, edges=edges)
 
     nodes, edges = map.get_segment(closest_edge)
