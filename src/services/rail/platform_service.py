@@ -16,14 +16,10 @@ class PlatformService:
             
         station.platforms.add(frozenset(edges))
 
-    def remove(self, edge: Edge) -> None:
-        station = self._graph.edges[edge]['station']
-        edges = self.get_platform(edge)
+    def remove(self, edges: frozenset[Edge]) -> None:
         for edge in edges:
             del self._graph.edges[edge]['station']
-
-        station.platforms.remove(edges)
-
+    
     def all(self) -> dict[frozenset[Position, Position], Position]:
         return {Edge(*edge): station for *edge, station in self._graph.edges.data('station') if station is not None}
     

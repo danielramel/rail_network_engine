@@ -115,8 +115,8 @@ class RailMap:
 
     # --- stations ---
     @property
-    def stations(self) -> set[Station]:
-        return set(self._station_repository.all().values())
+    def stations(self) -> tuple[Station]:
+        return tuple(self._station_repository.all().values())
 
     @property
     def station_positions(self) -> set[Position]:
@@ -126,7 +126,9 @@ class RailMap:
         self._station_repository.add(pos, name)
 
     def remove_station_at(self, pos: Position):
-        self._station_repository.remove(pos)
+        station = self._station_repository.remove(pos)
+        for platforms in station.platforms:
+            self._platform_service.remove(platforms)
         
     def move_station(self, old_pos: Position, new_pos: Position):
         self._station_repository.move(old_pos, new_pos)
@@ -146,7 +148,10 @@ class RailMap:
         self._platform_service.add(station, edges)
 
     def remove_platform_at(self, edge: frozenset[Position, Position]):
-        self._platform_service.remove(edge)
+        platform_edges = self.get_platform(edge)
+        station = self._graph.edges[edge]['station']
+        self._platform_service.remove(platform_edges)
+        self._station_repository.remove_platform_from_station(station, platform_edges)
 
     def is_platform_at(self, pos: Position) -> bool:
         return self._platform_service.is_platform_at(pos)
