@@ -25,6 +25,10 @@ class Camera:
         screen_x = (pos.x + self.x) * self.scale
         screen_y = (pos.y + self.y) * self.scale
         return Position(screen_x, screen_y)
+    
+    def world_to_screen_from_edge(self, edge: frozenset[Position, Position]) -> tuple[Position, Position]:
+        a, b = edge
+        return (tuple(self.world_to_screen(a)), tuple(self.world_to_screen(b)))
 
     
     def start_drag(self, mouse_pos: Position):

@@ -1,4 +1,3 @@
-import math
 from config.settings import GRID_SIZE
 from models.geometry import Position, Pose
 import heapq
@@ -94,9 +93,3 @@ class Pathfinder:
                     heapq.heappush(open_set, (f_score[neighbor_state], g_score[neighbor_state], neighbor_state))
 
         return ()  # No path found
-    
-    def find_network_path(self, start: Position, end: Position) -> tuple[Position, ...]:
-        if not (self._map.has_node_at(start) and self._map.has_node_at(end)):
-            return ()
-        
-        

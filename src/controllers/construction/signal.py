@@ -2,8 +2,8 @@ from models.geometry import Position
 from domain.rail_map import RailMap
 from services.construction.signal_target import find_signal_target
 
-def handle_signal_click(map: RailMap, pos: Position):
-    target = find_signal_target(map, pos)
+def handle_signal_click(map: RailMap, world_pos: Position):
+    target = find_signal_target(map, world_pos)
 
     if target.kind == 'toggle':
         map.toggle_signal_at(target.snapped)

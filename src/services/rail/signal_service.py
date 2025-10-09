@@ -33,6 +33,6 @@ class SignalService:
         else:
             self._graph.nodes[pos]['signal'] = pos.direction_to(neighbors[0])
 
-    def all(self) -> tuple[Pose]:
-        return tuple(Pose(node, data['signal']) for node, data in self._graph.nodes(data=True) if 'signal' in data)
+    def all(self) -> set[Pose]:
+        return {Pose(node, data['signal']) for node, data in self._graph.nodes(data=True) if 'signal' in data}
 

@@ -1,6 +1,7 @@
 import pygame
 from config.colors import BLACK, WHITE, YELLOW
 from models.construction import ConstructionState
+from models.geometry import Position
 
 class RailPanelContent:
     """Rail construction panel with +/- controls for track speed.
@@ -81,7 +82,7 @@ class RailPanelContent:
             pygame.draw.rect(self._surface, WHITE, self.plus_rect, width=2, border_radius=6)
             self._surface.blit(self.plus_text, self.plus_text.get_rect(center=self.plus_rect.center))
 
-    def handle_click(self, pos: tuple[int, int], state: ConstructionState) -> bool:
+    def handle_click(self, pos: Position, state: ConstructionState) -> bool:
         """Handle +/- clicks; return True if the event was consumed."""
         if self.minus_rect.collidepoint(*pos):
             state.track_speed -= 10

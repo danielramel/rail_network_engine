@@ -4,6 +4,7 @@ from config.colors import BLUE, LIGHTBLUE, RED, WHITE, BLACK, YELLOW
 from config.settings import GRID_SIZE, STATION_RECT_SIZE
 from graphics.camera import Camera
 from models.geometry import Position, Pose
+from models.geometry.edge import Edge
 from models.station import Station
 
 def draw_node(surface: pygame.Surface, node: Position, camera: Camera, color=WHITE):
@@ -81,15 +82,16 @@ def draw_dotted_line(surface: pygame.Surface, start_pos: Position, end_pos: Posi
         dot_y = y1 + (dy * (i * dot_spacing) / distance)
         pygame.draw.circle(surface, color, (int(dot_x), int(dot_y)), 1)
         
-def draw_edge(surface: pygame.Surface, edge: tuple[Position, Position], camera: Camera, edge_type=None, speed=None):
-    if edge_type == 'red' or edge_type == 'invalid_platform':
-        pygame.draw.line(surface, RED, tuple(camera.world_to_screen(Position(*edge[0]))), tuple(camera.world_to_screen(Position(*edge[1]))), width=3)
+def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type=None, speed=None):
+    if edge_type == 'bulldoze' or edge_type == 'invalid_platform':
+        pygame.draw.line(surface, RED, *camera.world_to_screen_from_edge(edge), width=3)
     elif edge_type == 'platform_selected':
         draw_platform(surface, edge, camera, color=LIGHTBLUE)
     elif edge_type == 'platform':
         draw_platform(surface, edge, camera, color=BLUE)
     elif edge_type is None or edge_type == 'normal':
-        pygame.draw.line(surface, color_from_speed(speed), tuple(camera.world_to_screen(Position(*edge[0]))), tuple(camera.world_to_screen(Position(*edge[1]))), width=3)
+        
+        pygame.draw.line(surface, color_from_speed(speed), *camera.world_to_screen_from_edge(edge), width=3)
 
 def draw_grid(surface, camera):
     """Draw grid lines with camera transform"""
@@ -118,14 +120,14 @@ def draw_grid(surface, camera):
         if 0 <= screen_y <= h:
             pygame.draw.aaline(surface, (60, 60, 60), (0, screen_y), (w, screen_y))
         y += GRID_SIZE
-        
-        
-def draw_platform(surface: pygame.Surface, edge: list[tuple[Position, Position]], camera: Camera, color=BLUE):
+
+
+def draw_platform(surface: pygame.Surface, edge: Edge, camera: Camera, color=BLUE):
     a, b = edge
     offset = 2  # pixels of separation
     # Calculate direction vector
-    ax, ay = camera.world_to_screen(Position(*a))
-    bx, by = camera.world_to_screen(Position(*b))
+    ax, ay = camera.world_to_screen(a)
+    bx, by = camera.world_to_screen(b)
     dx, dy = bx - ax, by - ay
     length = (dx**2 + dy**2) ** 0.5
     if length != 0:

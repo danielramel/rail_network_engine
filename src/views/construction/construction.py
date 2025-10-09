@@ -2,6 +2,7 @@ import pygame
 
 from graphics.camera import Camera
 from models.geometry import Position
+from models.geometry.edge import Edge
 from ui.utils import draw_dotted_line, draw_edge, draw_station,  draw_node, draw_signal, draw_grid
 from domain.rail_map import RailMap
 
@@ -19,15 +20,14 @@ from models.construction import ConstructionMode
 def render_construction_preview(ui_layer: UILayer, surface: pygame.Surface, camera: Camera, map: RailMap, state: ConstructionState):
     draw_grid(surface, camera)
 
-    for *edge, data in map.edges.data():
-        edge = tuple(edge)
+    for edge, speed in map.edges_with_data('speed').items():
         if state.is_edge_in_preview(edge):
-            draw_edge(surface, edge, camera, edge_type=state.preview_edges_type, speed=data['speed'])
+            draw_edge(surface, edge, camera, edge_type=state.preview_edges_type, speed=speed)
         elif map.is_edge_platform(edge):
             draw_edge(surface, edge, camera, edge_type='platform')
         else:
-            draw_edge(surface, edge, camera, speed=data['speed'])
-        
+            draw_edge(surface, edge, camera, speed=speed)
+
     for node in map.junctions:
         draw_node(surface, node, camera)
         

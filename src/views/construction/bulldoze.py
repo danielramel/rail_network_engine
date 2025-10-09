@@ -25,4 +25,4 @@ def render_bulldoze_preview(surface: pygame.Surface, world_pos: Position, state:
     elif target.kind == 'segment':
         state.preview_edges = target.edges
         state.preview_nodes = target.nodes
-        state.preview_edges_type = 'normal'
+        state.preview_edges_type = 'bulldoze'

@@ -19,7 +19,7 @@ def render_platform_preview(surface: Surface, world_pos: Position, state: Constr
             draw_dotted_line(surface, world_pos, middle_point, camera, color=LIGHTBLUE)
         return
 
-    state.preview_edges.clear()
+    state.preview_edges = frozenset()
     state.preview_edges_type = None
 
     t = find_platform_target(map, world_pos, camera.scale)

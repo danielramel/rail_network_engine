@@ -56,7 +56,3 @@ class ConstructionPanel(RectangleUIElement):
         panel_y = screen_height - panel_height - 15
         
         return pygame.Rect(panel_x, panel_y, panel_width, panel_height)
-        
-        
-
-    

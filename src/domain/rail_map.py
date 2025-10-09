@@ -1,11 +1,12 @@
 import networkx as nx
-from models.geometry import Position, Pose
+from models.geometry import Position, Pose, Edge
 from models.station import Station
 from services.rail.graph_query_service import GraphQueryService
 from services.rail.signal_service import SignalService
 from services.rail.path_finder import Pathfinder
 from services.rail.platform_service import PlatformService
 from infrastructure.station_repository import StationRepository
+
 
 
 
@@ -19,20 +20,26 @@ class RailMap:
         self._station_repository = StationRepository()
     
     @property
-    def nodes(self):
+    def nodes(self) -> set[Position]:
         return self._graph.nodes
     
     @property
-    def edges(self):
-        return self._graph.edges
-    
+    def edges(self) -> frozenset[Edge]:
+        return frozenset((Edge(*edge) for edge in self._graph.edges))
+
+    def edges_with_data(self, key=None) -> dict[Edge, dict]:
+        if key:
+            return {Edge(*edge): data for *edge, data in self._graph.edges.data(key)}
+        
+        return {Edge(*edge): data for *edge, data in self._graph.edges.data()}
+
     def has_node_at(self, pos: Position) -> bool:
         return pos in self._graph.nodes
     
     def degree_at(self, pos: Position) -> int:
         return self._graph.degree[pos]
     
-    def has_edge(self, edge: tuple[Position, Position]) -> bool:
+    def has_edge(self, edge: Edge) -> bool:
         return self._graph.has_edge(*edge)
     
     # -- graph queries ---
@@ -45,29 +52,25 @@ class RailMap:
     
     def get_segment(
         self, 
-        edge: tuple[Position, Position], 
+        edge: Edge, 
         end_on_signal: bool = False, 
         only_platforms: bool = False, 
         only_straight: bool = False,
         max_nr: int | None = None
-    ):
+    ) -> tuple[frozenset[Position], frozenset[Edge]]:
         return self._query_service.get_segment(
             edge, 
             end_on_signal=end_on_signal, 
             only_platforms=only_platforms, 
             only_straight=only_straight, 
             max_nr=max_nr)
-
-    def set_edge_attrs(self, edges: set[tuple[Position, Position]], attr: str) -> None:
-        for edge in edges:
-            self._graph.edges[edge][attr] = True
                     
     # -- graph modifications ---
-    def remove_segment_at(self, edge: tuple[Position, Position]) -> None:
+    def remove_segment_at(self, edge: Edge) -> None:
         nodes, edges = self.get_segment(edge)
         if len(nodes) == 0 and len(edges) == 1:
             # Special case: single edge between two intersections
-            self._graph.remove_edge(*edges.pop())
+            self._graph.remove_edge(*next(iter(edges)))
             return
         
         for n in nodes:
@@ -87,12 +90,9 @@ class RailMap:
     def find_path(self, start: Pose, end: Position) -> list[Position] | None:
         return self._pathfinder.find_grid_path(start, end)
 
-    def find_network_path(self, start: Position, end: Position, only_straight: bool) -> list[Position] | None:
-        return self._pathfinder.find_network_path(start, end, only_straight)
-
     # --- signals ---
     @property
-    def signals(self) -> tuple[Pose, ...]:
+    def signals(self) -> set[Pose]:
         return self._signal_service.all()
     
     def has_signal_at(self, pos: Position) -> bool:
@@ -115,12 +115,12 @@ class RailMap:
 
     # --- stations ---
     @property
-    def stations(self) -> tuple[Station, ...]:
-        return self._station_repository.all().values()
+    def stations(self) -> set[Station]:
+        return set(self._station_repository.all().values())
 
     @property
-    def station_positions(self) -> tuple[Position, ...]:
-        return self._station_repository.all().keys()
+    def station_positions(self) -> set[Position]:
+        return set(self._station_repository.all().keys())
     
     def add_station_at(self, pos: Position, name: str):
         self._station_repository.add(pos, name)
@@ -139,29 +139,29 @@ class RailMap:
     
     # --- platforms ---
     @property
-    def platforms(self) -> dict[tuple[Position, Position], Station]:
+    def platforms(self) -> dict[frozenset[Position, Position], Station]:
         return self._platform_service.all()
 
-    def add_platform_on(self, station: Station, edges: tuple[tuple[Position, Position]]):
+    def add_platform_on(self, station: Station, edges: set[frozenset[Position, Position]]):
         self._platform_service.add(station, edges)
 
-    def remove_platform_at(self, edge: tuple[Position, Position]):
+    def remove_platform_at(self, edge: frozenset[Position, Position]):
         self._platform_service.remove(edge)
 
     def is_platform_at(self, pos: Position) -> bool:
         return self._platform_service.is_platform_at(pos)
 
-    def is_edge_platform(self, edge: tuple[Position, Position]) -> bool:
+    def is_edge_platform(self, edge: frozenset[Position, Position]) -> bool:
         return self._platform_service.is_edge_platform(edge)
 
-    def calculate_platform_preview(self, edge: tuple[Position, Position]) -> tuple[tuple[Position, Position]] | None:
+    def calculate_platform_preview(self, edge: frozenset[Position, Position]) -> tuple[frozenset[Position, Position]] | None:
         return self._platform_service.calculate_platform_preview(edge)
 
-    def get_platform(self, edge: tuple[Position, Position]) -> set[tuple[Position, Position]] | None:
+    def get_platform(self, edge: frozenset[Position, Position]) -> set[frozenset[Position, Position]] | None:
         return self._platform_service.get_platform(edge)
 
-    def get_middle_of_platform(self, edges: tuple[tuple[Position, Position]]) -> Position | None:
+    def get_middle_of_platform(self, edges: set[frozenset[Position, Position]]) -> Position | None:
         return self._platform_service.get_middle_of_platform(edges)
 
-    def get_platform_middle_points(self) -> dict[tuple[Position, Position], Position]:
+    def get_platform_middle_points(self) -> dict[frozenset[Position, Position], Position]:
         return self._platform_service.platform_middle_points()

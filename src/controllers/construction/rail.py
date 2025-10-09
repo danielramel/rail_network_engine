@@ -3,8 +3,8 @@ from models.construction import ConstructionState
 from models.geometry import Position, Pose
 from services.construction.rail_target import find_rail_target
 
-def handle_rail_click(map: RailMap, pos: Position, state: ConstructionState):
-    target = find_rail_target(map, pos, state.construction_anchor)
+def handle_rail_click(map: RailMap, world_pos: Position, state: ConstructionState):
+    target = find_rail_target(map, world_pos, state.construction_anchor)
 
     if target.kind == 'blocked':
         return

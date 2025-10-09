@@ -3,6 +3,8 @@ from config.settings import GRID_SIZE
 from models.geometry import Position, Pose
 from collections import deque
 
+from models.geometry.edge import Edge
+
 
 class GraphQueryService:
     def __init__(self, graph: Graph):
@@ -30,21 +32,22 @@ class GraphQueryService:
 
     def get_segment(
         self,
-        edge: tuple[Position, Position],
+        edge: Edge,
         end_on_signal: bool = False,
         only_platforms: bool = False,
         only_straight: bool = False,
         max_nr: int | None = None
-    ) -> tuple[tuple[Position], tuple[tuple[Position, Position]]]:
+    ) -> tuple[frozenset[Position], frozenset[Edge]]:
         
-        edges: set[tuple[Position, Position]] = set()
+        edges: set[frozenset[Position, Position]] = set()
         nodes: set[Position] = set()
         stack: deque[Pose] = deque()
 
         a, b = edge
         if only_platforms and 'station' not in self._graph.edges[edge]: raise ValueError("No platform on the given edge")
+        if max_nr is not None and not only_straight: raise ValueError("max_nr can only be used with only_straight=True")
         
-        edges.add((a, b))
+        edges.add(edge)
         
         a_has_signal = 'signal' in self._graph[a]
         b_has_signal = 'signal' in self._graph[b]
@@ -67,18 +70,17 @@ class GraphQueryService:
             nodes.add(pose.position)
 
             for neighbor, direction in connections:
-                edge = (pose.position, neighbor)
+                edge = Edge(pose.position, neighbor)
                                 
                 if 'station' in self._graph.edges[edge] and not only_platforms:
                     continue
                 if only_platforms and 'station' not in self._graph.edges[edge]:
                     continue
                 
-                
                 edges.add(edge)
 
-                if max_nr is not None and only_straight and edge[0].distance_to(edge[1]) * len(edges) >= max_nr * GRID_SIZE:
-                    return nodes, edges
+                if max_nr is not None and only_straight and edge.length * len(edges) >= max_nr * GRID_SIZE:
+                    return True, frozenset(nodes), frozenset(edges)
                 
                 # skip conditions
                 if neighbor in nodes or neighbor in {s.position for s in stack}:
@@ -92,4 +94,7 @@ class GraphQueryService:
                 
                 stack.append(Pose(neighbor, direction))
 
-        return nodes, edges
+        if max_nr is not None:
+            return False, frozenset(nodes), frozenset(edges)
+        
+        return frozenset(nodes), frozenset(edges)

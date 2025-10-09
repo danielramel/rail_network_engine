@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
 from models.geometry import Position, Pose
+from models.geometry.edge import Edge
 from models.station import Station
 
 
@@ -24,7 +25,7 @@ class ConstructionState:
     construction_anchor: Pose | None = None
     track_speed: int = 120
     moving_station: Optional[Station] = None
-    preview_edges: set[tuple[Position, Position]] = field(default_factory=set)
+    preview_edges: set[frozenset[Position, Position]] = field(default_factory=set)
     preview_nodes: set[Position] = field(default_factory=set)
     preview_edges_type: Optional[EdgeType] = None
     platform_state: Optional[str] = None
@@ -36,16 +37,15 @@ class ConstructionState:
         
         self.construction_anchor = None
         self.moving_station = None
-        self.preview_edges.clear()
-        self.preview_nodes.clear()
+        self.preview_edges = frozenset()
+        self.preview_nodes = frozenset()
         self.preview_edges_type = None
         self.state = None
         self.mode = new_mode
     
-    def is_edge_in_preview(self, edge: tuple[Position, Position]) -> bool:
+    def is_edge_in_preview(self, edge: Edge) -> bool:
         """Check if an edge (in either direction) is in the preview set."""
-        return edge in self.preview_edges or (edge[1], edge[0]) in self.preview_edges
-
+        return edge in self.preview_edges
     def is_bulldoze_preview_node(self, pos: Position) -> bool:
         """Check if a position is marked for bulldozing."""
         return self.mode is ConstructionMode.BULLDOZE and pos in self.preview_nodes

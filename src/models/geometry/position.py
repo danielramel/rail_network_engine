@@ -70,7 +70,7 @@ class Position:
         cx, cy = a.x + t * dx, a.y + t * dy
         return Position(cx, cy)
     
-    def intersects_line(self, edge: tuple['Position', 'Position'], camera_scale: float) -> tuple[bool, float]:
+    def intersects_line(self, edge: frozenset['Position', 'Position'], camera_scale: float) -> tuple[bool, float]:
         """
         Check if this point is within 'BULLDOZE_SENSITIVITY' pixels of line segment ab.
         Returns (is_within_sensitivity, distance).
@@ -80,7 +80,7 @@ class Position:
         
         return dist <= BULLDOZE_SENSITIVITY / camera_scale, dist
     
-    def closest_edge(self, edges: list[tuple['Position', 'Position']], camera_scale: float) -> tuple['Position', 'Position'] | None:
+    def closest_edge(self, edges: list[frozenset['Position', 'Position']], camera_scale: float) -> frozenset['Position', 'Position'] | None:
         """Get the closest edge from a list of edges to this point."""
         closest_edge = None
         closest_dist = float('inf')
@@ -93,10 +93,6 @@ class Position:
         
         return closest_edge
     
-    
-    def midpoint(self, other: 'Position') -> 'Position':
-        """Return the midpoint between this position and another."""
-        return Position((self.x + other.x) / 2, (self.y + other.y) / 2)
     
     def distance_to(self, other: 'Position') -> float:
         """Calculate the Euclidean distance to another position."""

@@ -1,8 +1,7 @@
 from config.settings import PLATFORM_LENGTH
 from domain.rail_map import GraphQueryService
-from models.geometry import Position
+from models.geometry import Position, Edge, edge
 from networkx import Graph
-
 from models.station import Station
 
 
@@ -11,42 +10,44 @@ class PlatformService:
         self._graph = graph
         self.query_service = query_service
 
-    def add(self, station: Station, edges: tuple[Position, Position]) -> None:
+    def add(self, station: Station, edges: frozenset[Edge]) -> None:
         for edge in edges:
             self._graph.edges[edge]['station'] = station
             
-        station.platforms.add(tuple(edges))
+        station.platforms.add(frozenset(edges))
 
-    def remove(self, edge: tuple[Position, Position]) -> None:
+    def remove(self, edge: Edge) -> None:
         station = self._graph.edges[edge]['station']
-        _, edges = self.get_platform(edge)
+        edges = self.get_platform(edge)
         for edge in edges:
             del self._graph.edges[edge]['station']
-            
+
         station.platforms.remove(edges)
 
-    def all(self) -> dict[tuple[Position, Position], Position]:
-        return {edge: data['station'] for edge, data in self._graph.edges.items() if 'station' in data}
+    def all(self) -> dict[frozenset[Position, Position], Position]:
+        return {Edge(*edge): station for *edge, station in self._graph.edges.data('station') if station is not None}
     
     def is_platform_at(self, pos: Position) -> bool:
         return all('station' in self._graph.edges[edge] for edge in self._graph.edges(pos))
     
-    def is_edge_platform(self, edge: tuple[Position, Position]) -> bool:
-        return 'station' in self._graph.edges[edge]
+    def is_edge_platform(self, edge: Edge) -> bool:
+        return 'station' in self._graph.edges[*edge]
     
-    def calculate_platform_preview(self, edge: tuple[Position, Position]) -> set[tuple[Position, Position]] | None:
+    def calculate_platform_preview(self, edge: Edge) -> tuple[bool, frozenset[Edge]]:
         # add 2 to max_nr to account for the edges that will be cut off at the ends
-        _, edges = self.query_service.get_segment(edge, only_straight=True, max_nr=PLATFORM_LENGTH+2)
-        if len(edges) < PLATFORM_LENGTH+2:
-            return False, edges  # too short, return full segment to indicate error
-        sorted_edges = sorted(edges)[1:-1]  # remove the first and last edge to create a margin
-        return True, set(sorted_edges)
-    
-    def get_platform(self, edge: tuple[Position, Position]) -> set[tuple[Position, Position]]:
+        is_valid, _, edges = self.query_service.get_segment(edge, only_straight=True, max_nr=PLATFORM_LENGTH+2)
+         # too short, return full segment to indicate error
+        if is_valid:
+            sorted_edges = sorted(edges)[1:-1]  # remove the first and last edge to create a margin
+            return True, frozenset(sorted_edges)
+        
+        return False, edges
+
+    def get_platform(self, edge: Edge) -> frozenset[Edge]:
         _, edges = self.query_service.get_segment(edge, only_platforms=True)
         return edges
-    
-    def platform_middle_points(self) -> dict[tuple[Position, Position], Position]:
+
+    def platform_middle_points(self) -> dict[Edge, Position]:
         middle_points = dict()
         for edge in self.all():
             platform = self.get_platform(edge)
@@ -54,8 +55,8 @@ class PlatformService:
             station_pos = self._graph.edges[edge]['station'].position
             middle_points[middle_point] = station_pos
         return middle_points
-    
-    def get_middle_of_platform(self, edges: tuple[tuple[Position, Position]]) -> Position | None:
+
+    def get_middle_of_platform(self, edges: frozenset[Edge]) -> Position | None:
         sorted_edges = sorted(edges)
         mid_edge = sorted_edges[len(sorted_edges) // 2]
-        return mid_edge[0].midpoint(mid_edge[1])
+        return mid_edge.midpoint()
