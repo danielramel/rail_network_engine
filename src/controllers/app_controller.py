@@ -21,8 +21,7 @@ class AppController:
             ConstructionButtons(screen, self.construction_state),
             ConstructionManager(self.map, self.construction_state, self.camera, screen)
         ]
-        
-        
+         
         
     def handle_event(self, event: pygame.event):
         if event.type == pygame.QUIT\

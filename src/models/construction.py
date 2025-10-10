@@ -5,8 +5,6 @@ from models.geometry import Position, Pose
 from models.geometry.edge import Edge
 from models.station import Station
 
-
-
 class ConstructionMode(Enum):
     RAIL = 1
     SIGNAL = 2
@@ -20,6 +18,9 @@ class EdgeType(Enum):
     INVALID_PLATFORM = 3
     BULLDOZE = 4
     NORMAL = 5
+    
+class PlatformState(Enum):
+    SELECT_STATION = 1
 
 @dataclass
 class ConstructionState:

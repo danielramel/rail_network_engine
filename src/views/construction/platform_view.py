@@ -1,15 +1,15 @@
-from pygame import Surface
 from models.construction import EdgeType
 from views.construction.base_construction_view import BaseConstructionView
 from models.geometry import Position
 from config.colors import BLUE, LIGHTBLUE
 from ui.utils import draw_node, draw_station, draw_dotted_line
-from services.construction.platform_target import find_platform_target
+from services.construction.platform_target import PlatformTargetType, find_platform_target
+from models.construction import PlatformState
 
 class PlatformView(BaseConstructionView):
     def render(self, world_pos: Position):
         # handle the “select_station” preview mode first
-        if self._construction_state.platform_state == 'select_station':
+        if self._construction_state.platform_state == PlatformState.SELECT_STATION:
             middle_point = self._map.get_middle_of_platform(self._construction_state.preview_edges)
             for station_pos in self._map.station_positions:
                 if world_pos.is_within_station_rect(station_pos):
@@ -26,7 +26,7 @@ class PlatformView(BaseConstructionView):
 
         # handle the platform target preview
         target = find_platform_target(self._map, world_pos, self._camera.scale)
-        if target.kind in ('none', 'existing_platform'):
+        if target.kind in (PlatformTargetType.NONE, PlatformTargetType.EXISTING_PLATFORM):
             draw_node(self._surface, world_pos, self._camera, color=BLUE)
             return
 

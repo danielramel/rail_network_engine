@@ -1,6 +1,6 @@
 from controllers.construction.base_construction_controller import BaseConstructionController
 from models.event import Event, CLICK_TYPE
-from services.construction.signal_target import find_signal_target
+from services.construction.signal_target import find_signal_target, SignalTargetType
 from graphics.camera import Camera
 from domain.rail_map import RailMap
 from models.construction import ConstructionState
@@ -13,17 +13,14 @@ class SignalController(BaseConstructionController):
         super().__init__(view, map, state, camera)
         
     def handle_event(self, event: Event):
-        if event.click_type != CLICK_TYPE.LEFT_CLICK:
-            return False
+        if event.click_type == CLICK_TYPE.RIGHT_CLICK:
+            self._construction_state.switch_mode(None)
+            return
 
-        target = find_signal_target(self._map, event.world_pos)
+        target = find_signal_target(self._map, self._camera.screen_to_world(event.screen_pos))
 
-        if target.kind == 'toggle':
+        if target.kind == SignalTargetType.INVALID:
             self._map.toggle_signal_at(target.snapped)
-            return True
 
-        elif target.kind == 'add':
+        elif target.kind == SignalTargetType.ADD:
             self._map.add_signal_at(target.snapped)
-            return True
-
-        return False

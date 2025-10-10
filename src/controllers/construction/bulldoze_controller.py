@@ -13,10 +13,11 @@ class BulldozeController(BaseConstructionController):
         super().__init__(view, map, state, camera)
         
     def handle_event(self, event: Event):
-        if event.click_type != CLICK_TYPE.LEFT_CLICK:
-            return False
+        if event.click_type == CLICK_TYPE.RIGHT_CLICK:
+            self._construction_state.switch_mode(None)
+            return
 
-        target = find_bulldoze_target(self._map, event.world_pos, self._camera.scale)
+        target = find_bulldoze_target(self._map, event.screen_pos, self._camera.scale)
         if target.kind == BulldozeTargetType.SIGNAL:
             self._map.remove_signal_at(target.pos)
             return True

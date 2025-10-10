@@ -3,13 +3,13 @@ from views.construction.base_construction_view import BaseConstructionView
 from models.geometry import Position
 from config.colors import RED
 from ui.utils import draw_node, color_from_speed
-from services.construction.rail_target import find_rail_target
+from services.construction.rail_target import find_rail_target, RailTargetType
 
 class RailView(BaseConstructionView):
     def render(self, world_pos: Position):
         target = find_rail_target(self._map, world_pos, self._construction_state.construction_anchor)
 
-        if target.kind == 'blocked':
+        if target.kind == RailTargetType.BLOCKED:
             draw_node(self._surface, target.snapped, self._camera, color=RED)
             if self._construction_state.construction_anchor is not None:
                 draw_node(self._surface, self._construction_state.construction_anchor.position, self._camera, color=RED)
@@ -17,11 +17,11 @@ class RailView(BaseConstructionView):
 
         color = color_from_speed(self._construction_state.track_speed)
 
-        if target.kind in ('node', 'anchor_same'):
+        if target.kind in (RailTargetType.NODE, RailTargetType.ANCHOR_SAME):
             draw_node(self._surface, target.snapped, self._camera, color=color)
             return
 
-        if target.kind == 'no_path':
+        if target.kind == RailTargetType.NO_PATH:
             draw_node(self._surface, target.snapped, self._camera, color=RED)
             draw_node(self._surface, self._construction_state.construction_anchor.position, self._camera, color=RED)
             return

@@ -5,7 +5,7 @@ from graphics.camera import Camera
 from domain.rail_map import RailMap
 from models.construction import ConstructionState, ConstructionMode
 from models.event import Event, CLICK_TYPE
-from ui.core.ui_component import BaseUIComponent
+from ui.components.base import BaseUIComponent
 from .rail_controller import RailController
 from .platform_controller import PlatformController
 from .signal_controller import SignalController
@@ -13,6 +13,7 @@ from .station_controller import StationController
 from .bulldoze_controller import BulldozeController
 from views.construction.construction_view import ConstructionCommonView
 from .base_construction_controller import BaseConstructionController
+from ui.construction.panels.rail_panel import RailPanel
 
 class ConstructionManager(BaseUIComponent):
     def __init__(self, map: RailMap, state: ConstructionState, camera: Camera, screen: pygame.Surface):
@@ -28,6 +29,9 @@ class ConstructionManager(BaseUIComponent):
             ConstructionMode.PLATFORM: PlatformController(map, state, camera, screen),
             ConstructionMode.BULLDOZE: BulldozeController(map, state, camera, screen),
         }
+        self._panels = {
+            ConstructionMode.RAIL: RailPanel(screen, state)
+        }
     
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
@@ -35,28 +39,30 @@ class ConstructionManager(BaseUIComponent):
                 self._construction_state.switch_mode(CONSTRUCTION_MODE_KEYS[event.key])
                 
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            pos = Position(*event.pos)
-            if event.button == 1:
-                self._camera.start_drag(pos)
-            elif event.button == 3:
-                event = Event(CLICK_TYPE.RIGHT_CLICK, self._camera.screen_to_world(pos))
-                if self._controllers[self._construction_state.mode].handle_event(event):
-                    return
-                self._construction_state.switch_mode(None)
-        elif event.type == pygame.MOUSEBUTTONUP:
-            pos = Position(*event.pos)
-            if event.button == 1:
-                if self._camera.is_click(pos):
-                    event = Event(CLICK_TYPE.LEFT_CLICK, self._camera.screen_to_world(pos))
-                    self._controllers[self._construction_state.mode].handle_event(event)
-                    
-                self._camera.stop_drag()
-           
+            self._camera.start_drag(Position(*event.pos))
+
         elif event.type == pygame.MOUSEMOTION:
             self._camera.update_drag(Position(*event.pos))
+            
         elif event.type == pygame.MOUSEWHEEL:
             self._camera.zoom(Position(*pygame.mouse.get_pos()), event.y)
             
+        elif event.type == pygame.MOUSEBUTTONUP:
+            pos = Position(*event.pos)
+            was_dragging = self._camera.stop_drag()
+            
+            if not was_dragging:
+                return
+            
+            if self._construction_state.mode is None:
+                return
+            
+            click_type = CLICK_TYPE.LEFT_CLICK if event.button == 1 else CLICK_TYPE.RIGHT_CLICK
+            event = Event(click_type, pos)
+            if self._panels[self._construction_state.mode].handle_event(event):
+                return
+            self._controllers[self._construction_state.mode].handle_event(event)
+
             
     def render(self):
         self.view.render()
@@ -64,7 +70,11 @@ class ConstructionManager(BaseUIComponent):
             return
         
         world_pos = self._camera.screen_to_world(Position(*pygame.mouse.get_pos()))
+        if self._construction_state.mode is None:
+            return
+        
         self._controllers[self._construction_state.mode].render(world_pos)
+        self._panels[self._construction_state.mode].render(world_pos)
 
 
 CONSTRUCTION_MODE_KEYS = {

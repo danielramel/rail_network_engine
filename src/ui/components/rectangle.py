@@ -1,6 +1,6 @@
 import pygame
 
-from ui.core.ui_component import BaseUIComponent
+from ui.components.base import BaseUIComponent
 
     
 class RectangleUIComponent(BaseUIComponent):

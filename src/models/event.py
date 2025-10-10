@@ -9,4 +9,4 @@ class CLICK_TYPE(Enum):
 @dataclass
 class Event:
     click_type: CLICK_TYPE
-    world_pos: Position
+    screen_pos: Position

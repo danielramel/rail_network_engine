@@ -1,6 +1,6 @@
 import pygame
 from models.geometry.position import Position
-from ui.core.ui_component import BaseUIComponent
+from ui.components.base import BaseUIComponent
 from config.colors import BLACK, WHITE, YELLOW, RED
 from models.construction import ConstructionMode, ConstructionState
 from config.paths import CONSTRUCTION_MODE_ICONS

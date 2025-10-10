@@ -1,7 +1,7 @@
 import pygame
 from controllers.construction.base_construction_controller import BaseConstructionController
 from models.event import CLICK_TYPE, Event
-from services.construction.rail_target import find_rail_target
+from services.construction.rail_target import find_rail_target, RailTargetType
 from models.geometry import Pose
 from views.construction.rail_view import RailView
 from graphics.camera import Camera
@@ -18,25 +18,26 @@ class RailController(BaseConstructionController):
         if event.click_type == CLICK_TYPE.RIGHT_CLICK:
             if self._construction_state.construction_anchor is not None:
                 self._construction_state.construction_anchor = None
-                return True
-            return False
+            else:
+                self._construction_state.switch_mode(None)
+            return
 
-        target = find_rail_target(self._map, event.world_pos, self._construction_state.construction_anchor)
-        if target.kind == 'blocked':
+        target = find_rail_target(self._map, self._camera.screen_to_world(event.screen_pos), self._construction_state.construction_anchor)
+        if target.kind == RailTargetType.BLOCKED:
             return True  # event consumed, nothing happens
 
-        if target.kind == 'node':
+        if target.kind == RailTargetType.NODE:
             self._construction_state.construction_anchor = Pose(target.snapped, (0, 0))
             return True
 
-        if target.kind == 'anchor_same':
+        if target.kind == RailTargetType.ANCHOR_SAME:
             self._construction_state.construction_anchor = None
             return True
 
-        if target.kind == 'no_path':
+        if target.kind == RailTargetType.NO_PATH:
             return True  # consumed, but nothing changed
 
-        if target.kind == 'path':
+        if target.kind == RailTargetType.PATH:
             self._map.add_segment(target.found_path, self._construction_state.track_speed)
             self._construction_state.construction_anchor = Pose(
                 target.snapped,

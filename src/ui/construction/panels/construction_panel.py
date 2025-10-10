@@ -2,10 +2,10 @@ from models.construction import ConstructionMode, ConstructionState
 from ui.construction.panels.platform_panel_content import PlatformPanelContent
 from .station_panel_content import StationPanelContent
 from .signal_panel_content import SignalPanelContent
-from ui.core.rectangle_ui_component import RectangleUIComponent
+from ui.components.rectangle import RectangleUIComponent
 import pygame
 from config.colors import BLACK, WHITE
-from .rail_panel_content import RailPanelContent
+from .rail_panel import RailPanelContent
 
 class ConstructionPanel(RectangleUIComponent):        
     def __init__(self, surface: pygame.Surface, state: ConstructionState):
@@ -43,16 +43,3 @@ class ConstructionPanel(RectangleUIComponent):
     @property
     def is_visible(self) -> bool:
         return self._state.mode in self._panels
-    
-    
-    def _get_panel_rect(self) -> pygame.Rect:
-        # Panel dimensions
-        panel_width = 400
-        panel_height = 120
-        
-        # Position in middle bottom
-        screen_width, screen_height = self._surface.get_size()
-        panel_x = (screen_width - panel_width) // 2
-        panel_y = screen_height - panel_height - 15
-        
-        return pygame.Rect(panel_x, panel_y, panel_width, panel_height)

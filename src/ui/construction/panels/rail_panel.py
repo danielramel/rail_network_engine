@@ -2,16 +2,19 @@ import pygame
 from config.colors import BLACK, WHITE, YELLOW
 from models.construction import ConstructionState
 from models.geometry import Position
-
-class RailPanelContent:
+from ui.components.panel import Panel
+    
+class RailPanel(Panel):
     """Rail construction panel with +/- controls for track speed.
     Stores button rects on the instance so click handling works outside draw().
     """
-    def __init__(self, surface: pygame.Surface, rect: pygame.Rect) -> None:
+    def __init__(self, surface: pygame.Surface, state: ConstructionState) -> None:
+        super().__init__(surface)
+        
+        self._construction_state = state
+        
         self.padding: int = 15
         self.button_size: int = 32
-        self._surface = surface
-        self.rect = rect
         
         # Initialize fonts
         self.title_font = pygame.font.SysFont(None, 28)
@@ -30,13 +33,13 @@ class RailPanelContent:
         """Compute and persist all rects for layout."""
         # Title position
         self.title_rect = self.title_surface.get_rect(
-            centerx=self.rect.centerx, 
-            top=self.rect.top + self.padding
+            centerx=self._rect.centerx, 
+            top=self._rect.top + self.padding
         )
         
         # Label position
         self.label_rect = self.label_surface.get_rect(
-            left=self.rect.left + self.padding,
+            left=self._rect.left + self.padding,
             top=self.title_rect.bottom + 20
         )
         
@@ -51,8 +54,10 @@ class RailPanelContent:
         # Speed value position (center between buttons)
         self.speed_center = (self.minus_rect.right + 60, self.minus_rect.centery)
        
-    def render(self, state: ConstructionState) -> None:
+    def render(self, world_pos) -> None:
         """Minimal render method - just blit pre-computed surfaces."""
+        super().render()
+
         # Title
         self._surface.blit(self.title_surface, self.title_rect)
         
@@ -60,36 +65,32 @@ class RailPanelContent:
         self._surface.blit(self.label_surface, self.label_rect)
         
         # Minus button
-        if state.track_speed > 10:
+        if self._construction_state.track_speed > 10:
             pygame.draw.rect(self._surface, BLACK, self.minus_rect, border_radius=6)
             pygame.draw.rect(self._surface, WHITE, self.minus_rect, width=2, border_radius=6)
             self._surface.blit(self.minus_text, self.minus_text.get_rect(center=self.minus_rect.center))
 
         # Plus button
-        if state.track_speed < 200:
+        if self._construction_state.track_speed < 200:
             pygame.draw.rect(self._surface, BLACK, self.plus_rect, border_radius=6)
             pygame.draw.rect(self._surface, WHITE, self.plus_rect, width=2, border_radius=6)
             self._surface.blit(self.plus_text, self.plus_text.get_rect(center=self.plus_rect.center))
         
         # Speed value (only dynamic part)
-        speed_val = str(state.track_speed) + " km/h"
+        speed_val = str(self._construction_state.track_speed) + " km/h"
         speed_surface = self.data_font.render(speed_val, True, YELLOW)
         self._surface.blit(speed_surface, speed_surface.get_rect(center=self.speed_center))
-        
-        # Plus button
-        if state.track_speed < 200:
-            pygame.draw.rect(self._surface, BLACK, self.plus_rect, border_radius=6)
-            pygame.draw.rect(self._surface, WHITE, self.plus_rect, width=2, border_radius=6)
-            self._surface.blit(self.plus_text, self.plus_text.get_rect(center=self.plus_rect.center))
 
-    def handle_click(self, pos: Position, state: ConstructionState) -> bool:
+    def handle_event(self, event: pygame.event.Event) -> bool:
         """Handle +/- clicks; return True if the event was consumed."""
+        pos = event.screen_pos
         if self.minus_rect.collidepoint(*pos):
-            state.track_speed -= 10
-            state.track_speed = max(10, state.track_speed)
+            self._construction_state.track_speed -= 10
+            self._construction_state.track_speed = max(10, self._construction_state.track_speed)
             return True
         if self.plus_rect.collidepoint(*pos):
-            state.track_speed += 10
-            state.track_speed = min(200, state.track_speed)
+            self._construction_state.track_speed += 10
+            self._construction_state.track_speed = min(200, self._construction_state.track_speed)
             return True
-        return False
+        
+        return self._rect.collidepoint(*pos)
