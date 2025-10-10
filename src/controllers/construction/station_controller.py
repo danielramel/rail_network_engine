@@ -26,6 +26,7 @@ class StationController(BaseConstructionController):
         # pick up a station if moving_station is None and mouse is over a station
         if not self._construction_state.moving_station and target.hovered_station_pos is not None:
             self._construction_state.moving_station = self._map.get_station_at(target.hovered_station_pos)
+            return
 
         # blocked or overlapping -> do nothing
         if target.blocked_by_node or target.overlaps_station:
@@ -35,6 +36,7 @@ class StationController(BaseConstructionController):
         if self._construction_state.moving_station:
             self._map.move_station(self._construction_state.moving_station.position, target.snapped)
             self._construction_state.moving_station = None
+            return
 
         # otherwise, create a new station
         name = user_input()

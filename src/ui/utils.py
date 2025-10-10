@@ -1,5 +1,5 @@
 import pygame
-from config.colors import BLUE, LIGHTBLUE, RED, WHITE, BLACK, YELLOW
+from config.colors import PURPLE, LIGHTBLUE, RED, WHITE, BLACK, YELLOW
 
 from config.settings import GRID_SIZE, STATION_RECT_SIZE
 from graphics.camera import Camera
@@ -54,7 +54,7 @@ def draw_signal(surface: pygame.Surface, alignment: Pose, camera: Camera, color=
     surface.blit(rotated_surf, rect)
 
     
-def draw_station(surface: pygame.Surface, station: Station, camera: Camera, color=BLUE):
+def draw_station(surface: pygame.Surface, station: Station, camera: Camera, color=PURPLE):
     w, h = STATION_RECT_SIZE
     rect = pygame.Rect(0, 0, w * camera.scale, h * camera.scale)
     rect.center = tuple(camera.world_to_screen(station.position))
@@ -89,7 +89,7 @@ def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type=Non
     elif edge_type == EdgeType.PLATFORM_SELECTED:
         draw_platform(surface, edge, camera, color=LIGHTBLUE)
     elif edge_type == EdgeType.PLATFORM:
-        draw_platform(surface, edge, camera, color=BLUE)
+        draw_platform(surface, edge, camera, color=PURPLE)
     elif edge_type is None or edge_type == 'normal':
         
         pygame.draw.line(surface, color_from_speed(speed), *camera.world_to_screen_from_edge(edge), width=3)
@@ -123,7 +123,7 @@ def draw_grid(surface, camera):
         y += GRID_SIZE
 
 
-def draw_platform(surface: pygame.Surface, edge: Edge, camera: Camera, color=BLUE):
+def draw_platform(surface: pygame.Surface, edge: Edge, camera: Camera, color=PURPLE):
     a, b = edge
     offset = 2  # pixels of separation
     # Calculate direction vector

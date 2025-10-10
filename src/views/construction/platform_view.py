@@ -1,7 +1,7 @@
 from models.construction import EdgeType
 from views.construction.base_construction_view import BaseConstructionView
 from models.geometry import Position
-from config.colors import BLUE, LIGHTBLUE
+from config.colors import PURPLE, LIGHTBLUE
 from ui.utils import draw_node, draw_station, draw_dotted_line
 from services.construction.platform_target import PlatformTargetType, find_platform_target
 from models.construction import PlatformState
@@ -27,7 +27,7 @@ class PlatformView(BaseConstructionView):
         # handle the platform target preview
         target = find_platform_target(self._map, world_pos, self._camera.scale)
         if target.kind in (PlatformTargetType.NONE, PlatformTargetType.EXISTING_PLATFORM):
-            draw_node(self._surface, world_pos, self._camera, color=BLUE)
+            draw_node(self._surface, world_pos, self._camera, color=PURPLE)
             return
 
         self._construction_state.preview_edges = target.edges

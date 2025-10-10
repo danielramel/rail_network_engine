@@ -1,7 +1,7 @@
 from models.construction import EdgeType
 from views.construction.base_construction_view import BaseConstructionView
 from ui.utils import draw_grid, draw_edge, draw_node, draw_signal, draw_station, draw_dotted_line
-from config.colors import RED, BLUE
+from config.colors import RED, PURPLE
 
 class ConstructionCommonView(BaseConstructionView):
     def render(self):
@@ -29,4 +29,4 @@ class ConstructionCommonView(BaseConstructionView):
                 continue
             draw_station(self._surface, station, self._camera)
             for middle_point in self._map.get_platforms_middle_points(station):
-                draw_dotted_line(self._surface, middle_point, station.position, self._camera, color=BLUE)
+                draw_dotted_line(self._surface, middle_point, station.position, self._camera, color=PURPLE)
