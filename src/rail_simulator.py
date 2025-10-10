@@ -1,5 +1,5 @@
 import pygame
-from layer_handler import LayerHandler
+from controllers.app_controller import AppController
 
 
 class RailSimulator:
@@ -9,7 +9,7 @@ class RailSimulator:
         pygame.display.set_caption("Rail Simulator")
         self.clock = pygame.time.Clock()
         
-        self.layer_handler = LayerHandler(self.screen)
+        self.layer_handler = AppController(self.screen)
 
     # --- Main loop ---
     def run(self):

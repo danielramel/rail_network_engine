@@ -6,10 +6,10 @@ from graphics.camera import Camera
 from models.construction import ConstructionState
 from ui.zoom_box import ZoomBox
 from ui.construction.construction_buttons import ConstructionButtons
-from controllers.construction.construction import ConstructionController
+from controllers.construction.construction_manager import ConstructionManager
 
 
-class LayerHandler:
+class AppController:
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
         self.map = RailMap()
@@ -19,7 +19,7 @@ class LayerHandler:
         self.elements = [
             ZoomBox(screen, self.camera),
             ConstructionButtons(screen, self.construction_state),
-            ConstructionController(self.map, self.construction_state, self.camera, screen)
+            ConstructionManager(self.map, self.construction_state, self.camera, screen)
         ]
         
         

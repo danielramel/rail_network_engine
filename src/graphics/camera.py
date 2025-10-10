@@ -1,6 +1,5 @@
 from models.geometry import Position
 
-
 class Camera:
     def __init__(self):
         self.x = 0.0

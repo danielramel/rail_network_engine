@@ -1,4 +1,4 @@
-from controllers.ui_controller import ConstructionModeController
+from controllers.construction.base_construction_controller import BaseConstructionController
 from models.event import CLICK_TYPE, Event
 from ui.popups import user_input
 from services.construction.station_target import find_station_target
@@ -6,9 +6,9 @@ from graphics.camera import Camera
 from domain.rail_map import RailMap
 from models.construction import ConstructionState
 import pygame
-from views.construction.station import StationView
+from views.construction.station_view import StationView
 
-class StationController(ConstructionModeController):
+class StationController(BaseConstructionController):
     def __init__(self, map: RailMap, state: ConstructionState, camera: Camera, screen: pygame.Surface):
         view = StationView(map, state, camera, screen)
         super().__init__(view, map, state, camera)

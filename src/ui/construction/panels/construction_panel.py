@@ -2,12 +2,12 @@ from models.construction import ConstructionMode, ConstructionState
 from ui.construction.panels.platform_panel_content import PlatformPanelContent
 from .station_panel_content import StationPanelContent
 from .signal_panel_content import SignalPanelContent
-from ui.core.ui_element import RectangleUIElement
+from ui.core.rectangle_ui_component import RectangleUIComponent
 import pygame
 from config.colors import BLACK, WHITE
 from .rail_panel_content import RailPanelContent
 
-class ConstructionPanel(RectangleUIElement):        
+class ConstructionPanel(RectangleUIComponent):        
     def __init__(self, surface: pygame.Surface, state: ConstructionState):
         self._surface = surface
         self._state = state

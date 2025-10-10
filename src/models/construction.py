@@ -17,6 +17,9 @@ class ConstructionMode(Enum):
 class EdgeType(Enum):
     PLATFORM = 1
     PLATFORM_SELECTED = 2
+    INVALID_PLATFORM = 3
+    BULLDOZE = 4
+    NORMAL = 5
 
 @dataclass
 class ConstructionState:

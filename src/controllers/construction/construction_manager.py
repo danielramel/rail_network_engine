@@ -1,30 +1,33 @@
 import pygame
 from models.geometry import Position
-from ui.core.ui_element import UIElement
+    
 from graphics.camera import Camera
 from domain.rail_map import RailMap
 from models.construction import ConstructionState, ConstructionMode
 from models.event import Event, CLICK_TYPE
-from .rail import RailController
-from .platform import PlatformController
-from .signal import SignalController
-from .station import StationController
-from .bulldoze import BulldozeController
-from views.construction.construction import ConstructionCommonView
+from ui.core.ui_component import BaseUIComponent
+from .rail_controller import RailController
+from .platform_controller import PlatformController
+from .signal_controller import SignalController
+from .station_controller import StationController
+from .bulldoze_controller import BulldozeController
+from views.construction.construction_view import ConstructionCommonView
+from .base_construction_controller import BaseConstructionController
 
-class ConstructionController(UIElement):
+class ConstructionManager(BaseUIComponent):
     def __init__(self, map: RailMap, state: ConstructionState, camera: Camera, screen: pygame.Surface):
+        self.view = ConstructionCommonView(map, state, camera, screen)
         self._map = map
         self._construction_state = state
         self._camera = camera
-        self._controllers = {
+
+        self._controllers: dict[ConstructionMode, BaseConstructionController] = {
             ConstructionMode.RAIL: RailController(map, state, camera, screen),
             ConstructionMode.SIGNAL: SignalController(map, state, camera, screen),
             ConstructionMode.STATION: StationController(map, state, camera, screen),
             ConstructionMode.PLATFORM: PlatformController(map, state, camera, screen),
             ConstructionMode.BULLDOZE: BulldozeController(map, state, camera, screen),
         }
-        self.view = ConstructionCommonView(map, state, camera, screen)
     
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:

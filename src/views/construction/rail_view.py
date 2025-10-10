@@ -1,11 +1,11 @@
 import pygame
-from ui.construction.construction_view import ConstructionView
+from views.construction.base_construction_view import BaseConstructionView
 from models.geometry import Position
 from config.colors import RED
 from ui.utils import draw_node, color_from_speed
 from services.construction.rail_target import find_rail_target
 
-class RailView(ConstructionView):
+class RailView(BaseConstructionView):
     def render(self, world_pos: Position):
         target = find_rail_target(self._map, world_pos, self._construction_state.construction_anchor)
 

@@ -1,15 +1,15 @@
-from controllers.ui_controller import ConstructionModeController
+from controllers.construction.base_construction_controller import BaseConstructionController
 from models.event import CLICK_TYPE, Event
 from config.settings import PLATFORM_LENGTH
 from ui.popups import alert
 from services.construction.platform_target import find_platform_target
 from graphics.camera import Camera
 from domain.rail_map import RailMap
-from models.construction import ConstructionState
+from models.construction import ConstructionState, EdgeType
 import pygame
-from views.construction.platform import PlatformView
+from views.construction.platform_view import PlatformView
 
-class PlatformController(ConstructionModeController):
+class PlatformController(BaseConstructionController):
     def __init__(self, map: RailMap, state: ConstructionState, camera: Camera, screen: pygame.Surface):
         view = PlatformView(map, state, camera, screen)
         super().__init__(view, map, state, camera)
@@ -46,5 +46,5 @@ class PlatformController(ConstructionModeController):
 
         # prepare to select station
         self._construction_state.platform_state = 'select_station'
-        self._construction_state.preview_edges_type = 'platform_selected'
+        self._construction_state.preview_edges_type = EdgeType.PLATFORM_SELECTED
         return True

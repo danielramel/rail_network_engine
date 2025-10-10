@@ -1,14 +1,14 @@
 import pygame
-from controllers.ui_controller import ConstructionModeController
+from controllers.construction.base_construction_controller import BaseConstructionController
 from models.event import CLICK_TYPE, Event
 from services.construction.rail_target import find_rail_target
 from models.geometry import Pose
-from views.construction.rail import RailView
+from views.construction.rail_view import RailView
 from graphics.camera import Camera
 from domain.rail_map import RailMap
 from models.construction import ConstructionState
 
-class RailController(ConstructionModeController):
+class RailController(BaseConstructionController):
     def __init__(self, map: RailMap, state: ConstructionState, camera: Camera, screen: pygame.Surface):
         view = RailView(map, state, camera, screen)
         super().__init__(view, map, state, camera)

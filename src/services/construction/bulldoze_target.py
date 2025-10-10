@@ -4,9 +4,16 @@ from typing import Optional, Set, Any
 from models.geometry.position import Position
 from domain.rail_map import RailMap
 
+class BulldozeTargetType:
+    SIGNAL = 0
+    STATION = 1
+    PLATFORM = 2
+    SEGMENT = 3
+    NONE = 4
+    
 @dataclass
 class BulldozeTarget:
-    kind: str                    # 'signal' | 'station' | 'platform' | 'segment' | 'none'
+    kind: BulldozeTargetType
     pos: Optional[Any] = None    # Position for nodes/signals/stations
     edge: Optional[Any] = None   # single edge for removal
     edges: Optional[Set[Any]] = None  # set of edges for preview
@@ -15,19 +22,19 @@ class BulldozeTarget:
 def find_bulldoze_target(map: RailMap, world_pos: Position, camera_scale) -> BulldozeTarget:
     snapped = world_pos.snap_to_grid()
     if map.has_node_at(snapped) and map.has_signal_at(snapped):
-        return BulldozeTarget(kind='signal', pos=snapped)
+        return BulldozeTarget(kind=BulldozeTargetType.SIGNAL, pos=snapped)
 
     for station_pos in map.station_positions:
         if world_pos.is_within_station_rect(station_pos):
-            return BulldozeTarget(kind='station', pos=station_pos)
+            return BulldozeTarget(kind=BulldozeTargetType.STATION, pos=station_pos)
 
     closest_edge = world_pos.closest_edge(map.edges, camera_scale)
     if closest_edge is None:
-        return BulldozeTarget(kind='none', pos=world_pos)
+        return BulldozeTarget(kind=BulldozeTargetType.NONE, pos=world_pos)
 
     if map.is_edge_platform(closest_edge):
-        edges = map.get_platform(closest_edge)
-        return BulldozeTarget(kind='platform', edge=closest_edge, edges=edges)
+        edges = map.get_platform_from_edge(closest_edge)
+        return BulldozeTarget(kind=BulldozeTargetType.PLATFORM, edge=closest_edge, edges=edges)
 
     nodes, edges = map.get_segment(closest_edge)
-    return BulldozeTarget(kind='segment', edge=closest_edge, edges=edges, nodes=nodes)
+    return BulldozeTarget(kind=BulldozeTargetType.SEGMENT, edge=closest_edge, edges=edges, nodes=nodes)

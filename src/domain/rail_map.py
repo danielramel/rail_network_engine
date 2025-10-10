@@ -7,9 +7,6 @@ from services.rail.path_finder import Pathfinder
 from services.rail.platform_service import PlatformService
 from infrastructure.station_repository import StationRepository
 
-
-
-
 class RailMap:
     def __init__(self):
         self._graph = nx.Graph()

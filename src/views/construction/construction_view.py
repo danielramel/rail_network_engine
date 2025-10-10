@@ -1,10 +1,9 @@
-from ui.construction.construction_view import ConstructionView
+from models.construction import EdgeType
+from views.construction.base_construction_view import BaseConstructionView
 from ui.utils import draw_grid, draw_edge, draw_node, draw_signal, draw_station, draw_dotted_line
 from config.colors import RED, BLUE
 
-
-
-class ConstructionCommonView(ConstructionView):
+class ConstructionCommonView(BaseConstructionView):
     def render(self):
         draw_grid(self._surface, self._camera)
 
@@ -12,7 +11,7 @@ class ConstructionCommonView(ConstructionView):
             if self._construction_state.is_edge_in_preview(edge):
                 draw_edge(self._surface, edge, self._camera, edge_type=self._construction_state.preview_edges_type, speed=speed)
             elif self._map.is_edge_platform(edge):
-                draw_edge(self._surface, edge, self._camera, edge_type='platform')
+                draw_edge(self._surface, edge, self._camera, edge_type=EdgeType.PLATFORM)
             else:
                 draw_edge(self._surface, edge, self._camera, speed=speed)
 

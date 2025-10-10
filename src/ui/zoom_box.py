@@ -1,11 +1,11 @@
 import pygame
 from models.geometry.position import Position
-from ui.core.ui_element import RectangleUIElement
+from ui.core.rectangle_ui_component import RectangleUIComponent
 from config.colors import WHITE
 from graphics.camera import Camera
 
 
-class ZoomBox(RectangleUIElement):
+class ZoomBox(RectangleUIComponent):
     def __init__(self, surface: pygame.Surface, camera: Camera):
         self._rect = self._get_zoom_box(surface)
         self._camera = camera 
@@ -31,7 +31,7 @@ class ZoomBox(RectangleUIElement):
     
     def handle_event(self, event: pygame.event) -> bool:
         pos = Position(*event.pos)
-        if self.contains(pos):
+        if self._rect.collidepoint(*pos):
             self._camera.reset()
             return True
         return False

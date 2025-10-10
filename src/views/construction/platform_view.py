@@ -1,11 +1,12 @@
 from pygame import Surface
-from ui.construction.construction_view import ConstructionView
+from models.construction import EdgeType
+from views.construction.base_construction_view import BaseConstructionView
 from models.geometry import Position
 from config.colors import BLUE, LIGHTBLUE
 from ui.utils import draw_node, draw_station, draw_dotted_line
 from services.construction.platform_target import find_platform_target
 
-class PlatformView(ConstructionView):
+class PlatformView(BaseConstructionView):
     def render(self, world_pos: Position):
         # handle the “select_station” preview mode first
         if self._construction_state.platform_state == 'select_station':
@@ -30,4 +31,4 @@ class PlatformView(ConstructionView):
             return
 
         self._construction_state.preview_edges = target.edges
-        self._construction_state.preview_edges_type = 'platform' if target.is_valid else 'invalid_platform'
+        self._construction_state.preview_edges_type = EdgeType.PLATFORM if target.is_valid else EdgeType.INVALID_PLATFORM

@@ -1,12 +1,12 @@
 import pygame
-from ui.construction.construction_view import ConstructionView
+from views.construction.base_construction_view import BaseConstructionView
 from models.geometry import Position
 from models.station import Station
 from config.colors import LIGHTBLUE, RED, YELLOW
 from ui.utils import draw_station, draw_dotted_line
 from services.construction.station_target import find_station_target
 
-class StationView(ConstructionView):
+class StationView(BaseConstructionView):
     def render(self, world_pos: Position):
         moving_station = self._construction_state.moving_station
         target = find_station_target(self._map, world_pos, moving_station)

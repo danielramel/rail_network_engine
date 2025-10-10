@@ -3,6 +3,7 @@ from config.colors import BLUE, LIGHTBLUE, RED, WHITE, BLACK, YELLOW
 
 from config.settings import GRID_SIZE, STATION_RECT_SIZE
 from graphics.camera import Camera
+from models.construction import EdgeType
 from models.geometry import Position, Pose
 from models.geometry.edge import Edge
 from models.station import Station
@@ -83,11 +84,11 @@ def draw_dotted_line(surface: pygame.Surface, start_pos: Position, end_pos: Posi
         pygame.draw.circle(surface, color, (int(dot_x), int(dot_y)), 1)
         
 def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type=None, speed=None):
-    if edge_type == 'bulldoze' or edge_type == 'invalid_platform':
+    if edge_type == EdgeType.BULLDOZE or edge_type == EdgeType.INVALID_PLATFORM:
         pygame.draw.line(surface, RED, *camera.world_to_screen_from_edge(edge), width=3)
-    elif edge_type == 'platform_selected':
+    elif edge_type == EdgeType.PLATFORM_SELECTED:
         draw_platform(surface, edge, camera, color=LIGHTBLUE)
-    elif edge_type == 'platform':
+    elif edge_type == EdgeType.PLATFORM:
         draw_platform(surface, edge, camera, color=BLUE)
     elif edge_type is None or edge_type == 'normal':
         

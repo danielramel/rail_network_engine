@@ -1,13 +1,13 @@
-from models.geometry.position import Position
-from ui.core.ui_element import UIElement
 import pygame
+from models.geometry.position import Position
+from ui.core.ui_component import BaseUIComponent
 from config.colors import BLACK, WHITE, YELLOW, RED
 from models.construction import ConstructionMode, ConstructionState
 from config.paths import CONSTRUCTION_MODE_ICONS
 from config.settings import CONSTRUCTION_BUTTON_SIZE
 
 
-class ConstructionButtons(UIElement):
+class ConstructionButtons(BaseUIComponent):
     handled_events = [pygame.MOUSEBUTTONDOWN]
     def __init__(self, surface: pygame.Surface, construction_state: ConstructionState):
         self.icon_cache = self._load_icons()
