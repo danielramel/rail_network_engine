@@ -1,0 +1,65 @@
+import pygame
+from config.colors import WHITE, YELLOW
+from models.construction import ConstructionState
+from ui.components.panel import Panel
+    
+class StationPanel(Panel):
+    """Station placement panel with instructions."""
+    
+    def __init__(self, surface: pygame.Surface, state: ConstructionState) -> None:
+        super().__init__(surface)
+        
+        self._construction_state = state
+        
+        self.padding: int = 15
+        
+        # Initialize fonts
+        self.title_font = pygame.font.SysFont(None, 28)
+        self.instruction_font = pygame.font.SysFont(None, 22)
+        
+        # Pre-render static text
+        self.title_surface = self.title_font.render("Station Placement", True, YELLOW)
+        self.instruction1_surface = self.instruction_font.render(
+            "Click to place station.", True, WHITE
+        )
+        self.instruction2_surface = self.instruction_font.render(
+            "Click on station to move it.", True, WHITE
+        )
+        
+        # Calculate and store all layout rects
+        self._init_layout()
+       
+    def _init_layout(self) -> None:
+        """Compute and persist all rects for layout."""
+        # Title position
+        self.title_rect = self.title_surface.get_rect(
+            centerx=self._rect.centerx, 
+            top=self._rect.top + self.padding
+        )
+        
+        # Instruction positions
+        self.instruction1_rect = self.instruction1_surface.get_rect(
+            left=self._rect.left + self.padding,
+            top=self.title_rect.bottom + 20
+        )
+        
+        self.instruction2_rect = self.instruction2_surface.get_rect(
+            left=self._rect.left + self.padding,
+            top=self.instruction1_rect.bottom + 5
+        )
+       
+    def render(self, world_pos) -> None:
+        """Render panel with instructions."""
+        super().render()  # background and border
+
+        # Title
+        self._surface.blit(self.title_surface, self.title_rect)
+        
+        # Instructions
+        self._surface.blit(self.instruction1_surface, self.instruction1_rect)
+        self._surface.blit(self.instruction2_surface, self.instruction2_rect)
+
+    def handle_event(self, event: pygame.event.Event) -> bool:
+        """Return True if event is within panel bounds."""
+        pos = event.screen_pos
+        return self._rect.collidepoint(*pos)

@@ -6,6 +6,9 @@ from domain.rail_map import RailMap
 from models.construction import ConstructionState, ConstructionMode
 from models.event import Event, CLICK_TYPE
 from ui.components.base import BaseUIComponent
+from ui.construction.panels.bulldoze_panel import BulldozePanel
+from ui.construction.panels.platform_panel import PlatformPanel
+from ui.construction.panels.station_panel import StationPanel
 from .rail_controller import RailController
 from .platform_controller import PlatformController
 from .signal_controller import SignalController
@@ -14,6 +17,7 @@ from .bulldoze_controller import BulldozeController
 from views.construction.construction_view import ConstructionCommonView
 from .base_construction_controller import BaseConstructionController
 from ui.construction.panels.rail_panel import RailPanel
+from ui.construction.panels.signal_panel import SignalPanel
 
 class ConstructionManager(BaseUIComponent):
     def __init__(self, map: RailMap, state: ConstructionState, camera: Camera, screen: pygame.Surface):
@@ -30,7 +34,11 @@ class ConstructionManager(BaseUIComponent):
             ConstructionMode.BULLDOZE: BulldozeController(map, state, camera, screen),
         }
         self._panels = {
-            ConstructionMode.RAIL: RailPanel(screen, state)
+            ConstructionMode.RAIL: RailPanel(screen, state),
+            ConstructionMode.SIGNAL: SignalPanel(screen, state),
+            ConstructionMode.STATION: StationPanel(screen, state),
+            ConstructionMode.PLATFORM: PlatformPanel(screen, state),
+            ConstructionMode.BULLDOZE: BulldozePanel(screen, state)
         }
     
     def handle_event(self, event):

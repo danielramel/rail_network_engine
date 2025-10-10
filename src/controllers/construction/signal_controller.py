@@ -19,7 +19,7 @@ class SignalController(BaseConstructionController):
 
         target = find_signal_target(self._map, self._camera.screen_to_world(event.screen_pos))
 
-        if target.kind == SignalTargetType.INVALID:
+        if target.kind == SignalTargetType.TOGGLE:
             self._map.toggle_signal_at(target.snapped)
 
         elif target.kind == SignalTargetType.ADD:
