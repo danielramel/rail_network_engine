@@ -14,15 +14,12 @@ class ConstructionButtons(BaseUIComponent):
         self.buttons = self._get_buttons(surface)
         self.construction_state = construction_state
         self._surface = surface
-
-    def contains(self, pos):
-        return any(btn.collidepoint(pos.x, pos.y) for _, btn in self.buttons)
-    
-    
+        
+        
     def handle_event(self, event: pygame.event) -> bool:
-        pos = Position(*pygame.mouse.get_pos())
+        pos = event.pos
         for mode, btn in self.buttons:
-            if btn.collidepoint(pos.x, pos.y):
+            if btn.collidepoint(*pos):
                 self.construction_state.switch_mode(mode)
                 return True
         return False

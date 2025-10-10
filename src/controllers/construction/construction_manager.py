@@ -6,6 +6,7 @@ from domain.rail_map import RailMap
 from models.construction import ConstructionState, ConstructionMode
 from models.event import Event, CLICK_TYPE
 from ui.components.base import BaseUIComponent
+from ui.components.panel import Panel
 from ui.construction.panels.bulldoze_panel import BulldozePanel
 from ui.construction.panels.platform_panel import PlatformPanel
 from ui.construction.panels.station_panel import StationPanel
@@ -33,7 +34,7 @@ class ConstructionManager(BaseUIComponent):
             ConstructionMode.PLATFORM: PlatformController(map, state, camera, screen),
             ConstructionMode.BULLDOZE: BulldozeController(map, state, camera, screen),
         }
-        self._panels = {
+        self._panels: dict[ConstructionMode, Panel] = {
             ConstructionMode.RAIL: RailPanel(screen, state),
             ConstructionMode.SIGNAL: SignalPanel(screen, state),
             ConstructionMode.STATION: StationPanel(screen, state),
@@ -57,12 +58,15 @@ class ConstructionManager(BaseUIComponent):
             
         elif event.type == pygame.MOUSEBUTTONUP:
             pos = Position(*event.pos)
-            was_dragging = self._camera.stop_drag()
+            was_dragging = self._camera.stop_drag(pos)
             
-            if not was_dragging:
+            if was_dragging:
                 return
             
             if self._construction_state.mode is None:
+                return
+            
+            if event.button not in (1, 3):
                 return
             
             click_type = CLICK_TYPE.LEFT_CLICK if event.button == 1 else CLICK_TYPE.RIGHT_CLICK
