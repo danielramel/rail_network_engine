@@ -51,8 +51,8 @@ class RailPanelContent:
         # Speed value position (center between buttons)
         self.speed_center = (self.minus_rect.right + 60, self.minus_rect.centery)
        
-    def draw(self, state: ConstructionState) -> None:
-        """Minimal draw method - just blit pre-computed surfaces."""
+    def render(self, state: ConstructionState) -> None:
+        """Minimal render method - just blit pre-computed surfaces."""
         # Title
         self._surface.blit(self.title_surface, self.title_rect)
         

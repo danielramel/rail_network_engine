@@ -40,7 +40,7 @@ class ConstructionState:
         self.preview_edges = frozenset()
         self.preview_nodes = frozenset()
         self.preview_edges_type = None
-        self.state = None
+        self.platform_state = None
         self.mode = new_mode
     
     def is_edge_in_preview(self, edge: Edge) -> bool:

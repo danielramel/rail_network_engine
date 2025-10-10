@@ -8,6 +8,7 @@ from config.settings import CONSTRUCTION_BUTTON_SIZE
 
 
 class ConstructionButtons(UIElement):
+    handled_events = [pygame.MOUSEBUTTONDOWN]
     def __init__(self, surface: pygame.Surface, construction_state: ConstructionState):
         self.icon_cache = self._load_icons()
         self.buttons = self._get_buttons(surface)
@@ -17,14 +18,16 @@ class ConstructionButtons(UIElement):
     def contains(self, pos):
         return any(btn.collidepoint(pos.x, pos.y) for _, btn in self.buttons)
     
-    def handle_click(self, pos: Position) -> bool:
+    
+    def handle_event(self, event: pygame.event) -> bool:
+        pos = Position(*pygame.mouse.get_pos())
         for mode, btn in self.buttons:
             if btn.collidepoint(pos.x, pos.y):
                 self.construction_state.switch_mode(mode)
                 return True
         return False
 
-    def draw(self) -> None:
+    def render(self) -> None:
         for mode, btn_rect in self.buttons:
         # Draw a solid background for the button (not transparent)
             pygame.draw.rect(self._surface, BLACK, btn_rect, border_radius=10)

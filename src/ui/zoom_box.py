@@ -11,7 +11,7 @@ class ZoomBox(RectangleUIElement):
         self._camera = camera 
         self._surface = surface
 
-    def draw(self) -> None:
+    def render(self) -> None:
         if not self.is_visible:
             return
         zoom_text = f"{int(self._camera.scale * 100)}%"
@@ -29,7 +29,8 @@ class ZoomBox(RectangleUIElement):
     def _get_zoom_box(self, surface: pygame.Surface) -> pygame.Rect:
         return pygame.Rect(surface.get_width() - 100, 10, 80, 30)
     
-    def handle_click(self, pos: Position) -> bool:
+    def handle_event(self, event: pygame.event) -> bool:
+        pos = Position(*event.pos)
         if self.contains(pos):
             self._camera.reset()
             return True

@@ -19,7 +19,7 @@ class ConstructionPanel(RectangleUIElement):
             ConstructionMode.PLATFORM: PlatformPanelContent(self._surface, self._rect),
         }
 
-    def draw(self) -> None:
+    def render(self) -> None:
         if not self.is_visible:
             return
         """Draw a construction information panel in the middle bottom of the screen"""
@@ -31,7 +31,7 @@ class ConstructionPanel(RectangleUIElement):
         if content_drawer:
             content_drawer.draw(self._state)
             
-    def handle_click(self, pos) -> bool:
+    def handle_event(self, pos) -> bool:
         if self._state.mode not in self._panels:
             return False
         if not self._rect.collidepoint(*pos):

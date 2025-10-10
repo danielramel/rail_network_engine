@@ -6,7 +6,7 @@ from domain.rail_map import RailMap
 
 @dataclass
 class BulldozeTarget:
-    kind: str                    # 'signal' | 'station' | 'platform' | 'segment' | 'node' | 'none'
+    kind: str                    # 'signal' | 'station' | 'platform' | 'segment' | 'none'
     pos: Optional[Any] = None    # Position for nodes/signals/stations
     edge: Optional[Any] = None   # single edge for removal
     edges: Optional[Set[Any]] = None  # set of edges for preview
@@ -23,10 +23,10 @@ def find_bulldoze_target(map: RailMap, world_pos: Position, camera_scale) -> Bul
 
     closest_edge = world_pos.closest_edge(map.edges, camera_scale)
     if closest_edge is None:
-        return BulldozeTarget(kind='node', pos=world_pos)
+        return BulldozeTarget(kind='none', pos=world_pos)
 
     if map.is_edge_platform(closest_edge):
-        edges = map.get_platform_from_edge(closest_edge)
+        edges = map.get_platform(closest_edge)
         return BulldozeTarget(kind='platform', edge=closest_edge, edges=edges)
 
     nodes, edges = map.get_segment(closest_edge)

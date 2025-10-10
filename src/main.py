@@ -1,5 +1,5 @@
-from simulator import Game
+from rail_simulator import RailSimulator
 
 if __name__ == "__main__":
-    game = Game()
-    game.run()
+    simulator = RailSimulator()
+    simulator.run()

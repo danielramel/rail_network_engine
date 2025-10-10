@@ -1,28 +1,26 @@
-import pygame
-from config.colors import RED
-from models.construction import ConstructionState
-from models.geometry import Position
-from ui.utils import draw_node, draw_signal, draw_station
-from graphics.camera import Camera
-from domain.rail_map import RailMap
 from services.construction.bulldoze_target import find_bulldoze_target
+from ui.construction.construction_view import ConstructionView
+from models.geometry import Position
+from ui.utils import draw_signal, draw_station, draw_node
+from config.colors import RED
 
-def render_bulldoze_preview(surface: pygame.Surface, world_pos: Position, state: ConstructionState, map: RailMap, camera: Camera):
-    target = find_bulldoze_target(map, world_pos, camera.scale)
-    state.preview_edges = set()
-    state.preview_nodes = set()
-    state.preview_edges_type = None
+class BulldozeView(ConstructionView):
+    def render(self, world_pos: Position):
+        target = find_bulldoze_target(self._map, world_pos, self._camera.scale)
+        self._construction_state.preview_edges = set()
+        self._construction_state.preview_nodes = set()
+        self._construction_state.preview_edges_type = None
 
-    if target.kind == 'signal':
-        draw_signal(surface, map.get_signal_at(target.pos), camera, color=RED)
-    elif target.kind == 'station':
-        draw_station(surface, map.get_station_at(target.pos), camera, color=RED)
-    elif target.kind == 'node':
-        draw_node(surface, world_pos, camera, color=RED)
-    elif target.kind == 'platform':
-        state.preview_edges = target.edges
-        state.preview_edges_type = 'normal'
-    elif target.kind == 'segment':
-        state.preview_edges = target.edges
-        state.preview_nodes = target.nodes
-        state.preview_edges_type = 'bulldoze'
+        if target.kind == 'signal':
+            draw_signal(self._surface, self._map.get_signal_at(target.pos), self._camera, color=RED)
+        elif target.kind == 'station':
+            draw_station(self._surface, self._map.get_station_at(target.pos), self._camera, color=RED)
+        elif target.kind == 'none':
+            draw_node(self._surface, world_pos, self._camera, color=RED)
+        elif target.kind == 'platform':
+            self._construction_state.preview_edges = target.edges
+            self._construction_state.preview_edges_type = 'normal'
+        elif target.kind == 'segment':
+            self._construction_state.preview_edges = target.edges
+            self._construction_state.preview_nodes = target.nodes
+            self._construction_state.preview_edges_type = 'bulldoze'

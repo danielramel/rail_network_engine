@@ -11,10 +11,10 @@ class ModeSelectorButtons(UIElement):
     def contains(self, pos):
         return any(btn.collidepoint(pos.x, pos.y) for _, btn in self.buttons)
     
-    def handle_click(self, pos) -> bool:
+    def handle_event(self, pos) -> bool:
         return False  # Mode switching not implemented yet
     
-    def draw(self) -> None:
+    def render(self) -> None:
         pass
     
     @staticmethod

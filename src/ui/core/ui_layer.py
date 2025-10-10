@@ -1,51 +1,29 @@
+"""import pygame
+from controllers.ui_controller import UIController
 from .ui_element import UIElement
 
-class UILayer:
-    """
-    Manages a collection of UIElement instances and handles event routing.
+class UILayer(UIElement):
+    def __init__(self, controllers: list[UIController] = None) -> None:
+        self._controllers: list[UIController] = controllers if controllers is not None else []
 
-    Elements are rendered and checked for clicks in the order they were added,
-    with later elements appearing on top and receiving events first.
-    """
+    def add(self, *controllers: UIController) -> None:
+        self._controllers.extend(controllers)
 
-    def __init__(self):
-        self._elements: list[UIElement] = []
-
-    def add(self, *elements: UIElement) -> None:
-        """Add one or more UIElements to this layer."""
-        self._elements.extend(elements)
-        
-
-    def remove(self, element: UIElement) -> None:
-        """Remove a UIElement from this layer."""
-        if element in self._elements:
-            self._elements.remove(element)
+    def remove(self, controller: UIController) -> None:
+        if controller in self._controllers:
+            self._controllers.remove(controller)
 
     def clear(self) -> None:
-        """Remove all UIElements from this layer."""
-        self._elements.clear()
+        self._controllers.clear()
 
-    def handle_click(self, pos) -> bool:
-        """
-        Handle a click event on this UI layer.
+    def handle_event(self, event: pygame.event.Event) -> bool:
+        # dispatch top-most first (reverse order)
+        for c in reversed(self._controllers):
+            if c.handle_event(event):
+                return
 
-        Returns:
-            True if any UIElement handled the event, False otherwise
-        """
-        for element in reversed(self._elements):
-            if element.handle_click(pos):
-                return True
-        return False
-
-    def is_over_ui(self, pos) -> bool:
-        """Check if the position is over any UIElement."""
-        for element in reversed(self._elements):
-            if element.contains(pos):
-                return True
-        return False
-
-    def draw(self) -> None:
-        """Draw all UIElements in this layer."""
-        for element in self._elements:
-            if getattr(element, "visible", True):
-                element.draw()
+    def render(self, surface: pygame.Surface, **ctx) -> None:
+        # drawing in insertion order so earlier controllers appear underneath
+        for c in self._controllers:
+            c.render(surface, **ctx)
+"""
