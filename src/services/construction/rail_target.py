@@ -5,11 +5,11 @@ from models.geometry import Position, Pose
 from domain.rail_map import RailMap
 
 class RailTargetType(Enum):
-    BLOCKED = 'blocked'
-    NODE = 'node'
-    ANCHOR_SAME = 'anchor_same'
-    NO_PATH = 'no_path'
-    PATH = 'path'
+    BLOCKED = 0
+    NODE = 1
+    ANCHOR_SAME = 2
+    NO_PATH = 3
+    PATH = 4
 
 @dataclass
 class RailTarget:

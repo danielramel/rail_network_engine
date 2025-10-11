@@ -7,9 +7,9 @@ from models.geometry import Position
 from domain.rail_map import RailMap
 
 class PlatformTargetType(Enum):
-    NONE = 'none'
-    EXISTING_PLATFORM = 'existing_platform'
-    PREVIEW = 'preview'
+    NONE = 0
+    EXISTING_PLATFORM = 1
+    PREVIEW = 2
 
 @dataclass
 class PlatformTarget:

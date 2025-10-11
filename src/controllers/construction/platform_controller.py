@@ -5,7 +5,7 @@ from ui.popups import alert
 from services.construction.platform_target import find_platform_target
 from graphics.camera import Camera
 from domain.rail_map import RailMap
-from models.construction import ConstructionState, EdgeType, PlatformState
+from models.construction import ConstructionState, EdgeType
 import pygame
 from views.construction.platform_view import PlatformView, PlatformTargetType
 
@@ -17,14 +17,14 @@ class PlatformController(BaseConstructionController):
         
     def handle_event(self, event: Event):
         if event.click_type == CLICK_TYPE.RIGHT_CLICK:
-            if self._construction_state.platform_state == PlatformState.SELECT_STATION:
-                self._construction_state.platform_state = None
+            if self._construction_state.platform_waiting_for_station:
+                self._construction_state.platform_waiting_for_station = False
             else:
                 self._construction_state.switch_mode(None)
             return
                 
         # if user is currently selecting a station for the platform
-        if self._construction_state.platform_state == PlatformState.SELECT_STATION:
+        if self._construction_state.platform_waiting_for_station:
             for station_pos in self._map.station_positions:
                 if event.screen_pos.is_within_station_rect(station_pos):
                     self._map.add_platform_on(
@@ -32,7 +32,7 @@ class PlatformController(BaseConstructionController):
                         list(self._construction_state.preview_edges)
                     )
                     break
-            self._construction_state.platform_state = None
+            self._construction_state.platform_waiting_for_station = False
             return
 
         if len(self._map.station_positions) == 0:
@@ -50,5 +50,5 @@ class PlatformController(BaseConstructionController):
             return
 
         # prepare to select station
-        self._construction_state.platform_state = PlatformState.SELECT_STATION
+        self._construction_state.platform_waiting_for_station = True
         self._construction_state.preview_edges_type = EdgeType.PLATFORM_SELECTED

@@ -19,9 +19,6 @@ class EdgeType(Enum):
     BULLDOZE = 4
     NORMAL = 5
     
-class PlatformState(Enum):
-    SELECT_STATION = 1
-
 @dataclass
 class ConstructionState:
     """Manages the current construction mode and associated state."""
@@ -29,24 +26,24 @@ class ConstructionState:
     construction_anchor: Pose | None = None
     track_speed: int = 120
     moving_station: Optional[Station] = None
-    preview_edges: set[frozenset[Position, Position]] = field(default_factory=set)
-    preview_nodes: set[Position] = field(default_factory=set)
+    preview_edges: frozenset[Edge] = field(default_factory=frozenset)
+    preview_nodes: frozenset[Position] = field(default_factory=frozenset)
     preview_edges_type: Optional[EdgeType] = None
-    platform_state: Optional[PlatformState] = None
+    platform_waiting_for_station: bool = False
     
     def switch_mode(self, new_mode: ConstructionMode) -> None:
         """Switch to a new construction mode, clearing previous state."""
         if new_mode == self.mode:
             return
         
+        self.mode = new_mode
         self.construction_anchor = None
         self.moving_station = None
         self.preview_edges = frozenset()
         self.preview_nodes = frozenset()
         self.preview_edges_type = None
-        self.platform_state = None
-        self.mode = new_mode
-    
+        self.platform_waiting_for_station = False
+        
     def is_edge_in_preview(self, edge: Edge) -> bool:
         """Check if an edge (in either direction) is in the preview set."""
         return edge in self.preview_edges

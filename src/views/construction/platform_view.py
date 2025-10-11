@@ -4,12 +4,11 @@ from models.geometry import Position
 from config.colors import PURPLE, LIGHTBLUE
 from ui.utils import draw_node, draw_station, draw_dotted_line
 from services.construction.platform_target import PlatformTargetType, find_platform_target
-from models.construction import PlatformState
 
 class PlatformView(BaseConstructionView):
     def render(self, world_pos: Position):
         # handle the “select_station” preview mode first
-        if self._construction_state.platform_state == PlatformState.SELECT_STATION:
+        if self._construction_state.platform_waiting_for_station:
             middle_point = self._map.get_middle_of_platform(self._construction_state.preview_edges)
             for station_pos in self._map.station_positions:
                 if world_pos.is_within_station_rect(station_pos):

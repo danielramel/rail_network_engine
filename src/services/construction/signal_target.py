@@ -5,10 +5,10 @@ from models.geometry import Position, Pose
 from domain.rail_map import RailMap
 
 class SignalTargetType(Enum):
-    INVALID = 'invalid'
-    DEAD_END = 'dead_end'
-    TOGGLE = 'toggle'
-    ADD = 'add'
+    INVALID = 0
+    DEAD_END = 1
+    TOGGLE = 2
+    ADD = 3
 
 @dataclass
 class SignalTarget:
