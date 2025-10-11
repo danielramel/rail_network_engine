@@ -32,7 +32,7 @@ class ConstructionState:
     preview_edges: set[frozenset[Position, Position]] = field(default_factory=set)
     preview_nodes: set[Position] = field(default_factory=set)
     preview_edges_type: Optional[EdgeType] = None
-    platform_state: Optional[str] = None
+    platform_state: Optional[PlatformState] = None
     
     def switch_mode(self, new_mode: ConstructionMode) -> None:
         """Switch to a new construction mode, clearing previous state."""

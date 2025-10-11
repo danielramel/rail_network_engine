@@ -33,6 +33,7 @@ class PlatformController(BaseConstructionController):
                     )
                     break
             self._construction_state.platform_state = None
+            return
 
         # otherwise, find target under cursor
         target = find_platform_target(self._map, self._camera.screen_to_world(event.screen_pos), self._camera.scale)
@@ -42,6 +43,7 @@ class PlatformController(BaseConstructionController):
 
         if not target.is_valid:
             alert(f'Platform too short! Minimum length is {PLATFORM_LENGTH} segments.')
+            return
 
         # prepare to select station
         self._construction_state.platform_state = PlatformState.SELECT_STATION
