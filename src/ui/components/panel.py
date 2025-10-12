@@ -9,6 +9,8 @@ class Panel(RectangleUIComponent):
         self._surface = surface
         self._rect = self._get_panel_rect()
         
+        # cannot call super method because _surface needs to be set first
+        
         
     def _get_panel_rect(self) -> pygame.Rect:
         """Calculate and return the rectangle for the panel."""

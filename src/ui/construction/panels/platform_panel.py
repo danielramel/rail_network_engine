@@ -1,21 +1,13 @@
 import pygame
 from config.colors import WHITE, YELLOW
 from models.construction import ConstructionState
-from ui.components.panel import Panel
+from ui.construction.panels.base_construction_panel import BaseConstructionPanel
     
-class PlatformPanel(Panel):
+class PlatformPanel(BaseConstructionPanel):
     """Platform placement panel with instructions."""
     
     def __init__(self, surface: pygame.Surface, state: ConstructionState) -> None:
-        super().__init__(surface)
-        
-        self._construction_state = state
-        
-        self.padding: int = 15
-        
-        # Initialize fonts
-        self.title_font = pygame.font.SysFont(None, 28)
-        self.instruction_font = pygame.font.SysFont(None, 22)
+        super().__init__(surface, state)
         
         # Pre-render static text
         self.title_surface = self.title_font.render("Platform Placement", True, YELLOW)

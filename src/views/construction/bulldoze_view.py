@@ -6,12 +6,15 @@ from ui.utils import draw_signal, draw_station, draw_node
 from config.colors import RED
 
 class BulldozeView(BaseConstructionView):
-    def render(self, world_pos: Position):
-        target = find_bulldoze_target(self._map, world_pos, self._camera.scale)
+    def render(self, world_pos: Position | None):
         self._construction_state.preview_edges = set()
         self._construction_state.preview_nodes = set()
         self._construction_state.preview_edges_type = None
-
+        
+        if world_pos is None:
+            return
+        
+        target = find_bulldoze_target(self._map, world_pos, self._camera.scale)
         if target.kind == BulldozeTargetType.SIGNAL:
             draw_signal(self._surface, self._map.get_signal_at(target.pos), self._camera, color=RED)
         elif target.kind == BulldozeTargetType.STATION:

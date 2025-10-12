@@ -6,7 +6,12 @@ from ui.utils import draw_node, color_from_speed
 from services.construction.rail_target import find_rail_target, RailTargetType
 
 class RailView(BaseConstructionView):
-    def render(self, world_pos: Position):
+    def render(self, world_pos: Position | None):
+        if world_pos is None:
+            if self._construction_state.construction_anchor is not None:
+                draw_node(self._surface, self._construction_state.construction_anchor.position, self._camera, color=color_from_speed(self._construction_state.track_speed))
+            return
+
         target = find_rail_target(self._map, world_pos, self._construction_state.construction_anchor)
 
         if target.kind == RailTargetType.BLOCKED:

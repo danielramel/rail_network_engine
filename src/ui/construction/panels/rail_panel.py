@@ -1,10 +1,9 @@
 import pygame
 from config.colors import BLACK, WHITE, YELLOW
 from models.construction import ConstructionState
-from models.geometry import Position
-from ui.components.panel import Panel
+from ui.construction.panels.base_construction_panel import BaseConstructionPanel
     
-class RailPanel(Panel):
+class RailPanel(BaseConstructionPanel):
     """Rail construction panel with +/- controls for track speed."""
     
     # Speed configuration constants
@@ -13,22 +12,15 @@ class RailPanel(Panel):
     SPEED_INCREMENT = 10
     
     def __init__(self, surface: pygame.Surface, state: ConstructionState) -> None:
-        super().__init__(surface)
+        super().__init__(surface, state)
         
-        self._construction_state = state
-        
-        self.padding: int = 15
         self.button_size: int = 32
-        
-        # Initialize fonts
-        self.title_font = pygame.font.SysFont(None, 28)
-        self.data_font = pygame.font.SysFont(None, 22)
         
         # Pre-render static text
         self.title_surface = self.title_font.render("Rail Construction", True, YELLOW)
-        self.label_surface = self.data_font.render("Track speed:", True, WHITE)
-        self.minus_text = self.data_font.render("-", True, WHITE)
-        self.plus_text = self.data_font.render("+", True, WHITE)
+        self.label_surface = self.instruction_font.render("Track speed:", True, WHITE)
+        self.minus_text = self.instruction_font.render("-", True, WHITE)
+        self.plus_text = self.instruction_font.render("+", True, WHITE)
         
         # Calculate and store all layout rects
         self._init_layout()
@@ -99,7 +91,7 @@ class RailPanel(Panel):
         
         # Speed value (only dynamic part)
         speed_val = f"{self._construction_state.track_speed} km/h"
-        speed_surface = self.data_font.render(speed_val, True, YELLOW)
+        speed_surface = self.instruction_font.render(speed_val, True, YELLOW)
         self._surface.blit(speed_surface, speed_surface.get_rect(center=self.speed_center))
 
     def handle_event(self, event: pygame.event.Event) -> bool:

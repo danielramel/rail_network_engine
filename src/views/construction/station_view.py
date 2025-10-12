@@ -7,7 +7,9 @@ from ui.utils import draw_station, draw_dotted_line
 from services.construction.station_target import find_station_target
 
 class StationView(BaseConstructionView):
-    def render(self, world_pos: Position):
+    def render(self, world_pos: Position | None):
+        if world_pos is None:
+            return
         moving_station = self._construction_state.moving_station
         target = find_station_target(self._map, world_pos, moving_station)
 

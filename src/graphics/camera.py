@@ -12,9 +12,11 @@ class Camera:
         self.drag_start_y = 0
         self.drag_start_cam_x = 0
         self.drag_start_cam_y = 0
-        
-    def screen_to_world(self, pos: Position) -> Position:
+
+    def screen_to_world(self, pos: Position | None) -> Position | None:
         """Convert screen coordinates to world coordinates"""
+        if pos is None:
+            return None
         world_x = (pos.x / self.scale) - self.x
         world_y = (pos.y / self.scale) - self.y
         return Position(world_x, world_y)

@@ -6,7 +6,9 @@ from ui.utils import draw_signal
 from services.construction.signal_target import find_signal_target, SignalTargetType
 
 class SignalView(BaseConstructionView):
-    def render(self, world_pos: Position):
+    def render(self, world_pos: Position | None):
+        if world_pos is None:
+            return
         target = find_signal_target(self._map, world_pos)
         if target.preview_pose is None:
             return

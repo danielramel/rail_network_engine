@@ -6,7 +6,10 @@ from ui.utils import draw_node, draw_station, draw_dotted_line
 from services.construction.platform_target import PlatformTargetType, find_platform_target
 
 class PlatformView(BaseConstructionView):
-    def render(self, world_pos: Position):
+    def render(self, world_pos: Position | None):
+        if world_pos is None:
+            return
+        
         # handle the “select_station” preview mode first
         if self._construction_state.platform_waiting_for_station:
             middle_point = self._map.get_middle_of_platform(self._construction_state.preview_edges)
