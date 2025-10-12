@@ -11,7 +11,7 @@ class ZoomBox(RectangleUIComponent):
         self._camera = camera 
         self._surface = surface
 
-    def render(self) -> None:
+    def render(self, screen_pos: Position) -> None:
         if not self.is_visible:
             return
         zoom_text = f"{int(self._camera.scale * 100)}%"

@@ -7,9 +7,19 @@ from models.construction import ConstructionState
 from ui.zoom_box import ZoomBox
 from ui.construction.construction_buttons import ConstructionButtons
 from controllers.construction.construction_manager import ConstructionManager
+from models.geometry import Position
 
 
 class AppController:
+    ACCEPTED_EVENTS = [
+        pygame.QUIT,
+        pygame.KEYDOWN,
+        pygame.MOUSEBUTTONDOWN,
+        pygame.MOUSEBUTTONUP,
+        pygame.MOUSEMOTION,
+        pygame.MOUSEWHEEL
+    ]
+
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
         self.map = RailMap()
@@ -28,6 +38,11 @@ class AppController:
             or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             return "quit"
         
+        if event.type not in self.ACCEPTED_EVENTS:
+            return
+        
+        event.pos_ = Position(*pygame.mouse.get_pos())
+
         for element in self.elements:
             if hasattr(element, "handled_events") and event.type not in element.handled_events:
                 continue
@@ -37,5 +52,6 @@ class AppController:
             
     def render_view(self):
         self.screen.fill(BLACK)
+        screen_pos = Position(*pygame.mouse.get_pos())
         for element in reversed(self.elements):
-            element.render()
+            element.render(screen_pos)

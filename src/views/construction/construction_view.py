@@ -1,10 +1,11 @@
 from models.construction import EdgeType
+from models.geometry.position import Position
 from views.construction.base_construction_view import BaseConstructionView
 from ui.utils import draw_grid, draw_edge, draw_node, draw_signal, draw_station, draw_dotted_line
 from config.colors import RED, PURPLE
 
 class ConstructionCommonView(BaseConstructionView):
-    def render(self):
+    def render(self, world_pos: Position):
         draw_grid(self._surface, self._camera)
 
         for edge, speed in self._map.edges_with_data('speed').items():

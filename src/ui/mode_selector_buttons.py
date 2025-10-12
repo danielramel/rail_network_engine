@@ -1,6 +1,5 @@
 import pygame
 from graphics.icon_loader import IconLoader
-from models.geometry.position import Position
 from ui.components.base import BaseUIComponent
 from config.colors import BLACK, WHITE, YELLOW, RED
 from models.construction import ConstructionMode, ConstructionState
@@ -8,8 +7,8 @@ from config.paths import CONSTRUCTION_ICON_PATHS
 from config.settings import CONSTRUCTION_BUTTON_SIZE
 
 
-class ConstructionButtons(BaseUIComponent):
-    handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL]
+class ModeSelectorButtons(BaseUIComponent):
+    handled_events = [pygame.MOUSEBUTTONUP]
     def __init__(self, surface: pygame.Surface, construction_state: ConstructionState):
         self.icon_cache = self._load_icons()
         self.buttons = self._get_buttons(surface)
@@ -17,15 +16,15 @@ class ConstructionButtons(BaseUIComponent):
         self._surface = surface
         
         
-    def handle_event(self, event: pygame.event) -> bool:        
+    def handle_event(self, event: pygame.event) -> bool:
+        pos = event.pos
         for mode, btn in self.buttons:
-            if btn.collidepoint(*event.pos_):
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                    self.construction_state.switch_mode(mode)
+            if btn.collidepoint(*pos):
+                self.construction_state.switch_mode(mode)
                 return True
         return False
 
-    def render(self, screen_pos: Position) -> None:
+    def render(self) -> None:
         for mode, btn_rect in self.buttons:
         # Draw a solid background for the button (not transparent)
             pygame.draw.rect(self._surface, BLACK, btn_rect, border_radius=10)

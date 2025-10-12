@@ -48,18 +48,17 @@ class ConstructionManager(BaseUIComponent):
                 self._construction_state.switch_mode(CONSTRUCTION_MODE_KEYS[event.key])
                 
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            self._camera.start_drag(Position(*event.pos))
+            self._camera.start_drag(event.pos_)
 
         elif event.type == pygame.MOUSEMOTION:
-            self._camera.update_drag(Position(*event.pos))
-            
+            self._camera.update_drag(event.pos_)
+
         elif event.type == pygame.MOUSEWHEEL:
-            self._camera.zoom(Position(*pygame.mouse.get_pos()), event.y)
-            
+            self._camera.zoom(event.pos_, event.y)
+
         elif event.type == pygame.MOUSEBUTTONUP:
-            pos = Position(*event.pos)
-            was_dragging = self._camera.stop_drag(pos)
-            
+            was_dragging = self._camera.stop_drag(event.pos_)
+
             if was_dragging:
                 return
             
@@ -70,18 +69,18 @@ class ConstructionManager(BaseUIComponent):
                 return
             
             click_type = CLICK_TYPE.LEFT_CLICK if event.button == 1 else CLICK_TYPE.RIGHT_CLICK
-            event = Event(click_type, pos)
+            event = Event(click_type, event.pos_)
             if self._panels[self._construction_state.mode].handle_event(event):
                 return
             self._controllers[self._construction_state.mode].handle_event(event)
 
             
-    def render(self):
-        self.view.render()
+    def render(self, screen_pos: Position):
+        self.view.render(screen_pos)
         if self._construction_state.mode is None:
             return
-        
-        world_pos = self._camera.screen_to_world(Position(*pygame.mouse.get_pos()))
+
+        world_pos = self._camera.screen_to_world(screen_pos)
         if self._construction_state.mode is None:
             return
         
