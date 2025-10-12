@@ -15,15 +15,6 @@ from models.geometry import Position
 
 
 class AppController:
-    ACCEPTED_EVENTS = [
-        pygame.QUIT,
-        pygame.KEYDOWN,
-        pygame.MOUSEBUTTONDOWN,
-        pygame.MOUSEBUTTONUP,
-        pygame.MOUSEMOTION,
-        pygame.MOUSEWHEEL
-    ]
-
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
         self.map = RailMap()
@@ -45,8 +36,6 @@ class AppController:
             or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             return "quit"
         
-        if event.type not in self.ACCEPTED_EVENTS:
-            return
         
         event.pos_ = Position(*pygame.mouse.get_pos())
 
@@ -54,8 +43,8 @@ class AppController:
             if hasattr(element, "handled_events") and event.type not in element.handled_events:
                 continue
             action = element.handle_event(event)
-            if action:
-                break #mode switch
+            if action: 
+                return
             
     def render_view(self):
         self.screen.fill(BLACK)
