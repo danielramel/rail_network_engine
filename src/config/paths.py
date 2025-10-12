@@ -1,4 +1,4 @@
-CONSTRUCTION_MODE_ICONS = {
+CONSTRUCTION_ICON_PATHS = {
     "RAIL": "src/icons/rail.png",
     "SIGNAL": "src/icons/signal.png",
     "STATION": "src/icons/station.png",

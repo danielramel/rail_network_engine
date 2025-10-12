@@ -1,9 +1,10 @@
 import pygame
+from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
 from ui.components.base import BaseUIComponent
 from config.colors import BLACK, WHITE, YELLOW, RED
 from models.construction import ConstructionMode, ConstructionState
-from config.paths import CONSTRUCTION_MODE_ICONS
+from config.paths import CONSTRUCTION_ICON_PATHS
 from config.settings import CONSTRUCTION_BUTTON_SIZE
 
 
@@ -59,20 +60,7 @@ class ConstructionButtons(BaseUIComponent):
     
     @staticmethod
     def _load_icons():
-        icon_cache = {}
-        for mode in ConstructionMode:
-            icon_path = CONSTRUCTION_MODE_ICONS[mode.name]
-            icon = pygame.image.load(icon_path).convert_alpha()
-            icon = pygame.transform.scale(icon, (int(CONSTRUCTION_BUTTON_SIZE*0.8), int(CONSTRUCTION_BUTTON_SIZE*0.8)))
-
-            # Create a new surface with white color and same alpha as the original icon
-            colored_icon = pygame.Surface(icon.get_size(), pygame.SRCALPHA)
-            colored_icon.fill(WHITE)  # fill with white
-
-            # Use the original icon's alpha as mask
-            alpha_mask = pygame.surfarray.pixels_alpha(icon)
-            pygame.surfarray.pixels_alpha(colored_icon)[:] = alpha_mask
-
-            icon_cache[mode] = colored_icon
-
-        return icon_cache
+        return {
+            mode: IconLoader().get_icon(CONSTRUCTION_ICON_PATHS[mode.name], CONSTRUCTION_BUTTON_SIZE)
+            for mode in ConstructionMode
+        }
