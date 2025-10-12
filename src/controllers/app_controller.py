@@ -1,6 +1,7 @@
 import pygame
 
 from config.colors import BLACK
+from controllers.construction.panel_strategy import ConstructionPanelStrategy
 from domain.rail_map import RailMap
 from graphics.camera import Camera
 from models.app_state import AppState
@@ -34,6 +35,7 @@ class AppController:
             ModeSelectorButtons(screen, self.state),
             ZoomBox(screen, self.camera),
             ConstructionButtons(screen, self.construction_state),
+            ConstructionPanelStrategy(screen, self.construction_state),
             ConstructionManager(self.map, self.construction_state, self.camera, screen)
         ]
          

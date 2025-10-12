@@ -58,8 +58,3 @@ class StationPanel(Panel):
         # Instructions
         self._surface.blit(self.instruction1_surface, self.instruction1_rect)
         self._surface.blit(self.instruction2_surface, self.instruction2_rect)
-
-    def handle_event(self, event: pygame.event.Event) -> bool:
-        """Return True if event is within panel bounds."""
-        pos = event.screen_pos
-        return self._rect.collidepoint(*pos)

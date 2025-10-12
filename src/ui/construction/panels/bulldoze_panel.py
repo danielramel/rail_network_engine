@@ -49,8 +49,3 @@ class BulldozePanel(Panel):
         
         # Instruction
         self._surface.blit(self.instruction_surface, self.instruction_rect)
-
-    def handle_event(self, event: pygame.event.Event) -> bool:
-        """Return True if event is within panel bounds."""
-        pos = event.screen_pos
-        return self._rect.collidepoint(*pos)

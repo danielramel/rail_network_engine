@@ -103,15 +103,16 @@ class RailPanel(Panel):
         self._surface.blit(speed_surface, speed_surface.get_rect(center=self.speed_center))
 
     def handle_event(self, event: pygame.event.Event) -> bool:
-        """Handle +/- clicks; return True if the event was consumed."""
-        pos = event.screen_pos
+        """Handle +/- clicks; return True if the event was consumed."""     
+        if event.type != pygame.MOUSEBUTTONUP or event.button != 1:
+            return self._rect.collidepoint(*event.pos_)
         
-        if self.minus_rect.collidepoint(*pos) and self.can_decrease_speed:
+        if self.minus_rect.collidepoint(*event.pos_) and self.can_decrease_speed:
             self._adjust_speed(-self.SPEED_INCREMENT)
             return True
         
-        if self.plus_rect.collidepoint(*pos) and self.can_increase_speed:
+        if self.plus_rect.collidepoint(*event.pos_) and self.can_increase_speed:
             self._adjust_speed(self.SPEED_INCREMENT)
             return True
         
-        return self._rect.collidepoint(*pos)
+        return self._rect.collidepoint(*event.pos_)

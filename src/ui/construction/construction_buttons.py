@@ -23,7 +23,7 @@ class ConstructionButtons(BaseUIComponent):
     def handle_event(self, event: pygame.event) -> bool:        
         for mode, btn in self.buttons:
             if btn.collidepoint(*event.pos_):
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                     self.construction_state.switch_mode(mode)
                 return True
         return False
