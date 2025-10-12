@@ -48,9 +48,9 @@ class StationPanel(Panel):
             top=self.instruction1_rect.bottom + 5
         )
        
-    def render(self, world_pos) -> None:
+    def render(self, screen_pos) -> None:
         """Render panel with instructions."""
-        super().render()  # background and border
+        super().render(screen_pos)  # background and border
 
         # Title
         self._surface.blit(self.title_surface, self.title_rect)

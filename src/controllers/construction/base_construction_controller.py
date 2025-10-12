@@ -13,5 +13,6 @@ class BaseConstructionController(BaseUIComponent):
         self._construction_state = state
         self._camera = camera
 
-    def render(self, world_pos: Position):
+    def render(self, screen_pos: Position):
+        world_pos = self._camera.screen_to_world(screen_pos)
         self.view.render(world_pos)

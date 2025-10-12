@@ -1,30 +1,30 @@
 import pygame
 from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
+from models.app_state import AppState, ViewMode
 from ui.components.base import BaseUIComponent
-from config.colors import BLACK, WHITE, YELLOW, RED
-from models.construction import ConstructionMode, ConstructionState
-from config.paths import CONSTRUCTION_ICON_PATHS
+from config.colors import BLACK, GREEN, WHITE, YELLOW, RED
+from config.paths import MODE_ICON_PATHS
 from config.settings import BUTTON_SIZE
 
 
-class ConstructionButtons(BaseUIComponent):
+class ModeSelectorButtons(BaseUIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL]
-    def __init__(self, surface: pygame.Surface, construction_state: ConstructionState):
+    def __init__(self, surface: pygame.Surface, app_state: AppState):
         self.icon_cache = {
-            mode: IconLoader().get_icon(CONSTRUCTION_ICON_PATHS[mode.name], BUTTON_SIZE)
-            for mode in ConstructionMode
+            mode: IconLoader().get_icon(MODE_ICON_PATHS[mode.name], BUTTON_SIZE)
+            for mode in ViewMode
         }
         self.buttons = self._get_buttons(surface)
-        self.construction_state = construction_state
+        self.state = app_state
         self._surface = surface
         
         
-    def handle_event(self, event: pygame.event) -> bool:        
+    def handle_event(self, event: pygame.event) -> bool:
         for mode, btn in self.buttons:
             if btn.collidepoint(*event.pos_):
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                    self.construction_state.switch_mode(mode)
+                    self.state.current_mode = mode
                 return True
         return False
 
@@ -37,27 +37,23 @@ class ConstructionButtons(BaseUIComponent):
             icon_rect = icon.get_rect(center=btn_rect.center)
             self._surface.blit(icon, icon_rect)
 
-            if mode == self.construction_state.mode:
-                color = YELLOW if not self.construction_state.mode is ConstructionMode.BULLDOZE else RED
-                pygame.draw.rect(self._surface, color, btn_rect.inflate(10, 10), 5, border_radius=10)
+            if mode == self.state.current_mode:
+                color = GREEN
+                pygame.draw.rect(self._surface, color, btn_rect, 2, border_radius=10)
             else:
-                pygame.draw.rect(self._surface, WHITE, btn_rect.inflate(-2, -2), 1, border_radius=10)
+                pygame.draw.rect(self._surface, WHITE, btn_rect, 2, border_radius=10)
 
     def contains(self, screen_pos: Position) -> bool:
         return any(btn.collidepoint(*screen_pos) for _, btn in self.buttons)
 
-
-    def _get_buttons(self, surface: pygame.Surface) -> list[tuple[ConstructionMode, pygame.Rect]]:
+    def _get_buttons(self, surface: pygame.Surface) -> list[tuple[ViewMode, pygame.Rect]]:
         button_margin = BUTTON_SIZE // 5
         _, h = surface.get_size()
         buttons = []
-        for i, mode in enumerate(ConstructionMode):
-            offset = (BUTTON_SIZE + button_margin) * i
-            if mode is ConstructionMode.BULLDOZE:
-                offset += (BUTTON_SIZE + button_margin)
+        for i, mode in enumerate(ViewMode):
             rect = pygame.Rect(
-                button_margin + offset,
-                h - BUTTON_SIZE - button_margin,
+                button_margin,  # x: margin from the left edge
+                button_margin + i * (BUTTON_SIZE + button_margin),  # y: stacked from top with margin
                 BUTTON_SIZE,
                 BUTTON_SIZE
             )

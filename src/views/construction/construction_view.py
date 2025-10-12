@@ -5,7 +5,7 @@ from ui.utils import draw_grid, draw_edge, draw_node, draw_signal, draw_station,
 from config.colors import RED, PURPLE
 
 class ConstructionCommonView(BaseConstructionView):
-    def render(self, world_pos: Position):
+    def render(self, screen_pos: Position | None) -> None:
         draw_grid(self._surface, self._camera)
 
         for edge, speed in self._map.edges_with_data('speed').items():

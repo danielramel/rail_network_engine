@@ -8,6 +8,10 @@ class BaseUIComponent:
         return False
 
 
-    def render(self, world_pos: Position) -> None:
+    def render(self, screen_pos: Position) -> None:
         """Render the UI component."""
         pass
+    
+    def contains(self, screen_pos: Position) -> bool:
+        """Check if a position is within the component's area."""
+        return False

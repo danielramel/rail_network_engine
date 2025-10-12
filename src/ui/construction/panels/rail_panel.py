@@ -83,9 +83,9 @@ class RailPanel(Panel):
             min(self.MAX_SPEED, self._construction_state.track_speed)
         )
        
-    def render(self, world_pos) -> None:
+    def render(self, screen_pos) -> None:
         """Minimal render method - just blit pre-computed surfaces."""
-        super().render()  # background and border
+        super().render(screen_pos)  # background and border
 
         # Title
         self._surface.blit(self.title_surface, self.title_rect)

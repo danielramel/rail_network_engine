@@ -75,18 +75,18 @@ class ConstructionManager(BaseUIComponent):
             self._controllers[self._construction_state.mode].handle_event(event)
 
             
-    def render(self, screen_pos: Position):
+    def render(self, screen_pos: Position | None):
         self.view.render(screen_pos)
-        if self._construction_state.mode is None:
-            return
-
-        world_pos = self._camera.screen_to_world(screen_pos)
+        
         if self._construction_state.mode is None:
             return
         
-        self._controllers[self._construction_state.mode].render(world_pos)
-        self._panels[self._construction_state.mode].render(world_pos)
+        if screen_pos is not None:  
+            self._controllers[self._construction_state.mode].render(screen_pos)
+        self._panels[self._construction_state.mode].render(screen_pos)
 
+    def contains(self, screen_pos: Position) -> bool:
+        return True
 
 CONSTRUCTION_MODE_KEYS = {
     pygame.K_1: ConstructionMode.RAIL,

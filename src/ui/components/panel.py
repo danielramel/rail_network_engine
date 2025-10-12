@@ -1,4 +1,5 @@
 from config.colors import BLACK, WHITE
+from models.geometry.position import Position
 from ui.components.rectangle import RectangleUIComponent
 import pygame
 
@@ -21,7 +22,7 @@ class Panel(RectangleUIComponent):
         
         return pygame.Rect(panel_x, panel_y, panel_width, panel_height)
     
-    def render(self) -> None:
+    def render(self, screen_pos: Position) -> None:
         """Draw a construction information panel in the middle bottom of the screen"""
         pygame.draw.rect(self._surface, BLACK, self._rect, border_radius=8)
         pygame.draw.rect(self._surface, WHITE, self._rect, 2, border_radius=8)

@@ -16,12 +16,12 @@ class BulldozeController(BaseConstructionController):
         if event.click_type == CLICK_TYPE.RIGHT_CLICK:
             self._construction_state.switch_mode(None)
             return
-
-        target = find_bulldoze_target(self._map, event.screen_pos, self._camera.scale)
+        world_pos = self._camera.screen_to_world(event.screen_pos)
+        target = find_bulldoze_target(self._map, world_pos, self._camera.scale)
         if target.kind == BulldozeTargetType.SIGNAL:
             self._map.remove_signal_at(target.pos)
             return True
-        elif target.kind == BulldozeTargetType.STATION  :
+        elif target.kind == BulldozeTargetType.STATION:
             self._map.remove_station_at(target.pos)
             return True
         elif target.kind == BulldozeTargetType.PLATFORM:

@@ -1,7 +1,12 @@
 CONSTRUCTION_ICON_PATHS = {
-    "RAIL": "src/icons/rail.png",
-    "SIGNAL": "src/icons/signal.png",
-    "STATION": "src/icons/station.png",
-    "BULLDOZE": "src/icons/bulldoze.png",
-    "PLATFORM": "src/icons/platform.png",
+    "RAIL": "src/icons/construction/rail.png",
+    "SIGNAL": "src/icons/construction/signal.png",
+    "STATION": "src/icons/construction/station.png",
+    "BULLDOZE": "src/icons/construction/bulldoze.png",
+    "PLATFORM": "src/icons/construction/platform.png",
+}
+
+MODE_ICON_PATHS = {
+    "CONSTRUCTION": "src/icons/construction.png",
+    "NORMAL": "src/icons/normal.png",
 }

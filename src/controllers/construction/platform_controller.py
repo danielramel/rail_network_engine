@@ -23,10 +23,11 @@ class PlatformController(BaseConstructionController):
                 self._construction_state.switch_mode(None)
             return
                 
+        world_pos = self._camera.screen_to_world(event.screen_pos)
         # if user is currently selecting a station for the platform
         if self._construction_state.platform_waiting_for_station:
             for station_pos in self._map.station_positions:
-                if event.screen_pos.is_within_station_rect(station_pos):
+                if world_pos.is_within_station_rect(station_pos):
                     self._map.add_platform_on(
                         self._map.get_station_at(station_pos),
                         list(self._construction_state.preview_edges)
@@ -39,8 +40,8 @@ class PlatformController(BaseConstructionController):
             alert('Please build a station first.')
             self._construction_state.switch_mode(None)
             return
-        # otherwise, find target under cursor
-        target = find_platform_target(self._map, self._camera.screen_to_world(event.screen_pos), self._camera.scale)
+
+        target = find_platform_target(self._map, world_pos, self._camera.scale)
 
         if target.kind in (PlatformTargetType.NONE, PlatformTargetType.EXISTING_PLATFORM):
             return

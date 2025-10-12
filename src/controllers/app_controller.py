@@ -3,7 +3,10 @@ import pygame
 from config.colors import BLACK
 from domain.rail_map import RailMap
 from graphics.camera import Camera
+from models.app_state import AppState
 from models.construction import ConstructionState
+from ui.components.base import BaseUIComponent
+from ui.mode_buttons import ModeSelectorButtons
 from ui.zoom_box import ZoomBox
 from ui.construction.construction_buttons import ConstructionButtons
 from controllers.construction.construction_manager import ConstructionManager
@@ -24,9 +27,11 @@ class AppController:
         self.screen = screen
         self.map = RailMap()
         self.camera = Camera()
+        self.state = AppState()
         
         self.construction_state = ConstructionState()
-        self.elements = [
+        self.elements : list[BaseUIComponent] = [
+            ModeSelectorButtons(screen, self.state),
             ZoomBox(screen, self.camera),
             ConstructionButtons(screen, self.construction_state),
             ConstructionManager(self.map, self.construction_state, self.camera, screen)
@@ -52,6 +57,16 @@ class AppController:
             
     def render_view(self):
         self.screen.fill(BLACK)
-        screen_pos = Position(*pygame.mouse.get_pos())
+        pos = Position(*pygame.mouse.get_pos())
+        elements_above_cursor = []
+        for element in self.elements:
+            elements_above_cursor.append(element)
+            if element.contains(pos):
+                break
+                
         for element in reversed(self.elements):
-            element.render(screen_pos)
+            if element in elements_above_cursor:
+                element.render(pos)
+            else:
+                element.render(None)
+            
