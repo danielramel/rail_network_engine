@@ -1,7 +1,7 @@
 MODE_ICON_PATHS = {
     "CONSTRUCTION": "src/icons/construction.png",
     "SIMULATION": "src/icons/simulation.png",
-    "SCHEDULER": "src/icons/scheduler.png",
+    "TIMETABLE": "src/icons/timetable.png",
 }
 
 CONSTRUCTION_ICON_PATHS = {

@@ -10,7 +10,7 @@ class SimulationView(BaseUIComponent):
         self._camera = camera
         
     def render(self, screen_pos: Position | None) -> None:
-        draw_grid(self._surface, self._camera)
+        # draw_grid(self._surface, self._camera)
     
         for edge in self._map.edges:
             if self._map.is_edge_platform(edge):

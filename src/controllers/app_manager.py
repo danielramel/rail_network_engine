@@ -15,13 +15,13 @@ from controllers.construction.construction_manager import ConstructionManager
 from models.geometry import Position
 from controllers.simulation.simulation_manager import SimulationManager
 from models.time import TimeControlState
-from controllers.scheduler.scheduler_manager import SchedulerManager
+from controllers.timetable.timetable_manager import TimetableManager
 
 class AppController:
     construction_element_types: dict[ViewMode, tuple[type]] = {
         ViewMode.CONSTRUCTION: (ConstructionButtons, ConstructionPanelStrategy, ConstructionManager),
         ViewMode.SIMULATION: (TimeControlButtons, TimeDisplay, SimulationManager),
-        ViewMode.SCHEDULER: (SchedulerManager, ),
+        ViewMode.TIMETABLE: (TimetableManager, ),
     }
     
     def __init__(self, screen: pygame.Surface):
@@ -56,9 +56,9 @@ class AppController:
                 TimeDisplay(self.screen, self.time_control_state),
                 SimulationManager(self.map, self.camera, self.screen)
             ])
-        elif mode == ViewMode.SCHEDULER:
+        elif mode == ViewMode.TIMETABLE:
             self.elements.append(
-                SchedulerManager(self.map, self.screen)
+                TimetableManager(self.map, self.screen)
             )
         # Add other modes as needed
     

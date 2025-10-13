@@ -3,12 +3,12 @@ from models.geometry import Position
     
 from domain.rail_map import RailMap
 from ui.components.base import BaseUIComponent
-from views.scheduler.scheduler_view import SchedulerView
+from views.timetable.timetable_view import TimetableView
 
 
-class SchedulerManager(BaseUIComponent):
+class TimetableManager(BaseUIComponent):
     def __init__(self, map: RailMap, screen: pygame.Surface):
-        self.view = SchedulerView(map, screen)
+        self.view = TimetableView(map, screen)
         self._map = map
         
     def handle_event(self, event):
