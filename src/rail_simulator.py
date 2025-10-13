@@ -1,5 +1,5 @@
 import pygame
-from controllers.app_controller import AppController
+from controllers.app_manager import AppController
 
 
 class RailSimulator:
@@ -9,20 +9,20 @@ class RailSimulator:
         pygame.display.set_caption("Rail Simulator")
         self.clock = pygame.time.Clock()
         
-        self.layer_handler = AppController(self.screen)
+        self.app_controller = AppController(self.screen)
 
     # --- Main loop ---
     def run(self):
         running = True
         while running:
             for event in pygame.event.get():
-                action = self.layer_handler.handle_event(event)
+                action = self.app_controller.handle_event(event)
                 if action == "quit":
                     running = False
                     break
                 
 
-            self.layer_handler.render_view()
+            self.app_controller.render_view()
 
             pygame.display.flip()
             self.clock.tick(60)
