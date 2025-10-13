@@ -59,6 +59,8 @@ class ConstructionManager(BaseUIComponent):
             event = Event(click_type, event.pos_)
             self._controllers[self._construction_state.mode].handle_event(event)
             
+            return True
+            
             
     def render(self, screen_pos: Position | None):
         self.view.render(screen_pos)
