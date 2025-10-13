@@ -91,8 +91,8 @@ def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type=Non
     elif edge_type == EdgeType.PLATFORM:
         draw_platform(surface, edge, camera, color=PURPLE)
     elif edge_type is None or edge_type == 'normal':
-        
-        pygame.draw.line(surface, color_from_speed(speed), *camera.world_to_screen_from_edge(edge), width=3)
+        color = WHITE if speed is None else color_from_speed(speed)
+        pygame.draw.line(surface, color, *camera.world_to_screen_from_edge(edge), width=3)
 
 def draw_grid(surface, camera):
     """Draw grid lines with camera transform"""
