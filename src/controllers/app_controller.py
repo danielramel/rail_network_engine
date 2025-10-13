@@ -16,7 +16,7 @@ from controllers.simulation.simulation_manager import SimulationManager
 class AppController:
     construction_element_types: dict[ViewMode, tuple[type]] = {
         ViewMode.CONSTRUCTION: (ConstructionButtons, ConstructionPanelStrategy, ConstructionManager),
-        ViewMode.NORMAL: (SimulationManager,)
+        ViewMode.SIMULATION: (SimulationManager,)
     }
     
     def __init__(self, screen: pygame.Surface):
@@ -42,7 +42,7 @@ class AppController:
                 ConstructionPanelStrategy(self.screen, self.construction_state),
                 ConstructionManager(self.map, self.construction_state, self.camera, self.screen)
             ])
-        elif mode == ViewMode.NORMAL:
+        elif mode == ViewMode.SIMULATION:
             self.elements.append(SimulationManager(self.map, self.camera, self.screen))
         # Add other modes as needed
     
