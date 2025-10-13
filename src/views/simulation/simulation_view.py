@@ -3,7 +3,7 @@ from models.geometry.position import Position
 from ui.components.base import BaseUIComponent
 from ui.utils import draw_grid, draw_edge, draw_node, draw_signal, draw_station, draw_dotted_line
 
-class MapView(BaseUIComponent):
+class SimulationView(BaseUIComponent):
     def __init__(self, map, camera, screen):
         self._surface = screen
         self._map = map

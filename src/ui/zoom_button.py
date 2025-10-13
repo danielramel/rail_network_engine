@@ -1,7 +1,7 @@
 import pygame
 from models.geometry.position import Position
 from ui.components.rectangle import RectangleUIComponent
-from config.colors import WHITE
+from config.colors import BLACK, WHITE
 from graphics.camera import Camera
 
 
@@ -18,8 +18,8 @@ class ZoomButton(RectangleUIComponent):
         zoom_font = pygame.font.SysFont(None, 24)
         zoom_surface = zoom_font.render(zoom_text, True, WHITE)
         zoom_box = self._get_zoom_box(self._surface)
-        pygame.draw.rect(self._surface, (50, 50, 50), zoom_box, border_radius=4)
-        pygame.draw.rect(self._surface, (150, 150, 150), zoom_box, 2, border_radius=4)
+        pygame.draw.rect(self._surface, BLACK, zoom_box, border_radius=4)
+        pygame.draw.rect(self._surface, WHITE, zoom_box, 2, border_radius=4)
         self._surface.blit(zoom_surface, zoom_surface.get_rect(center=zoom_box.center))
         
 
