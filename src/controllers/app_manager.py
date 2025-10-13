@@ -9,7 +9,7 @@ from ui.components.base import BaseUIComponent
 from ui.mode_buttons import ModeSelectorButtons
 from ui.simulation.time_control_buttons import TimeControlButtons
 from ui.simulation.time_display import TimeDisplay
-from ui.zoom_box import ZoomButton
+from ui.zoom_button import ZoomButton
 from ui.construction.construction_buttons import ConstructionButtons
 from controllers.construction.construction_manager import ConstructionManager
 from models.geometry import Position

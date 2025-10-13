@@ -12,7 +12,7 @@ class ZoomButton(RectangleUIComponent):
         self._surface = surface
 
     def render(self, screen_pos: Position) -> None:
-        if self._camera.is_reset():
+        if self.is_hidden():
             return
         zoom_text = f"{int(self._camera.scale * 100)}%"
         zoom_font = pygame.font.SysFont(None, 24)
@@ -27,8 +27,20 @@ class ZoomButton(RectangleUIComponent):
         return pygame.Rect(surface.get_width() - 100, 10, 80, 30)
     
     def handle_event(self, event: pygame.event) -> bool:
-        pos = Position(*event.pos)
-        if self._rect.collidepoint(*pos):
-            self._camera.reset()
+        if self.is_hidden():
+            return False
+        
+        if self._rect.collidepoint(*event.pos_):
+            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                self._camera.reset()
             return True
         return False
+    
+    def contains(self, screen_pos):
+        if self.is_hidden():
+            return False
+        return super().contains(screen_pos)
+    
+    
+    def is_hidden(self) -> bool:
+        return self._camera.is_reset()
