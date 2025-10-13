@@ -5,7 +5,7 @@ from services.rail.graph_query_service import GraphQueryService
 from services.rail.signal_service import SignalService
 from services.rail.path_finder import Pathfinder
 from services.rail.platform_service import PlatformService
-from infrastructure.station_repository import StationRepository
+from models.station import StationRepository
 
 class RailMap:
     def __init__(self):
