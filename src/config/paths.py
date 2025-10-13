@@ -8,5 +8,5 @@ CONSTRUCTION_ICON_PATHS = {
 
 MODE_ICON_PATHS = {
     "CONSTRUCTION": "src/icons/construction.png",
-    "NORMAL": "src/icons/normal.png",
+    "SIMULATION": "src/icons/simulation.png",
 }
