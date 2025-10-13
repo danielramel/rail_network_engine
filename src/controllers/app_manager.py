@@ -58,6 +58,14 @@ class AppController:
             or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             return "quit"
         
+        if event.type == pygame.KEYDOWN:
+            if event.key in MODE_KEYS:
+                self.app_state.mode = MODE_KEYS[event.key]
+                if old_app_mode != self.app_state.mode:
+                    self._remove_mode_elements(old_app_mode)
+                    self._add_mode_elements(self.app_state.mode)
+                return
+
         event.pos_ = Position(*pygame.mouse.get_pos())
         for element in self.elements:
             if hasattr(element, "handled_events") and event.type not in element.handled_events:
@@ -85,3 +93,9 @@ class AppController:
                 element.render(pos)
             else:
                 element.render(None)
+                
+                
+MODE_KEYS = {
+    pygame.K_s: ViewMode.SIMULATION,
+    pygame.K_c: ViewMode.CONSTRUCTION,
+}
