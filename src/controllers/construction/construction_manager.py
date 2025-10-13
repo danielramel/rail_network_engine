@@ -42,11 +42,12 @@ class ConstructionManager(BaseUIComponent):
         elif event.type == pygame.MOUSEBUTTONUP:
             was_dragging = self._camera.stop_drag(event.pos_)
 
+            if self._construction_state.mode is None:
+                return
+            
             if was_dragging:
                 return
             
-            if self._construction_state.mode is None:
-                return
             
             if event.button not in (1, 3):
                 return
