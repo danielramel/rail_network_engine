@@ -11,12 +11,12 @@ from ui.zoom_box import ZoomBox
 from ui.construction.construction_buttons import ConstructionButtons
 from controllers.construction.construction_manager import ConstructionManager
 from models.geometry import Position
-from views.normal_map_view import NormalMapView
+from controllers.simulation.simulation_manager import SimulationManager
 
 class AppController:
     construction_element_types: dict[ViewMode, tuple[type]] = {
         ViewMode.CONSTRUCTION: (ConstructionButtons, ConstructionPanelStrategy, ConstructionManager),
-        ViewMode.NORMAL: (NormalMapView,)
+        ViewMode.NORMAL: (SimulationManager,)
     }
     
     def __init__(self, screen: pygame.Surface):
@@ -43,7 +43,7 @@ class AppController:
                 ConstructionManager(self.map, self.construction_state, self.camera, self.screen)
             ])
         elif mode == ViewMode.NORMAL:
-            self.elements.append(NormalMapView(self.map, self.camera, self.screen))
+            self.elements.append(SimulationManager(self.map, self.camera, self.screen))
         # Add other modes as needed
     
     def _remove_mode_elements(self, mode: ViewMode):
