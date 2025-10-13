@@ -54,3 +54,14 @@ class ConstructionState:
     def is_station_being_moved(self, station: Station) -> bool:
         """Check if a specific station is currently being moved."""
         return self.moving_station == station
+    
+    def reset(self) -> None:
+        """Reset the construction state to its initial values."""
+        self.mode = ConstructionMode.RAIL
+        self.construction_anchor = None
+        self.track_speed = 120
+        self.moving_station = None
+        self.preview_edges = frozenset()
+        self.preview_nodes = frozenset()
+        self.preview_edges_type = None
+        self.platform_waiting_for_station = False

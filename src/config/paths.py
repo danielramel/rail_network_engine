@@ -10,3 +10,11 @@ MODE_ICON_PATHS = {
     "CONSTRUCTION": "src/icons/construction.png",
     "SIMULATION": "src/icons/simulation.png",
 }
+
+TIME_CONTROL_ICON_PATHS = {
+    "PLAY": "src/icons/simulation/play.png",
+    "PAUSE": "src/icons/simulation/pause.png",
+    "FAST_FORWARD": "src/icons/simulation/3x.png",
+    "SUPER_FAST_FORWARD": "src/icons/simulation/10x.png",
+}
+    

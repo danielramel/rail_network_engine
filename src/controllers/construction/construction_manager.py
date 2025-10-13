@@ -29,12 +29,8 @@ class ConstructionManager(BaseUIComponent):
             ConstructionMode.BULLDOZE: BulldozeController(map, state, camera, screen),
         }
         
-    def handle_event(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key in CONSTRUCTION_MODE_KEYS:
-                self._construction_state.switch_mode(CONSTRUCTION_MODE_KEYS[event.key])
-                
-        elif event.type == pygame.MOUSEBUTTONDOWN:
+    def handle_event(self, event):                
+        if event.type == pygame.MOUSEBUTTONDOWN:
             self._camera.start_drag(event.pos_)
 
         elif event.type == pygame.MOUSEMOTION:
@@ -59,7 +55,7 @@ class ConstructionManager(BaseUIComponent):
             event = Event(click_type, event.pos_)
             self._controllers[self._construction_state.mode].handle_event(event)
             
-            return True
+        return True
             
             
     def render(self, screen_pos: Position | None):
@@ -73,11 +69,3 @@ class ConstructionManager(BaseUIComponent):
 
     def contains(self, screen_pos: Position) -> bool:
         return True
-
-CONSTRUCTION_MODE_KEYS = {
-    pygame.K_1: ConstructionMode.RAIL,
-    pygame.K_2: ConstructionMode.SIGNAL,
-    pygame.K_3: ConstructionMode.STATION,
-    pygame.K_4: ConstructionMode.PLATFORM,
-    pygame.K_5: ConstructionMode.BULLDOZE,
-}

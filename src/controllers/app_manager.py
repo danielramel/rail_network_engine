@@ -7,16 +7,19 @@ from models.app_state import AppState, ViewMode
 from models.construction import ConstructionState
 from ui.components.base import BaseUIComponent
 from ui.mode_buttons import ModeSelectorButtons
-from ui.zoom_box import ZoomBox
+from ui.simulation.time_control_buttons import TimeControlButtons
+from ui.simulation.time_display import TimeDisplay
+from ui.zoom_box import ZoomButton
 from ui.construction.construction_buttons import ConstructionButtons
 from controllers.construction.construction_manager import ConstructionManager
 from models.geometry import Position
 from controllers.simulation.simulation_manager import SimulationManager
+from models.time import TimeControlState
 
 class AppController:
     construction_element_types: dict[ViewMode, tuple[type]] = {
         ViewMode.CONSTRUCTION: (ConstructionButtons, ConstructionPanelStrategy, ConstructionManager),
-        ViewMode.SIMULATION: (SimulationManager,)
+        ViewMode.SIMULATION: (TimeControlButtons, TimeDisplay, SimulationManager)
     }
     
     def __init__(self, screen: pygame.Surface):
@@ -25,10 +28,12 @@ class AppController:
         self.camera = Camera()
         self.app_state = AppState()
         self.construction_state = ConstructionState()
+        self.time_control_state = TimeControlState()
+        
         
         self.elements: list[BaseUIComponent] = [
             ModeSelectorButtons(screen, self.app_state),
-            ZoomBox(screen, self.camera),
+            ZoomButton(screen, self.camera),
         ]
         
         self._add_mode_elements(self.app_state.mode)
@@ -36,14 +41,19 @@ class AppController:
     def _add_mode_elements(self, mode: ViewMode):
         """Create and add elements for the specified mode."""
         if mode == ViewMode.CONSTRUCTION:
-            self.construction_state.switch_mode(None)
+            self.construction_state.reset()
             self.elements.extend([
                 ConstructionButtons(self.screen, self.construction_state),
                 ConstructionPanelStrategy(self.screen, self.construction_state),
                 ConstructionManager(self.map, self.construction_state, self.camera, self.screen)
             ])
         elif mode == ViewMode.SIMULATION:
-            self.elements.append(SimulationManager(self.map, self.camera, self.screen))
+            self.time_control_state.reset()
+            self.elements.extend([
+                TimeControlButtons(self.screen, self.time_control_state),
+                TimeDisplay(self.screen, self.time_control_state),
+                SimulationManager(self.map, self.camera, self.screen)
+            ])
         # Add other modes as needed
     
     def _remove_mode_elements(self, mode: ViewMode):
@@ -57,21 +67,13 @@ class AppController:
         if event.type == pygame.QUIT \
             or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             return "quit"
-        
-        if event.type == pygame.KEYDOWN:
-            if event.key in MODE_KEYS:
-                self.app_state.mode = MODE_KEYS[event.key]
-                if old_app_mode != self.app_state.mode:
-                    self._remove_mode_elements(old_app_mode)
-                    self._add_mode_elements(self.app_state.mode)
-                return
 
         event.pos_ = Position(*pygame.mouse.get_pos())
         for element in self.elements:
             if hasattr(element, "handled_events") and event.type not in element.handled_events:
                 continue
-            action = element.handle_event(event)
-            if action:
+            handled = element.handle_event(event)
+            if handled:
                 break
         
         # Handle mode change
@@ -93,9 +95,3 @@ class AppController:
                 element.render(pos)
             else:
                 element.render(None)
-                
-                
-MODE_KEYS = {
-    pygame.K_s: ViewMode.SIMULATION,
-    pygame.K_c: ViewMode.CONSTRUCTION,
-}
