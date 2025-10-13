@@ -6,4 +6,4 @@ class ViewMode(Enum):
     
     
 class AppState:
-    current_mode: ViewMode = ViewMode.CONSTRUCTION
+    mode: ViewMode = ViewMode.CONSTRUCTION

@@ -24,7 +24,7 @@ class ModeSelectorButtons(BaseUIComponent):
         for mode, btn in self.buttons:
             if btn.collidepoint(*event.pos_):
                 if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                    self.state.current_mode = mode
+                    self.state.mode = mode
                 return True
         return False
 
@@ -37,7 +37,7 @@ class ModeSelectorButtons(BaseUIComponent):
             icon_rect = icon.get_rect(center=btn_rect.center)
             self._surface.blit(icon, icon_rect)
 
-            if mode == self.state.current_mode:
+            if mode == self.state.mode:
                 color = GREEN
                 pygame.draw.rect(self._surface, color, btn_rect, 2, border_radius=10)
             else:
