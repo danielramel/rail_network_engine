@@ -1,45 +1,15 @@
 from models.geometry.position import Position
 from ui.components.base import BaseUIComponent
 import pygame
+from domain.rail_map import RailMap
+from models.train import TrainRepository
+from config.colors import BLUE
 
 class TimetableView(BaseUIComponent):
-    def __init__(self, map, screen):
+    def __init__(self, map: RailMap, train_repository: TrainRepository, screen: pygame.Surface):
         self._surface = screen
         self._map = map
-        
-        # Mock timetable data
-        self.timetable_data = [
-            {
-                "type": "S70",
-                "stations": ["Hauptbahnhof", "Stadtmitte", "Ostbahnhof"],
-                "start_time": "05:12",
-                "frequency": "20 min"
-            },
-            {
-                "type": "S71",
-                "stations": ["Flughafen", "Messegelände", "Hauptbahnhof"],
-                "start_time": "05:25",
-                "frequency": "20 min"
-            },
-            {
-                "type": "Z72",
-                "stations": ["Nordstadt", "Zentrum", "...", "Südbahnhof"],
-                "start_time": "06:00",
-                "frequency": "30 min"
-            },
-            {
-                "type": "S70",
-                "stations": ["Westend", "Universitätsplatz", "...", "Endstation Ost"],
-                "start_time": "05:30",
-                "frequency": "15 min"
-            },
-            {
-                "type": "Z72",
-                "stations": ["Bahnhof Nord", "Altstadt", "...", "Industriegebiet"],
-                "start_time": "06:15",
-                "frequency": "30 min"
-            }
-        ]
+        self._train_repository = train_repository
         
         # Fonts - all bigger
         self.title_font = pygame.font.SysFont('Arial', 36, bold=True)
@@ -99,28 +69,27 @@ class TimetableView(BaseUIComponent):
         y_offset += 50
         row_height = 60
         
-        for entry in self.timetable_data:
+        for train in self._train_repository.all():
             # Train type with color coding
-            type_color = self.s70_color if entry["type"] == "S70" else \
-                        self.s71_color if entry["type"] == "S71" else self.z72_color
+            type_color = BLUE
             
             # Type badge
             pygame.draw.rect(self._surface, type_color, 
                            (x_positions[0], y_offset, 80, 40), border_radius=5)
-            type_text = self.text_font.render(entry["type"], True, (0, 0, 0))
+            type_text = self.text_font.render(train.code, True, (0, 0, 0))
             self._surface.blit(type_text, (x_positions[0] + 15, y_offset + 10))
             
             # Stations (route)
-            stations_str = " → ".join(entry["stations"])
+            stations_str = " → ".join(station for station in train.stations)
             stations_text = self.text_font.render(stations_str, True, self.text_color)
             self._surface.blit(stations_text, (x_positions[1], y_offset + 10))
             
             # Start time
-            start_text = self.text_font.render(entry["start_time"], True, self.text_color)
+            start_text = self.text_font.render(train.start_time, True, self.text_color)
             self._surface.blit(start_text, (x_positions[2], y_offset + 10))
             
             # Frequency
-            freq_text = self.text_font.render(entry["frequency"], True, self.text_color)
+            freq_text = self.text_font.render(train.frequency, True, self.text_color)
             self._surface.blit(freq_text, (x_positions[3], y_offset + 10))
             
             y_offset += row_height

@@ -5,6 +5,7 @@ from domain.rail_map import RailMap
 from graphics.camera import Camera
 from models.app_state import AppState, ViewMode
 from models.construction import ConstructionState
+from models.train import TrainRepository
 from ui.components.base import BaseUIComponent
 from ui.mode_buttons import ModeSelectorButtons
 from ui.simulation.time_control_buttons import TimeControlButtons
@@ -31,7 +32,7 @@ class AppController:
         self.app_state = AppState()
         self.construction_state = ConstructionState()
         self.time_control_state = TimeControlState()
-        
+        self.train_repository = TrainRepository()
         
         self.elements: list[BaseUIComponent] = [
             ModeSelectorButtons(screen, self.app_state),
@@ -58,7 +59,7 @@ class AppController:
             ])
         elif mode == ViewMode.TIMETABLE:
             self.elements.append(
-                TimetableManager(self.map, self.screen)
+                TimetableManager(self.map, self.train_repository, self.screen)
             )
         # Add other modes as needed
     
