@@ -3,7 +3,7 @@ from ui.components.base import BaseUIComponent
 import pygame
 from domain.rail_map import RailMap
 from models.train import TrainRepository
-from config.colors import BLUE
+from config.colors import BLUE, WHITE, BLACK, GREY, GREEN, RED, YELLOW
 
 class TimetableView(BaseUIComponent):
     def __init__(self, map: RailMap, train_repository: TrainRepository, screen: pygame.Surface):
@@ -15,19 +15,7 @@ class TimetableView(BaseUIComponent):
         self.title_font = pygame.font.SysFont('Arial', 36, bold=True)
         self.header_font = pygame.font.SysFont('Arial', 24, bold=True)
         self.text_font = pygame.font.SysFont('Arial', 20)
-        
-        # Colors
-        self.bg_color = (0, 0, 0)
-        self.header_color = (255, 255, 255)
-        self.text_color = (200, 200, 200)
-        self.line_color = (80, 80, 80)
-        self.button_color = (50, 50, 50)
-        self.button_hover_color = (70, 70, 70)
-        self.button_text_color = (255, 255, 255)
-        self.s70_color = (100, 150, 255)
-        self.s71_color = (255, 150, 100)
-        self.z72_color = (150, 255, 150)
-        
+                
         # Table dimensions
         self.table_width = 800
         
@@ -37,14 +25,14 @@ class TimetableView(BaseUIComponent):
        
     def render(self, screen_pos: Position | None):
         # Clear background
-        self._surface.fill(self.bg_color)
+        self._surface.fill(BLACK)
         
         # Calculate center offset for horizontal centering
         screen_width = self._surface.get_width()
         center_offset = (screen_width - self.table_width) // 2
         
         # Title
-        title = self.title_font.render("Train Timetable", True, self.header_color)
+        title = self.title_font.render("Train Timetable", True, WHITE)
         title_rect = title.get_rect()
         title_rect.centerx = screen_width // 2
         title_rect.y = 20
@@ -52,16 +40,16 @@ class TimetableView(BaseUIComponent):
         
         # Column headers
         y_offset = 80
-        headers = ["Type", "Route", "Start", "Frequency"]
+        headers = ["Code", "Route", "Start", "Frequency"]
         x_positions = [center_offset + 20, center_offset + 150, 
                       center_offset + 550, center_offset + 680]
         
         for i, header in enumerate(headers):
-            header_text = self.header_font.render(header, True, self.header_color)
+            header_text = self.header_font.render(header, True, WHITE)
             self._surface.blit(header_text, (x_positions[i], y_offset))
         
         # Draw separator line
-        pygame.draw.line(self._surface, self.line_color, 
+        pygame.draw.line(self._surface, WHITE, 
                         (center_offset + 20, y_offset + 35), 
                         (center_offset + self.table_width, y_offset + 35), 2)
         
@@ -71,31 +59,36 @@ class TimetableView(BaseUIComponent):
         
         for train in self._train_repository.all():
             # Train type with color coding
-            type_color = BLUE
+            if train.code.startswith("S"):
+                type_color = BLUE
+            elif train.code.startswith("Z"):
+                type_color = YELLOW
+            else:
+                type_color = RED
             
             # Type badge
             pygame.draw.rect(self._surface, type_color, 
-                           (x_positions[0], y_offset, 80, 40), border_radius=5)
+                           (x_positions[0], y_offset, 40, 35), border_radius=5)
             type_text = self.text_font.render(train.code, True, (0, 0, 0))
-            self._surface.blit(type_text, (x_positions[0] + 15, y_offset + 10))
+            self._surface.blit(type_text, (x_positions[0] + 5, y_offset + 5))
             
             # Stations (route)
             stations_str = " → ".join(station for station in train.stations)
-            stations_text = self.text_font.render(stations_str, True, self.text_color)
+            stations_text = self.text_font.render(stations_str, True, GREY)
             self._surface.blit(stations_text, (x_positions[1], y_offset + 10))
             
             # Start time
-            start_text = self.text_font.render(train.start_time, True, self.text_color)
+            start_text = self.text_font.render(train.start_time, True, GREY)
             self._surface.blit(start_text, (x_positions[2], y_offset + 10))
             
             # Frequency
-            freq_text = self.text_font.render(train.frequency, True, self.text_color)
+            freq_text = self.text_font.render(train.frequency, True, GREY)
             self._surface.blit(freq_text, (x_positions[3], y_offset + 10))
             
             y_offset += row_height
             
             # Draw separator line
-            pygame.draw.line(self._surface, self.line_color, 
+            pygame.draw.line(self._surface, WHITE, 
                            (center_offset + 20, y_offset - 10), 
                            (center_offset + self.table_width, y_offset - 10), 1)
         
@@ -107,10 +100,10 @@ class TimetableView(BaseUIComponent):
         
         self.add_button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
         
-        button_color = self.button_hover_color if self.is_hovering_button else self.button_color
-        pygame.draw.rect(self._surface, button_color, self.add_button_rect, border_radius=5)
-        pygame.draw.rect(self._surface, self.line_color, self.add_button_rect, 2, border_radius=5)
         
-        button_text = self.text_font.render("+ Add Train", True, self.button_text_color)
+        pygame.draw.rect(self._surface, GREEN, self.add_button_rect, border_radius=5)
+        pygame.draw.rect(self._surface, GREY, self.add_button_rect, 2, border_radius=5)
+
+        button_text = self.text_font.render("+ Add Train", True, BLACK)
         button_text_rect = button_text.get_rect(center=self.add_button_rect.center)
         self._surface.blit(button_text, button_text_rect)

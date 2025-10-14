@@ -7,4 +7,4 @@ class ViewMode(Enum):
     
     
 class AppState:
-    mode: ViewMode = ViewMode.CONSTRUCTION
+    mode: ViewMode = ViewMode.TIMETABLE
