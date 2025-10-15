@@ -82,7 +82,7 @@ class RailMap:
             
     # --- pathfinding ---
     def is_blocked(self, pos: Position) -> bool:
-        return self._pathfinder.is_blocked(pos)
+        return self._pathfinder.cannot_be_part_of_path(pos)
 
     def find_path(self, start: Pose, end: Position) -> list[Position] | None:
         return self._pathfinder.find_grid_path(start, end)

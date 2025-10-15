@@ -11,10 +11,13 @@ class Pathfinder:
     def __init__(self, map: 'RailMap'):
         self._map = map
 
-    def is_blocked(self, pos: Position) -> bool:
+    def cannot_be_part_of_path(self, pos: Position) -> bool:
         return (self._map.has_node_at(pos) and 
                 (self._map.has_signal_at(pos) 
                  or self._map.is_platform_at(pos))) or self._map.is_within_station_rect(pos)
+        
+    def cannot_be_endpoint_of_path(self, pos: Position) -> bool:
+        return self._map.has_node_at(pos) and (self._map.has_signal_at(pos) or self._map.is_platform_at(pos))
 
     def is_cutting_through_platform(self, current_state: Pose, neighbor_state: Pose) -> bool:
         if neighbor_state.direction not in [(1, 1), (1, -1), (-1, 1), (-1, -1)]:
@@ -46,50 +49,50 @@ class Pathfinder:
             return (b.x - a.x) ** 2 + (b.y - a.y) ** 2  # Squared Euclidean distance
         
         
-        if self.is_blocked(end) or self.is_blocked(start.position):
+        if self.cannot_be_part_of_path(end) or self.cannot_be_part_of_path(start.position):
             return ()
 
         if start.position == end:
             return (start.position,)
 
-        open_set = []
+        priority_queue: list[tuple[float, float, Pose]] = []
         came_from: dict[Pose, Pose] = {}
         g_score: dict[Pose, float] = {}
         f_score: dict[Pose, float] = {}
 
         g_score[start] = 0
         f_score[start] = heuristic(start.position, end)
-        heapq.heappush(open_set, (f_score[start], g_score[start], start))
+        heapq.heappush(priority_queue, (f_score[start], g_score[start], start))
 
-        while open_set:
-            current_f, current_g, current_state = heapq.heappop(open_set)
+        while priority_queue:
+            current_f, current_g, current_pose = heapq.heappop(priority_queue)
 
-            if current_state in g_score and current_g > g_score[current_state]:
+            if current_pose in g_score and current_g > g_score[current_pose]:
                 continue
 
-            if current_state.position == end:
-                path = [current_state.position]
+            if current_pose.position == end:
+                path = [current_pose.position]
 
-                while current_state in came_from:
-                    current_state = came_from[current_state]
-                    path.append(current_state.position)
+                while current_pose in came_from:
+                    current_pose = came_from[current_pose]
+                    path.append(current_pose.position)
 
                 return tuple(reversed(path))
 
-            for neighbor_state, cost in get_valid_turn_neighbors(current_state):
-                if self.is_blocked(neighbor_state.position):
+            for neighbor_state, cost in get_valid_turn_neighbors(current_pose):
+                if self.cannot_be_part_of_path(neighbor_state.position):
                     continue
                 
-                if self.is_cutting_through_platform(current_state, neighbor_state):
+                if self.is_cutting_through_platform(current_pose, neighbor_state):
                     continue
 
-                tentative_g_score = g_score[current_state] + cost
+                tentative_g_score = g_score[current_pose] + cost
 
                 if neighbor_state not in g_score or tentative_g_score < g_score[neighbor_state]:
-                    came_from[neighbor_state] = current_state
+                    came_from[neighbor_state] = current_pose
                     g_score[neighbor_state] = tentative_g_score
                     f_score[neighbor_state] = tentative_g_score + heuristic(neighbor_state.position, end)
 
-                    heapq.heappush(open_set, (f_score[neighbor_state], g_score[neighbor_state], neighbor_state))
+                    heapq.heappush(priority_queue, (f_score[neighbor_state], g_score[neighbor_state], neighbor_state))
 
         return ()  # No path found

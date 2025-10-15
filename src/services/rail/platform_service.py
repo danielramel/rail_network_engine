@@ -31,11 +31,10 @@ class PlatformService:
     
     def calculate_platform_preview(self, edge: Edge) -> tuple[bool, frozenset[Edge]]:
         # add 2 to max_nr to account for the edges that will be cut off at the ends
-        is_valid, _, edges = self.query_service.get_segment(edge, only_straight=True, max_nr=PLATFORM_LENGTH+2)
+        is_valid, _, edges = self.query_service.get_segment(edge, only_straight=True, max_nr=PLATFORM_LENGTH)
          # too short, return full segment to indicate error
         if is_valid:
-            sorted_edges = sorted(edges)[1:-1]  # remove the first and last edge to create a margin
-            return True, frozenset(sorted_edges)
+            return True, edges
         
         return False, edges
 
