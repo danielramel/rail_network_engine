@@ -11,13 +11,10 @@ class Pathfinder:
     def __init__(self, map: 'RailMap'):
         self._map = map
 
-    def cannot_be_part_of_path(self, pos: Position) -> bool:
+    def is_blocked(self, pos: Position) -> bool:
         return (self._map.has_node_at(pos) and 
                 (self._map.has_signal_at(pos) 
                  or self._map.is_platform_at(pos))) or self._map.is_within_station_rect(pos)
-        
-    def cannot_be_endpoint_of_path(self, pos: Position) -> bool:
-        return self._map.has_node_at(pos) and (self._map.has_signal_at(pos) or self._map.is_platform_at(pos))
 
     def is_cutting_through_platform(self, current_state: Pose, neighbor_state: Pose) -> bool:
         if neighbor_state.direction not in [(1, 1), (1, -1), (-1, 1), (-1, -1)]:
@@ -49,7 +46,7 @@ class Pathfinder:
             return (b.x - a.x) ** 2 + (b.y - a.y) ** 2  # Squared Euclidean distance
         
         
-        if self.cannot_be_part_of_path(end) or self.cannot_be_part_of_path(start.position):
+        if self.is_blocked(end) or self.is_blocked(start.position):
             return ()
 
         if start.position == end:
@@ -80,7 +77,7 @@ class Pathfinder:
                 return tuple(reversed(path))
 
             for neighbor_state, cost in get_valid_turn_neighbors(current_pose):
-                if self.cannot_be_part_of_path(neighbor_state.position):
+                if self.is_blocked(neighbor_state.position):
                     continue
                 
                 if self.is_cutting_through_platform(current_pose, neighbor_state):
