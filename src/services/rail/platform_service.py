@@ -24,19 +24,18 @@ class PlatformService:
         return {Edge(*edge): station for *edge, station in self._graph.edges.data('station') if station is not None}
     
     def is_platform_at(self, pos: Position) -> bool:
+        edges = self._graph.edges(pos)
+        if len(edges) == 1: return False
+        
         return all('station' in self._graph.edges[edge] for edge in self._graph.edges(pos))
     
     def is_edge_platform(self, edge: Edge) -> bool:
         return 'station' in self._graph.edges[*edge]
     
     def calculate_platform_preview(self, edge: Edge) -> tuple[bool, frozenset[Edge]]:
-        # add 2 to max_nr to account for the edges that will be cut off at the ends
-        is_valid, _, edges = self.query_service.get_segment(edge, only_straight=True, max_nr=PLATFORM_LENGTH)
-         # too short, return full segment to indicate error
-        if is_valid:
-            return True, edges
+        _, edges = self.query_service.get_segment(edge, only_straight=True, max_nr=PLATFORM_LENGTH)
         
-        return False, edges
+        return (len(edges) == PLATFORM_LENGTH), edges
 
     def get_platform_from_edge(self, edge: Edge) -> frozenset[Edge]:
         _, edges = self.query_service.get_segment(edge, only_platforms=True)

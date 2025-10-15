@@ -82,7 +82,7 @@ class GraphQueryService:
                 edges.add(edge)
 
                 if max_nr is not None and only_straight and edge.length * len(edges) >= max_nr * GRID_SIZE:
-                    return True, frozenset(nodes), frozenset(edges)
+                    return frozenset(nodes), frozenset(edges)
                 
                 # skip conditions
                 if neighbor in nodes or neighbor in {s.position for s in stack}:
@@ -95,8 +95,5 @@ class GraphQueryService:
                     continue
                 
                 stack.append(Pose(neighbor, direction))
-
-        if max_nr is not None:
-            return False, frozenset(nodes), frozenset(edges)
         
         return frozenset(nodes), frozenset(edges)
