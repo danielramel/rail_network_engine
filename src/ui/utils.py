@@ -90,7 +90,7 @@ def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type=Non
         draw_platform(surface, edge, camera, color=LIGHTBLUE)
     elif edge_type == EdgeType.PLATFORM:
         draw_platform(surface, edge, camera, color=PURPLE)
-    elif edge_type is None or edge_type == 'normal':
+    elif edge_type is None or edge_type == EdgeType.NORMAL:
         color = WHITE if speed is None else color_from_speed(speed)
         pygame.draw.line(surface, color, *camera.world_to_screen_from_edge(edge), width=3)
 

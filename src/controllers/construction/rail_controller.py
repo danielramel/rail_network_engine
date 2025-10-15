@@ -3,7 +3,7 @@ from controllers.construction.base_construction_controller import BaseConstructi
 from models.event import CLICK_TYPE, Event
 from services.construction.rail_target import find_rail_target, RailTargetType
 from models.geometry import Pose
-from views.construction.rail_view import RailView
+from views.construction.rail import RailView
 from graphics.camera import Camera
 from domain.rail_map import RailMap
 from models.construction import ConstructionState

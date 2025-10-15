@@ -73,7 +73,9 @@ class GraphQueryService:
                 edge = Edge(pose.position, neighbor)
                                 
                 if 'station' in self._graph.edges[edge] and not only_platforms:
+                    nodes.remove(pose.position) # ezt nézd át, miért csak itt van
                     continue
+                
                 if only_platforms and 'station' not in self._graph.edges[edge]:
                     continue
                 

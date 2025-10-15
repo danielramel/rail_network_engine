@@ -36,5 +36,5 @@ class StationRepository:
     def is_within_station_rect(self, pos: Position) -> bool:
         return any(pos.is_within_station_rect(station_pos) for station_pos in self._by_pos.keys())
     
-    def remove_platform_from_station(self, station: Station, edge: Edge) -> frozenset[Edge]:
-        self._by_pos[station.position].platforms.remove(edge)
+    def remove_platform_from_station(self, station: Station, edges: frozenset[Edge]) -> None:
+        self._by_pos[station.position].platforms.remove(edges)

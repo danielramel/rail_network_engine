@@ -5,7 +5,7 @@ from graphics.camera import Camera
 from domain.rail_map import RailMap
 from models.construction import ConstructionState
 import pygame
-from views.construction.signal_view import SignalView
+from views.construction.signal import SignalView
 
 class SignalController(BaseConstructionController):
     def __init__(self, map: RailMap, state: ConstructionState, camera: Camera, screen: pygame.Surface):

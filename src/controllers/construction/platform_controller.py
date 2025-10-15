@@ -7,7 +7,7 @@ from graphics.camera import Camera
 from domain.rail_map import RailMap
 from models.construction import ConstructionState, EdgeType
 import pygame
-from views.construction.platform_view import PlatformView, PlatformTargetType
+from views.construction.platform import PlatformView, PlatformTargetType
 
 class PlatformController(BaseConstructionController):
     def __init__(self, map: RailMap, state: ConstructionState, camera: Camera, screen: pygame.Surface):
