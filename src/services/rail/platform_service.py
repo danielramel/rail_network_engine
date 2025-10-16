@@ -4,11 +4,14 @@ from models.geometry import Position, Edge, edge
 from networkx import Graph
 from models.station import Station
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from domain.rail_map import RailMap
 
 class PlatformService:
-    def __init__(self, graph: Graph, query_service: GraphQueryService):
+    def __init__(self, graph: Graph, map: 'RailMap'):
         self._graph = graph
-        self.query_service = query_service
+        self._map = map
 
     def add(self, station: Station, edges: frozenset[Edge]) -> None:
         for edge in edges:
@@ -33,12 +36,15 @@ class PlatformService:
         return 'station' in self._graph.edges[*edge]
     
     def calculate_platform_preview(self, edge: Edge) -> tuple[bool, frozenset[Edge]]:
-        _, edges = self.query_service.get_segment(edge, only_straight=True, max_nr=PLATFORM_LENGTH)
-        
+        _, edges = self._map.get_segment(edge, only_straight=True, max_nr=PLATFORM_LENGTH)
+        for edge in edges:
+            # check for platform corner cutting
+            pass
+
         return (len(edges) == PLATFORM_LENGTH), edges
 
     def get_platform_from_edge(self, edge: Edge) -> frozenset[Edge]:
-        _, edges = self.query_service.get_segment(edge, only_platforms=True)
+        _, edges = self._map.get_segment(edge, only_platforms=True)
         return edges
 
     def platforms_middle_points(self, station: Station) -> set[Position]:

@@ -12,7 +12,7 @@ class RailMap:
         self._graph = nx.Graph()
         self._query_service = GraphQueryService(self._graph)
         self._signal_service = SignalService(self._graph, self)
-        self._platform_service = PlatformService(self._graph, self._query_service)
+        self._platform_service = PlatformService(self._graph, self)
         self._pathfinder = Pathfinder(self)
         self._station_repository = StationRepository()
     
