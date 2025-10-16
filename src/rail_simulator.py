@@ -1,11 +1,17 @@
 import pygame
 from controllers.app_manager import AppController
+from PyQt6.QtWidgets import QApplication
+import sys
 
 
 class RailSimulator:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((0, 0), pygame.NOFRAME)
+        
+        # Initialize QApplication in main thread (required for Qt)
+        self.qt_app = QApplication.instance() or QApplication(sys.argv)
+        
+        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         pygame.display.set_caption("Rail Simulator")
         self.clock = pygame.time.Clock()
         
@@ -20,7 +26,9 @@ class RailSimulator:
                 if action == "quit":
                     running = False
                     break
-                
+            
+            # Process Qt events without blocking (allows Qt windows to function)
+            self.qt_app.processEvents()
 
             self.app_controller.render_view()
 
