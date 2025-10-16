@@ -3,13 +3,15 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                               QPushButton, QLabel, QHBoxLayout)
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QCursor
-from config.colors import LIGHTBLUE, RED, YELLOW
+from config.colors import BLUE, RED, YELLOW
 from models.station import Station
 from models.train import TrainRepository
 from views.timetable.train_editor_dialog import TrainEditorDialog
 from views.timetable.timetable_stylesheet import timetable_stylesheet
+from PyQt6.QtCore import pyqtSignal
 
 class TimetableWindow(QMainWindow):
+    window_closed = pyqtSignal()
     def __init__(self, train_repository: TrainRepository):
         super().__init__()
         self.train_repository = train_repository
@@ -32,11 +34,12 @@ class TimetableWindow(QMainWindow):
         
         # Table
         self.table = QTableWidget()
-        self.table.setColumnCount(4)
-        self.table.setHorizontalHeaderLabels(["Type", "Route", "Start", "Frequency"])
-        self.table.horizontalHeader().setStretchLastSection(True)
+        self.table.verticalHeader().setVisible(False)
+        self.table.setColumnCount(6)
+        self.table.setHorizontalHeaderLabels(["Type", "Route", "Start", "Frequency", "Edit", "Delete"])
+        self.table.horizontalHeader().setStretchLastSection(False)
         self.table.setColumnWidth(0, 100)
-        self.table.setColumnWidth(1, 500)
+        self.table.setColumnWidth(1, 400)
         self.table.setColumnWidth(2, 100)
         self.table.setColumnWidth(3, 120)
         
@@ -100,7 +103,18 @@ class TimetableWindow(QMainWindow):
             freq_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             if is_expanded:
                 self.table.setSpan(actual_row, 3, len(train.stations) + 1, 1)
-            self.table.setItem(actual_row, 3, freq_item)
+            self.table.setItem(actual_row, 3, freq_item)                   
+                    
+            # Edit button
+            edit_btn = QPushButton("Edit")
+            edit_btn.clicked.connect(lambda checked, idx=train_idx: self.edit_train(idx))
+            self.table.setCellWidget(actual_row, 4, edit_btn)
+            
+            # Delete button
+            delete_btn = QPushButton("Delete")
+            delete_btn.setStyleSheet("background-color: #cc0000;")
+            delete_btn.clicked.connect(lambda checked, idx=train_idx: self.delete_train(idx))
+            self.table.setCellWidget(actual_row, 5, delete_btn)
             
             actual_row += 1
             
@@ -109,23 +123,24 @@ class TimetableWindow(QMainWindow):
                 for i, station in enumerate(train.stations, 1):
                     self._add_station_row(actual_row, station, i, len(train.stations))
                     actual_row += 1
+                    
     
-    def _add_station_row(self, row, station, station_num, total_stations):
-        """Add a row for an individual station"""
-        # Type column is spanned from parent row - skip
-        
+    def _add_station_row(self, row, station: Station, station_num, total_stations):
+        """Add a row for an individual station as a subrow (no number in first column)"""
+        # Leave first column empty for subrows
+        empty_item = QTableWidgetItem("")
+        empty_item.setFlags(empty_item.flags() ^ Qt.ItemFlag.ItemIsEditable)
+        empty_item.setBackground(QColor(35, 35, 35))
+        self.table.setItem(row, 0, empty_item)
+
         # Station row in route column
-        prefix = "🚉" if station_num == 1 or station_num == total_stations else "  "
-        station_name = station.name if isinstance(station, Station) else str(station)
-        
-        station_item = QTableWidgetItem(f"    {prefix} {station_num}. {station_name}")
+        station_item = QTableWidgetItem(f"\t{station.name}")
         station_item.setBackground(QColor(35, 35, 35))
         station_item.setForeground(QColor(200, 200, 200))
         station_item.setFlags(station_item.flags() ^ Qt.ItemFlag.ItemIsEditable)
         station_item.setTextAlignment(Qt.AlignmentFlag.AlignVCenter)
         self.table.setItem(row, 1, station_item)
         
-        # Start and Frequency columns are spanned from parent row - skip
     
     def handle_cell_click(self, row, col):
         # Only toggle expansion when clicking on Route column (column 1)
@@ -133,7 +148,7 @@ class TimetableWindow(QMainWindow):
             item = self.table.item(row, 1)
             if item:
                 train_idx = item.data(Qt.ItemDataRole.UserRole)
-                if train_idx is not None:  # Make sure it's a train row, not station row
+                if train_idx is not None:  # Make sure it's a train row, not expanded row
                     self.toggle_row_expansion(train_idx)
     
     def toggle_row_expansion(self, train_idx):
@@ -161,6 +176,37 @@ class TimetableWindow(QMainWindow):
                 self.expanded_rows.clear()  # Clear expanded state on refresh
                 self.refresh_table()
     
+    def edit_train(self, train_idx):
+        train = self.train_repository.get_by_index(train_idx)
+        train_data = {
+            'type': train.code,
+            'stations': train.stations,
+            'start_time': train.start_time,
+            'frequency': train.frequency
+        }
+        
+        dialog = TrainEditorDialog(self, train_data)
+        if dialog.exec():
+            data = dialog.get_data()
+            if data['stations']:
+                # Remove old train and add updated one
+                self.train_repository.remove(train)
+                station_objects = [Station(name) for name in data['stations']]
+                self.train_repository.add(
+                    code=data['type'],
+                    stations=station_objects,
+                    start_time=data['start_time'],
+                    frequency=data['frequency']
+                )
+                self.expanded_rows.clear()  # Clear expanded state on refresh
+                self.refresh_table()
+    
+    def delete_train(self, train_idx):
+        train = self.train_repository.get_by_index(train_idx)
+        self.train_repository.remove(train)
+        self.expanded_rows.discard(train_idx)  # Remove from expanded if it was expanded
+        self.refresh_table()
+    
     def _format_time(self, minutes: int) -> str:
         """Convert minutes since midnight to HH:mm string."""
         hours = minutes // 60
@@ -169,7 +215,7 @@ class TimetableWindow(QMainWindow):
     
     def _get_code_color(self, code: str) -> QColor:
         if code.startswith("S"):
-            return QColor(*LIGHTBLUE)
+            return QColor(*BLUE)
         elif code.startswith("Z"):
             return QColor(*YELLOW)
         
@@ -184,3 +230,8 @@ class TimetableWindow(QMainWindow):
             return f"{stations[0].name} → {stations[1].name}"
         else:
             return f"{stations[0].name} → ... → {stations[-1].name}"
+    
+    def closeEvent(self, event):
+        """Override closeEvent to emit signal when window is closed"""
+        self.window_closed.emit()
+        super().closeEvent(event)

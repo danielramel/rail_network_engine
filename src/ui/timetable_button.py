@@ -21,19 +21,22 @@ class TimeTableButton(RectangleUIComponent):
     def handle_event(self, event: pygame.event) -> bool:
         if self._rect.collidepoint(*event.pos_):
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                # QApplication is already created in main thread
-                # Just create and show the window - no threading, no app.exec()
                 if self.timetable_window is None:
                     self.timetable_window = TimetableWindow(self.train_repository)
+                    # Connect to the custom signal instead
+                    self.timetable_window.window_closed.connect(self._on_timetable_window_closed)
                     self.timetable_window.show()
                 else:
-                    # If already open, bring to front
                     if self.timetable_window.isMinimized():
                         self.timetable_window.showNormal()
                     self.timetable_window.raise_()
                     self.timetable_window.activateWindow()
             return True
         return False
+    
+    def _on_timetable_window_closed(self, *args, **kwargs):
+            self.timetable_window = None
+            print("Timetable window closed")
 
     def render(self, screen_pos: Position) -> None:
         pygame.draw.rect(self._surface, BLACK, self._rect, border_radius=10)
