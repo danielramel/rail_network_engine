@@ -1,7 +1,6 @@
 MODE_ICON_PATHS = {
     "CONSTRUCTION": "src/icons/construction.png",
-    "SIMULATION": "src/icons/simulation.png",
-    "TIMETABLE": "src/icons/timetable.png",
+    "SIMULATION": "src/icons/simulation.png"
 }
 
 CONSTRUCTION_ICON_PATHS = {
@@ -18,4 +17,5 @@ TIME_CONTROL_ICON_PATHS = {
     "FAST_FORWARD": "src/icons/simulation/3x.png",
     "SUPER_FAST_FORWARD": "src/icons/simulation/10x.png",
 }
-    
+
+TIMETABLE_ICON_PATH = "src/icons/timetable.png"

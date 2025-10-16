@@ -10,6 +10,7 @@ from ui.components.base import BaseUIComponent
 from ui.mode_buttons import ModeSelectorButtons
 from ui.simulation.time_control_buttons import TimeControlButtons
 from ui.simulation.time_display import TimeDisplay
+from ui.timetable_button import TimeTableButton
 from ui.zoom_button import ZoomButton
 from ui.construction.construction_buttons import ConstructionButtons
 from controllers.construction.construction_manager import ConstructionManager
@@ -22,7 +23,6 @@ class AppController:
     construction_element_types: dict[ViewMode, tuple[type]] = {
         ViewMode.CONSTRUCTION: (ConstructionButtons, ConstructionPanelStrategy, ConstructionManager),
         ViewMode.SIMULATION: (TimeControlButtons, TimeDisplay, SimulationManager),
-        ViewMode.TIMETABLE: (TimetableManager, ),
     }
     
     def __init__(self, screen: pygame.Surface):
@@ -36,6 +36,7 @@ class AppController:
         
         self.elements: list[BaseUIComponent] = [
             ModeSelectorButtons(screen, self.app_state),
+            TimeTableButton(screen),
             ZoomButton(screen, self.camera),
         ]
         
@@ -57,11 +58,6 @@ class AppController:
                 TimeDisplay(self.screen, self.time_control_state),
                 SimulationManager(self.map, self.camera, self.screen)
             ])
-        elif mode == ViewMode.TIMETABLE:
-            self.elements.append(
-                TimetableManager(self.map, self.train_repository, self.screen)
-            )
-        # Add other modes as needed
     
     def _remove_mode_elements(self, mode: ViewMode):
         """Remove elements specific to the given mode."""

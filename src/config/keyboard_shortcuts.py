@@ -6,7 +6,6 @@ from models.time import TimeControlMode
 MODE_SELECTION = {
     pygame.K_s: ViewMode.SIMULATION,
     pygame.K_c: ViewMode.CONSTRUCTION,
-    pygame.K_t: ViewMode.TIMETABLE,
 }
 
 CONSTRUCTION_MODE_SELECTION = {
