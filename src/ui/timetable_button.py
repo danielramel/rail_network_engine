@@ -36,7 +36,6 @@ class TimeTableButton(RectangleUIComponent):
     
     def _on_timetable_window_closed(self, *args, **kwargs):
             self.timetable_window = None
-            print("Timetable window closed")
 
     def render(self, screen_pos: Position) -> None:
         pygame.draw.rect(self._surface, BLACK, self._rect, border_radius=10)

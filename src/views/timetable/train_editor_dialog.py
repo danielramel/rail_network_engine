@@ -13,10 +13,10 @@ class TrainEditorDialog(QDialog):
         
         layout = QFormLayout()
         
-        # Train Type
-        self.type_combo = QComboBox()
-        self.type_combo.addItems(["S70", "S71", "Z72"])
-        layout.addRow("Train Type:", self.type_combo)
+        # Train code
+        self.code_combo = QComboBox()
+        self.code_combo.addItems(["S70", "S71", "Z72"])
+        layout.addRow("Train code:", self.code_combo)
         
         # Start Time
         self.time_edit = QTimeEdit()
@@ -57,7 +57,7 @@ class TrainEditorDialog(QDialog):
         
         # Load existing data if editing
         if train_data:
-            self.type_combo.setCurrentText(train_data['type'])
+            self.code_combo.setCurrentText(train_data['code'])
             # Convert minutes to QTime
             hours = train_data['start_time'] // 60
             minutes = train_data['start_time'] % 60
@@ -80,7 +80,7 @@ class TrainEditorDialog(QDialog):
         frequency = int(self.freq_combo.currentText().split()[0])
         
         return {
-            'type': self.type_combo.currentText(),
+            'code': self.code_combo.currentText(),
             'stations': selected_stations,
             'start_time': start_time_minutes,
             'frequency': frequency
