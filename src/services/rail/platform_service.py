@@ -1,4 +1,4 @@
-from config.settings import PLATFORM_LENGTH
+from config.settings import GRID_SIZE, PLATFORM_LENGTH
 from domain.rail_map import GraphQueryService
 from models.geometry import Position, Edge, edge
 from networkx import Graph
@@ -38,14 +38,17 @@ class PlatformService:
     def calculate_platform_preview(self, edge: Edge) -> tuple[bool, frozenset[Edge]]:
         _, edges = self._map.get_segment(edge, only_straight=True, max_nr=PLATFORM_LENGTH)
         for edge in edges:
-            # check for platform corner cutting
+            # todo check for platform corner cutting
             pass
 
-        return (len(edges) == PLATFORM_LENGTH), edges
+        edge = element = next(iter(edges))
+        return edge.length * len(edges) >= PLATFORM_LENGTH * GRID_SIZE, edges
 
     def get_platform_from_edge(self, edge: Edge) -> frozenset[Edge]:
-        _, edges = self._map.get_segment(edge, only_platforms=True)
-        return edges
+        station = self._graph.edges[edge]['station']
+        for platform in station.platforms:
+            if edge in platform:
+                return platform
 
     def platforms_middle_points(self, station: Station) -> set[Position]:
         return {self.get_middle_of_platform(platform) for platform in station.platforms}
