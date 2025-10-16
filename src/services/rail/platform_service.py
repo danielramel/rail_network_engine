@@ -45,6 +45,7 @@ class PlatformService:
         return edge.length * len(edges) >= PLATFORM_LENGTH * GRID_SIZE, edges
 
     def get_platform_from_edge(self, edge: Edge) -> frozenset[Edge]:
+        # fixes next to each other platforms being indistinguishable
         station = self._graph.edges[edge]['station']
         for platform in station.platforms:
             if edge in platform:
