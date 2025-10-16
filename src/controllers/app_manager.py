@@ -17,7 +17,6 @@ from controllers.construction.construction_manager import ConstructionManager
 from models.geometry import Position
 from controllers.simulation.simulation_manager import SimulationManager
 from models.time import TimeControlState
-from controllers.timetable.timetable_manager import TimetableManager
 
 class AppController:
     construction_element_types: dict[ViewMode, tuple[type]] = {
@@ -36,7 +35,7 @@ class AppController:
         
         self.elements: list[BaseUIComponent] = [
             ModeSelectorButtons(screen, self.app_state),
-            TimeTableButton(screen),
+            TimeTableButton(screen, self.train_repository),
             ZoomButton(screen, self.camera),
         ]
         

@@ -1,30 +1,3 @@
-from models.geometry.position import Position
-from ui.components.base import BaseUIComponent
-import pygame
-from domain.rail_map import RailMap
-from models.train import TrainRepository
-from config.colors import BLUE, WHITE, BLACK, GREY, GREEN, RED, YELLOW
-
-class TimetableView(BaseUIComponent):
-    def __init__(self, map: RailMap, train_repository: TrainRepository, screen: pygame.Surface):
-        self._surface = screen
-        self._map = map
-        self._train_repository = train_repository
-        
-        # Fonts - all bigger
-        self.title_font = pygame.font.SysFont('Arial', 36, bold=True)
-        self.header_font = pygame.font.SysFont('Arial', 24, bold=True)
-        self.text_font = pygame.font.SysFont('Arial', 20)
-                
-        # Table dimensions
-        self.table_width = 800
-        
-        # Add train button
-        self.add_button_rect = None
-        self.is_hovering_button = False
-       
-    def render(self, screen_pos: Position | None):
-       import sys
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
                               QHBoxLayout, QTableWidget, QTableWidgetItem, 
                               QPushButton, QDialog, QFormLayout, QComboBox, 
@@ -32,6 +5,9 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                               QMenu)
 from PyQt6.QtCore import Qt, QTime, QPoint
 from PyQt6.QtGui import QColor, QCursor
+from models.station import Station
+from models.train import TrainRepository
+
 
 class AddTrainDialog(QDialog):
     def __init__(self, parent=None, train_data=None):
@@ -87,12 +63,15 @@ class AddTrainDialog(QDialog):
         # Load existing data if editing
         if train_data:
             self.type_combo.setCurrentText(train_data['type'])
-            time = QTime.fromString(train_data['start_time'], "HH:mm")
-            self.time_edit.setTime(time)
-            self.freq_combo.setCurrentText(train_data['frequency'])
+            # Convert minutes to QTime
+            hours = train_data['start_time'] // 60
+            minutes = train_data['start_time'] % 60
+            self.time_edit.setTime(QTime(hours, minutes))
+            self.freq_combo.setCurrentText(f"{train_data['frequency']} min")
             # Select stations in the list
             for station in train_data['stations']:
-                items = self.station_list.findItems(station, Qt.MatchFlag.MatchExactly)
+                station_name = station.name if isinstance(station, Station) else station
+                items = self.station_list.findItems(station_name, Qt.MatchFlag.MatchExactly)
                 if items:
                     items[0].setSelected(True)
         
@@ -100,17 +79,23 @@ class AddTrainDialog(QDialog):
     
     def get_data(self):
         selected_stations = [item.text() for item in self.station_list.selectedItems()]
+        time = self.time_edit.time()
+        start_time_minutes = time.hour() * 60 + time.minute()
+        # Extract just the number from frequency string (e.g., "20 min" -> 20)
+        frequency = int(self.freq_combo.currentText().split()[0])
+        
         return {
             'type': self.type_combo.currentText(),
             'stations': selected_stations,
-            'start_time': self.time_edit.time().toString("HH:mm"),
-            'frequency': self.freq_combo.currentText()
+            'start_time': start_time_minutes,
+            'frequency': frequency
         }
 
 
 class TimetableWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, train_repository: TrainRepository):
         super().__init__()
+        self.train_repo = train_repository
         self.setWindowTitle("Train Timetable")
         self.setMinimumSize(1000, 600)
         
@@ -182,38 +167,20 @@ class TimetableWindow(QMainWindow):
         # Connect cell click event
         self.table.cellClicked.connect(self.handle_cell_click)
         
-        # Mock data with ~20 stations each
-        self.trains = [
-            {"type": "S70", "stations": [
-                "Hauptbahnhof", "Königsplatz", "Stadtmitte", "Rathaus", "Marienplatz",
-                "Sendlinger Tor", "Goetheplatz", "Poccistraße", "Implerstraße",
-                "Harras", "Partnachplatz", "Aidenbachstraße", "Machtlfinger Straße",
-                "Forstenrieder Allee", "Basler Straße", "Holzapfelkreuth", "Großhadern",
-                "Klinikum Großhadern", "Westpark", "Ostbahnhof"
-            ], "start_time": "05:12", "frequency": "20 min"},
-            {"type": "S71", "stations": [
-                "Flughafen", "Besucherpark", "Nordallee", "Feldmoching", "Hasenbergl",
-                "Dülferstraße", "Dietlindenstraße", "Studentenstadt", "Alte Heide",
-                "Nordfriedhof", "Münchner Freiheit", "Giselastraße", "Universität",
-                "Odeonsplatz", "Karlsplatz", "Messegelände", "Theresienwiese",
-                "Schwanthalerhöhe", "Donnersberger Brücke", "Hauptbahnhof"
-            ], "start_time": "05:25", "frequency": "20 min"},
-            {"type": "Z72", "stations": [
-                "Nordstadt", "Petuelring", "Scheidplatz", "Bonner Platz", "Ackermannstraße",
-                "Hohenzollernplatz", "Josephsplatz", "Theresienstraße", "Zentrum",
-                "Stiglmaierplatz", "Königsplatz", "Lenbachplatz", "Marktplatz",
-                "Isartor", "Rosenheimer Platz", "Ostbahnhof", "Berg am Laim",
-                "Trudering", "Moosach", "Südbahnhof"
-            ], "start_time": "06:00", "frequency": "30 min"},
-        ]
-        
         self.refresh_table()
         layout.addWidget(self.table)
         
         central_widget.setLayout(layout)
     
+    def _format_time(self, minutes: int) -> str:
+        """Convert minutes since midnight to HH:mm string."""
+        hours = minutes // 60
+        mins = minutes % 60
+        return f"{hours:02d}:{mins:02d}"
+    
     def refresh_table(self):
-        self.table.setRowCount(len(self.trains))
+        trains = self.train_repo.all()
+        self.table.setRowCount(len(trains))
         
         type_colors = {
             "S70": QColor(100, 150, 255),
@@ -221,30 +188,31 @@ class TimetableWindow(QMainWindow):
             "Z72": QColor(150, 255, 150)
         }
         
-        for row, train in enumerate(self.trains):
+        for row, train in enumerate(trains):
             # Type
-            type_item = QTableWidgetItem(train['type'])
-            type_item.setBackground(type_colors.get(train['type'], QColor(200, 200, 200)))
+            type_item = QTableWidgetItem(train.code)
+            type_item.setBackground(type_colors.get(train.code, QColor(200, 200, 200)))
             type_item.setForeground(QColor(0, 0, 0))
             type_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             self.table.setItem(row, 0, type_item)
             
             # Route - only show first and last station
-            if train['stations']:
-                first = train['stations'][0]
-                last = train['stations'][-1]
+            if train.stations:
+                first = train.stations[0].name
+                last = train.stations[-1].name
                 route = f"{first} → ... → {last}"
             else:
                 route = "No stations"
             route_item = QTableWidgetItem(route)
-            route_item.setData(Qt.ItemDataRole.UserRole, row)  # Store row index
+            route_item.setData(Qt.ItemDataRole.UserRole, row)
             self.table.setItem(row, 1, route_item)
             
             # Start time
-            self.table.setItem(row, 2, QTableWidgetItem(train['start_time']))
+            time_str = self._format_time(train.start_time)
+            self.table.setItem(row, 2, QTableWidgetItem(time_str))
             
             # Frequency
-            self.table.setItem(row, 3, QTableWidgetItem(train['frequency']))
+            self.table.setItem(row, 3, QTableWidgetItem(f"{train.frequency} min"))
             
             # Edit button
             edit_btn = QPushButton("Edit")
@@ -263,7 +231,7 @@ class TimetableWindow(QMainWindow):
             self.show_stations_menu(row)
     
     def show_stations_menu(self, row):
-        train = self.trains[row]
+        train = self.train_repo.get_by_index(row)
         
         # Create menu
         menu = QMenu(self)
@@ -284,14 +252,15 @@ class TimetableWindow(QMainWindow):
         """)
         
         # Add title
-        title_action = menu.addAction(f"📍 All Stations ({len(train['stations'])})")
+        title_action = menu.addAction(f"📍 All Stations ({len(train.stations)})")
         title_action.setEnabled(False)
         menu.addSeparator()
         
         # Add all stations
-        for i, station in enumerate(train['stations'], 1):
-            prefix = "🚉" if i == 1 or i == len(train['stations']) else "  "
-            menu.addAction(f"{prefix} {i}. {station}")
+        for i, station in enumerate(train.stations, 1):
+            prefix = "🚉" if i == 1 or i == len(train.stations) else "  "
+            station_name = station.name if isinstance(station, Station) else str(station)
+            menu.addAction(f"{prefix} {i}. {station_name}")
         
         # Show menu at cursor position
         menu.exec(QCursor.pos())
@@ -301,21 +270,54 @@ class TimetableWindow(QMainWindow):
         if dialog.exec():
             data = dialog.get_data()
             if data['stations']:
-                self.trains.append(data)
+                # Convert station names to Station objects
+                station_objects = [Station(name) for name in data['stations']]
+                self.train_repo.add(
+                    code=data['type'],
+                    stations=station_objects,
+                    start_time=data['start_time'],
+                    frequency=data['frequency']
+                )
                 self.refresh_table()
     
     def edit_train(self, row):
-        dialog = AddTrainDialog(self, self.trains[row])
+        train = self.train_repo.get_by_index(row)
+        train_data = {
+            'type': train.code,
+            'stations': train.stations,
+            'start_time': train.start_time,
+            'frequency': train.frequency
+        }
+        
+        dialog = AddTrainDialog(self, train_data)
         if dialog.exec():
             data = dialog.get_data()
             if data['stations']:
-                self.trains[row] = data
+                # Remove old train and add updated one
+                self.train_repo.remove(train)
+                station_objects = [Station(name) for name in data['stations']]
+                self.train_repo.add(
+                    code=data['type'],
+                    stations=station_objects,
+                    start_time=data['start_time'],
+                    frequency=data['frequency']
+                )
                 self.refresh_table()
     
     def delete_train(self, row):
-        del self.trains[row]
+        train = self.train_repo.get_by_index(row)
+        self.train_repo.remove(train)
         self.refresh_table()
 
 
-
+# Example usage:
+if __name__ == "__main__":
+    import sys
+    app = QApplication(sys.argv)
     
+    # Create repository and window
+    train_repo = TrainRepository()
+    window = TimetableWindow(train_repo)
+    window.show()
+    
+    sys.exit(app.exec())

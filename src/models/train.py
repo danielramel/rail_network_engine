@@ -45,38 +45,38 @@ class TrainRepository:
             {
                 "type": "S70",
                 "stations": ["Hauptbahnhof", "Stadtmitte", "Ostbahnhof"],
-                "start_time": "05:12",
-                "frequency": "20 min"
+                "start_time": 752,  # 12:32 in minutes
+                "frequency": 20
             },
             {
                 "type": "S71",
                 "stations": ["Flughafen", "Messegelände", "Hauptbahnhof"],
-                "start_time": "05:25",
-                "frequency": "20 min"
+                "start_time": 625,  # 05:25 in minutes
+                "frequency": 40
             },
             {
                 "type": "Z72",
                 "stations": ["Nordstadt", "Zentrum", "...", "Südbahnhof"],
-                "start_time": "06:00",
-                "frequency": "30 min"
+                "start_time": 360,  # 06:00 in minutes
+                "frequency": 30
             },
             {
                 "type": "S70",
                 "stations": ["Westend", "Universitätsplatz", "...", "Endstation Ost"],
-                "start_time": "05:30",
-                "frequency": "15 min"
+                "start_time": 330,  # 05:30 in minutes
+                "frequency": 15
             },
             {
                 "type": "Z72",
                 "stations": ["Bahnhof Nord", "Altstadt", "...", "Industriegebiet"],
-                "start_time": "06:15",
-                "frequency": "30 min"
+                "start_time": 375,  # 06:15 in minutes
+                "frequency": 30
             }
         ]
         for entry in self.timetable_data:
             self.add(
                 code=entry["type"],
-                stations=entry["stations"],
+                stations=[Station(name, None) for name in entry["stations"]],
                 start_time=entry["start_time"],
                 frequency=entry["frequency"]
             )

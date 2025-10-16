@@ -10,7 +10,9 @@ from views.timetable.timetable_view import TimetableWindow
 
 class TimeTableButton(RectangleUIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL]
-    def __init__(self, surface: pygame.Surface):
+    def __init__(self, surface: pygame.Surface, train_repository):
+        self.train_repository = train_repository
+        
         self.icon = IconLoader().get_icon(TIMETABLE_ICON_PATH, BUTTON_SIZE)
         rect = pygame.Rect(BUTTON_SIZE//5, 300, BUTTON_SIZE, BUTTON_SIZE)
         super().__init__(rect, surface)
@@ -21,11 +23,13 @@ class TimeTableButton(RectangleUIComponent):
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 # QApplication is already created in main thread
                 # Just create and show the window - no threading, no app.exec()
-                if self.timetable_window is None or not self.timetable_window.isVisible():
-                    self.timetable_window = TimetableWindow()
+                if self.timetable_window is None:
+                    self.timetable_window = TimetableWindow(self.train_repository)
                     self.timetable_window.show()
                 else:
                     # If already open, bring to front
+                    if self.timetable_window.isMinimized():
+                        self.timetable_window.showNormal()
                     self.timetable_window.raise_()
                     self.timetable_window.activateWindow()
             return True
