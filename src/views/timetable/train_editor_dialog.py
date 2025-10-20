@@ -2,20 +2,24 @@ from PyQt6.QtWidgets import (QDialog, QFormLayout, QComboBox,
                               QTimeEdit, QListWidget, QLabel, QDialogButtonBox)
 from PyQt6.QtCore import Qt, QTime
 from models.station import Station
+from models.train import Train
 
 
 class TrainEditorDialog(QDialog):
-    def __init__(self, parent=None, train_data=None):
+    def __init__(self, parent, train_to_edit: Train = None):
         super().__init__(parent)
-        self.setWindowTitle("Add Train" if train_data is None else "Edit Train")
+        self.setWindowTitle("Add Train" if train_to_edit is None else "Edit Train")
         self.setMinimumWidth(500)
         self.setMinimumHeight(600)
         
         layout = QFormLayout()
         
-        # Train code
-        self.code_combo = QComboBox()
-        self.code_combo.addItems(["S70", "S71", "Z72"])
+        # Train code (editable so user can enter any value)
+        self.code_combo = QComboBox() #todo something else here?
+        self.code_combo.setEditable(True)
+        # Show a hint in the editable line
+        if self.code_combo.lineEdit() is not None:
+            self.code_combo.lineEdit().setPlaceholderText("Enter train code")
         layout.addRow("Train code:", self.code_combo)
         
         # Start Time
@@ -26,7 +30,11 @@ class TrainEditorDialog(QDialog):
         
         # Frequency
         self.freq_combo = QComboBox()
-        self.freq_combo.addItems(["10 min", "15 min", "20 min", "30 min", "60 min"])
+        self.freq_combo.setEditable(True)
+        items = ['10 min', '15 min', '20 min', '30 min', '60 min', '120 min', '180 min', '240 min']
+        self.freq_combo.addItems(items)
+        if self.freq_combo.lineEdit() is not None:
+            self.freq_combo.lineEdit().setPlaceholderText("Enter frequency")
         layout.addRow("Frequency:", self.freq_combo)
         
         # Stations
@@ -35,15 +43,7 @@ class TrainEditorDialog(QDialog):
         
         self.station_list = QListWidget()
         self.station_list.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
-        available_stations = [
-            "Hauptbahnhof", "Stadtmitte", "Ostbahnhof", "Flughafen",
-            "Messegelände", "Nordstadt", "Zentrum", "Marktplatz",
-            "Südbahnhof", "Westend", "Universitätsplatz", "Endstation Ost",
-            "Bahnhof Nord", "Altstadt", "Industriegebiet", "Parkstraße",
-            "Schillerplatz", "Goethestraße", "Kantplatz", "Mozartweg",
-            "Beethovenallee", "Bachstraße", "Händelplatz", "Schubertallee"
-        ]
-        self.station_list.addItems(available_stations)
+        self.station_list.addItems(map(lambda s: s.name, parent._map.stations))
         layout.addRow(self.station_list)
         
         # Buttons
@@ -56,15 +56,15 @@ class TrainEditorDialog(QDialog):
         layout.addRow(buttons)
         
         # Load existing data if editing
-        if train_data:
-            self.code_combo.setCurrentText(train_data['code'])
+        if train_to_edit:
+            self.code_combo.setCurrentText(train_to_edit.code)
             # Convert minutes to QTime
-            hours = train_data['start_time'] // 60
-            minutes = train_data['start_time'] % 60
+            hours = train_to_edit.start_time // 60
+            minutes = train_to_edit.start_time % 60
             self.time_edit.setTime(QTime(hours, minutes))
-            self.freq_combo.setCurrentText(f"{train_data['frequency']} min")
+            self.freq_combo.setCurrentText(f"{train_to_edit.frequency} min")
             # Select stations in the list
-            for station in train_data['stations']:
+            for station in train_to_edit.stations:
                 station_name = station.name if isinstance(station, Station) else station
                 items = self.station_list.findItems(station_name, Qt.MatchFlag.MatchExactly)
                 if items:

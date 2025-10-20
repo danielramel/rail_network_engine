@@ -1,20 +1,22 @@
 from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, 
                               QTableWidget, QTableWidgetItem, 
-                              QPushButton)
+                              QPushButton, QDialog)
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor
 from config.colors import BLACK, LIGHTBLUE, RED, YELLOW
-from models.station import Station
+from models.station import Station, StationRepository
 from models.train import TrainRepository
 from views.timetable.train_editor_dialog import TrainEditorDialog
 from views.timetable.timetable_stylesheet import TIMETABLE_STYLESHEET
 from PyQt6.QtCore import pyqtSignal
+from domain.rail_map import RailMap
 
 class TimetableWindow(QMainWindow):
     window_closed = pyqtSignal()
-    def __init__(self, train_repository: TrainRepository):
+    def __init__(self, train_repository: TrainRepository, map: RailMap):
         super().__init__()
         self.train_repository = train_repository
+        self._map = map
         self.setWindowTitle("Train Timetable")
         self.setMinimumSize(1000, 600)
         
@@ -56,7 +58,6 @@ class TimetableWindow(QMainWindow):
         
         central_widget.setLayout(layout)
     
-    
     def refresh_table(self):
         trains = self.train_repository.all()
         total_rows = 0
@@ -66,6 +67,7 @@ class TimetableWindow(QMainWindow):
                 total_rows += len(train.stations)
         
         self.table.setRowCount(total_rows)
+        self.table.clearSpans()
         
         row_idx = 0
         for train_idx, train in enumerate(trains):
@@ -113,19 +115,12 @@ class TimetableWindow(QMainWindow):
                 for col in (0, 2, 3, 4, 5):
                     self.table.setSpan(row_idx, col, span, 1)
                 for i, station in enumerate(train.stations, 1):
-                    self._add_station_row(row_idx + i, station)
+                    station_item = QTableWidgetItem(f"{station.name}")
+                    station_item.setTextAlignment(Qt.AlignmentFlag.AlignVCenter)
+                    self.table.setItem(row_idx + i, 1, station_item)
                 row_idx += span
             else:
-                for col in (0, 2, 3, 4, 5):
-                    self.table.setSpan(row_idx - 1, col, 1, 1)
-                    
                 row_idx += 1
-                    
-
-    def _add_station_row(self, row_idx: int, station: Station):
-        station_item = QTableWidgetItem(f"{station.name}")
-        station_item.setTextAlignment(Qt.AlignmentFlag.AlignVCenter)
-        self.table.setItem(row_idx, 1, station_item)
         
 
     def handle_cell_click(self, row, col):
@@ -147,44 +142,49 @@ class TimetableWindow(QMainWindow):
 
     def add_train(self):
         dialog = TrainEditorDialog(self)
-        if dialog.exec():
-            data = dialog.get_data()
-            if data['stations']:
-                # Convert station names to Station objects
-                station_objects = [Station(name) for name in data['stations']]
-                self.train_repository.add(
-                    code=data['code'],
-                    stations=station_objects,
-                    start_time=data['start_time'],
-                    frequency=data['frequency']
-                )
-                self.expanded_rows.clear()  # Clear expanded state on refresh
-                self.refresh_table()
+        res = dialog.exec()
+        if res == QDialog.DialogCode.Rejected:
+            return
+        
+        data = dialog.get_data()
+        return
+        #TODO
+        if data['stations']:
+            # Convert station names to Station objects
+            station_objects = [Station(name) for name in data['stations']]
+            self.train_repository.add(
+                code=data['code'],
+                stations=station_objects,
+                start_time=data['start_time'],
+                frequency=data['frequency']
+            )
+            # self.expanded_rows.clear()  # Clear expanded state on refresh
+            self.refresh_table()
 
     def edit_train(self, train_idx):
         train = self.train_repository.get_by_index(train_idx)
-        train_data = {
-            'code': train.code,
-            'stations': train.stations,
-            'start_time': train.start_time,
-            'frequency': train.frequency
-        }
         
-        dialog = TrainEditorDialog(self, train_data)
-        if dialog.exec():
-            data = dialog.get_data()
-            if data['stations']:
-                # Remove old train and add updated one
-                self.train_repository.remove(train)
-                station_objects = [Station(name) for name in data['stations']]
-                self.train_repository.add(
-                    code=data['code'],
-                    stations=station_objects,
-                    start_time=data['start_time'],
-                    frequency=data['frequency']
-                )
-                self.expanded_rows.clear()  # Clear expanded state on refresh
-                self.refresh_table()
+        dialog = TrainEditorDialog(self, train)
+        res = dialog.exec()
+        if res == QDialog.DialogCode.Rejected:
+            return
+        data = dialog.get_data()
+        return
+    
+        #TODO
+        data = dialog.get_data()
+        if data['stations']:
+            # Remove old train and add updated one
+            self.train_repository.remove(train)
+            station_objects = [Station(name) for name in data['stations']]
+            self.train_repository.add(
+                code=data['code'],
+                stations=station_objects,
+                start_time=data['start_time'],
+                frequency=data['frequency']
+            )
+            self.expanded_rows.clear()  # Clear expanded state on refresh
+            self.refresh_table()
 
     def delete_train(self, train_idx):
         train = self.train_repository.get_by_index(train_idx)
