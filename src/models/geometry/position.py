@@ -97,3 +97,6 @@ class Position:
     def distance_to(self, other: 'Position') -> float:
         """Calculate the Euclidean distance to another position."""
         return hypot(self.x - other.x, self.y - other.y)
+
+    def json(self) -> dict:
+        return {'x': self.x, 'y': self.y}

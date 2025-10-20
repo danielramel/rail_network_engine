@@ -22,11 +22,12 @@ class ModeSelectorButtons(BaseUIComponent):
         
         
     def handle_event(self, event: pygame.event) -> bool:
-        if event.type == pygame.KEYDOWN:
-            if event.key in MODE_SELECTION:
-                self.state.mode = MODE_SELECTION[event.key]
-                return True
-            return False
+        
+        # if event.type == pygame.KEYDOWN:
+        #     if event.key in MODE_SELECTION:
+        #         self.state.mode = MODE_SELECTION[event.key]
+        #         return True
+        #     return False
 
         for mode, btn in self.buttons:
             if btn.collidepoint(*event.pos_):

@@ -7,6 +7,7 @@ from models.app_state import AppState, ViewMode
 from models.construction import ConstructionState
 from models.train import TrainRepository
 from ui.components.base import BaseUIComponent
+from ui.construction.save_button import SaveButton
 from ui.mode_buttons import ModeSelectorButtons
 from ui.simulation.time_control_buttons import TimeControlButtons
 from ui.simulation.time_display import TimeDisplay
@@ -20,7 +21,7 @@ from models.time import TimeControlState
 
 class AppController:
     construction_element_types: dict[ViewMode, tuple[type]] = {
-        ViewMode.CONSTRUCTION: (ConstructionButtons, ConstructionPanelStrategy, ConstructionManager),
+        ViewMode.CONSTRUCTION: (ConstructionButtons, SaveButton, ConstructionPanelStrategy, ConstructionManager),
         ViewMode.SIMULATION: (TimeControlButtons, TimeDisplay, SimulationManager),
     }
     
@@ -35,7 +36,7 @@ class AppController:
         
         self.elements: list[BaseUIComponent] = [
             ModeSelectorButtons(screen, self.app_state),
-            TimeTableButton(screen, self.train_repository),
+            TimeTableButton(screen, self.train_repository, self.map),
             ZoomButton(screen, self.camera),
         ]
         
@@ -47,6 +48,7 @@ class AppController:
             self.construction_state.reset()
             self.elements.extend([
                 ConstructionButtons(self.screen, self.construction_state),
+                SaveButton(self.screen, self.map),
                 ConstructionPanelStrategy(self.screen, self.construction_state),
                 ConstructionManager(self.map, self.construction_state, self.camera, self.screen)
             ])

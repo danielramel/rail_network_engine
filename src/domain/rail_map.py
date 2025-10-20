@@ -1,3 +1,4 @@
+import json
 import networkx as nx
 from models.geometry import Position, Pose, Edge
 from models.station import Station
@@ -167,3 +168,49 @@ class RailMap:
 
     def get_platforms_middle_points(self, station: Station) -> set[Position]:
         return self._platform_service.platforms_middle_points(station)
+    
+    def json(self) -> str:
+        """Serialize the graph to JSON string."""
+        data = nx.node_link_data(self._graph)
+        
+        return json.dumps(data, ensure_ascii=False, indent=2, cls=PositionEncoder)
+    
+    @classmethod
+    def from_json(cls, json_string: str) -> 'RailMap':
+        """Deserialize a RailMap from JSON string."""
+        data = json.loads(json_string)
+        
+        # Create a new RailMap instance
+        rail_map = cls()
+        
+        # Convert dict nodes back to Position objects
+        def dict_to_position(obj):
+            """Convert {'x': ..., 'y': ...} dict to Position object."""
+            if isinstance(obj, dict) and 'x' in obj and 'y' in obj:
+                return Position(obj['x'], obj['y'])
+            return obj
+        
+        # Process nodes: convert 'id' field from dict to Position
+        for node_data in data.get('nodes', []):
+            node_data['id'] = dict_to_position(node_data['id'])
+        
+        # Process links: convert 'source' and 'target' from dict to Position
+        for link_data in data.get('links', []):
+            link_data['source'] = dict_to_position(link_data['source'])
+            link_data['target'] = dict_to_position(link_data['target'])
+        
+        # Reconstruct the graph from the modified data
+        rail_map._graph = nx.node_link_graph(data)
+        
+        # TODO: Rebuild services and repositories from graph data
+        # You may need to iterate through nodes/edges to restore signals, platforms, stations
+        
+        return rail_map
+    
+    
+class PositionEncoder(json.JSONEncoder):
+    """Custom JSON encoder for Position objects."""
+    def default(self, obj):
+        if isinstance(obj, Position):
+            return obj.json()
+        return super().default(obj)
