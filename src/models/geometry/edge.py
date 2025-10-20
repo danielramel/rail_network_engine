@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from .position import Position
+from models.geometry.position import Position
+
 
 @dataclass(frozen=True, order=True)
 class Edge:
@@ -24,3 +25,10 @@ class Edge:
     
     def midpoint(self) -> Position:
         return Position((self.a.x + self.b.x) / 2, (self.a.y + self.b.y) / 2)
+    
+    def to_dict(self) -> dict:
+        return {
+            "a": self.a.to_dict(),
+            "b": self.b.to_dict(),
+            "length": self.length
+        }

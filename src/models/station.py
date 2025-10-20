@@ -1,14 +1,27 @@
 from models.geometry import Position
 from models.geometry.edge import Edge
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 
 @dataclass
 class Station:
     name: str
     position: Position
     platforms: set[frozenset[Edge]] = field(default_factory=set)
-    
-    
+
+    def to_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "position": self.position.to_dict(),
+            "platforms": [edge.to_dict() for platform in self.platforms for edge in platform]
+        }
+        
+    def to_dict_simple(self) -> dict:
+        return {
+            "name": self.name,
+            "position": self.position.to_dict(),
+        }
+
+
 class StationRepository:
     """In-memory repository for Station objects, ensuring uniqueness by position."""
     def __init__(self):
@@ -38,3 +51,6 @@ class StationRepository:
     
     def remove_platform_from_station(self, station: Station, edges: frozenset[Edge]) -> None:
         self._by_pos[station.position].platforms.remove(edges)
+        
+    def to_dict(self) -> dict:
+        return [station.to_dict() for station in self._by_pos.values()]

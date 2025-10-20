@@ -3,9 +3,7 @@ from domain.rail_map import RailMap
 from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
 from config.colors import BLACK, WHITE, YELLOW, RED
-from config.paths import CONSTRUCTION_ICON_PATHS
 from config.settings import BUTTON_SIZE
-from config.keyboard_shortcuts import CONSTRUCTION_MODE_SELECTION
 from ui.components.rectangle import RectangleUIComponent
 
 
@@ -46,7 +44,8 @@ class SaveButton(RectangleUIComponent):
         return self._rect.collidepoint(screen_pos.x, screen_pos.y)
     
     def save_game(self):
-        data = self.map.json()            
+        data = self.map.to_dict()
+        
         import tkinter as tk
         from tkinter import filedialog
         import json
@@ -60,8 +59,9 @@ class SaveButton(RectangleUIComponent):
             )
             if not filename:
                 return None
-            with open(filename, "w", encoding="utf-8") as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
-            return filename
+
+            with open(filename, 'w') as f:
+                json.dump(data, f, indent=4)
+
         finally:
             root.destroy()

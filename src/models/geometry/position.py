@@ -1,19 +1,23 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from config.settings import BULLDOZE_SENSITIVITY, GRID_SIZE, STATION_RECT_SIZE
 from math import hypot
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from models.geometry.edge import Edge
 
 
 @dataclass(frozen=True, order=True)
 class Position:
-    x: float
-    y: float
+    x: int
+    y: int
    
     def __iter__(self):
         return iter((self.x, self.y))
     
     def direction_to(self, other: 'Position') -> tuple[int, int]:
         """Get direction from this point to another point."""
-        def signum(x: float) -> int:
+        def signum(x: int) -> int:
             return (x > 0) - (x < 0)
         
         if self == other:
@@ -56,7 +60,7 @@ class Position:
             abs(center.x - self.x) * 2 < w + 1 and
             abs(center.y - self.y) * 2 < h + 1
         )
-    def closest_point_to_edge(self, edge: tuple['Position', 'Position']) -> 'Position':
+    def closest_point_to_edge(self, edge: 'Edge') -> 'Position':
         """Get the closest point on the line segment defined by edge to this point."""
         a, b = edge
         # Line vector
@@ -69,8 +73,8 @@ class Position:
         # Closest point on the segment
         cx, cy = a.x + t * dx, a.y + t * dy
         return Position(cx, cy)
-    
-    def intersects_line(self, edge: frozenset['Position', 'Position'], camera_scale: float) -> tuple[bool, float]:
+
+    def intersects_line(self, edge: 'Edge', camera_scale: float) -> tuple[bool, float]:
         """
         Check if this point is within 'BULLDOZE_SENSITIVITY' pixels of line segment ab.
         Returns (is_within_sensitivity, distance).
@@ -79,8 +83,8 @@ class Position:
         dist = self.distance_to(closest_point)
         
         return dist <= BULLDOZE_SENSITIVITY / camera_scale, dist
-    
-    def closest_edge(self, edges: list[frozenset['Position', 'Position']], camera_scale: float) -> frozenset['Position', 'Position'] | None:
+
+    def closest_edge(self, edges: list['Edge'], camera_scale: float) -> 'Edge | None':
         """Get the closest edge from a list of edges to this point."""
         closest_edge = None
         closest_dist = float('inf')
@@ -98,5 +102,9 @@ class Position:
         """Calculate the Euclidean distance to another position."""
         return hypot(self.x - other.x, self.y - other.y)
 
-    def json(self) -> dict:
-        return {'x': self.x, 'y': self.y}
+    def to_dict(self) -> dict:
+        return asdict(self)
+    
+    @classmethod
+    def from_dict(cls, data: dict) -> 'Position':
+        return cls(**data)
