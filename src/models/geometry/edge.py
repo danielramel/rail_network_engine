@@ -32,3 +32,9 @@ class Edge:
             "b": self.b.to_dict(),
             "length": self.length
         }
+        
+    @classmethod
+    def from_dict(cls, data: dict) -> 'Edge':
+        a = Position.from_dict(data["a"])
+        b = Position.from_dict(data["b"])
+        return cls(a, b)

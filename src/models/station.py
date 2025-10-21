@@ -12,7 +12,10 @@ class Station:
         return {
             "name": self.name,
             "position": self.position.to_dict(),
-            "platforms": [edge.to_dict() for platform in self.platforms for edge in platform]
+            "platforms": [
+            [edge.to_dict() for edge in platform]
+            for platform in self.platforms
+            ]
         }
         
     def to_dict_simple(self) -> dict:
@@ -54,3 +57,17 @@ class StationRepository:
         
     def to_dict(self) -> dict:
         return [station.to_dict() for station in self._by_pos.values()]
+
+    @classmethod
+    def from_dict(cls, stations: list[dict]) -> None:
+        instance = cls()
+        for station_data in stations:
+            pos = Position.from_dict(station_data["position"])
+            station = Station(
+                name=station_data["name"],
+                position=pos,
+                platforms={frozenset(Edge.from_dict(edge_data) for edge_data in platform_data)
+                           for platform_data in station_data["platforms"]}
+            )
+            instance._by_pos[pos] = station
+        return instance

@@ -169,6 +169,7 @@ class RailMap:
     def get_platforms_middle_points(self, station: Station) -> set[Position]:
         return self._platform_service.platforms_middle_points(station)
     
+    # -- serialization ---
     def to_dict(self) -> dict:
         graph_data = nx.node_link_data(self._graph)
         
@@ -188,3 +189,27 @@ class RailMap:
             'graph': graph_data,
             'stations': station_data
         }
+        
+
+    def from_dict(self, data: dict) -> None:
+        graph_data = data['graph']
+        self._station_repository = StationRepository.from_dict(data['stations'])
+
+        # convert dicts in node attributes back to Position objects
+        for node in graph_data['nodes']:
+            node['id'] = Position.from_dict(node['id'])
+            if 'signal' in node:
+                node['signal'] = tuple(node['signal'])
+            
+        for link in graph_data['links']:
+            for key in ('source', 'target'):
+                link[key] = Position.from_dict(link[key])
+            if 'station' in link:
+                pos = Position.from_dict(link['station']['position'])
+                link['station'] = self.get_station_at(pos)
+
+        temp_graph = nx.node_link_graph(graph_data)
+        
+        self._graph.clear()
+        self._graph.add_nodes_from(temp_graph.nodes(data=True))
+        self._graph.add_edges_from(temp_graph.edges(data=True))
