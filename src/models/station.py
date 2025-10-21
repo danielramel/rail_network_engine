@@ -45,6 +45,12 @@ class StationRepository:
 
     def get(self, pos: Position) -> Station:
         return self._by_pos[pos]
+    
+    def get_by_name(self, name: str) -> Station | None:
+        for station in self._by_pos.values():
+            if station.name == name:
+                return station
+        raise KeyError(f"Station with name {name} not found.")
 
     def all(self) -> dict[Position, Station]:
         return self._by_pos

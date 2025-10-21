@@ -1,4 +1,3 @@
-import json
 import networkx as nx
 from models.geometry import Position, Pose, Edge
 from models.station import Station
@@ -133,6 +132,9 @@ class RailMap:
 
     def get_station_at(self, pos: Position) -> Station:
         return self._station_repository.get(pos)
+    
+    def get_station_by_name(self, name: str) -> Station | None:
+        return self._station_repository.get_by_name(name)
     
     def is_within_station_rect(self, pos: Position) -> bool:
         return self._station_repository.is_within_station_rect(pos)

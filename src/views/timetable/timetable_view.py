@@ -57,6 +57,8 @@ class TimetableWindow(QMainWindow):
         layout.addWidget(self.table)
         
         central_widget.setLayout(layout)
+        
+        self.add_train()
     
     def refresh_table(self):
         trains = self.train_repository.all()
@@ -141,50 +143,43 @@ class TimetableWindow(QMainWindow):
         
 
     def add_train(self):
-        dialog = TrainEditorDialog(self)
+        dialog = TrainEditorDialog(self, [station.name for station in self._map.stations])
         res = dialog.exec()
         if res == QDialog.DialogCode.Rejected:
             return
         
         data = dialog.get_data()
-        return
-        #TODO
-        if data['stations']:
-            # Convert station names to Station objects
-            station_objects = [Station(name) for name in data['stations']]
-            self.train_repository.add(
-                code=data['code'],
-                stations=station_objects,
-                start_time=data['start_time'],
-                frequency=data['frequency']
-            )
-            # self.expanded_rows.clear()  # Clear expanded state on refresh
-            self.refresh_table()
+
+        stations = [self._map.get_station_by_name(name) for name in data['stations']]
+        self.train_repository.add(
+            code=data['code'],
+            stations=stations,
+            start_time=data['start_time'],
+            frequency=data['frequency']
+        )
+        # self.expanded_rows.clear()  # Clear expanded state on refresh
+        self.refresh_table()
 
     def edit_train(self, train_idx):
         train = self.train_repository.get_by_index(train_idx)
-        
-        dialog = TrainEditorDialog(self, train)
+
+        dialog = TrainEditorDialog(self, [station.name for station in self._map.stations], train)
         res = dialog.exec()
         if res == QDialog.DialogCode.Rejected:
             return
         data = dialog.get_data()
-        return
     
-        #TODO
-        data = dialog.get_data()
-        if data['stations']:
-            # Remove old train and add updated one
-            self.train_repository.remove(train)
-            station_objects = [Station(name) for name in data['stations']]
-            self.train_repository.add(
-                code=data['code'],
-                stations=station_objects,
-                start_time=data['start_time'],
-                frequency=data['frequency']
-            )
-            self.expanded_rows.clear()  # Clear expanded state on refresh
-            self.refresh_table()
+        self.train_repository.remove(train)
+        stations = [self._map.get_station_by_name(name) for name in data['stations']]
+
+        self.train_repository.add(
+            code=data['code'],
+            stations=stations,
+            start_time=data['start_time'],
+            frequency=data['frequency']
+        )
+        # self.expanded_rows.clear()  # Clear expanded state on refresh
+        self.refresh_table()
 
     def delete_train(self, train_idx):
         train = self.train_repository.get_by_index(train_idx)
