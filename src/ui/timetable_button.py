@@ -11,8 +11,7 @@ from views.timetable.timetable_view import TimetableWindow
 
 class TimeTableButton(RectangleUIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL]
-    def __init__(self, surface: pygame.Surface, train_repository, map: RailMap):
-        self.train_repository = train_repository
+    def __init__(self, surface: pygame.Surface, map: RailMap):
         self._map = map
 
         self.icon = IconLoader().get_icon(TIMETABLE_ICON_PATH, BUTTON_SIZE)
@@ -24,7 +23,7 @@ class TimeTableButton(RectangleUIComponent):
         if self._rect.collidepoint(*event.pos_):
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 if self.timetable_window is None:
-                    self.timetable_window = TimetableWindow(self.train_repository, self._map)
+                    self.timetable_window = TimetableWindow(self._map)
                     # Connect to the custom signal instead
                     self.timetable_window.window_closed.connect(self._on_timetable_window_closed)
                     self.timetable_window.show()

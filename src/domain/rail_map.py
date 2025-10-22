@@ -1,6 +1,7 @@
 import networkx as nx
 from models.geometry import Position, Pose, Edge
 from models.station import Station
+from models.train import TrainRepository
 from services.rail.graph_query_service import GraphQueryService
 from services.rail.signal_service import SignalService
 from services.rail.path_finder import Pathfinder
@@ -15,6 +16,7 @@ class RailMap:
         self._platform_service = PlatformService(self._graph, self)
         self._pathfinder = Pathfinder(self)
         self._station_repository = StationRepository()
+        self._train_repository = TrainRepository()
     
     @property
     def nodes(self) -> set[Position]:
@@ -77,7 +79,7 @@ class RailMap:
         for p in points:
             self._graph.add_node(p)
         for a, b in zip(points[:-1], points[1:]):
-            self._graph.add_edge(a, b, weight=round(1/speed, 3), speed=speed)
+            self._graph.add_edge(a, b, speed=speed)
             
             
     # --- pathfinding ---
@@ -106,9 +108,6 @@ class RailMap:
 
     def remove_signal_at(self, pos: Position) -> None:
         self._signal_service.remove(pos)
-        
-    def get_signal_at(self, pos: Position) -> Pose | None:
-        return Pose(pos, self._graph.nodes[pos]['signal'])
 
     # --- stations ---
     @property
@@ -215,3 +214,9 @@ class RailMap:
         self._graph.clear()
         self._graph.add_nodes_from(temp_graph.nodes(data=True))
         self._graph.add_edges_from(temp_graph.edges(data=True))
+        
+        
+    # --train repository ---
+    @property
+    def train_repository(self) -> TrainRepository:
+        return self._train_repository

@@ -4,8 +4,8 @@ from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout,
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor
 from config.colors import BLACK, LIGHTBLUE, RED, YELLOW
-from models.station import Station, StationRepository
-from models.train import TrainRepository
+from models.station import Station
+from models.train import Train, TrainRepository
 from views.timetable.train_editor_dialog import TrainEditorDialog
 from views.timetable.timetable_stylesheet import TIMETABLE_STYLESHEET
 from PyQt6.QtCore import pyqtSignal
@@ -13,9 +13,8 @@ from domain.rail_map import RailMap
 
 class TimetableWindow(QMainWindow):
     window_closed = pyqtSignal()
-    def __init__(self, train_repository: TrainRepository, map: RailMap):
+    def __init__(self, map: RailMap):
         super().__init__()
-        self.train_repository = train_repository
         self._map = map
         self.setWindowTitle("Train Timetable")
         self.setMinimumSize(1000, 600)
@@ -37,10 +36,11 @@ class TimetableWindow(QMainWindow):
         # Table
         self.table = QTableWidget()
         self.table.verticalHeader().setVisible(False)
-        self.table.setColumnCount(6)
-        self.table.setHorizontalHeaderLabels(["Code", "Route", "Start", "Frequency", "Edit", "Delete"])
+        self.table.setColumnCount(9)
+        self.table.setHorizontalHeaderLabels(["Code", "Station", "Arrival", "Departure", "First Train", "Last Train", "Frequency", "Edit", "Delete"])
         self.table.horizontalHeader().setStretchLastSection(False)
-        column_widths = [100, 400, 100, 120]
+        # Station, Arrival, Departure together = 390 (was Route column width)
+        column_widths = [80, 200, 95, 95, 90, 90, 100, 60, 60]
         for i, width in enumerate(column_widths):
             self.table.setColumnWidth(i, width)
         
@@ -57,27 +57,28 @@ class TimetableWindow(QMainWindow):
         layout.addWidget(self.table)
         
         central_widget.setLayout(layout)
-        
-        self.add_train()
-    
+            
     def refresh_table(self):
-        trains = self.train_repository.all()
+        trains = self._map.train_repository.all()
         total_rows = 0
         for train_idx, train in enumerate(trains):
             total_rows += 1
             if train_idx in self.expanded_rows:
-                total_rows += len(train.stations)
+                total_rows += len(train.schedule)
         
         self.table.setRowCount(total_rows)
         self.table.clearSpans()
         
         row_idx = 0
         for train_idx, train in enumerate(trains):
-            # Prepare items for columns 0-3
+            # Prepare items for columns 0-6
             items = [
                 QTableWidgetItem(train.code),
-                QTableWidgetItem(self._format_route(train.stations)),
-                QTableWidgetItem(self._format_time(train.start_time)),
+                QTableWidgetItem(self._format_route(train.schedule, train_idx in self.expanded_rows)),
+                QTableWidgetItem(""),  # Arrival - empty for main row
+                QTableWidgetItem(""),  # Departure - empty for main row
+                QTableWidgetItem(self._format_time(train.first_train)),
+                QTableWidgetItem(self._format_time(train.last_train)),
                 QTableWidgetItem(f"{train.frequency} min"),
             ]
 
@@ -91,35 +92,54 @@ class TimetableWindow(QMainWindow):
             items[1].setTextAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
             items[1].setToolTip("Click to expand/collapse stations")
 
-            # Start time and frequency alignment
+            # Time and frequency alignment
             items[2].setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             items[3].setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            items[4].setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            items[5].setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            items[6].setTextAlignment(Qt.AlignmentFlag.AlignCenter)
 
             # Set items in table
             for col, item in enumerate(items):
                 self.table.setItem(row_idx, col, item)
 
+            self.table.setSpan(row_idx, 1, 1, 3)
+
             # Edit button
             edit_btn = QPushButton("Edit")
             edit_btn.clicked.connect(lambda checked, idx=train_idx: self.edit_train(idx))
-            self.table.setCellWidget(row_idx, 4, edit_btn)
+            self.table.setCellWidget(row_idx, 7, edit_btn)
 
             # Delete button
             delete_btn = QPushButton("Delete")
             delete_btn.setStyleSheet("background-color: RED;")
             delete_btn.clicked.connect(lambda checked, idx=train_idx: self.delete_train(idx))
-            self.table.setCellWidget(row_idx, 5, delete_btn)
+            self.table.setCellWidget(row_idx, 8, delete_btn)
 
 
             # If expanded, set spans and add station rows
             if train_idx in self.expanded_rows:
-                span = len(train.stations) + 1
-                for col in (0, 2, 3, 4, 5):
+                span = len(train.schedule) + 1
+                for col in (0, 4, 5, 6, 7, 8):
                     self.table.setSpan(row_idx, col, span, 1)
-                for i, station in enumerate(train.stations, 1):
-                    station_item = QTableWidgetItem(f"{station.name}")
-                    station_item.setTextAlignment(Qt.AlignmentFlag.AlignVCenter)
+                for i, station in enumerate(train.schedule, 1):
+                    arrival_time = self._format_time(station['arrival_time'])
+                    departure_time = self._format_time(station['departure_time'])
+                    
+                    # Station name
+                    station_item = QTableWidgetItem(station['station'].name)
+                    station_item.setTextAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
                     self.table.setItem(row_idx + i, 1, station_item)
+                    
+                    # Arrival time
+                    arrival_item = QTableWidgetItem(arrival_time)
+                    arrival_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+                    self.table.setItem(row_idx + i, 2, arrival_item)
+                    
+                    # Departure time
+                    departure_item = QTableWidgetItem(departure_time)
+                    departure_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+                    self.table.setItem(row_idx + i, 3, departure_item)
                 row_idx += span
             else:
                 row_idx += 1
@@ -143,47 +163,44 @@ class TimetableWindow(QMainWindow):
         
 
     def add_train(self):
-        dialog = TrainEditorDialog(self, [station.name for station in self._map.stations])
+        dialog = TrainEditorDialog(self, self._map)
         res = dialog.exec()
         if res == QDialog.DialogCode.Rejected:
             return
         
         data = dialog.get_data()
 
-        stations = [self._map.get_station_by_name(name) for name in data['stations']]
-        self.train_repository.add(
-            code=data['code'],
-            stations=stations,
-            start_time=data['start_time'],
-            frequency=data['frequency']
-        )
+        train = Train(code=data['code'], schedule=data['schedule'], first_train=data['first_train'], last_train=data['last_train'], frequency=data['frequency'])
+        self._map.train_repository.add(train)
         # self.expanded_rows.clear()  # Clear expanded state on refresh
         self.refresh_table()
 
     def edit_train(self, train_idx):
-        train = self.train_repository.get_by_index(train_idx)
+        train = self._map.train_repository.get(train_idx)
 
-        dialog = TrainEditorDialog(self, [station.name for station in self._map.stations], train)
+        dialog = TrainEditorDialog(self, self._map, train)
         res = dialog.exec()
         if res == QDialog.DialogCode.Rejected:
             return
         data = dialog.get_data()
     
-        self.train_repository.remove(train)
-        stations = [self._map.get_station_by_name(name) for name in data['stations']]
-
-        self.train_repository.add(
+        # Remove old train and add updated one
+        self._map.train_repository.remove(train)
+        
+        updated_train = Train(
             code=data['code'],
-            stations=stations,
-            start_time=data['start_time'],
+            schedule=data['schedule'],
+            first_train=data['first_train'],
+            last_train=data['last_train'],
             frequency=data['frequency']
         )
+        self._map.train_repository.add(updated_train)
         # self.expanded_rows.clear()  # Clear expanded state on refresh
         self.refresh_table()
 
     def delete_train(self, train_idx):
-        train = self.train_repository.get_by_index(train_idx)
-        self.train_repository.remove(train)
+        train = self._map.train_repository.get(train_idx)
+        self._map.train_repository.remove(train)
         self.expanded_rows.discard(train_idx)  # Remove from expanded if it was expanded
         self.refresh_table()
 
@@ -201,15 +218,31 @@ class TimetableWindow(QMainWindow):
         
         return QColor(*RED)
 
-    def _format_route(self, stations: list[Station]) -> str:
-        if not stations:
+    def _format_route(self, schedule: list[dict[str, Station | int]], is_expanded: bool = False) -> str:
+        if not len(schedule):
             return "No stations"
-        elif len(stations) == 1:
-            return stations[0].name
-        elif len(stations) == 2:
-            return f"{stations[0].name} → {stations[1].name}"
+        elif len(schedule) == 1:
+            station_name = schedule[0]['station'].name
+            if is_expanded:
+                return station_name
+            dep_time = self._format_time(schedule[0]['departure_time'])
+            return f"{station_name} (dep: {dep_time})"
+        elif len(schedule) == 2:
+            first_station = schedule[0]['station'].name
+            last_station = schedule[1]['station'].name
+            if is_expanded:
+                return f"{first_station} → {last_station}"
+            first_dep = self._format_time(schedule[0]['departure_time'])
+            last_arr = self._format_time(schedule[1]['arrival_time'])
+            return f"{first_station} ({first_dep}) → {last_station} ({last_arr})"
         else:
-            return f"{stations[0].name} → ... → {stations[-1].name}"
+            first_station = schedule[0]['station'].name
+            last_station = schedule[-1]['station'].name
+            if is_expanded:
+                return f"{first_station} → ... → {last_station}"
+            first_dep = self._format_time(schedule[0]['departure_time'])
+            last_arr = self._format_time(schedule[-1]['arrival_time'])
+            return f"{first_station} ({first_dep}) → ... → {last_station} ({last_arr})"
 
     def closeEvent(self, event):
         """Override closeEvent to emit signal when window is closed"""

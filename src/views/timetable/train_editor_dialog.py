@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import (QDialog, QFormLayout, QComboBox,
                               QVBoxLayout, QHBoxLayout, QPushButton, QWidget,
                               QTableWidget, QTableWidgetItem, QHeaderView)
 from PyQt6.QtCore import Qt, QTime
+from domain.rail_map import RailMap
 from models.train import Train
 from PyQt6.QtWidgets import QLineEdit
 from views.timetable.train_editor_stylesheet import (
@@ -12,10 +13,10 @@ from views.timetable.train_editor_stylesheet import (
 from PyQt6.QtGui import QBrush
 
 class TrainEditorDialog(QDialog):
-    def __init__(self, parent, stations: list[str], train_to_edit: Train = None):
+    def __init__(self, parent, map: RailMap, train_to_edit: Train = None):
         self.train_to_edit = train_to_edit
-        self.available_stations = stations
         self.selected_row = None  # Custom selection tracking
+        self._map = map
         super().__init__(parent)
         self.setWindowTitle("Add Train" if train_to_edit is None else "Edit Train")
         self.setMinimumWidth(750)
@@ -34,7 +35,7 @@ class TrainEditorDialog(QDialog):
         
         self.last_train_time_edit = QTimeEdit()
         self.last_train_time_edit.setDisplayFormat("HH:mm")
-        self.last_train_time_edit.setTime(QTime(22, 0))
+        self.last_train_time_edit.setTime(QTime(6, 0))
         layout.addRow("Last Train:", self.last_train_time_edit)
         
         self.freq_combo = QComboBox()
@@ -98,7 +99,7 @@ class TrainEditorDialog(QDialog):
         self.add_row_button = QPushButton("＋")
         self.add_row_button.setStyleSheet(ADD_BUTTON_STYLE)
         self.add_row_button.setToolTip("Add station")
-        self.add_row_button.clicked.connect(self.add_station_row)
+        self.add_row_button.clicked.connect(self.add_empty_station_row)
         control_layout.addWidget(self.add_row_button)
                 
         # Red Delete button
@@ -114,6 +115,8 @@ class TrainEditorDialog(QDialog):
         stations_widget.setLayout(stations_layout)
         layout.addRow(stations_widget)
         
+        self.setLayout(layout)
+        
         # Buttons
         buttons = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | 
@@ -121,30 +124,44 @@ class TrainEditorDialog(QDialog):
         )
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
+        
         layout.addRow(buttons)
         
         # Load existing train data if editing
         if train_to_edit:
             self.code_edit.setText(train_to_edit.code)
-            self.first_train_time_edit.setTime(QTime(train_to_edit.start_time // 60, train_to_edit.start_time % 60))
+            self.first_train_time_edit.setTime(QTime.fromMSecsSinceStartOfDay(train_to_edit.first_train * 60 * 1000))
             self.freq_combo.setCurrentText(f"{train_to_edit.frequency}")
             
-            # Set end time if available
-            if hasattr(train_to_edit, 'end_time'):
-                self.last_train_time_edit.setTime(QTime(train_to_edit.end_time // 60, train_to_edit.end_time % 60))
-            
-            # Add stations with their times
-            for station in train_to_edit.stations:
-                self.add_station_row(station.name, station.arrival_time, station.departure_time)
+            # Set last train time
+            self.last_train_time_edit.setTime(QTime.fromMSecsSinceStartOfDay(train_to_edit.last_train * 60 * 1000))
+
+            self.add_station_rows_from_schedule(train_to_edit.schedule)
         else:
-            # Add one empty row by default
-            self.add_station_row()
+            # Add two empty rows by default for new trains
+            self.add_empty_station_row()
+            # self.add_station_row()
+            
+    def add_station_rows_from_schedule(self, schedule: list[dict]):
+        """Populate the stations table from an existing schedule"""
+        for _ in range(len(schedule)):
+            self.add_empty_station_row()
+            
+        for row, entry in enumerate(schedule):
+            station_combo = self.stations_table.cellWidget(row, 1)
+            station_combo.setCurrentText(entry['station'].name)
+            
+            arrival_edit = self.stations_table.cellWidget(row, 2)
+            if row != 0:
+                arrival_edit.setTime(QTime.fromMSecsSinceStartOfDay(entry['arrival_time'] * 60 * 1000))
+            if row != len(schedule) - 1:
+                departure_edit = self.stations_table.cellWidget(row, 3)
+                departure_edit.setTime(QTime.fromMSecsSinceStartOfDay(entry['departure_time'] * 60 * 1000))
     
-        self.setLayout(layout)
     
-    def add_station_row(self, station_name: str = None, arrival_minutes: int = None, departure_minutes: int = None):
+    def add_empty_station_row(self, station_info : dict = None):
         """Add a new row to the stations table"""
-        row = self.stations_table.rowCount()
+        row = self.stations_table.rowCount()        
         self.stations_table.insertRow(row)
         
         # Row number indicator (column 0)
@@ -155,29 +172,28 @@ class TrainEditorDialog(QDialog):
         
         # Station name combobox (column 1)
         station_combo = QComboBox()
-        station_combo.addItems(self.available_stations)
-        if station_name:
-            station_combo.setCurrentText(station_name)
+        station_combo.addItems(station.name for station in self._map.stations)
+        if station_info:
+            station_combo.setCurrentText(station_info['station'].name)
         self.stations_table.setCellWidget(row, 1, station_combo)
         
-        # Arrival time (column 2)
-        arrival_time_edit = QTimeEdit()
-        arrival_time_edit.setDisplayFormat("HH:mm")
-        if arrival_minutes is not None:
-            arrival_time_edit.setTime(QTime(arrival_minutes // 60, arrival_minutes % 60))
-        else:
-            arrival_time_edit.setTime(QTime(6, 0))
-        self.stations_table.setCellWidget(row, 2, arrival_time_edit)
+        # Arrival time (column 2) - Empty for first station
+        last_arrival_time = self.stations_table.cellWidget(row - 1, 2).time() if row > 0 else QTime(6, 00)
         
-        # Departure time (column 3)
         departure_time_edit = QTimeEdit()
         departure_time_edit.setDisplayFormat("HH:mm")
-        if departure_minutes is not None:
-            departure_time_edit.setTime(QTime(departure_minutes // 60, departure_minutes % 60))
-        else:
-            departure_time_edit.setTime(QTime(6, 5))
+        departure_time = last_arrival_time.addSecs(6 * 60)
+        departure_time_edit.setTime(departure_time)
+        self.stations_table.setCellWidget(row, 2, departure_time_edit)
+        
+        departure_time_edit = QTimeEdit()
+        departure_time_edit.setDisplayFormat("HH:mm")
+        departure_time = last_arrival_time.addSecs(7 * 60)
+        departure_time_edit.setTime(departure_time)
         self.stations_table.setCellWidget(row, 3, departure_time_edit)
         
+        self.update_first_last_station_cells()
+
     def on_cell_clicked(self, row: int, column: int):
         if column != 0:
             return
@@ -240,6 +256,8 @@ class TrainEditorDialog(QDialog):
         # Update custom selection
         self.select_row(row2)
         
+        self.update_first_last_station_cells()
+        
     
     def remove_selected_station(self):
         """Remove the selected station row from the table"""
@@ -250,37 +268,89 @@ class TrainEditorDialog(QDialog):
             # Renumber all rows
             for row in range(self.stations_table.rowCount()):
                 self.stations_table.item(row, 0).setText(str(row + 1))
+            
+            # Update first/last station cells after removal
+            self.update_first_last_station_cells()
     
     def get_data(self):
         """Extract all train data from the dialog"""
-        stations_data = []
-        for row in range(self.stations_table.rowCount()):
-            station_combo = self.stations_table.cellWidget(row, 1)  # Column 1 for station
-            arrival_time_widget = self.stations_table.cellWidget(row, 2)  # Column 2 for arrival
-            departure_time_widget = self.stations_table.cellWidget(row, 3)  # Column 3 for departure
+        schedule = []
+        row_count = self.stations_table.rowCount()
+        
+        for row in range(row_count):
+            station_name = self.stations_table.cellWidget(row, 1).currentText()
+            arrival_time_widget = self.stations_table.cellWidget(row, 2)
+            departure_time_widget = self.stations_table.cellWidget(row, 3)
             
-            station_name = station_combo.currentText()
-            arrival_time = arrival_time_widget.time()
-            departure_time = departure_time_widget.time()
+            # First station has no arrival time
+            if row == 0:
+                arrival_minutes = None
+            else:
+                arrival_time = arrival_time_widget.time()
+                arrival_minutes = arrival_time.hour() * 60 + arrival_time.minute()
             
-            stations_data.append({
-                'name': station_name,
-                'arrival_time': arrival_time.hour() * 60 + arrival_time.minute(),
-                'departure_time': departure_time.hour() * 60 + departure_time.minute()
+            # Last station has no departure time
+            if row == row_count - 1:
+                departure_minutes = None
+            else:
+                departure_time = departure_time_widget.time()
+                departure_minutes = departure_time.hour() * 60 + departure_time.minute()
+
+            schedule.append({
+                'station': self._map.get_station_by_name(station_name),
+                'arrival_time': arrival_minutes,
+                'departure_time': departure_minutes
             })
         
         time = self.first_train_time_edit.time()
-        start_time_minutes = time.hour() * 60 + time.minute()
+        first_train_minutes = time.hour() * 60 + time.minute()
         
-        end_time = self.last_train_time_edit.time()
-        end_time_minutes = end_time.hour() * 60 + end_time.minute()
+        last_train = self.last_train_time_edit.time()
+        last_train_minutes = last_train.hour() * 60 + last_train.minute()
         
         frequency = int(self.freq_combo.currentText())
         
         return {
             'code': self.code_edit.text(),
-            'stations': stations_data,
-            'start_time': start_time_minutes,
-            'end_time': end_time_minutes,
+            'schedule': schedule,
+            'first_train': first_train_minutes,
+            'last_train': last_train_minutes,
             'frequency': frequency
         }
+        
+        
+    def update_first_last_station_cells(self):
+        """Update cells so first station has no arrival time and last station has no departure time"""
+        
+        row_count = self.stations_table.rowCount()
+        if row_count == 0:
+            return
+        
+        empty_item = QTableWidgetItem("")
+        empty_item.setFlags(empty_item.flags() & ~Qt.ItemFlag.ItemIsEnabled)
+        for row in range(row_count):
+            if row == 0:
+                self.stations_table.removeCellWidget(row, 2)
+                self.stations_table.setItem(row, 2, empty_item)
+            else:                
+                arrival_widget = self.stations_table.cellWidget(row, 2)
+                # if it's not already a QTimeEdit, replace it
+                if isinstance(arrival_widget, QTableWidgetItem):
+                    self.stations_table.removeItemWidget(arrival_widget)
+                    arrival_time = arrival_widget.time().addSecs(-60)
+                    arrival_widget = QTimeEdit()
+                    arrival_widget.setDisplayFormat("HH:mm")
+                    arrival_widget.setTime(arrival_time)
+                
+            if row == row_count - 1:         
+                self.stations_table.removeCellWidget(row, 3)
+                self.stations_table.setItem(row, 3, empty_item)
+            else:
+                departure_widget = self.stations_table.cellWidget(row, 3)
+                # if it's not already a QTimeEdit, replace it
+                if isinstance(departure_widget, QTableWidgetItem):
+                    self.stations_table.removeItemWidget(departure_widget)
+                    departure_time = departure_widget.time().addSecs(+60)
+                    departure_widget = QTimeEdit()
+                    departure_widget.setDisplayFormat("HH:mm")
+                    departure_widget.setTime(departure_time)   
