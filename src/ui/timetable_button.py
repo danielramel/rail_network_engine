@@ -1,5 +1,5 @@
 import pygame
-from domain.rail_map import RailMap
+from models.simulation import Simulation
 from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
 from ui.components.rectangle import RectangleUIComponent
@@ -11,7 +11,7 @@ from views.timetable.timetable_view import TimetableWindow
 
 class TimeTableButton(RectangleUIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL]
-    def __init__(self, surface: pygame.Surface, map: RailMap):
+    def __init__(self, surface: pygame.Surface, map: Simulation):
         self._map = map
 
         self.icon = IconLoader().get_icon(TIMETABLE_ICON_PATH, BUTTON_SIZE)

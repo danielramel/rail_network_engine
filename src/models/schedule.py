@@ -3,7 +3,7 @@ from models.station import Station
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from domain.rail_map import RailMap
+    from models.simulation import Simulation
 
 @dataclass
 class Schedule:
@@ -31,11 +31,11 @@ class Schedule:
         }
         
     @classmethod
-    def from_dict(cls, data: dict, rail_map: 'RailMap') -> 'Schedule':
+    def from_dict(cls, data: dict, rail_map: 'Simulation') -> 'Schedule':
         """Create a Schedule object from a dictionary."""
         stations = []
         for entry in data['stations']:
-            station = rail_map.get_station_at(Position.from_dict(entry['pos']))
+            station = rail_map.stations.get(Position.from_dict(entry['pos']))
             stations.append({
                 'station': station,
                 'arrival_time': entry['arrival_time'],

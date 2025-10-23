@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 from models.geometry import Position, Pose
-from domain.rail_map import RailMap
+from models.simulation import Simulation
 
 class SignalTargetType(Enum):
     INVALID = 0
@@ -17,10 +17,10 @@ class SignalTarget:
     preview_pose: Optional[Pose] = None
     offset: bool = False
 
-def find_signal_target(rail_map: RailMap, pos: Position) -> SignalTarget:
+def find_signal_target(rail_map: Simulation, pos: Position) -> SignalTarget:
     snapped = pos.snap_to_grid()
 
-    if not rail_map.has_node_at(snapped) or rail_map.is_junction(snapped):
+    if not rail_map.graph.has_node_at(snapped) or rail_map.graph.is_junction(snapped):
         return SignalTarget(
             kind=SignalTargetType.INVALID,
             snapped=snapped,
@@ -28,8 +28,8 @@ def find_signal_target(rail_map: RailMap, pos: Position) -> SignalTarget:
             offset=True
         )
 
-    if rail_map.has_signal_at(snapped):
-        if rail_map.degree_at(snapped) == 1:
+    if rail_map.signals.has_signal_at(snapped):
+        if rail_map.graph.degree_at(snapped) == 1:
             return SignalTarget(
                 kind=SignalTargetType.DEAD_END,
                 snapped=snapped,

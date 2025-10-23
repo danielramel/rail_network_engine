@@ -1,7 +1,7 @@
 import pygame
 from config.colors import BLACK
 from controllers.construction.panel_strategy import ConstructionPanelStrategy
-from domain.rail_map import RailMap
+from models.simulation import Simulation
 from graphics.camera import Camera
 from models.app_state import AppState, ViewMode
 from models.construction import ConstructionState
@@ -27,22 +27,22 @@ class AppController:
     
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
-        self.map = RailMap()
+        self.map = Simulation()
         # mockup
-        self.map.add_station_at(Position(100, 100), "Station A")
-        self.map.add_station_at(Position(300, 100), "Station B")
-        self.map.add_station_at(Position(500, 100), "Station C")
-        self.map.add_station_at(Position(700, 100), "Station D")
-        self.map.add_station_at(Position(100, 300), "Station E")
-        self.map.add_station_at(Position(300, 300), "Station F")
-        self.map.add_station_at(Position(500, 300), "Station G")
-        self.map.add_station_at(Position(700, 300), "Station H")
-        self.map.add_station_at(Position(100, 500), "Station I")
-        self.map.add_station_at(Position(300, 500), "Station J")
-        self.map.add_station_at(Position(500, 500), "Station K")
-        self.map.add_station_at(Position(700, 500), "Station L")
-        self.map.add_station_at(Position(900, 100), "Station M")
-        self.map.add_station_at(Position(900, 300), "Station N")
+        self.map.stations.add(Position(100, 100), "Station A")
+        self.map.stations.add(Position(300, 100), "Station B")
+        self.map.stations.add(Position(500, 100), "Station C")
+        self.map.stations.add(Position(700, 100), "Station D")
+        self.map.stations.add(Position(100, 300), "Station E")
+        self.map.stations.add(Position(300, 300), "Station F")
+        self.map.stations.add(Position(500, 300), "Station G")
+        self.map.stations.add(Position(700, 300), "Station H")
+        self.map.stations.add(Position(100, 500), "Station I")
+        self.map.stations.add(Position(300, 500), "Station J")
+        self.map.stations.add(Position(500, 500), "Station K")
+        self.map.stations.add(Position(700, 500), "Station L")
+        self.map.stations.add(Position(900, 100), "Station M")
+        self.map.stations.add(Position(900, 300), "Station N")
         
         # mockup end
         self.camera = Camera()

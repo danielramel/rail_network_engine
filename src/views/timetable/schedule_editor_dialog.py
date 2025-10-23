@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (QDialog, QFormLayout, QComboBox,
                               QVBoxLayout, QHBoxLayout, QPushButton, QWidget,
                               QTableWidget, QTableWidgetItem, QHeaderView)
 from PyQt6.QtCore import Qt, QTime
-from domain.rail_map import RailMap
+from models.simulation import Simulation
 from models.schedule import Schedule
 from PyQt6.QtWidgets import QLineEdit
 from views.timetable.train_editor_stylesheet import (
@@ -13,7 +13,7 @@ from views.timetable.train_editor_stylesheet import (
 from PyQt6.QtGui import QBrush
 
 class ScheduleEditorDialog(QDialog):
-    def __init__(self, parent, map: RailMap, train_to_edit: Schedule = None):
+    def __init__(self, parent, map: Simulation, train_to_edit: Schedule = None):
         self.train_to_edit = train_to_edit
         self.selected_row = None  # Custom selection tracking
         self._map = map
@@ -182,7 +182,7 @@ class ScheduleEditorDialog(QDialog):
         
         # Station name combobox (column 1)
         station_combo = QComboBox()
-        station_combo.addItems(station.name for station in self._map.stations)
+        station_combo.addItems(station.name for station in self._map.stations.all())
         self.stations_table.setCellWidget(row, 1, station_combo)
 
 
@@ -284,7 +284,7 @@ class ScheduleEditorDialog(QDialog):
                 departure_minutes = departure_time.hour() * 60 + departure_time.minute()
 
             schedule.append({
-                'station': self._map.get_station_by_name(station_name),
+                'station': self._map.stations.get_by_name(station_name),
                 'arrival_time': arrival_minutes,
                 'departure_time': departure_minutes
             })

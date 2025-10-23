@@ -2,7 +2,7 @@ import pygame
 from models.geometry import Position
     
 from graphics.camera import Camera
-from domain.rail_map import RailMap
+from models.simulation import Simulation
 from models.construction import ConstructionState, ConstructionMode
 from models.event import Event, CLICK_TYPE
 from ui.components.base import BaseUIComponent
@@ -15,7 +15,7 @@ from views.construction.construction import ConstructionCommonView
 from .base_construction_controller import BaseConstructionController
 
 class ConstructionManager(BaseUIComponent):
-    def __init__(self, map: RailMap, state: ConstructionState, camera: Camera, screen: pygame.Surface):
+    def __init__(self, map: Simulation, state: ConstructionState, camera: Camera, screen: pygame.Surface):
         self.view = ConstructionCommonView(map, state, camera, screen)
         self._map = map
         self._construction_state = state

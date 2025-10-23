@@ -15,7 +15,7 @@ class StationView(BaseConstructionView):
 
         # Hovering over an existing station while not moving
         if not moving_station and target.hovered_station_pos is not None:
-            draw_station(self._surface, self._map.get_station_at(target.hovered_station_pos), self._camera, color=LIGHTBLUE)
+            draw_station(self._surface, self._map.stations.get(target.hovered_station_pos), self._camera, color=LIGHTBLUE)
             return
 
         # Moving an existing station
@@ -23,7 +23,7 @@ class StationView(BaseConstructionView):
             color = RED if target.blocked_by_node or target.overlaps_station else LIGHTBLUE
             station = Station(moving_station.name, target.snapped)
             draw_station(self._surface, station, self._camera, color=color)
-            for middle_point in self._map.get_platforms_middle_points(moving_station):
+            for middle_point in self._map.platforms.platforms_middle_points(moving_station):
                 draw_dotted_line(self._surface, middle_point, target.snapped, self._camera, color=color)
                 
         # Preview for a new station

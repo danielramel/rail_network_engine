@@ -53,7 +53,10 @@ class StationRepository:
         raise KeyError(f"Station with name {name} not found.")
 
     def all(self) -> dict[Position, Station]:
-        return self._by_pos
+        return list(self._by_pos.values())
+    
+    def positions(self) -> list[Position]:
+        return list(self._by_pos.keys())
     
     def is_within_station_rect(self, pos: Position) -> bool:
         return any(pos.is_within_station_rect(station_pos) for station_pos in self._by_pos.keys())

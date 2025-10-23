@@ -4,17 +4,17 @@ import heapq
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from domain.rail_map import RailMap
+    from models.simulation import Simulation
 
 
 class Pathfinder:
-    def __init__(self, map: 'RailMap'):
+    def __init__(self, map: 'Simulation'):
         self._map = map
 
     def is_blocked(self, pos: Position) -> bool:
-        return (self._map.has_node_at(pos) and 
-                (self._map.has_signal_at(pos) 
-                 or self._map.is_platform_at(pos))) or self._map.is_within_station_rect(pos)
+        return (self._map.graph.has_node_at(pos) and 
+                (self._map.signals.has_signal_at(pos) 
+                 or self._map.platforms.is_platform_at(pos))) or self._map.stations.is_within_station_rect(pos)
 
     def is_cutting_through_platform(self, current_state: Pose, neighbor_state: Pose) -> bool:
         if neighbor_state.direction not in [(1, 1), (1, -1), (-1, 1), (-1, -1)]:
@@ -22,7 +22,7 @@ class Pathfinder:
         # Check for corner cutting
         corner1 = Position(current_state.position.x + neighbor_state.direction[0] * GRID_SIZE, current_state.position.y)
         corner2 = Position(current_state.position.x, current_state.position.y + neighbor_state.direction[1] * GRID_SIZE)
-        return self._map.has_edge((corner1, corner2)) and self._map.is_edge_platform((corner1, corner2))
+        return self._map.graph.has_edge((corner1, corner2)) and self._map.platforms.is_edge_platform((corner1, corner2))
 
         
     def find_grid_path(self, start: Pose, end: Position) -> tuple[Position, ...]:

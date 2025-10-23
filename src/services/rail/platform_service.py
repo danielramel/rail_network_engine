@@ -1,15 +1,15 @@
 from config.settings import GRID_SIZE, PLATFORM_LENGTH
-from domain.rail_map import GraphQueryService
+from models.simulation import GraphService
 from models.geometry import Position, Edge, edge
 from networkx import Graph
 from models.station import Station
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from domain.rail_map import RailMap
+    from models.simulation import Simulation
 
 class PlatformService:
-    def __init__(self, graph: Graph, map: 'RailMap'):
+    def __init__(self, graph: Graph, map: 'Simulation'):
         self._graph = graph
         self._map = map
 
@@ -36,7 +36,7 @@ class PlatformService:
         return 'station' in self._graph.edges[*edge]
     
     def calculate_platform_preview(self, edge: Edge) -> tuple[bool, frozenset[Edge]]:
-        _, edges = self._map.get_segment(edge, only_straight=True, max_nr=PLATFORM_LENGTH)
+        _, edges = self._map.graph.get_segment(edge, only_straight=True, max_nr=PLATFORM_LENGTH)
         for edge in edges:
             # todo check for platform corner cutting
             pass

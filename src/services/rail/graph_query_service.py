@@ -4,11 +4,36 @@ from models.geometry import Position, Pose
 from collections import deque
 
 from models.geometry.edge import Edge
+from services.rail.path_finder import Pathfinder
 
 
-class GraphQueryService:
+class GraphService:
     def __init__(self, graph: Graph):
         self._graph = graph
+        self._pathfinder = Pathfinder(self)
+        
+    @property
+    def nodes(self) -> set[Position]:
+        return self._graph.nodes
+    
+    @property
+    def edges(self) -> frozenset[Edge]:
+        return frozenset((Edge(*edge) for edge in self._graph.edges))
+    
+    def has_node_at(self, pos: Position) -> bool:
+        return pos in self._graph.nodes
+    
+    def degree_at(self, pos: Position) -> int:
+        return self._graph.degree[pos]
+    
+    def has_edge(self, edge: Edge) -> bool:
+        return self._graph.has_edge(*edge)
+    
+    def edges_with_data(self, key=None) -> dict[Edge, dict]:
+        if key:
+            return {Edge(*edge): data for *edge, data in self._graph.edges.data(key)}
+        
+        return {Edge(*edge): data for *edge, data in self._graph.edges.data()}
     
     def is_junction(self, pos: Position) -> bool:
         if self._graph.degree[pos] > 2: return True
@@ -18,6 +43,10 @@ class GraphQueryService:
         inbound = neighbors[0].direction_to(pos)
         outbound = pos.direction_to(neighbors[1])
         return outbound not in Pose.get_valid_turns(inbound)
+    
+    @property
+    def junctions(self) -> list[Position]:
+        return [n for n in self._graph.nodes if self.is_junction(n)]
     
 
     def get_connections_from_pose(self, pose: Pose, only_straight: bool = False) -> tuple[Pose]:
@@ -29,6 +58,22 @@ class GraphQueryService:
             if direction in Pose.get_valid_turns(pose.direction):
                 connections.append(Pose(neighbor, direction))
         return tuple(connections)
+    
+    def remove_segment_at(self, edge: Edge) -> None:
+        nodes, edges = self.get_segment(edge)
+        if len(nodes) == 0 and len(edges) == 1:
+            # Special case: single edge between two intersections
+            self._graph.remove_edge(*next(iter(edges)))
+            return
+        
+        for n in nodes:
+            self._graph.remove_node(n)
+            
+    def add_segment(self, points: list[Position], speed: int) -> None:
+        for p in points:
+            self._graph.add_node(p)
+        for a, b in zip(points[:-1], points[1:]):
+            self._graph.add_edge(a, b, speed=speed)
 
     def get_segment(
         self,

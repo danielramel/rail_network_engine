@@ -9,12 +9,12 @@ from models.schedule import Schedule
 from views.timetable.schedule_editor_dialog import ScheduleEditorDialog
 from views.timetable.timetable_stylesheet import TIMETABLE_STYLESHEET
 from PyQt6.QtCore import pyqtSignal
-from domain.rail_map import RailMap
+from models.simulation import Simulation
 from PyQt6.QtWidgets import QHeaderView, QSizePolicy
 
 class TimetableWindow(QMainWindow):
     window_closed = pyqtSignal()
-    def __init__(self, map: RailMap):
+    def __init__(self, map: Simulation):
         super().__init__()
         self._map = map
         self.setWindowTitle("Train Timetable")

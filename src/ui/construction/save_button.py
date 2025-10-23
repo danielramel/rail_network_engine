@@ -1,5 +1,5 @@
 import pygame
-from domain.rail_map import RailMap
+from models.simulation import Simulation
 from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
 from config.colors import BLACK, WHITE, YELLOW, RED
@@ -9,7 +9,7 @@ from ui.components.rectangle import RectangleUIComponent
 
 class SaveButton(RectangleUIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
-    def __init__(self, surface: pygame.Surface, map: RailMap):
+    def __init__(self, surface: pygame.Surface, map: Simulation):
         rect = pygame.Rect(BUTTON_SIZE//5, 700, BUTTON_SIZE, BUTTON_SIZE)
         super().__init__(rect, surface)
         self.map = map

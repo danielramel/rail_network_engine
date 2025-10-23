@@ -2,14 +2,14 @@ import pygame
 from models.geometry import Position
     
 from graphics.camera import Camera
-from domain.rail_map import RailMap
+from models.simulation import Simulation
 from models.event import Event, CLICK_TYPE
 from ui.components.base import BaseUIComponent
 from views.simulation.simulation_view import SimulationView
 
 
 class SimulationManager(BaseUIComponent):
-    def __init__(self, map: RailMap, camera: Camera, screen: pygame.Surface):
+    def __init__(self, map: Simulation, camera: Camera, screen: pygame.Surface):
         self.view = SimulationView(map, camera, screen)
         self._map = map
         self._camera = camera

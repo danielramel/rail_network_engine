@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional, List
 from models.geometry import Position, Pose
-from domain.rail_map import RailMap
+from models.simulation import Simulation
 
 class RailTargetType(Enum):
     BLOCKED = 0
@@ -18,7 +18,7 @@ class RailTarget:
     construction_anchor: Optional[Pose] = None
     found_path: Optional[List] = None
 
-def find_rail_target(rail_map: RailMap, screen_pos: Position, construction_anchor: Optional[Pose]) -> RailTarget:
+def find_rail_target(rail_map: Simulation, screen_pos: Position, construction_anchor: Optional[Pose]) -> RailTarget:
     snapped = screen_pos.snap_to_grid()
     if rail_map.is_blocked(snapped):
         return RailTarget(kind=RailTargetType.BLOCKED, snapped=snapped, construction_anchor=construction_anchor)

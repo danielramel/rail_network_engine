@@ -8,26 +8,26 @@ class ConstructionCommonView(BaseConstructionView):
     def render(self, screen_pos: Position | None) -> None:
         draw_grid(self._surface, self._camera)
 
-        for edge, speed in self._map.edges_with_data('speed').items():
+        for edge, speed in self._map.graph.edges_with_data('speed').items():
             if self._construction_state.is_edge_in_preview(edge):
                 draw_edge(self._surface, edge, self._camera, edge_type=self._construction_state.preview_edges_type, speed=speed)
-            elif self._map.is_edge_platform(edge):
+            elif self._map.platforms.is_edge_platform(edge):
                 draw_edge(self._surface, edge, self._camera, edge_type=EdgeType.PLATFORM)
             else:
                 draw_edge(self._surface, edge, self._camera, speed=speed)
 
-        for node in self._map.junctions:
+        for node in self._map.graph.junctions:
             draw_node(self._surface, node, self._camera)
 
-        for signal in self._map.signals:
+        for signal in self._map.signals.all():
             if self._construction_state.is_bulldoze_preview_node(signal.position):
                 draw_signal(self._surface, signal, self._camera, color=RED)
             else:
                 draw_signal(self._surface, signal, self._camera)
 
-        for station in self._map.stations:
+        for station in self._map.stations.all():
             if self._construction_state.is_station_being_moved(station):
                 continue
             draw_station(self._surface, station, self._camera)
-            for middle_point in self._map.get_platforms_middle_points(station):
+            for middle_point in self._map.platforms.platforms_middle_points(station):
                 draw_dotted_line(self._surface, middle_point, station.position, self._camera, color=PURPLE)

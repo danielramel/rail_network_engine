@@ -4,15 +4,15 @@ from config.settings import PLATFORM_LENGTH
 from ui.popups import alert
 from services.construction.platform_target import find_platform_target
 from graphics.camera import Camera
-from domain.rail_map import RailMap
+from models.simulation import Simulation
 from models.construction import ConstructionState, EdgeType
 import pygame
 from views.construction.platform import PlatformView, PlatformTargetType
 
 class PlatformController(BaseConstructionController):
-    def __init__(self, map: RailMap, state: ConstructionState, camera: Camera, screen: pygame.Surface):
-        view = PlatformView(map, state, camera, screen)
-        super().__init__(view, map, state, camera)
+    def __init__(self, simulation: Simulation, state: ConstructionState, camera: Camera, screen: pygame.Surface):
+        view = PlatformView(simulation, state, camera, screen)
+        super().__init__(view, simulation, state, camera)
         
         
     def handle_event(self, event: Event):
@@ -26,22 +26,22 @@ class PlatformController(BaseConstructionController):
         world_pos = self._camera.screen_to_world(event.screen_pos)
         # if user is currently selecting a station for the platform
         if self._construction_state.platform_waiting_for_station:
-            for station_pos in self._map.station_positions:
+            for station_pos in self._simulation.stations.positions():
                 if world_pos.is_within_station_rect(station_pos):
-                    self._map.add_platform_on(
-                        self._map.get_station_at(station_pos),
+                    self._simulation.platforms.add(
+                        self._simulation.stations.get(station_pos),
                         list(self._construction_state.preview_edges)
                     )
                     break
             self._construction_state.platform_waiting_for_station = False
             return
 
-        if len(self._map.station_positions) == 0:
+        if len(self._simulation.stations.positions()) == 0:
             alert('Please build a station first.')
             self._construction_state.switch_mode(None)
             return
 
-        target = find_platform_target(self._map, world_pos, self._camera.scale)
+        target = find_platform_target(self._simulation, world_pos, self._camera.scale)
 
         if target.kind in (PlatformTargetType.NONE, PlatformTargetType.EXISTING_PLATFORM):
             return

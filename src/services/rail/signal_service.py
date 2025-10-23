@@ -1,12 +1,14 @@
 import networkx as nx
 from models.geometry import Position, Pose
-
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from models.simulation import Simulation
 
 class SignalService:
     """Service responsible for adding / toggling / removing signals."""
-    def __init__(self, graph: nx.Graph, map):
+    def __init__(self, graph: nx.Graph, simulation: 'Simulation'):
         self._graph = graph
-        self._map = map
+        self._simulation = simulation
 
     def has_signal_at(self, pos: Position) -> bool:
         return 'signal' in self._graph.nodes[pos]
@@ -15,7 +17,7 @@ class SignalService:
         return Pose(pos, self._graph.nodes[pos]['signal'])
 
     def add(self, pos: Position) -> None:
-        if self._map.is_junction(pos): raise ValueError("Cannot place signal at junction")
+        if self._simulation.graph.is_junction(pos): raise ValueError("Cannot place signal at junction")
         if self.has_signal_at(pos): raise ValueError("Signal already exists at this position")
 
         self._graph.nodes[pos]['signal'] = pos.direction_to(next(self._graph.neighbors(pos)))
