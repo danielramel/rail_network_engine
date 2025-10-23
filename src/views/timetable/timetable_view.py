@@ -194,24 +194,30 @@ class TimetableWindow(QMainWindow):
         train = self._map.train_repository.get(train_idx)
 
         dialog = TrainEditorDialog(self, self._map, train)
-        res = dialog.exec()
-        if res == QDialog.DialogCode.Rejected:
-            return
-        data = dialog.get_data()
-    
-        # Remove old train and add updated one
-        self._map.train_repository.remove(train)
-        
-        updated_train = Train(
-            code=data['code'],
-            schedule=data['schedule'],
-            first_train=data['first_train'],
-            last_train=data['last_train'],
-            frequency=data['frequency']
-        )
-        self._map.train_repository.add(updated_train)
-        # self.expanded_rows.clear()  # Clear expanded state on refresh
-        self.refresh_table()
+
+        # Open dialog in detached (non-modal) state and handle result asynchronously
+        def _on_finished(res: int):
+            if res == QDialog.DialogCode.Rejected:
+                return
+            data = dialog.get_data()
+
+            # Remove old train and add updated one
+            self._map.train_repository.remove(train)
+
+            updated_train = Train(
+                code=data['code'],
+                schedule=data['schedule'],
+                first_train=data['first_train'],
+                last_train=data['last_train'],
+                frequency=data['frequency']
+            )
+            self._map.train_repository.add(updated_train)
+            # self.expanded_rows.clear()  # Clear expanded state on refresh (optional)
+            self.refresh_table()
+
+        dialog.finished.connect(_on_finished)
+        dialog.setModal(False)
+        dialog.show()
 
     def delete_train(self, train_idx):
         train = self._map.train_repository.get(train_idx)

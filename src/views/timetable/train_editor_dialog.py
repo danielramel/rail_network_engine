@@ -102,7 +102,7 @@ class TrainEditorDialog(QDialog):
         self.add_row_button.setStyleSheet(ADD_BUTTON_STYLE)
         self.add_row_button.setToolTip("Add station")
         self.add_row_button.setAutoDefault(False)
-        self.add_row_button.clicked.connect(self.add_empty_station_row)
+        self.add_row_button.clicked.connect(self.add_row_clicked)
         control_layout.addWidget(self.add_row_button)
                 
         # Red Delete button
@@ -145,6 +145,8 @@ class TrainEditorDialog(QDialog):
             # Add two empty rows by default for new trains
             self.add_empty_station_row()
             # self.add_station_row()
+                
+        self.update_first_last_station_cells()
             
     def add_station_rows_from_schedule(self, schedule: list[dict]):
         """Populate the stations table from an existing schedule"""
@@ -152,18 +154,22 @@ class TrainEditorDialog(QDialog):
             self.add_empty_station_row()
             
         for row, entry in enumerate(schedule):
-            station_combo = self.stations_table.cellWidget(row, 1)
-            station_combo.setCurrentText(entry['station'].name)
-            
-            arrival_edit = self.stations_table.item(row, 2)
+            self.stations_table.cellWidget(row, 1).setCurrentText(entry['station'].name)
+
             if row != 0:
-                arrival_edit.setTime(QTime.fromMSecsSinceStartOfDay(entry['arrival_time'] * 60 * 1000))
+                self.stations_table.setCellWidget(row, 2, self.new_time_table_widget(QTime.fromMSecsSinceStartOfDay(entry['arrival_time'] * 60 * 1000)))
+                
             if row != len(schedule) - 1:
-                departure_edit = self.stations_table.item(row, 3)
-                departure_edit.setTime(QTime.fromMSecsSinceStartOfDay(entry['departure_time'] * 60 * 1000))
+                self.stations_table.setCellWidget(row, 3, self.new_time_table_widget(QTime.fromMSecsSinceStartOfDay(entry['departure_time'] * 60 * 1000)))                
+                
+        self.update_first_last_station_cells()
+        
+    def add_row_clicked(self):
+        self.add_empty_station_row()
+        self.update_first_last_station_cells()
     
     
-    def add_empty_station_row(self, station_info : dict = None):
+    def add_empty_station_row(self):
         """Add a new row to the stations table"""
         row = self.stations_table.rowCount()        
         self.stations_table.insertRow(row)
@@ -177,12 +183,8 @@ class TrainEditorDialog(QDialog):
         # Station name combobox (column 1)
         station_combo = QComboBox()
         station_combo.addItems(station.name for station in self._map.stations)
-        if station_info:
-            station_combo.setCurrentText(station_info['station'].name)
         self.stations_table.setCellWidget(row, 1, station_combo)
-    
-        
-        self.update_first_last_station_cells()
+
 
     def on_cell_clicked(self, row: int, column: int):
         if column != 0:
