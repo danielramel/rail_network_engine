@@ -27,22 +27,22 @@ class AppController:
     
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
-        self.map = Simulation()
+        self.simulation = Simulation()
         # mockup
-        self.map.stations.add(Position(100, 100), "Station A")
-        self.map.stations.add(Position(300, 100), "Station B")
-        self.map.stations.add(Position(500, 100), "Station C")
-        self.map.stations.add(Position(700, 100), "Station D")
-        self.map.stations.add(Position(100, 300), "Station E")
-        self.map.stations.add(Position(300, 300), "Station F")
-        self.map.stations.add(Position(500, 300), "Station G")
-        self.map.stations.add(Position(700, 300), "Station H")
-        self.map.stations.add(Position(100, 500), "Station I")
-        self.map.stations.add(Position(300, 500), "Station J")
-        self.map.stations.add(Position(500, 500), "Station K")
-        self.map.stations.add(Position(700, 500), "Station L")
-        self.map.stations.add(Position(900, 100), "Station M")
-        self.map.stations.add(Position(900, 300), "Station N")
+        self.simulation.stations.add(Position(100, 100), "Station A")
+        self.simulation.stations.add(Position(300, 100), "Station B")
+        self.simulation.stations.add(Position(500, 100), "Station C")
+        self.simulation.stations.add(Position(700, 100), "Station D")
+        self.simulation.stations.add(Position(100, 300), "Station E")
+        self.simulation.stations.add(Position(300, 300), "Station F")
+        self.simulation.stations.add(Position(500, 300), "Station G")
+        self.simulation.stations.add(Position(700, 300), "Station H")
+        self.simulation.stations.add(Position(100, 500), "Station I")
+        self.simulation.stations.add(Position(300, 500), "Station J")
+        self.simulation.stations.add(Position(500, 500), "Station K")
+        self.simulation.stations.add(Position(700, 500), "Station L")
+        self.simulation.stations.add(Position(900, 100), "Station M")
+        self.simulation.stations.add(Position(900, 300), "Station N")
         
         # mockup end
         self.camera = Camera()
@@ -52,7 +52,7 @@ class AppController:
         
         self.elements: list[BaseUIComponent] = [
             ModeSelectorButtons(screen, self.app_state),
-            TimeTableButton(screen, self.map),
+            TimeTableButton(screen, self.simulation),
             ZoomButton(screen, self.camera),
         ]
         
@@ -64,17 +64,17 @@ class AppController:
             self.construction_state.reset()
             self.elements.extend([
                 ConstructionButtons(self.screen, self.construction_state),
-                SaveButton(self.screen, self.map),
-                LoadButton(self.screen, self.map),
+                SaveButton(self.screen, self.simulation),
+                LoadButton(self.screen, self.simulation),
                 ConstructionPanelStrategy(self.screen, self.construction_state),
-                ConstructionManager(self.map, self.construction_state, self.camera, self.screen)
+                ConstructionManager(self.simulation, self.construction_state, self.camera, self.screen)
             ])
         elif mode == ViewMode.SIMULATION:
             self.time_control_state.reset()
             self.elements.extend([
                 TimeControlButtons(self.screen, self.time_control_state),
                 TimeDisplay(self.screen, self.time_control_state),
-                SimulationManager(self.map, self.camera, self.screen)
+                SimulationManager(self.simulation, self.camera, self.screen)
             ])
     
     def _remove_mode_elements(self, mode: ViewMode):

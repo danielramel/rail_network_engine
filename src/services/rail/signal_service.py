@@ -6,9 +6,8 @@ if TYPE_CHECKING:
 
 class SignalService:
     """Service responsible for adding / toggling / removing signals."""
-    def __init__(self, graph: nx.Graph, simulation: 'Simulation'):
+    def __init__(self, graph: nx.Graph):
         self._graph = graph
-        self._simulation = simulation
 
     def has_signal_at(self, pos: Position) -> bool:
         return 'signal' in self._graph.nodes[pos]
@@ -17,9 +16,6 @@ class SignalService:
         return Pose(pos, self._graph.nodes[pos]['signal'])
 
     def add(self, pos: Position) -> None:
-        if self._simulation.graph.is_junction(pos): raise ValueError("Cannot place signal at junction")
-        if self.has_signal_at(pos): raise ValueError("Signal already exists at this position")
-
         self._graph.nodes[pos]['signal'] = pos.direction_to(next(self._graph.neighbors(pos)))
 
     def remove(self, pos: Position) -> None:

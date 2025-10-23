@@ -9,9 +9,9 @@ from models.simulation import Simulation
 from models.construction import ConstructionState
 
 class RailController(BaseConstructionController):
-    def __init__(self, map: Simulation, state: ConstructionState, camera: Camera, screen: pygame.Surface):
-        view = RailView(map, state, camera, screen)
-        super().__init__(view, map, state, camera)
+    def __init__(self, simulation: Simulation, state: ConstructionState, camera: Camera, screen: pygame.Surface):
+        view = RailView(simulation, state, camera, screen)
+        super().__init__(view, simulation, state, camera)
         
         
     def handle_event(self, event: Event):

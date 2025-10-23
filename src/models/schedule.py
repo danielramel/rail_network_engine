@@ -31,11 +31,11 @@ class Schedule:
         }
         
     @classmethod
-    def from_dict(cls, data: dict, rail_map: 'Simulation') -> 'Schedule':
+    def from_dict(cls, data: dict, simulation: 'Simulation') -> 'Schedule':
         """Create a Schedule object from a dictionary."""
         stations = []
         for entry in data['stations']:
-            station = rail_map.stations.get(Position.from_dict(entry['pos']))
+            station = simulation.stations.get(Position.from_dict(entry['pos']))
             stations.append({
                 'station': station,
                 'arrival_time': entry['arrival_time'],

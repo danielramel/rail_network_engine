@@ -1,17 +1,13 @@
 from config.settings import GRID_SIZE, PLATFORM_LENGTH
 from models.simulation import GraphService
-from models.geometry import Position, Edge, edge
+from models.geometry import Position, Edge
 from networkx import Graph
 from models.station import Station
 
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from models.simulation import Simulation
-
 class PlatformService:
-    def __init__(self, graph: Graph, map: 'Simulation'):
+    def __init__(self, graph: Graph, graph_service: GraphService):
         self._graph = graph
-        self._map = map
+        self._graph_service = graph_service
 
     def add(self, station: Station, edges: frozenset[Edge]) -> None:
         for edge in edges:
@@ -36,12 +32,12 @@ class PlatformService:
         return 'station' in self._graph.edges[*edge]
     
     def calculate_platform_preview(self, edge: Edge) -> tuple[bool, frozenset[Edge]]:
-        _, edges = self._map.graph.get_segment(edge, only_straight=True, max_nr=PLATFORM_LENGTH)
+        _, edges = self._graph_service.get_segment(edge, only_straight=True, max_nr=PLATFORM_LENGTH)
         for edge in edges:
             # todo check for platform corner cutting
             pass
 
-        edge = element = next(iter(edges))
+        edge = next(iter(edges))
         return edge.length * len(edges) >= PLATFORM_LENGTH * GRID_SIZE, edges
 
     def get_platform_from_edge(self, edge: Edge) -> frozenset[Edge]:

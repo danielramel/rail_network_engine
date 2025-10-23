@@ -9,10 +9,10 @@ from ui.components.rectangle import RectangleUIComponent
 
 class LoadButton(RectangleUIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
-    def __init__(self, surface: pygame.Surface, map: Simulation):
+    def __init__(self, surface: pygame.Surface, simulation: Simulation):
         rect = pygame.Rect(BUTTON_SIZE//5, 800, BUTTON_SIZE, BUTTON_SIZE)
         super().__init__(rect, surface)
-        self.map = map
+        self._simulation = simulation
 
     def handle_event(self, event: pygame.event) -> bool:   
         if event.type == pygame.KEYDOWN:
@@ -54,7 +54,7 @@ class LoadButton(RectangleUIComponent):
             filename = filedialog.askopenfilename(
                 defaultextension=".json",
                 filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
-                title="Load rail map from..."
+                title="Load simulation from..."
             )
             if not filename:
                 return None
@@ -62,7 +62,7 @@ class LoadButton(RectangleUIComponent):
             with open(filename, 'r', encoding='utf-8') as f:
                 data = json.loads(f.read())
 
-                self.map.from_dict(data)
+                self._simulation.from_dict(data)
 
         except Exception as e:
             messagebox.showerror("Load error", str(e))

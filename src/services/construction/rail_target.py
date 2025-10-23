@@ -18,9 +18,9 @@ class RailTarget:
     construction_anchor: Optional[Pose] = None
     found_path: Optional[List] = None
 
-def find_rail_target(rail_map: Simulation, screen_pos: Position, construction_anchor: Optional[Pose]) -> RailTarget:
+def find_rail_target(simulation: Simulation, screen_pos: Position, construction_anchor: Optional[Pose]) -> RailTarget:
     snapped = screen_pos.snap_to_grid()
-    if rail_map.is_blocked(snapped):
+    if simulation.is_blocked(snapped):
         return RailTarget(kind=RailTargetType.BLOCKED, snapped=snapped, construction_anchor=construction_anchor)
 
     if construction_anchor is None:
@@ -29,7 +29,7 @@ def find_rail_target(rail_map: Simulation, screen_pos: Position, construction_an
     if snapped == construction_anchor.position:
         return RailTarget(kind=RailTargetType.ANCHOR_SAME, snapped=snapped, construction_anchor=construction_anchor)
 
-    found_path = rail_map.find_path(construction_anchor, snapped)
+    found_path = simulation.find_path(construction_anchor, snapped)
     if not found_path:
         return RailTarget(kind=RailTargetType.NO_PATH, snapped=snapped, construction_anchor=construction_anchor)
 

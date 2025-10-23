@@ -12,7 +12,7 @@ class RailView(BaseConstructionView):
                 draw_node(self._surface, self._construction_state.construction_anchor.position, self._camera, color=color_from_speed(self._construction_state.track_speed))
             return
 
-        target = find_rail_target(self._map, world_pos, self._construction_state.construction_anchor)
+        target = find_rail_target(self._simulation, world_pos, self._construction_state.construction_anchor)
 
         if target.kind == RailTargetType.BLOCKED:
             draw_node(self._surface, target.snapped, self._camera, color=RED)

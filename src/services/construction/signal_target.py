@@ -17,10 +17,10 @@ class SignalTarget:
     preview_pose: Optional[Pose] = None
     offset: bool = False
 
-def find_signal_target(rail_map: Simulation, pos: Position) -> SignalTarget:
+def find_signal_target(simulation: Simulation, pos: Position) -> SignalTarget:
     snapped = pos.snap_to_grid()
 
-    if not rail_map.graph.has_node_at(snapped) or rail_map.graph.is_junction(snapped):
+    if not simulation.graph.has_node_at(snapped) or simulation.graph.is_junction(snapped):
         return SignalTarget(
             kind=SignalTargetType.INVALID,
             snapped=snapped,
@@ -28,17 +28,17 @@ def find_signal_target(rail_map: Simulation, pos: Position) -> SignalTarget:
             offset=True
         )
 
-    if rail_map.signals.has_signal_at(snapped):
-        if rail_map.graph.degree_at(snapped) == 1:
+    if simulation.signals.has_signal_at(snapped):
+        if simulation.graph.degree_at(snapped) == 1:
             return SignalTarget(
                 kind=SignalTargetType.DEAD_END,
                 snapped=snapped,
-                preview_pose=Pose(position=snapped, direction=rail_map._graph.nodes[snapped]['signal']),
+                preview_pose=Pose(position=snapped, direction=simulation._graph.nodes[snapped]['signal']),
                 offset=True
             )
 
-        current_direction = rail_map._graph.nodes[snapped]['signal']
-        neighbors = tuple(rail_map._graph.neighbors(snapped))
+        current_direction = simulation._graph.nodes[snapped]['signal']
+        neighbors = tuple(simulation._graph.neighbors(snapped))
         if snapped.direction_to(neighbors[0]) == current_direction:
             new_dir = snapped.direction_to(neighbors[1])
         else:
@@ -52,7 +52,7 @@ def find_signal_target(rail_map: Simulation, pos: Position) -> SignalTarget:
         )
 
     # no signal at node -> preview toward first neighbor
-    neighbor = next(rail_map._graph.neighbors(snapped))
+    neighbor = next(simulation._graph.neighbors(snapped))
     return SignalTarget(
         kind=SignalTargetType.ADD,
         snapped=snapped,

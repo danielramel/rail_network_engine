@@ -9,9 +9,9 @@ from views.simulation.simulation_view import SimulationView
 
 
 class SimulationManager(BaseUIComponent):
-    def __init__(self, map: Simulation, camera: Camera, screen: pygame.Surface):
-        self.view = SimulationView(map, camera, screen)
-        self._map = map
+    def __init__(self, simulation: Simulation, camera: Camera, screen: pygame.Surface):
+        self.view = SimulationView(simulation, camera, screen)
+        self._simulation = simulation
         self._camera = camera
 
     def handle_event(self, event):

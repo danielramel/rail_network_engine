@@ -12,8 +12,8 @@ class Simulation:
     def __init__(self):
         self._graph = nx.Graph()
         self._graph_service = GraphService(self._graph)
-        self._signal_service = SignalService(self._graph, self)
-        self._platform_service = PlatformService(self._graph, self)
+        self._signal_service = SignalService(self._graph)
+        self._platform_service = PlatformService(self._graph, self._graph_service)
         self._pathfinder = Pathfinder(self)
         self._station_repository = StationRepository()
         self._schedule_service = ScheduleService()

@@ -9,9 +9,9 @@ import pygame
 from views.construction.station import StationView
 
 class StationController(BaseConstructionController):
-    def __init__(self, map: Simulation, state: ConstructionState, camera: Camera, screen: pygame.Surface):
-        view = StationView(map, state, camera, screen)
-        super().__init__(view, map, state, camera)
+    def __init__(self, simulation: Simulation, state: ConstructionState, camera: Camera, screen: pygame.Surface):
+        view = StationView(simulation, state, camera, screen)
+        super().__init__(view, simulation, state, camera)
         
     def handle_event(self, event: Event):
         if event.click_type == CLICK_TYPE.RIGHT_CLICK:

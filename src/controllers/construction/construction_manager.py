@@ -15,18 +15,18 @@ from views.construction.construction import ConstructionCommonView
 from .base_construction_controller import BaseConstructionController
 
 class ConstructionManager(BaseUIComponent):
-    def __init__(self, map: Simulation, state: ConstructionState, camera: Camera, screen: pygame.Surface):
-        self.view = ConstructionCommonView(map, state, camera, screen)
-        self._map = map
+    def __init__(self, simulation: Simulation, state: ConstructionState, camera: Camera, screen: pygame.Surface):
+        self.view = ConstructionCommonView(simulation, state, camera, screen)
+        self._simulation = simulation
         self._construction_state = state
         self._camera = camera
 
         self._controllers: dict[ConstructionMode, BaseConstructionController] = {
-            ConstructionMode.RAIL: RailController(map, state, camera, screen),
-            ConstructionMode.SIGNAL: SignalController(map, state, camera, screen),
-            ConstructionMode.STATION: StationController(map, state, camera, screen),
-            ConstructionMode.PLATFORM: PlatformController(map, state, camera, screen),
-            ConstructionMode.BULLDOZE: BulldozeController(map, state, camera, screen),
+            ConstructionMode.RAIL: RailController(simulation, state, camera, screen),
+            ConstructionMode.SIGNAL: SignalController(simulation, state, camera, screen),
+            ConstructionMode.STATION: StationController(simulation, state, camera, screen),
+            ConstructionMode.PLATFORM: PlatformController(simulation, state, camera, screen),
+            ConstructionMode.BULLDOZE: BulldozeController(simulation, state, camera, screen),
         }
         
     def handle_event(self, event):                

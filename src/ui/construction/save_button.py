@@ -9,10 +9,10 @@ from ui.components.rectangle import RectangleUIComponent
 
 class SaveButton(RectangleUIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
-    def __init__(self, surface: pygame.Surface, map: Simulation):
+    def __init__(self, surface: pygame.Surface, simulation: Simulation):
         rect = pygame.Rect(BUTTON_SIZE//5, 700, BUTTON_SIZE, BUTTON_SIZE)
         super().__init__(rect, surface)
-        self.map = map
+        self._simulation = simulation
 
     def handle_event(self, event: pygame.event) -> bool:   
         if event.type == pygame.KEYDOWN:
@@ -44,7 +44,7 @@ class SaveButton(RectangleUIComponent):
         return self._rect.collidepoint(screen_pos.x, screen_pos.y)
     
     def save_game(self):
-        data = self.map.to_dict()
+        data = self._simulation.to_dict()
         
         import tkinter as tk
         from tkinter import filedialog
@@ -55,7 +55,7 @@ class SaveButton(RectangleUIComponent):
             filename = filedialog.asksaveasfilename(
                 defaultextension=".json",
                 filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
-                title="Save rail map as..."
+                title="Save simulation as..."
             )
             if not filename:
                 return None

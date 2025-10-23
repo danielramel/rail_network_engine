@@ -8,9 +8,9 @@ import pygame
 from views.construction.bulldoze import BulldozeView
 
 class BulldozeController(BaseConstructionController):
-    def __init__(self, map: Simulation, state: ConstructionState, camera: Camera, screen: pygame.Surface):
-        view = BulldozeView(map, state, camera, screen)
-        super().__init__(view, map, state, camera)
+    def __init__(self, simulation: Simulation, state: ConstructionState, camera: Camera, screen: pygame.Surface):
+        view = BulldozeView(simulation, state, camera, screen)
+        super().__init__(view, simulation, state, camera)
         
     def handle_event(self, event: Event):
         if event.click_type == CLICK_TYPE.RIGHT_CLICK:
