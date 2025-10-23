@@ -164,16 +164,24 @@ class TimetableWindow(QMainWindow):
 
     def add_train(self):
         dialog = TrainEditorDialog(self, self._map)
-        res = dialog.exec()
-        if res == QDialog.DialogCode.Rejected:
-            return
-        
-        data = dialog.get_data()
+        # Open dialog in detached (non-modal) state and handle result asynchronously
+        def _on_finished(res: int):
+            if res == QDialog.DialogCode.Rejected:
+                return
+            data = dialog.get_data()
+            train = Train(
+            code=data['code'],
+            schedule=data['schedule'],
+            first_train=data['first_train'],
+            last_train=data['last_train'],
+            frequency=data['frequency']
+            )
+            self._map.train_repository.add(train)
+            self.refresh_table()
 
-        train = Train(code=data['code'], schedule=data['schedule'], first_train=data['first_train'], last_train=data['last_train'], frequency=data['frequency'])
-        self._map.train_repository.add(train)
-        # self.expanded_rows.clear()  # Clear expanded state on refresh
-        self.refresh_table()
+        dialog.finished.connect(_on_finished)
+        dialog.setModal(False)
+        dialog.show()
 
     def edit_train(self, train_idx):
         train = self._map.train_repository.get(train_idx)

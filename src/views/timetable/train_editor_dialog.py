@@ -217,16 +217,48 @@ class TrainEditorDialog(QDialog):
     
     def swap_rows(self, row1: int, row2: int):
         def get_row_data(row: int):
-            station_combo = self.stations_table.cellWidget(row, 1)  # Column 1 for station
-            arrival_time_widget = self.stations_table.cellWidget(row, 2)  # Column 2 for arrival
-            departure_time_widget = self.stations_table.cellWidget(row, 3)  # Column 3 for departure
+            station_text = self.stations_table.cellWidget(row, 1).currentText()
+            arrival_widget = self.stations_table.cellWidget(row, 2)
+            arrival_time = arrival_widget.time() if arrival_widget else None
 
-            return (station_combo, arrival_time_widget, departure_time_widget)
+            departure_widget = self.stations_table.cellWidget(row, 3)
+            departure_time = departure_widget.time() if departure_widget else None
+
+            return (station_text, arrival_time, departure_time)
 
         def set_row_data(row: int, data):
-            self.stations_table.setCellWidget(row, 1, data[0])
-            self.stations_table.setCellWidget(row, 2, data[1])
-            self.stations_table.setCellWidget(row, 3, data[2])
+            self.stations_table.cellWidget(row, 1).setCurrentText(data[0])
+            arrival_widget = self.stations_table.cellWidget(row, 2)
+            if arrival_widget is None:
+                if data[1]:
+                    arrival_widget = QTimeEdit()
+                    arrival_widget.setDisplayFormat("HH:mm")
+                    self.stations_table.setCellWidget(row, 2, arrival_widget)
+                else:
+                    self.stations_table.takeItem(row, 2)
+                    self.stations_table.setItem(row, 2, self.new_empty_item())
+            else:
+                if data[1]:
+                    self.stations_table.cellWidget(row, 2).setTime(data[1])
+                else:
+                    self.stations_table.takeItem(row, 2)
+                    self.stations_table.setItem(row, 2, self.new_empty_item())
+
+            departure_widget = self.stations_table.cellWidget(row, 3)
+            if departure_widget is None:
+                if data[2]:
+                    departure_widget = QTimeEdit()
+                    departure_widget.setDisplayFormat("HH:mm")
+                    self.stations_table.setCellWidget(row, 3, departure_widget)
+                else:
+                    self.stations_table.takeItem(row, 3)
+                    self.stations_table.setItem(row, 3, self.new_empty_item())
+            else:
+                if data[2]:
+                    self.stations_table.cellWidget(row, 3).setTime(data[2])
+                else:
+                    self.stations_table.takeItem(row, 3)
+                    self.stations_table.setItem(row, 3, self.new_empty_item())
 
         
         data1 = get_row_data(row1)
@@ -307,20 +339,18 @@ class TrainEditorDialog(QDialog):
         row_count = self.stations_table.rowCount()
         if row_count == 0:
             return
-        
-        empty_item = QTableWidgetItem("")
-        empty_item.setFlags(empty_item.flags() & ~Qt.ItemFlag.ItemIsEnabled)
+
         if row_count == 1:
-            self.stations_table.removeCellWidget(0, 2)
-            self.stations_table.setItem(0, 2, empty_item)
-            self.stations_table.removeCellWidget(0, 3)
-            self.stations_table.setItem(0, 3, empty_item)
+            self.stations_table.takeItem(0, 2)
+            self.stations_table.setItem(0, 2, self.new_empty_item())
+            self.stations_table.takeItem(0, 3)
+            self.stations_table.setItem(0, 3, self.new_empty_item())
             return
             
         
         # first row
-        self.stations_table.removeCellWidget(0, 2)
-        self.stations_table.setItem(0, 2, empty_item)
+        self.stations_table.takeItem(0, 2)
+        self.stations_table.setItem(0, 2, self.new_empty_item())
         departure_widget = self.stations_table.cellWidget(0, 3)
         if departure_widget is None:
             departure_time = QTime(6, 0)
@@ -350,8 +380,8 @@ class TrainEditorDialog(QDialog):
             
         # last row
         row = row_count - 1
-        self.stations_table.removeCellWidget(row, 3)
-        self.stations_table.setItem(row, 3, empty_item)
+        self.stations_table.takeItem(row, 3)
+        self.stations_table.setItem(row, 3, self.new_empty_item())
         arrival_widget = self.stations_table.cellWidget(row, 2)
         if arrival_widget is None:
             arrival_time = departure_widget.time().addSecs(5*60)
@@ -359,3 +389,10 @@ class TrainEditorDialog(QDialog):
             arrival_widget.setDisplayFormat("HH:mm")
             arrival_widget.setTime(arrival_time)
             self.stations_table.setCellWidget(row, 2, arrival_widget)
+            
+    @staticmethod
+    def new_empty_item():
+        # Create new because reusing the same QTableWidgetItem causes ownership issues
+        item = QTableWidgetItem("")
+        item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEnabled)
+        return item
