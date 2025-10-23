@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import (QDialog, QFormLayout, QComboBox,
                               QTableWidget, QTableWidgetItem, QHeaderView)
 from PyQt6.QtCore import Qt, QTime
 from domain.rail_map import RailMap
-from models.train import Train
+from models.schedule import Schedule
 from PyQt6.QtWidgets import QLineEdit
 from views.timetable.train_editor_stylesheet import (
     TABLE_STYLE, MOVE_UP_BUTTON_STYLE, MOVE_DOWN_BUTTON_STYLE,
@@ -12,8 +12,8 @@ from views.timetable.train_editor_stylesheet import (
 )
 from PyQt6.QtGui import QBrush
 
-class TrainEditorDialog(QDialog):
-    def __init__(self, parent, map: RailMap, train_to_edit: Train = None):
+class ScheduleEditorDialog(QDialog):
+    def __init__(self, parent, map: RailMap, train_to_edit: Schedule = None):
         self.train_to_edit = train_to_edit
         self.selected_row = None  # Custom selection tracking
         self._map = map
@@ -140,7 +140,7 @@ class TrainEditorDialog(QDialog):
             # Set last train time
             self.last_train_time_edit.setTime(QTime.fromMSecsSinceStartOfDay(train_to_edit.last_train * 60 * 1000))
 
-            self.add_station_rows_from_schedule(train_to_edit.schedule)
+            self.add_station_rows_from_schedule(train_to_edit.stations)
         else:
             # Add two empty rows by default for new trains
             self.add_empty_station_row()

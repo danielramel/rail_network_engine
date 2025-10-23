@@ -5,7 +5,6 @@ from domain.rail_map import RailMap
 from graphics.camera import Camera
 from models.app_state import AppState, ViewMode
 from models.construction import ConstructionState
-from models.train import TrainRepository
 from ui.components.base import BaseUIComponent
 from ui.construction.load_button import LoadButton
 from ui.construction.save_button import SaveButton

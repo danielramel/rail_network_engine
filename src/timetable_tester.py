@@ -3,7 +3,7 @@ from models.geometry.position import Position
 
 from views.timetable.timetable_view import TimetableWindow
 from PyQt6.QtWidgets import QApplication
-from models.train import TrainRepository
+from models.schedule import TrainRepository
 import sys
 
 rmap = RailMap()

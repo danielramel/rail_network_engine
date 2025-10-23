@@ -1,6 +1,6 @@
 from models.geometry import Position
 from models.geometry.edge import Edge
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 
 @dataclass
 class Station:

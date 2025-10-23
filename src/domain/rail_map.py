@@ -1,7 +1,7 @@
 import networkx as nx
 from models.geometry import Position, Pose, Edge
 from models.station import Station
-from models.train import TrainRepository
+from models.schedule import Schedule
 from services.rail.graph_query_service import GraphQueryService
 from services.rail.signal_service import SignalService
 from services.rail.path_finder import Pathfinder
@@ -16,7 +16,7 @@ class RailMap:
         self._platform_service = PlatformService(self._graph, self)
         self._pathfinder = Pathfinder(self)
         self._station_repository = StationRepository()
-        self._train_repository = TrainRepository()
+        self._schedules : list[Schedule] = []
     
     @property
     def nodes(self) -> set[Position]:
@@ -170,6 +170,16 @@ class RailMap:
     def get_platforms_middle_points(self, station: Station) -> set[Position]:
         return self._platform_service.platforms_middle_points(station)
     
+    # schedules
+    def add_schedule(self, schedule: Schedule) -> None:
+        self._schedules.append(schedule)
+    def remove_schedule(self, schedule: Schedule) -> None:
+        self._schedules.remove(schedule)
+    def all_schedules(self) -> list[Schedule]:
+        return self._schedules
+    def get_schedule(self, index: int) -> Schedule:
+        return self._schedules[index]
+    
     # -- serialization ---
     def to_dict(self) -> dict:
         graph_data = nx.node_link_data(self._graph)
@@ -188,13 +198,15 @@ class RailMap:
 
         return {
             'graph': graph_data,
-            'stations': station_data
+            'stations': station_data,
+            'schedules': [schedule.to_dict() for schedule in self._schedules]
         }
         
 
     def from_dict(self, data: dict) -> None:
         graph_data = data['graph']
         self._station_repository = StationRepository.from_dict(data['stations'])
+        self._schedules = [Schedule.from_dict(schedule_data, self) for schedule_data in data['schedules']]
 
         # convert dicts in node attributes back to Position objects
         for node in graph_data['nodes']:
@@ -216,7 +228,4 @@ class RailMap:
         self._graph.add_edges_from(temp_graph.edges(data=True))
         
         
-    # --train repository ---
-    @property
-    def train_repository(self) -> TrainRepository:
-        return self._train_repository
+    
