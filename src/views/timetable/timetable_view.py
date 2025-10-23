@@ -10,6 +10,7 @@ from views.timetable.train_editor_dialog import TrainEditorDialog
 from views.timetable.timetable_stylesheet import TIMETABLE_STYLESHEET
 from PyQt6.QtCore import pyqtSignal
 from domain.rail_map import RailMap
+from PyQt6.QtWidgets import QHeaderView, QSizePolicy
 
 class TimetableWindow(QMainWindow):
     window_closed = pyqtSignal()
@@ -38,7 +39,13 @@ class TimetableWindow(QMainWindow):
         self.table.verticalHeader().setVisible(False)
         self.table.setColumnCount(9)
         self.table.setHorizontalHeaderLabels(["Code", "Station", "Arrival", "Departure", "First Train", "Last Train", "Frequency", "Edit", "Delete"])
-        self.table.horizontalHeader().setStretchLastSection(False)
+
+        # Make the table take up the horizontal space it's given
+        header = self.table.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        # Allow the widget itself to expand
+        self.table.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        
         # Station, Arrival, Departure together = 390 (was Route column width)
         column_widths = [80, 200, 95, 95, 90, 90, 100, 60, 60]
         for i, width in enumerate(column_widths):
@@ -214,6 +221,8 @@ class TimetableWindow(QMainWindow):
 
     def _format_time(self, minutes: int) -> str:
         """Convert minutes since midnight to HH:mm string."""
+        if minutes is None:
+            return ""
         hours = minutes // 60
         mins = minutes % 60
         return f"{hours:02d}:{mins:02d}"
