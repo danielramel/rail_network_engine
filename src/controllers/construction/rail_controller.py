@@ -23,8 +23,6 @@ class RailController(BaseConstructionController):
             return
 
         target = find_rail_target(self._simulation, self._camera.screen_to_world(event.screen_pos), self._construction_state.construction_anchor)
-        if target.kind == RailTargetType.BLOCKED:
-            return True  # event consumed, nothing happens
 
         if target.kind == RailTargetType.NODE:
             self._construction_state.construction_anchor = Pose(target.snapped, (0, 0))

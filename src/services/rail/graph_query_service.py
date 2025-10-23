@@ -4,13 +4,11 @@ from models.geometry import Position, Pose
 from collections import deque
 
 from models.geometry.edge import Edge
-from services.rail.path_finder import Pathfinder
 
 
 class GraphService:
     def __init__(self, graph: Graph):
         self._graph = graph
-        self._pathfinder = Pathfinder(self)
         
     @property
     def nodes(self) -> set[Position]:

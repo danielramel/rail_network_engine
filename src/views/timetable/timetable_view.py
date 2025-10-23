@@ -66,7 +66,7 @@ class TimetableWindow(QMainWindow):
         central_widget.setLayout(layout)
             
     def refresh_table(self):
-        schedules = self._simulation.all_schedules()
+        schedules = self._simulation.schedules.all()
         total_rows = 0
         for i, schedule in enumerate(schedules):
             total_rows += 1
@@ -183,7 +183,7 @@ class TimetableWindow(QMainWindow):
                 last_train=data['last_train'],
                 frequency=data['frequency']
                 )
-            self._simulation.add_schedule(schedule)
+            self._simulation.schedules.add(schedule)
             self.refresh_table()
 
         dialog.finished.connect(_on_finished)
@@ -191,7 +191,7 @@ class TimetableWindow(QMainWindow):
         dialog.show()
 
     def edit_schedule(self, schedule_idx):
-        schedule = self._simulation.get_schedule(schedule_idx)
+        schedule = self._simulation.schedules.get(schedule_idx)
 
         dialog = ScheduleEditorDialog(self, self._simulation, schedule)
 
@@ -202,7 +202,7 @@ class TimetableWindow(QMainWindow):
             data = dialog.get_data()
 
             # Remove old schedule and add updated one
-            self._simulation.remove_schedule(schedule)
+            self._simulation.schedules.remove(schedule)
 
             updated_schedule = Schedule(
                 code=data['code'],
@@ -211,7 +211,7 @@ class TimetableWindow(QMainWindow):
                 last_train=data['last_train'],
                 frequency=data['frequency']
             )
-            self._simulation.add_schedule(updated_schedule)
+            self._simulation.schedules.add(updated_schedule)
             # self.expanded_rows.clear()  # Clear expanded state on refresh (optional)
             self.refresh_table()
 
@@ -220,8 +220,8 @@ class TimetableWindow(QMainWindow):
         dialog.show()
 
     def delete_schedule(self, schedule_idx):
-        schedule = self._simulation.get_schedule(schedule_idx)
-        self._simulation.remove_schedule(schedule)
+        schedule = self._simulation.schedules.get(schedule_idx)
+        self._simulation.schedules.remove(schedule)
         self.expanded_rows.discard(schedule_idx)  # Remove from expanded if it was expanded
         self.refresh_table()
 

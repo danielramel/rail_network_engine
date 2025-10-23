@@ -14,12 +14,6 @@ class RailView(BaseConstructionView):
 
         target = find_rail_target(self._simulation, world_pos, self._construction_state.construction_anchor)
 
-        if target.kind == RailTargetType.BLOCKED:
-            draw_node(self._surface, target.snapped, self._camera, color=RED)
-            if self._construction_state.construction_anchor is not None:
-                draw_node(self._surface, self._construction_state.construction_anchor.position, self._camera, color=RED)
-            return
-
         color = color_from_speed(self._construction_state.track_speed)
 
         if target.kind in (RailTargetType.NODE, RailTargetType.ANCHOR_SAME):
@@ -28,7 +22,8 @@ class RailView(BaseConstructionView):
 
         if target.kind == RailTargetType.NO_PATH:
             draw_node(self._surface, target.snapped, self._camera, color=RED)
-            draw_node(self._surface, self._construction_state.construction_anchor.position, self._camera, color=RED)
+            if self._construction_state.construction_anchor is not None:
+                draw_node(self._surface, self._construction_state.construction_anchor.position, self._camera, color=RED)
             return
 
         # path preview

@@ -5,7 +5,6 @@ from models.geometry import Position, Pose
 from models.simulation import Simulation
 
 class RailTargetType(Enum):
-    BLOCKED = 0
     NODE = 1
     ANCHOR_SAME = 2
     NO_PATH = 3
@@ -20,8 +19,6 @@ class RailTarget:
 
 def find_rail_target(simulation: Simulation, screen_pos: Position, construction_anchor: Optional[Pose]) -> RailTarget:
     snapped = screen_pos.snap_to_grid()
-    if simulation.is_blocked(snapped):
-        return RailTarget(kind=RailTargetType.BLOCKED, snapped=snapped, construction_anchor=construction_anchor)
 
     if construction_anchor is None:
         return RailTarget(kind=RailTargetType.NODE, snapped=snapped, construction_anchor=None)

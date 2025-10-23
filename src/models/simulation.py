@@ -3,10 +3,10 @@ from models.geometry import Position, Pose, Edge
 from models.schedule import Schedule
 from services.rail.graph_query_service import GraphService
 from services.rail.signal_service import SignalService
-from services.rail.path_finder import Pathfinder
+from services.rail.path_service import PathService
 from services.rail.platform_service import PlatformService
 from models.station import StationRepository
-from services.schedule_service import ScheduleService
+from models.schedule import ScheduleRepository
 
 class Simulation:
     def __init__(self):
@@ -14,9 +14,9 @@ class Simulation:
         self._graph_service = GraphService(self._graph)
         self._signal_service = SignalService(self._graph)
         self._platform_service = PlatformService(self._graph, self._graph_service)
-        self._pathfinder = Pathfinder(self)
+        self._pathfinder = PathService(self)
         self._station_repository = StationRepository()
-        self._schedule_service = ScheduleService()
+        self._schedule_repository = ScheduleRepository()
     
     @property
     def graph(self) -> GraphService:
@@ -27,14 +27,9 @@ class Simulation:
         return self._signal_service
     
     @property
-    def schedules(self) -> ScheduleService:
-        return self._schedule_service
+    def schedules(self) -> ScheduleRepository:
+        return self._schedule_repository
             
-            
-    # --- pathfinding ---
-    def is_blocked(self, pos: Position) -> bool:
-        return self._pathfinder.is_blocked(pos)
-
     def find_path(self, start: Pose, end: Position) -> list[Position] | None:
         return self._pathfinder.find_grid_path(start, end)
 
@@ -73,19 +68,18 @@ class Simulation:
             if 'station' in link:
                 link['station'] = link['station'].to_dict_simple()
             
-        station_data = self._station_repository.to_dict()
 
         return {
             'graph': graph_data,
-            'stations': station_data,
-            'schedules': [schedule.to_dict() for schedule in self._schedule_service]
+            'stations': self._station_repository.to_dict(),
+            'schedules': self._schedule_repository.to_dict(),
         }
         
 
     def from_dict(self, data: dict) -> None:
         graph_data = data['graph']
         self._station_repository = StationRepository.from_dict(data['stations'])
-        self._schedule_service = [Schedule.from_dict(schedule_data, self) for schedule_data in data['schedules']]
+        self._schedule_repository = ScheduleRepository.from_dict(data['schedules'])
 
         # convert dicts in node attributes back to Position objects
         for node in graph_data['nodes']:

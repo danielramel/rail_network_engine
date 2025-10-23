@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from models.simulation import Simulation
 
 
-class Pathfinder:
+class PathService:
     def __init__(self, simulation: 'Simulation'):
         self._simulation = simulation
 
