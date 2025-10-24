@@ -1,10 +1,10 @@
 import pygame
 
 from models.geometry.position import Position
-from ui.components.base import BaseUIComponent
+from ui.models.base import UIComponent
 
     
-class RectangleUIComponent(BaseUIComponent):
+class RectangleUIComponent(UIComponent):
     handled_events = [pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP, pygame.MOUSEWHEEL]
     """A rectangular UI element defined by a pygame.Rect."""
     def __init__(self, rect: pygame.Rect, surface: pygame.Surface):

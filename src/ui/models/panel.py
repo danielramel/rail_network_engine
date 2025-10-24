@@ -1,6 +1,6 @@
 from config.colors import BLACK, WHITE
 from models.geometry.position import Position
-from ui.components.rectangle import RectangleUIComponent
+from ui.models.rectangle import RectangleUIComponent
 import pygame
 
 class Panel(RectangleUIComponent):

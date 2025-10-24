@@ -5,7 +5,7 @@ from graphics.camera import Camera
 from models.simulation import Simulation
 from models.construction import ConstructionState, ConstructionMode
 from models.event import Event, CLICK_TYPE
-from ui.components.base import BaseUIComponent
+from ui.models.base import UIComponent
 from .rail_controller import RailController
 from .platform_controller import PlatformController
 from .signal_controller import SignalController
@@ -14,7 +14,7 @@ from .bulldoze_controller import BulldozeController
 from views.construction.construction import ConstructionCommonView
 from .base_construction_controller import BaseConstructionController
 
-class ConstructionManager(BaseUIComponent):
+class ConstructionController(UIComponent):
     def __init__(self, simulation: Simulation, state: ConstructionState, camera: Camera, screen: pygame.Surface):
         self.view = ConstructionCommonView(simulation, state, camera, screen)
         self._simulation = simulation

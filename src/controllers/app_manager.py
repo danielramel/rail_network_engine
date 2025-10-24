@@ -5,23 +5,23 @@ from models.simulation import Simulation
 from graphics.camera import Camera
 from models.app_state import AppState, ViewMode
 from models.construction import ConstructionState
-from ui.components.base import BaseUIComponent
-from ui.construction.load_button import LoadButton
-from ui.construction.save_button import SaveButton
-from ui.mode_buttons import ModeSelectorButtons
+from ui.models.base import UIComponent
+from ui.components.load_button import LoadButton
+from ui.components.save_button import SaveButton
+from ui.components.mode_buttons import ModeSelectorButtons
 from ui.simulation.time_control_buttons import TimeControlButtons
 from ui.simulation.time_display import TimeDisplay
-from ui.timetable_button import TimeTableButton
-from ui.zoom_button import ZoomButton
+from ui.components.timetable_button import TimeTableButton
+from ui.components.zoom_button import ZoomButton
 from ui.construction.construction_buttons import ConstructionButtons
-from controllers.construction.construction_manager import ConstructionManager
+from controllers.construction.construction_manager import ConstructionController
 from models.geometry import Position
 from controllers.simulation.simulation_manager import SimulationManager
 from models.time import TimeControlState
 
 class AppController:
     construction_element_types: dict[ViewMode, tuple[type]] = {
-        ViewMode.CONSTRUCTION: (ConstructionButtons, SaveButton, LoadButton, ConstructionPanelStrategy, ConstructionManager),
+        ViewMode.CONSTRUCTION: (ConstructionButtons, SaveButton, LoadButton, ConstructionPanelStrategy, ConstructionController),
         ViewMode.SIMULATION: (TimeControlButtons, TimeDisplay, SimulationManager),
     }
     
@@ -50,7 +50,7 @@ class AppController:
         self.construction_state = ConstructionState()
         self.time_control_state = TimeControlState()
         
-        self.elements: list[BaseUIComponent] = [
+        self.elements: list[UIComponent] = [
             ModeSelectorButtons(screen, self.app_state),
             TimeTableButton(screen, self.simulation),
             ZoomButton(screen, self.camera),
@@ -67,7 +67,7 @@ class AppController:
                 SaveButton(self.screen, self.simulation),
                 LoadButton(self.screen, self.simulation),
                 ConstructionPanelStrategy(self.screen, self.construction_state),
-                ConstructionManager(self.simulation, self.construction_state, self.camera, self.screen)
+                ConstructionController(self.simulation, self.construction_state, self.camera, self.screen)
             ])
         elif mode == ViewMode.SIMULATION:
             self.time_control_state.reset()

@@ -4,26 +4,27 @@ from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
 from config.colors import BLACK, WHITE, YELLOW, RED
 from config.settings import BUTTON_SIZE
-from ui.components.rectangle import RectangleUIComponent
+from ui.models.rectangle import RectangleUIComponent
 
 
-class LoadButton(RectangleUIComponent):
+class SaveButton(RectangleUIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
     def __init__(self, surface: pygame.Surface, simulation: Simulation):
-        rect = pygame.Rect(BUTTON_SIZE//5, 800, BUTTON_SIZE, BUTTON_SIZE)
+        rect = pygame.Rect(BUTTON_SIZE//5, 700, BUTTON_SIZE, BUTTON_SIZE)
         super().__init__(rect, surface)
         self._simulation = simulation
 
     def handle_event(self, event: pygame.event) -> bool:   
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_l and (event.mod & pygame.KMOD_CTRL):
-                # Handle Ctrl+L
-                self.load_game()
+            if event.key == pygame.K_s and (event.mod & pygame.KMOD_CTRL):
+                # Handle Ctrl+S
+                self.save_game()
                 return True
             return False
         
-        if event.type == pygame.MOUSEBUTTONUP and event.button == 1 and self._rect.collidepoint(*event.pos_):
-            self.load_game()
+        elif self._rect.collidepoint(*event.pos_):
+            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                self.save_game()
             return True
            
         return self._rect.collidepoint(*event.pos_)
@@ -33,7 +34,7 @@ class LoadButton(RectangleUIComponent):
 
         font_size = max(12, self._rect.height - 10)
         font = pygame.font.Font(None, font_size)
-        text_surf = font.render("l", True, YELLOW)
+        text_surf = font.render("S", True, YELLOW)
         text_rect = text_surf.get_rect(center=self._rect.center)
         self._surface.blit(text_surf, text_rect)
 
@@ -43,28 +44,25 @@ class LoadButton(RectangleUIComponent):
     def contains(self, screen_pos: Position) -> bool:
         return self._rect.collidepoint(screen_pos.x, screen_pos.y)
     
-    def load_game(self):
+    def save_game(self):
+        data = self._simulation.to_dict()
+        
         import tkinter as tk
-        from tkinter import filedialog, messagebox
+        from tkinter import filedialog
         import json
-
         root = tk.Tk()
         root.withdraw()
         try:
-            filename = filedialog.askopenfilename(
+            filename = filedialog.asksaveasfilename(
                 defaultextension=".json",
                 filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
-                title="Load simulation from..."
+                title="Save simulation as..."
             )
             if not filename:
                 return None
 
-            with open(filename, 'r', encoding='utf-8') as f:
-                data = json.loads(f.read())
+            with open(filename, 'w') as f:
+                json.dump(data, f, indent=4)
 
-                self._simulation.from_dict(data)
-
-        except Exception as e:
-            messagebox.showerror("Load error", str(e))
         finally:
             root.destroy()

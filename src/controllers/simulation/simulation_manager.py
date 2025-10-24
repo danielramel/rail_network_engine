@@ -4,11 +4,11 @@ from models.geometry import Position
 from graphics.camera import Camera
 from models.simulation import Simulation
 from models.event import Event, CLICK_TYPE
-from ui.components.base import BaseUIComponent
+from ui.models.base import UIComponent
 from views.simulation.simulation_view import SimulationView
 
 
-class SimulationManager(BaseUIComponent):
+class SimulationManager(UIComponent):
     def __init__(self, simulation: Simulation, camera: Camera, screen: pygame.Surface):
         self.view = SimulationView(simulation, camera, screen)
         self._simulation = simulation

@@ -3,9 +3,9 @@ from models.construction import ConstructionState
 from graphics.camera import Camera
 from views.construction.base_construction_view import BaseConstructionView
 from models.geometry import Position
-from ui.components.base import BaseUIComponent
+from ui.models.base import UIComponent
 
-class BaseConstructionController(BaseUIComponent):
+class BaseConstructionController(UIComponent):
     """Base class for controllers that manage construction modes."""
     def __init__(self, view: BaseConstructionView, simulation: Simulation, state: ConstructionState, camera: Camera):
         self.view = view

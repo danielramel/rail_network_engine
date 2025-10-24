@@ -4,7 +4,7 @@ from ui.construction.panels.rail_panel import RailPanel
 from ui.construction.panels.signal_panel import SignalPanel
 from ui.construction.panels.station_panel import StationPanel
 from models.construction import ConstructionMode
-from ui.components.panel import Panel
+from ui.models.panel import Panel
 
 
 class ConstructionPanelStrategy(Panel):

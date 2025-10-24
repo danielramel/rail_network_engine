@@ -2,14 +2,14 @@ import pygame
 from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
 from models.app_state import AppState, ViewMode
-from ui.components.base import BaseUIComponent
+from ui.models.base import UIComponent
 from config.colors import BLACK, GREEN, WHITE, YELLOW, RED
 from config.paths import MODE_ICON_PATHS
 from config.settings import BUTTON_SIZE
 from config.keyboard_shortcuts import MODE_SELECTION
 
 
-class ModeSelectorButtons(BaseUIComponent):
+class ModeSelectorButtons(UIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
     def __init__(self, surface: pygame.Surface, app_state: AppState):
         self.icon_cache = {

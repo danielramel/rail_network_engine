@@ -2,7 +2,7 @@ import pygame
 from models.simulation import Simulation
 from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
-from ui.components.rectangle import RectangleUIComponent
+from ui.models.rectangle import RectangleUIComponent
 from config.colors import BLACK, GREEN, WHITE, YELLOW, RED
 from config.paths import TIMETABLE_ICON_PATH
 from config.settings import BUTTON_SIZE
@@ -10,7 +10,7 @@ from views.timetable.timetable_view import TimetableWindow
 
 
 class TimeTableButton(RectangleUIComponent):
-    handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL]
+    handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
     def __init__(self, surface: pygame.Surface, simulation: Simulation):
         self._simulation = simulation
 
@@ -20,20 +20,28 @@ class TimeTableButton(RectangleUIComponent):
         self.timetable_window = None  # Store window reference
         
     def handle_event(self, event: pygame.event) -> bool:
-        if self._rect.collidepoint(*event.pos_):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_t and (event.mod & pygame.KMOD_CTRL):
+                self.open_timetable_window()
+                return True
+            return False
+        
+        elif self._rect.collidepoint(*event.pos_):
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                if self.timetable_window is None:
-                    self.timetable_window = TimetableWindow(self._simulation)
-                    # Connect to the custom signal instead
-                    self.timetable_window.window_closed.connect(self._on_timetable_window_closed)
-                    self.timetable_window.show()
-                else:
-                    if self.timetable_window.isMinimized():
-                        self.timetable_window.showNormal()
-                    self.timetable_window.raise_()
-                    self.timetable_window.activateWindow()
+                self.open_timetable_window()
             return True
         return False
+    
+    def open_timetable_window(self):
+        if self.timetable_window is None:
+            self.timetable_window = TimetableWindow(self._simulation)
+            self.timetable_window.window_closed.connect(self._on_timetable_window_closed)
+            self.timetable_window.show()
+        else:
+            if self.timetable_window.isMinimized():
+                self.timetable_window.showNormal()
+            self.timetable_window.raise_()
+            self.timetable_window.activateWindow()
     
     def _on_timetable_window_closed(self, *args, **kwargs):
             self.timetable_window = None

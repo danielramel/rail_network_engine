@@ -1,7 +1,7 @@
 import pygame
 from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
-from ui.components.base import BaseUIComponent
+from ui.models.base import UIComponent
 from config.colors import BLACK, WHITE, YELLOW, RED
 from models.construction import ConstructionMode, ConstructionState
 from config.paths import CONSTRUCTION_ICON_PATHS
@@ -9,7 +9,7 @@ from config.settings import BUTTON_SIZE
 from config.keyboard_shortcuts import CONSTRUCTION_MODE_SELECTION
 
 
-class ConstructionButtons(BaseUIComponent):
+class ConstructionButtons(UIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
     def __init__(self, surface: pygame.Surface, construction_state: ConstructionState):
         self.icon_cache = {

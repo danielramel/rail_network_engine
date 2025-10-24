@@ -1,6 +1,6 @@
 import pygame
 from models.geometry.position import Position
-from ui.components.rectangle import RectangleUIComponent
+from ui.models.rectangle import RectangleUIComponent
 from config.colors import BLACK, WHITE
 from graphics.camera import Camera
 

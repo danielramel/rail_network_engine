@@ -2,11 +2,11 @@ from graphics.camera import Camera
 from models.construction import EdgeType
 from models.geometry.position import Position
 from models.simulation import Simulation
-from ui.components.base import BaseUIComponent
+from ui.models.base import UIComponent
 from ui.utils import draw_grid, draw_edge, draw_node, draw_signal, draw_station, draw_dotted_line
 import pygame
 
-class SimulationView(BaseUIComponent):
+class SimulationView(UIComponent):
     def __init__(self, simulation: Simulation, camera: Camera, screen: pygame.Surface):
         self._surface = screen
         self._simulation = simulation
