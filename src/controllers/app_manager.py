@@ -14,15 +14,16 @@ from ui.simulation.time_display import TimeDisplay
 from ui.components.timetable_button import TimeTableButton
 from ui.components.zoom_button import ZoomButton
 from ui.construction.construction_buttons import ConstructionButtons
-from controllers.construction.construction_manager import ConstructionController
+from controllers.construction.construction_controller import ConstructionController
 from models.geometry import Position
-from controllers.simulation.simulation_manager import SimulationManager
+from controllers.operation.operation_controller import OperationController
 from models.time import TimeControlState
+from controllers.camera_controller import CameraController
 
 class AppController:
     construction_element_types: dict[ViewMode, tuple[type]] = {
-        ViewMode.CONSTRUCTION: (ConstructionButtons, SaveButton, LoadButton, ConstructionPanelStrategy, ConstructionController),
-        ViewMode.SIMULATION: (TimeControlButtons, TimeDisplay, SimulationManager),
+        ViewMode.CONSTRUCTION: (ConstructionButtons, ConstructionPanelStrategy, ConstructionController),
+        ViewMode.SIMULATION: (TimeControlButtons, TimeDisplay, OperationController),
     }
     
     def __init__(self, screen: pygame.Surface):
@@ -54,6 +55,9 @@ class AppController:
             ModeSelectorButtons(screen, self.app_state),
             TimeTableButton(screen, self.simulation),
             ZoomButton(screen, self.camera),
+            LoadButton(screen, self.simulation),
+            SaveButton(screen, self.simulation),
+            CameraController(self.camera)
         ]
         
         self._add_mode_elements(self.app_state.mode)
@@ -74,7 +78,7 @@ class AppController:
             self.elements.extend([
                 TimeControlButtons(self.screen, self.time_control_state),
                 TimeDisplay(self.screen, self.time_control_state),
-                SimulationManager(self.simulation, self.camera, self.screen)
+                OperationController(self.simulation, self.camera, self.screen)
             ])
     
     def _remove_mode_elements(self, mode: ViewMode):
