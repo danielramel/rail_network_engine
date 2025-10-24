@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (QDialog, QFormLayout, QComboBox,
                               QVBoxLayout, QHBoxLayout, QPushButton, QWidget,
                               QTableWidget, QTableWidgetItem, QHeaderView)
 from PyQt6.QtCore import Qt, QTime
-from models.simulation import Simulation
+from models.railway_system import RailwaySystem
 from models.schedule import Schedule
 from PyQt6.QtWidgets import QLineEdit
 from views.timetable.train_editor_stylesheet import (
@@ -13,10 +13,10 @@ from views.timetable.train_editor_stylesheet import (
 from PyQt6.QtGui import QBrush
 
 class ScheduleEditorDialog(QDialog):
-    def __init__(self, parent, simulation: Simulation, train_to_edit: Schedule = None):
+    def __init__(self, parent, railway: RailwaySystem, train_to_edit: Schedule = None):
         self.train_to_edit = train_to_edit
         self.selected_row = None  # Custom selection tracking
-        self._simulation = simulation
+        self._railway = railway
         super().__init__(parent)
         self.setWindowTitle("Add Train" if train_to_edit is None else "Edit Train")
         self.setMinimumWidth(750)
@@ -182,7 +182,7 @@ class ScheduleEditorDialog(QDialog):
         
         # Station name combobox (column 1)
         station_combo = QComboBox()
-        station_combo.addItems(station.name for station in self._simulation.stations.all())
+        station_combo.addItems(station.name for station in self._railway.stations.all())
         self.stations_table.setCellWidget(row, 1, station_combo)
 
 
@@ -284,7 +284,7 @@ class ScheduleEditorDialog(QDialog):
                 departure_minutes = departure_time.hour() * 60 + departure_time.minute()
 
             schedule.append({
-                'station': self._simulation.stations.get_by_name(station_name),
+                'station': self._railway.stations.get_by_name(station_name),
                 'arrival_time': arrival_minutes,
                 'departure_time': departure_minutes
             })

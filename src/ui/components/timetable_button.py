@@ -1,5 +1,5 @@
 import pygame
-from models.simulation import Simulation
+from models.railway_system import RailwaySystem
 from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
 from ui.models.rectangle import RectangleUIComponent
@@ -11,8 +11,8 @@ from views.timetable.timetable_view import TimetableWindow
 
 class TimeTableButton(RectangleUIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
-    def __init__(self, surface: pygame.Surface, simulation: Simulation):
-        self._simulation = simulation
+    def __init__(self, surface: pygame.Surface, railway: RailwaySystem):
+        self._railway = railway
 
         self.icon = IconLoader().get_icon(TIMETABLE_ICON_PATH, BUTTON_SIZE)
         rect = pygame.Rect(BUTTON_SIZE//5, 300, BUTTON_SIZE, BUTTON_SIZE)
@@ -34,7 +34,7 @@ class TimeTableButton(RectangleUIComponent):
     
     def open_timetable_window(self):
         if self.timetable_window is None:
-            self.timetable_window = TimetableWindow(self._simulation)
+            self.timetable_window = TimetableWindow(self._railway)
             self.timetable_window.window_closed.connect(self._on_timetable_window_closed)
             self.timetable_window.show()
         else:

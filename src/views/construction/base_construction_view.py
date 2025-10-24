@@ -1,4 +1,4 @@
-from models.simulation import Simulation
+from models.railway_system import RailwaySystem
 from models.construction import ConstructionState
 from graphics.camera import Camera
 import pygame
@@ -7,8 +7,8 @@ from models.geometry.position import Position
 from abc import ABC, abstractmethod
 
 class BaseConstructionView(ABC):
-    def __init__(self, simulation: Simulation, state: ConstructionState, camera: Camera, surface: pygame.Surface):
-        self._simulation = simulation
+    def __init__(self, railway: RailwaySystem, state: ConstructionState, camera: Camera, surface: pygame.Surface):
+        self._railway = railway
         self._construction_state = state
         self._camera = camera
         self._surface = surface

@@ -1,4 +1,5 @@
 from enum import Enum
+from config.settings import FPS
 
 class TimeControlMode(Enum):
     PAUSE = 0
@@ -15,3 +16,7 @@ class TimeControlState:
         """Reset the time control state to its initial values."""
         self.mode = TimeControlMode.PAUSE
         self.current_time = 0
+        
+    def advance_time(self) -> None:
+        """Advance the current time by the specified number of seconds."""
+        self.current_time += 1 * self.mode.value / FPS

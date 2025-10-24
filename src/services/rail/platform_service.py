@@ -1,5 +1,5 @@
 from config.settings import GRID_SIZE, PLATFORM_LENGTH
-from models.simulation import GraphService
+from models.railway_system import GraphService
 from models.geometry import Position, Edge
 from networkx import Graph
 from models.station import Station

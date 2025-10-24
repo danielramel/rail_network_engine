@@ -2,16 +2,16 @@ import pygame
 from models.geometry import Position
     
 from graphics.camera import Camera
-from models.simulation import Simulation
+from models.railway_system import RailwaySystem
 from ui.models.base import UIComponent
 from views.simulation.simulation_view import SimulationView
 
 
 class SimulationController(UIComponent):
     handled_events = [pygame.MOUSEBUTTONUP]
-    def __init__(self, simulation: Simulation, camera: Camera, screen: pygame.Surface):
-        self.view = SimulationView(simulation, camera, screen)
-        self._simulation = simulation
+    def __init__(self, railway: RailwaySystem, camera: Camera, screen: pygame.Surface):
+        self.view = SimulationView(railway, camera, screen)
+        self._railway = railway
         self._camera = camera
 
     def handle_event(self, event):

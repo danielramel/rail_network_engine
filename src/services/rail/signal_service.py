@@ -2,7 +2,7 @@ import networkx as nx
 from models.geometry import Position, Pose
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from models.simulation import Simulation
+    from models.railway_system import RailwaySystem
 
 class SignalService:
     """Service responsible for adding / toggling / removing signals."""

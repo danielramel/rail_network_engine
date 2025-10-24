@@ -1,6 +1,5 @@
 import networkx as nx
 from models.geometry import Position, Pose, Edge
-from models.schedule import Schedule
 from services.rail.graph_query_service import GraphService
 from services.rail.signal_service import SignalService
 from services.rail.path_service import PathService
@@ -8,7 +7,7 @@ from services.rail.platform_service import PlatformService
 from models.station import StationRepository
 from models.schedule import ScheduleRepository
 
-class Simulation:
+class RailwaySystem:
     def __init__(self):
         self._graph = nx.Graph()
         self._graph_service = GraphService(self._graph)

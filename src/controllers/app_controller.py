@@ -1,7 +1,7 @@
 import pygame
 from config.colors import BLACK
 from controllers.construction.panel_strategy import ConstructionPanelStrategy
-from models.simulation import Simulation
+from models.railway_system import RailwaySystem
 from graphics.camera import Camera
 from models.app_state import AppState, ViewMode
 from models.construction import ConstructionState
@@ -28,22 +28,22 @@ class AppController:
     
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
-        self.simulation = Simulation()
+        self.railway = RailwaySystem()
         # mockup
-        self.simulation.stations.add(Position(100, 100), "Station A")
-        self.simulation.stations.add(Position(300, 100), "Station B")
-        self.simulation.stations.add(Position(500, 100), "Station C")
-        self.simulation.stations.add(Position(700, 100), "Station D")
-        self.simulation.stations.add(Position(100, 300), "Station E")
-        self.simulation.stations.add(Position(300, 300), "Station F")
-        self.simulation.stations.add(Position(500, 300), "Station G")
-        self.simulation.stations.add(Position(700, 300), "Station H")
-        self.simulation.stations.add(Position(100, 500), "Station I")
-        self.simulation.stations.add(Position(300, 500), "Station J")
-        self.simulation.stations.add(Position(500, 500), "Station K")
-        self.simulation.stations.add(Position(700, 500), "Station L")
-        self.simulation.stations.add(Position(900, 100), "Station M")
-        self.simulation.stations.add(Position(900, 300), "Station N")
+        self.railway.stations.add(Position(100, 100), "Station A")
+        self.railway.stations.add(Position(300, 100), "Station B")
+        self.railway.stations.add(Position(500, 100), "Station C")
+        self.railway.stations.add(Position(700, 100), "Station D")
+        self.railway.stations.add(Position(100, 300), "Station E")
+        self.railway.stations.add(Position(300, 300), "Station F")
+        self.railway.stations.add(Position(500, 300), "Station G")
+        self.railway.stations.add(Position(700, 300), "Station H")
+        self.railway.stations.add(Position(100, 500), "Station I")
+        self.railway.stations.add(Position(300, 500), "Station J")
+        self.railway.stations.add(Position(500, 500), "Station K")
+        self.railway.stations.add(Position(700, 500), "Station L")
+        self.railway.stations.add(Position(900, 100), "Station M")
+        self.railway.stations.add(Position(900, 300), "Station N")
         
         # mockup end
         self.camera = Camera()
@@ -53,10 +53,10 @@ class AppController:
         
         self.elements: list[UIComponent] = [
             ModeSelectorButtons(screen, self.app_state),
-            TimeTableButton(screen, self.simulation),
+            TimeTableButton(screen, self.railway),
             ZoomButton(screen, self.camera),
-            LoadButton(screen, self.simulation),
-            SaveButton(screen, self.simulation),
+            LoadButton(screen, self.railway),
+            SaveButton(screen, self.railway),
             CameraController(self.camera)
         ]
         
@@ -68,17 +68,17 @@ class AppController:
             self.construction_state.reset()
             self.elements.extend([
                 ConstructionButtons(self.screen, self.construction_state),
-                SaveButton(self.screen, self.simulation),
-                LoadButton(self.screen, self.simulation),
+                SaveButton(self.screen, self.railway),
+                LoadButton(self.screen, self.railway),
                 ConstructionPanelStrategy(self.screen, self.construction_state),
-                ConstructionController(self.simulation, self.construction_state, self.camera, self.screen)
+                ConstructionController(self.railway, self.construction_state, self.camera, self.screen)
             ])
         elif mode == ViewMode.SIMULATION:
             self.time_control_state.reset()
             self.elements.extend([
                 TimeControlButtons(self.screen, self.time_control_state),
                 TimeDisplay(self.screen, self.time_control_state),
-                SimulationController(self.simulation, self.camera, self.screen)
+                SimulationController(self.railway, self.camera, self.screen)
             ])
     
     def _remove_mode_elements(self, mode: ViewMode):
@@ -120,3 +120,8 @@ class AppController:
                 element.render(pos)
             else:
                 element.render(None)
+                
+    def tick(self):
+        """Advance the simulation time if in simulation mode."""
+        if self.app_state.mode == ViewMode.SIMULATION:
+            self.time_control_state.advance_time()

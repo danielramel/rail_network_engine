@@ -9,7 +9,7 @@ class SignalView(BaseConstructionView):
     def render(self, world_pos: Position | None):
         if world_pos is None:
             return
-        target = find_signal_target(self._simulation, world_pos)
+        target = find_signal_target(self._railway, world_pos)
         if target.preview_pose is None:
             return
 

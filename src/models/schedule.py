@@ -2,7 +2,7 @@ from models.station import Station
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from models.simulation import Simulation
+    from models.railway_system import RailwaySystem
 
 @dataclass
 class Schedule:
@@ -30,12 +30,12 @@ class Schedule:
         }
         
     @classmethod
-    def from_dict(cls, data: dict, simulation: 'Simulation') -> 'Schedule':
+    def from_dict(cls, data: dict, railway: 'RailwaySystem') -> 'Schedule':
         """Create a Schedule object from a dictionary."""
         stations = []
         for entry in data['stations']:
             stations.append({
-                'station': simulation.stations.get(entry['id']),
+                'station': railway.stations.get(entry['id']),
                 'arrival_time': entry['arrival_time'],
                 'departure_time': entry['departure_time']
             })
@@ -71,7 +71,7 @@ class ScheduleRepository:
         return [schedule.to_dict() for schedule in self._schedules]
     
     @classmethod
-    def from_dict(cls, data: list[dict], simulation: 'Simulation') -> 'ScheduleRepository':
+    def from_dict(cls, data: list[dict], simulation: 'RailwaySystem') -> 'ScheduleRepository':
         repo = cls()
         for schedule_data in data:
             schedule = Schedule.from_dict(schedule_data, simulation)

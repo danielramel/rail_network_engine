@@ -1,5 +1,5 @@
 import pygame
-from models.simulation import Simulation
+from models.railway_system import RailwaySystem
 from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
 from config.colors import BLACK, WHITE, YELLOW, RED
@@ -9,10 +9,10 @@ from ui.models.rectangle import RectangleUIComponent
 
 class LoadButton(RectangleUIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
-    def __init__(self, surface: pygame.Surface, simulation: Simulation):
+    def __init__(self, surface: pygame.Surface, railway: RailwaySystem):
         rect = pygame.Rect(BUTTON_SIZE//5, 800, BUTTON_SIZE, BUTTON_SIZE)
         super().__init__(rect, surface)
-        self._simulation = simulation
+        self._railway = railway
 
     def handle_event(self, event: pygame.event) -> bool:   
         if event.type == pygame.KEYDOWN:
@@ -63,7 +63,7 @@ class LoadButton(RectangleUIComponent):
             with open(filename, 'r', encoding='utf-8') as f:
                 data = json.loads(f.read())
 
-                self._simulation.from_dict(data)
+                self._railway.from_dict(data)
 
         except Exception as e:
             messagebox.showerror("Load error", str(e))

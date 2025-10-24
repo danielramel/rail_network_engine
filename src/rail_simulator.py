@@ -1,5 +1,6 @@
 import pygame
-from controllers.app_manager import AppController
+from config.settings import FPS
+from controllers.app_controller import AppController
 from PyQt6.QtWidgets import QApplication
 import sys
 
@@ -33,6 +34,7 @@ class RailSimulator:
             self.app_controller.render_view()
 
             pygame.display.flip()
-            self.clock.tick(60)
+            self.clock.tick(FPS)
+            self.app_controller.tick()
 
         pygame.quit()

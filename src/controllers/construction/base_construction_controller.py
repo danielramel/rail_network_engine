@@ -1,4 +1,4 @@
-from models.simulation import Simulation
+from models.railway_system import RailwaySystem
 from models.construction import ConstructionState
 from graphics.camera import Camera
 from views.construction.base_construction_view import BaseConstructionView
@@ -7,9 +7,9 @@ from ui.models.base import UIComponent
 
 class BaseConstructionController(UIComponent):
     """Base class for controllers that manage construction modes."""
-    def __init__(self, view: BaseConstructionView, simulation: Simulation, state: ConstructionState, camera: Camera):
+    def __init__(self, view: BaseConstructionView, railway: RailwaySystem, state: ConstructionState, camera: Camera):
         self.view = view
-        self._simulation = simulation
+        self._railway = railway
         self._construction_state = state
         self._camera = camera
 

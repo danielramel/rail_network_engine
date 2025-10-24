@@ -5,7 +5,7 @@ class Camera:
         self.x = 0.0
         self.y = 0.0
         self.scale = 1.0
-        self.min_scale = 0.4
+        self.min_scale = 0.1
         self.max_scale = 8.0
         self.is_dragging = False
         self.drag_start_x = 0

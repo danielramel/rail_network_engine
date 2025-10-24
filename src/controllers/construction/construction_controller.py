@@ -2,7 +2,7 @@ import pygame
 from models.geometry import Position
     
 from graphics.camera import Camera
-from models.simulation import Simulation
+from models.railway_system import RailwaySystem
 from models.construction import ConstructionState, ConstructionMode
 from ui.models.base import UIComponent
 from .rail_controller import RailController
@@ -15,18 +15,18 @@ from .base_construction_controller import BaseConstructionController
 
 class ConstructionController(UIComponent):
     handled_events = [pygame.MOUSEBUTTONUP]
-    def __init__(self, simulation: Simulation, state: ConstructionState, camera: Camera, screen: pygame.Surface):
-        self.view = ConstructionCommonView(simulation, state, camera, screen)
-        self._simulation = simulation
+    def __init__(self, railway: RailwaySystem, state: ConstructionState, camera: Camera, screen: pygame.Surface):
+        self.view = ConstructionCommonView(railway, state, camera, screen)
+        self._railway = railway
         self._construction_state = state
         self._camera = camera
 
         self._controllers: dict[ConstructionMode, BaseConstructionController] = {
-            ConstructionMode.RAIL: RailController(simulation, state, camera, screen),
-            ConstructionMode.SIGNAL: SignalController(simulation, state, camera, screen),
-            ConstructionMode.STATION: StationController(simulation, state, camera, screen),
-            ConstructionMode.PLATFORM: PlatformController(simulation, state, camera, screen),
-            ConstructionMode.BULLDOZE: BulldozeController(simulation, state, camera, screen),
+            ConstructionMode.RAIL: RailController(railway, state, camera, screen),
+            ConstructionMode.SIGNAL: SignalController(railway, state, camera, screen),
+            ConstructionMode.STATION: StationController(railway, state, camera, screen),
+            ConstructionMode.PLATFORM: PlatformController(railway, state, camera, screen),
+            ConstructionMode.BULLDOZE: BulldozeController(railway, state, camera, screen),
         }
         
     def handle_event(self, event):                

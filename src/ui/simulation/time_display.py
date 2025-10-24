@@ -11,8 +11,8 @@ class TimeDisplay(RectangleUIComponent):
         self._time_state = time_state
 
     def render(self, screen_pos: Position) -> None:
-        font = pygame.font.SysFont(None, 24)
-        seconds = self._time_state.current_time
+        font = pygame.font.SysFont("Courier New", 24)
+        seconds = round(self._time_state.current_time)
         hours = seconds // 3600
         minutes = (seconds % 3600) // 60
         secs = seconds % 60
@@ -28,7 +28,7 @@ class TimeDisplay(RectangleUIComponent):
         self._surface.blit(text_surface, text_rect)
 
     def _get_rect(self, surface: pygame.Surface) -> pygame.Rect:
-        width, height = 100, 40
+        width, height = 130, 40
         x = (surface.get_width() - width) // 2
         y = 10
         return pygame.Rect(x, y, width, height)

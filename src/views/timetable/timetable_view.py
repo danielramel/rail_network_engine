@@ -9,14 +9,14 @@ from models.schedule import Schedule
 from views.timetable.schedule_editor_dialog import ScheduleEditorDialog
 from views.timetable.timetable_stylesheet import TIMETABLE_STYLESHEET
 from PyQt6.QtCore import pyqtSignal
-from models.simulation import Simulation
+from models.railway_system import RailwaySystem
 from PyQt6.QtWidgets import QHeaderView, QSizePolicy
 
 class TimetableWindow(QMainWindow):
     window_closed = pyqtSignal()
-    def __init__(self, simulation: Simulation):
+    def __init__(self, railway: RailwaySystem):
         super().__init__()
-        self._simulation = simulation
+        self._railway = railway
         self.setWindowTitle("Train Timetable")
         self.setMinimumSize(1000, 600)
         
@@ -66,7 +66,7 @@ class TimetableWindow(QMainWindow):
         central_widget.setLayout(layout)
             
     def refresh_table(self):
-        schedules = self._simulation.schedules.all()
+        schedules = self._railway.schedules.all()
         total_rows = 0
         for i, schedule in enumerate(schedules):
             total_rows += 1
@@ -170,7 +170,7 @@ class TimetableWindow(QMainWindow):
         
 
     def add_schedule(self):
-        dialog = ScheduleEditorDialog(self, self._simulation)
+        dialog = ScheduleEditorDialog(self, self._railway)
         # Open dialog in detached (non-modal) state and handle result asynchronously
         def _on_finished(res: int):
             if res == QDialog.DialogCode.Rejected:
@@ -183,7 +183,7 @@ class TimetableWindow(QMainWindow):
                 last_train=data['last_train'],
                 frequency=data['frequency']
                 )
-            self._simulation.schedules.add(schedule)
+            self._railway.schedules.add(schedule)
             self.refresh_table()
 
         dialog.finished.connect(_on_finished)
@@ -191,9 +191,9 @@ class TimetableWindow(QMainWindow):
         dialog.show()
 
     def edit_schedule(self, schedule_idx):
-        schedule = self._simulation.schedules.get(schedule_idx)
+        schedule = self._railway.schedules.get(schedule_idx)
 
-        dialog = ScheduleEditorDialog(self, self._simulation, schedule)
+        dialog = ScheduleEditorDialog(self, self._railway, schedule)
 
         # Open dialog in detached (non-modal) state and handle result asynchronously
         def _on_finished(res: int):
@@ -202,7 +202,7 @@ class TimetableWindow(QMainWindow):
             data = dialog.get_data()
 
             # Remove old schedule and add updated one
-            self._simulation.schedules.remove(schedule)
+            self._railway.schedules.remove(schedule)
 
             updated_schedule = Schedule(
                 code=data['code'],
@@ -211,7 +211,7 @@ class TimetableWindow(QMainWindow):
                 last_train=data['last_train'],
                 frequency=data['frequency']
             )
-            self._simulation.schedules.add(updated_schedule)
+            self._railway.schedules.add(updated_schedule)
             # self.expanded_rows.clear()  # Clear expanded state on refresh (optional)
             self.refresh_table()
 
@@ -220,8 +220,8 @@ class TimetableWindow(QMainWindow):
         dialog.show()
 
     def delete_schedule(self, schedule_idx):
-        schedule = self._simulation.schedules.get(schedule_idx)
-        self._simulation.schedules.remove(schedule)
+        schedule = self._railway.schedules.get(schedule_idx)
+        self._railway.schedules.remove(schedule)
         self.expanded_rows.discard(schedule_idx)  # Remove from expanded if it was expanded
         self.refresh_table()
 
