@@ -9,16 +9,16 @@ class CameraController(UIComponent):
         
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
-            self._camera.start_drag(event.pos_)
+            self._camera.start_drag(event.screen_pos)
 
         elif event.type == pygame.MOUSEMOTION:
-            self._camera.update_drag(event.pos_)
+            self._camera.update_drag(event.screen_pos)
 
         elif event.type == pygame.MOUSEWHEEL:
-            self._camera.zoom(event.pos_, event.y)
+            self._camera.zoom(event.screen_pos, event.y)
 
         elif event.type == pygame.MOUSEBUTTONUP:
-            was_dragging = self._camera.stop_drag(event.pos_)
+            was_dragging = self._camera.stop_drag(event.screen_pos)
             
             if not was_dragging:
                 return False  # Not handled further

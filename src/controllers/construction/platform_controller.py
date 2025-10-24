@@ -1,5 +1,4 @@
 from controllers.construction.base_construction_controller import BaseConstructionController
-from models.event import CLICK_TYPE, Event
 from config.settings import PLATFORM_LENGTH
 from ui.popups import alert
 from services.construction.platform_target import find_platform_target
@@ -15,8 +14,8 @@ class PlatformController(BaseConstructionController):
         super().__init__(view, simulation, state, camera)
         
         
-    def handle_event(self, event: Event):
-        if event.click_type == CLICK_TYPE.RIGHT_CLICK:
+    def handle_event(self, event: pygame.event.Event) -> None:
+        if event.button == 3:
             if self._construction_state.platform_waiting_for_station:
                 self._construction_state.platform_waiting_for_station = False
             else:

@@ -97,14 +97,14 @@ class RailPanel(BaseConstructionPanel):
     def handle_event(self, event: pygame.event.Event) -> bool:
         """Handle +/- clicks; return True if the event was consumed."""     
         if event.type != pygame.MOUSEBUTTONUP or event.button != 1:
-            return self._rect.collidepoint(*event.pos_)
+            return self._rect.collidepoint(*event.screen_pos)
         
-        if self.minus_rect.collidepoint(*event.pos_) and self.can_decrease_speed:
+        if self.minus_rect.collidepoint(*event.screen_pos) and self.can_decrease_speed:
             self._adjust_speed(-self.SPEED_INCREMENT)
             return True
         
-        if self.plus_rect.collidepoint(*event.pos_) and self.can_increase_speed:
+        if self.plus_rect.collidepoint(*event.screen_pos) and self.can_increase_speed:
             self._adjust_speed(self.SPEED_INCREMENT)
             return True
         
-        return self._rect.collidepoint(*event.pos_)
+        return self._rect.collidepoint(*event.screen_pos)

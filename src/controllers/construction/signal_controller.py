@@ -1,5 +1,4 @@
 from controllers.construction.base_construction_controller import BaseConstructionController
-from models.event import Event, CLICK_TYPE
 from services.construction.signal_target import find_signal_target, SignalTargetType
 from graphics.camera import Camera
 from models.simulation import Simulation
@@ -12,8 +11,8 @@ class SignalController(BaseConstructionController):
         view = SignalView(simulation, state, camera, screen)
         super().__init__(view, simulation, state, camera)
         
-    def handle_event(self, event: Event):
-        if event.click_type == CLICK_TYPE.RIGHT_CLICK:
+    def handle_event(self, event: pygame.event.Event) -> None:
+        if event.button == 3:
             self._construction_state.switch_mode(None)
             return
 

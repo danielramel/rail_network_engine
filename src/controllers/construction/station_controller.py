@@ -1,5 +1,4 @@
 from controllers.construction.base_construction_controller import BaseConstructionController
-from models.event import CLICK_TYPE, Event
 from ui.popups import user_input
 from services.construction.station_target import find_station_target
 from graphics.camera import Camera
@@ -13,8 +12,8 @@ class StationController(BaseConstructionController):
         view = StationView(simulation, state, camera, screen)
         super().__init__(view, simulation, state, camera)
         
-    def handle_event(self, event: Event):
-        if event.click_type == CLICK_TYPE.RIGHT_CLICK:
+    def handle_event(self, event: pygame.event.Event) -> None:
+        if event.button == 3:
             if self._construction_state.moving_station is not None:
                 self._construction_state.moving_station = None
             else:
@@ -29,7 +28,7 @@ class StationController(BaseConstructionController):
             return
 
         # blocked or overlapping -> do nothing
-        if target.blocked_by_node or target.overlaps_station:
+        elif target.blocked_by_node or target.overlaps_station:
             return
 
         # move station if one is being moved

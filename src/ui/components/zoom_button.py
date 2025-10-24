@@ -30,7 +30,7 @@ class ZoomButton(RectangleUIComponent):
         if self.is_hidden():
             return False
         
-        if self._rect.collidepoint(*event.pos_):
+        if self._rect.collidepoint(*event.screen_pos):
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 self._camera.reset()
             return True

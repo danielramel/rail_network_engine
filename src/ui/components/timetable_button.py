@@ -26,7 +26,7 @@ class TimeTableButton(RectangleUIComponent):
                 return True
             return False
         
-        elif self._rect.collidepoint(*event.pos_):
+        elif self._rect.collidepoint(*event.screen_pos):
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 self.open_timetable_window()
             return True

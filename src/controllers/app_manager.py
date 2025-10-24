@@ -93,7 +93,7 @@ class AppController:
             or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             return "quit"
 
-        event.pos_ = Position(*pygame.mouse.get_pos())
+        event.screen_pos = Position(*pygame.mouse.get_pos())
         for element in self.elements:
             if hasattr(element, "handled_events") and event.type not in element.handled_events:
                 continue

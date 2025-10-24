@@ -1,4 +1,3 @@
-from models.geometry.position import Position
 from models.station import Station
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING

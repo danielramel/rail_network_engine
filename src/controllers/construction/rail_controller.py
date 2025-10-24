@@ -1,6 +1,5 @@
 import pygame
 from controllers.construction.base_construction_controller import BaseConstructionController
-from models.event import CLICK_TYPE, Event
 from services.construction.rail_target import find_rail_target, RailTargetType
 from models.geometry import Pose
 from views.construction.rail import RailView
@@ -14,8 +13,8 @@ class RailController(BaseConstructionController):
         super().__init__(view, simulation, state, camera)
         
         
-    def handle_event(self, event: Event):
-        if event.click_type == CLICK_TYPE.RIGHT_CLICK:
+    def handle_event(self, event: pygame.event.Event) -> None:
+        if event.button == 3:
             if self._construction_state.construction_anchor is not None:
                 self._construction_state.construction_anchor = None
             else:
@@ -26,21 +25,14 @@ class RailController(BaseConstructionController):
 
         if target.kind == RailTargetType.NODE:
             self._construction_state.construction_anchor = Pose(target.snapped, (0, 0))
-            return True
 
-        if target.kind == RailTargetType.ANCHOR_SAME:
+        elif target.kind == RailTargetType.ANCHOR_SAME:
             self._construction_state.construction_anchor = None
-            return True
 
-        if target.kind == RailTargetType.NO_PATH:
-            return True  # consumed, but nothing changed
 
-        if target.kind == RailTargetType.PATH:
+        elif target.kind == RailTargetType.PATH:
             self._simulation.graph.add_segment(target.found_path, self._construction_state.track_speed)
             self._construction_state.construction_anchor = Pose(
                 target.snapped,
                 target.found_path[-2].direction_to(target.snapped)
             )
-            return True
-
-        return False

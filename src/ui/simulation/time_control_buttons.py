@@ -35,7 +35,7 @@ class TimeControlButtons(UIComponent):
             return False
           
         for mode, btn in self.buttons:
-            if btn.collidepoint(*event.pos_):
+            if btn.collidepoint(*event.screen_pos):
                 if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                     self.time_control_state.mode = mode
                 return True

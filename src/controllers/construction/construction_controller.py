@@ -4,7 +4,6 @@ from models.geometry import Position
 from graphics.camera import Camera
 from models.simulation import Simulation
 from models.construction import ConstructionState, ConstructionMode
-from models.event import Event, CLICK_TYPE
 from ui.models.base import UIComponent
 from .rail_controller import RailController
 from .platform_controller import PlatformController
@@ -34,11 +33,6 @@ class ConstructionController(UIComponent):
         if self._construction_state.mode is None:
             return
         
-        if event.button not in (1, 3):
-            return
-        
-        click_type = CLICK_TYPE.LEFT_CLICK if event.button == 1 else CLICK_TYPE.RIGHT_CLICK
-        event = Event(click_type, event.pos_)
         self._controllers[self._construction_state.mode].handle_event(event)
             
             

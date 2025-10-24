@@ -29,7 +29,7 @@ class ConstructionButtons(UIComponent):
             return False
              
         for mode, btn in self.buttons:
-            if btn.collidepoint(*event.pos_):
+            if btn.collidepoint(*event.screen_pos):
                 if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                     self.construction_state.switch_mode(mode)
                 return True

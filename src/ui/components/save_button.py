@@ -22,12 +22,12 @@ class SaveButton(RectangleUIComponent):
                 return True
             return False
         
-        elif self._rect.collidepoint(*event.pos_):
+        elif self._rect.collidepoint(*event.screen_pos):
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 self.save_game()
             return True
            
-        return self._rect.collidepoint(*event.pos_)
+        return self._rect.collidepoint(*event.screen_pos)
 
     def render(self, screen_pos: Position) -> None:
         pygame.draw.rect(self._surface, WHITE, self._rect, border_radius=10)

@@ -15,4 +15,4 @@ class RectangleUIComponent(UIComponent):
         return self._rect.collidepoint(*screen_pos)
     
     def handle_event(self, event):
-        return self._rect.collidepoint(*event.pos_)
+        return self._rect.collidepoint(*event.screen_pos)
