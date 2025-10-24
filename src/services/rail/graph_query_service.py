@@ -150,8 +150,8 @@ class GraphService:
             node['id'] = node['id'].to_dict()
             
         for link in graph_data['links']:
-            for key in ('source', 'target'):
-                link[key] = link[key].to_dict()
+            link["source"] = link["source"].to_dict()
+            link["target"] = link["target"].to_dict()
             if 'station' in link:
                 link['station'] = link['station'].id
         

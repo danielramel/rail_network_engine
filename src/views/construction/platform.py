@@ -13,10 +13,10 @@ class PlatformView(BaseConstructionView):
         # handle the “select_station” preview mode first
         if self._construction_state.platform_waiting_for_station:
             middle_point = self._simulation.platforms.get_middle_of_platform(self._construction_state.preview_edges)
-            for station_pos in self._simulation.stations.positions():
-                if world_pos.is_within_station_rect(station_pos):
-                    draw_station(self._surface, self._simulation.stations.get_by_position(station_pos), self._camera, color=LIGHTBLUE)
-                    draw_dotted_line(self._surface, station_pos, middle_point, self._camera, color=LIGHTBLUE)
+            for station in self._simulation.stations.all():
+                if world_pos.is_within_station_rect(station.position):
+                    draw_station(self._surface, station, self._camera, color=LIGHTBLUE)
+                    draw_dotted_line(self._surface, station.position, middle_point, self._camera, color=LIGHTBLUE)
                     break
             else:
                 draw_dotted_line(self._surface, world_pos, middle_point, self._camera, color=LIGHTBLUE)

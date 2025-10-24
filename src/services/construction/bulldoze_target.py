@@ -24,9 +24,9 @@ def find_bulldoze_target(simulation: Simulation, world_pos: Position, camera_sca
     if simulation.graph.has_node_at(snapped) and simulation.signals.has_signal_at(snapped):
         return BulldozeTarget(kind=BulldozeTargetType.SIGNAL, pos=snapped)
 
-    for station_pos in simulation.stations.positions():
-        if world_pos.is_within_station_rect(station_pos):
-            return BulldozeTarget(kind=BulldozeTargetType.STATION, pos=station_pos)
+    for station in simulation.stations.all():
+        if world_pos.is_within_station_rect(station.position):
+            return BulldozeTarget(kind=BulldozeTargetType.STATION, pos=station.position)
 
     closest_edge = world_pos.closest_edge(simulation.graph.edges, camera_scale)
     if closest_edge is None:

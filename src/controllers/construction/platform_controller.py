@@ -26,17 +26,14 @@ class PlatformController(BaseConstructionController):
         world_pos = self._camera.screen_to_world(event.screen_pos)
         # if user is currently selecting a station for the platform
         if self._construction_state.platform_waiting_for_station:
-            for station_pos in self._simulation.stations.positions():
-                if world_pos.is_within_station_rect(station_pos):
-                    self._simulation.platforms.add(
-                        self._simulation.stations.get_by_position(station_pos),
-                        list(self._construction_state.preview_edges)
-                    )
+            for station in self._simulation.stations.all():
+                if world_pos.is_within_station_rect(station.position):
+                    self._simulation.platforms.add(station, list(self._construction_state.preview_edges))
                     break
             self._construction_state.platform_waiting_for_station = False
             return
 
-        if len(self._simulation.stations.positions()) == 0:
+        if len(self._simulation.stations.all()) == 0:
             alert('Please build a station first.')
             self._construction_state.switch_mode(None)
             return

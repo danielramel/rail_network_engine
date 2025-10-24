@@ -54,12 +54,9 @@ class StationRepository:
                 return station
         return None
 
-    def all(self) -> list[Station]:
-        return list(self._stations.values())
-    
-    def positions(self) -> list[Position]:
-        return [station.position for station in self._stations.values()]
-    
+    def all(self) -> tuple[Station]:
+        return tuple(self._stations.values())
+
     def is_within_any(self, pos: Position) -> bool:
         return any(pos.is_within_station_rect(station.position) for station in self._stations.values())
     
