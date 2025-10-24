@@ -6,26 +6,26 @@ from PyQt6.QtCore import Qt, QTime
 from models.railway_system import RailwaySystem
 from models.schedule import Schedule
 from PyQt6.QtWidgets import QLineEdit
-from views.timetable.train_editor_stylesheet import (
+from views.timetable.schedule_editor_stylesheet import (
     TABLE_STYLE, MOVE_UP_BUTTON_STYLE, MOVE_DOWN_BUTTON_STYLE,
     ADD_BUTTON_STYLE, REMOVE_BUTTON_STYLE
 )
 from PyQt6.QtGui import QBrush
 
 class ScheduleEditorDialog(QDialog):
-    def __init__(self, parent, railway: RailwaySystem, train_to_edit: Schedule = None):
-        self.train_to_edit = train_to_edit
+    def __init__(self, parent, railway: RailwaySystem, schedule_to_edit: Schedule = None):
+        self.schedule_to_edit = schedule_to_edit
         self.selected_row = None  # Custom selection tracking
         self._railway = railway
         super().__init__(parent)
-        self.setWindowTitle("Add Train" if train_to_edit is None else "Edit Train")
+        self.setWindowTitle("Add Schedule" if schedule_to_edit is None else "Edit Schedule")
         self.setMinimumWidth(750)
         self.setMinimumHeight(700)
         
         layout = QFormLayout()
         
         self.code_edit = QLineEdit()
-        self.code_edit.setPlaceholderText("Enter train code")
+        self.code_edit.setPlaceholderText("Enter Train code")
         layout.addRow("Train code:", self.code_edit)
         
         self.first_train_time_edit = QTimeEdit()
@@ -132,17 +132,17 @@ class ScheduleEditorDialog(QDialog):
         layout.addRow(buttons)
         
         # Load existing train data if editing
-        if train_to_edit:
-            self.code_edit.setText(train_to_edit.code)
-            self.first_train_time_edit.setTime(QTime.fromMSecsSinceStartOfDay(train_to_edit.first_train * 60 * 1000))
-            self.freq_combo.setCurrentText(f"{train_to_edit.frequency}")
+        if schedule_to_edit:
+            self.code_edit.setText(schedule_to_edit.code)
+            self.first_train_time_edit.setTime(QTime.fromMSecsSinceStartOfDay(schedule_to_edit.first_train * 60 * 1000))
+            self.freq_combo.setCurrentText(f"{schedule_to_edit.frequency}")
             
             # Set last train time
-            self.last_train_time_edit.setTime(QTime.fromMSecsSinceStartOfDay(train_to_edit.last_train * 60 * 1000))
+            self.last_train_time_edit.setTime(QTime.fromMSecsSinceStartOfDay(schedule_to_edit.last_train * 60 * 1000))
 
-            self.add_station_rows_from_schedule(train_to_edit.stations)
+            self.add_station_rows_from_schedule(schedule_to_edit.stations)
         else:
-            # Add two empty rows by default for new trains
+            # Add two empty rows by default for new schedules
             self.add_empty_station_row()
             # self.add_station_row()
                 
@@ -260,8 +260,7 @@ class ScheduleEditorDialog(QDialog):
             self.update_first_last_station_cells()
     
     def get_data(self):
-        """Extract all train data from the dialog"""
-        schedule = []
+        stations = []
         row_count = self.stations_table.rowCount()
         
         for row in range(row_count):
@@ -283,7 +282,7 @@ class ScheduleEditorDialog(QDialog):
                 departure_time = departure_time_widget.time()
                 departure_minutes = departure_time.hour() * 60 + departure_time.minute()
 
-            schedule.append({
+            stations.append({
                 'station': self._railway.stations.get_by_name(station_name),
                 'arrival_time': arrival_minutes,
                 'departure_time': departure_minutes
@@ -299,7 +298,7 @@ class ScheduleEditorDialog(QDialog):
         
         return {
             'code': self.code_edit.text(),
-            'schedule': schedule,
+            'stations': stations,
             'first_train': first_train_minutes,
             'last_train': last_train_minutes,
             'frequency': frequency

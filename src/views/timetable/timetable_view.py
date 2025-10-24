@@ -30,7 +30,7 @@ class TimetableWindow(QMainWindow):
         
         layout = QVBoxLayout()
         
-        add_btn = QPushButton("+ Add Train")
+        add_btn = QPushButton("+ Add Schedule")
         add_btn.clicked.connect(self.add_schedule)
         layout.addWidget(add_btn, alignment=Qt.AlignmentFlag.AlignRight)
         
@@ -81,7 +81,7 @@ class TimetableWindow(QMainWindow):
             # Prepare items for columns 0-6
             items = [
                 QTableWidgetItem(schedule.code),
-                QTableWidgetItem(self._format_route(schedule.stations, i in self.expanded_rows)),
+                QTableWidgetItem(self._format_route(schedule.stations)),
                 QTableWidgetItem(""),  # Arrival - empty for main row
                 QTableWidgetItem(""),  # Departure - empty for main row
                 QTableWidgetItem(self._format_time(schedule.first_train)),
@@ -94,7 +94,7 @@ class TimetableWindow(QMainWindow):
             items[0].setForeground(QColor(*BLACK))
             items[0].setTextAlignment(Qt.AlignmentFlag.AlignCenter)
 
-            # Route item: store train index, alignment, tooltip
+            # Route item: store schedule index, alignment, tooltip
             items[1].setData(Qt.ItemDataRole.UserRole, i)
             items[1].setTextAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
             items[1].setToolTip("Click to expand/collapse stations")
@@ -206,7 +206,7 @@ class TimetableWindow(QMainWindow):
 
             updated_schedule = Schedule(
                 code=data['code'],
-                stations=data['schedule'],
+                stations=data['stations'],
                 first_train=data['first_train'],
                 last_train=data['last_train'],
                 frequency=data['frequency']
@@ -241,28 +241,18 @@ class TimetableWindow(QMainWindow):
         
         return QColor(*RED)
 
-    def _format_route(self, schedule: list[dict[str, Station | int]], is_expanded: bool = False) -> str:
+    def _format_route(self, schedule: list[dict[str, Station | int]]) -> str:
         if not len(schedule):
             return "No stations"
-        elif len(schedule) == 1:
-            station_name = schedule[0]['station'].name
-            if is_expanded:
-                return station_name
-            dep_time = self._format_time(schedule[0]['departure_time'])
-            return f"{station_name} (dep: {dep_time})"
         elif len(schedule) == 2:
             first_station = schedule[0]['station'].name
             last_station = schedule[1]['station'].name
-            if is_expanded:
-                return f"{first_station} → {last_station}"
             first_dep = self._format_time(schedule[0]['departure_time'])
             last_arr = self._format_time(schedule[1]['arrival_time'])
             return f"{first_station} ({first_dep}) → {last_station} ({last_arr})"
         else:
             first_station = schedule[0]['station'].name
             last_station = schedule[-1]['station'].name
-            if is_expanded:
-                return f"{first_station} → ... → {last_station}"
             first_dep = self._format_time(schedule[0]['departure_time'])
             last_arr = self._format_time(schedule[-1]['arrival_time'])
             return f"{first_station} ({first_dep}) → ... → {last_station} ({last_arr})"

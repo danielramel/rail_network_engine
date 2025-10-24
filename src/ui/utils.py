@@ -7,6 +7,7 @@ from models.construction import EdgeType
 from models.geometry import Position, Pose
 from models.geometry.edge import Edge
 from models.station import Station
+from models.train import Train
 
 def draw_node(surface: pygame.Surface, node: Position, camera: Camera, color=WHITE):
     """Draw a node on the given surface using the camera."""
@@ -55,10 +56,11 @@ def draw_signal(surface: pygame.Surface, alignment: Pose, camera: Camera, color=
 
     
 def draw_station(surface: pygame.Surface, station: Station, camera: Camera, color=PURPLE):
+    width = max(1, int(round(3 * camera.scale)))
     w, h = STATION_RECT_SIZE
     rect = pygame.Rect(0, 0, w * camera.scale, h * camera.scale)
     rect.center = tuple(camera.world_to_screen(station.position))
-    pygame.draw.rect(surface, color, rect, 3)
+    pygame.draw.rect(surface, color, rect, width)
 
     # Render station name text in the middle of the rect
     font = pygame.font.SysFont(None, int(rect.height * 0.6))
@@ -84,15 +86,18 @@ def draw_dotted_line(surface: pygame.Surface, start_pos: Position, end_pos: Posi
         pygame.draw.circle(surface, color, (int(dot_x), int(dot_y)), 1)
         
 def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type=None, speed=None):
+    # Line width scales with camera zoom; ensure at least 1 pixel
+    width = max(1, int(round(3 * camera.scale)))
+
     if edge_type == EdgeType.BULLDOZE or edge_type == EdgeType.INVALID_PLATFORM:
-        pygame.draw.line(surface, RED, *camera.world_to_screen_from_edge(edge), width=3)
+        pygame.draw.line(surface, RED, *camera.world_to_screen_from_edge(edge), width=width)
     elif edge_type == EdgeType.PLATFORM_SELECTED:
         draw_platform(surface, edge, camera, color=LIGHTBLUE)
     elif edge_type == EdgeType.PLATFORM:
         draw_platform(surface, edge, camera, color=PURPLE)
     elif edge_type is None or edge_type == EdgeType.NORMAL:
         color = WHITE if speed is None else color_from_speed(speed)
-        pygame.draw.line(surface, color, *camera.world_to_screen_from_edge(edge), width=3)
+        pygame.draw.line(surface, color, *camera.world_to_screen_from_edge(edge), width=width)
 
 def draw_grid(surface, camera):
     """Draw grid lines with camera transform"""
@@ -186,3 +191,8 @@ def color_from_speed(speed: int) -> tuple[int, int, int]:
             return (r, g, b)
 
     return gradient[-1][1]  # fallback
+
+def draw_train(surface: pygame.Surface, train: Train, camera: Camera):
+    width = max(1, int(round(3 * camera.scale)))
+    for edge in train.edges:
+        pygame.draw.line(surface, RED, *camera.world_to_screen_from_edge(edge), width=width)

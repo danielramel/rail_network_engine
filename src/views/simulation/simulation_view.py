@@ -3,7 +3,7 @@ from models.construction import EdgeType
 from models.geometry.position import Position
 from models.railway_system import RailwaySystem
 from ui.models.base import UIComponent
-from ui.utils import draw_grid, draw_edge, draw_node, draw_signal, draw_station, draw_dotted_line
+from ui.utils import draw_train, draw_edge, draw_node, draw_signal, draw_station
 import pygame
 
 class SimulationView(UIComponent):
@@ -29,5 +29,6 @@ class SimulationView(UIComponent):
 
         for station in self._railway.stations.all():
             draw_station(self._surface, station, self._camera)
-            # for middle_point in self._map.get_platforms_middle_points(station):
-            #     draw_dotted_line(self._surface, middle_point, station.position, self._camera, color=PURPLE)
+
+        for train in self._railway.trains.all():
+            draw_train(self._surface, train, self._camera)

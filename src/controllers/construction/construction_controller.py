@@ -32,6 +32,10 @@ class ConstructionController(UIComponent):
     def handle_event(self, event):                
         if self._construction_state.mode is None:
             return
+        
+        if event.button not in (1, 3):
+            return
+        
         self._controllers[self._construction_state.mode].handle_event(event)
             
             

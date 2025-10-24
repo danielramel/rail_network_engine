@@ -1,5 +1,6 @@
 import pygame
 from config.colors import BLACK
+from config.settings import GRID_SIZE
 from controllers.construction.panel_strategy import ConstructionPanelStrategy
 from models.railway_system import RailwaySystem
 from graphics.camera import Camera
@@ -30,20 +31,7 @@ class AppController:
         self.screen = screen
         self.railway = RailwaySystem()
         # mockup
-        self.railway.stations.add(Position(100, 100), "Station A")
-        self.railway.stations.add(Position(300, 100), "Station B")
-        self.railway.stations.add(Position(500, 100), "Station C")
-        self.railway.stations.add(Position(700, 100), "Station D")
-        self.railway.stations.add(Position(100, 300), "Station E")
-        self.railway.stations.add(Position(300, 300), "Station F")
-        self.railway.stations.add(Position(500, 300), "Station G")
-        self.railway.stations.add(Position(700, 300), "Station H")
-        self.railway.stations.add(Position(100, 500), "Station I")
-        self.railway.stations.add(Position(300, 500), "Station J")
-        self.railway.stations.add(Position(500, 500), "Station K")
-        self.railway.stations.add(Position(700, 500), "Station L")
-        self.railway.stations.add(Position(900, 100), "Station M")
-        self.railway.stations.add(Position(900, 300), "Station N")
+        self._mock_load()
         
         # mockup end
         self.camera = Camera()
@@ -125,3 +113,24 @@ class AppController:
         """Advance the simulation time if in simulation mode."""
         if self.app_state.mode == ViewMode.SIMULATION:
             self.time_control_state.advance_time()
+            
+            
+    def _mock_load(self):
+        from models.train import Train
+        from models.geometry import Edge
+        
+        self.railway.stations.add(Position(100, 100), "Station A")
+        self.railway.stations.add(Position(300, 100), "Station B")
+        self.railway.stations.add(Position(500, 100), "Station C")
+        self.railway.stations.add(Position(700, 100), "Station D")
+
+
+
+        points = []
+        for i in range(100):
+            points.append(Position(100 + i * GRID_SIZE, 300))
+            
+        self.railway.graph.add_segment(points, 120)
+
+        train = Train(-1, "Train 1", [Edge(points[i], points[i + 1]) for i in range(5)], (1, 0))
+        self.railway.trains.add(train)
