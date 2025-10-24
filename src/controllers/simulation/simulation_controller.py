@@ -7,7 +7,7 @@ from ui.models.base import UIComponent
 from views.simulation.simulation_view import SimulationView
 
 
-class OperationController(UIComponent):
+class SimulationController(UIComponent):
     handled_events = [pygame.MOUSEBUTTONUP]
     def __init__(self, simulation: Simulation, camera: Camera, screen: pygame.Surface):
         self.view = SimulationView(simulation, camera, screen)

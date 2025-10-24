@@ -16,14 +16,14 @@ from ui.components.zoom_button import ZoomButton
 from ui.construction.construction_buttons import ConstructionButtons
 from controllers.construction.construction_controller import ConstructionController
 from models.geometry import Position
-from controllers.operation.operation_controller import OperationController
+from controllers.simulation.simulation_controller import SimulationController
 from models.time import TimeControlState
 from controllers.camera_controller import CameraController
 
 class AppController:
     construction_element_types: dict[ViewMode, tuple[type]] = {
         ViewMode.CONSTRUCTION: (ConstructionButtons, ConstructionPanelStrategy, ConstructionController),
-        ViewMode.SIMULATION: (TimeControlButtons, TimeDisplay, OperationController),
+        ViewMode.SIMULATION: (TimeControlButtons, TimeDisplay, SimulationController),
     }
     
     def __init__(self, screen: pygame.Surface):
@@ -78,7 +78,7 @@ class AppController:
             self.elements.extend([
                 TimeControlButtons(self.screen, self.time_control_state),
                 TimeDisplay(self.screen, self.time_control_state),
-                OperationController(self.simulation, self.camera, self.screen)
+                SimulationController(self.simulation, self.camera, self.screen)
             ])
     
     def _remove_mode_elements(self, mode: ViewMode):

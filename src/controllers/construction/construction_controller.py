@@ -32,7 +32,6 @@ class ConstructionController(UIComponent):
     def handle_event(self, event):                
         if self._construction_state.mode is None:
             return
-        
         self._controllers[self._construction_state.mode].handle_event(event)
             
             
@@ -41,8 +40,7 @@ class ConstructionController(UIComponent):
         
         if self._construction_state.mode is None:
             return
-        
-
+    
         self._controllers[self._construction_state.mode].render(screen_pos)
 
     def contains(self, screen_pos: Position) -> bool:
