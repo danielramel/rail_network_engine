@@ -25,7 +25,7 @@ class StationController(BaseConstructionController):
 
         # pick up a station if moving_station is None and mouse is over a station
         if not self._construction_state.moving_station and target.hovered_station_pos is not None:
-            self._construction_state.moving_station = self._simulation.stations.get(target.hovered_station_pos)
+            self._construction_state.moving_station = self._simulation.stations.get_by_position(target.hovered_station_pos)
             return
 
         # blocked or overlapping -> do nothing
@@ -34,7 +34,7 @@ class StationController(BaseConstructionController):
 
         # move station if one is being moved
         if self._construction_state.moving_station:
-            self._simulation.stations.move(self._construction_state.moving_station.position, target.snapped)
+            self._simulation.stations.move(self._construction_state.moving_station.id, target.snapped)
             self._construction_state.moving_station = None
             return
 

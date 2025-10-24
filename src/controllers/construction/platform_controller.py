@@ -29,7 +29,7 @@ class PlatformController(BaseConstructionController):
             for station_pos in self._simulation.stations.positions():
                 if world_pos.is_within_station_rect(station_pos):
                     self._simulation.platforms.add(
-                        self._simulation.stations.get(station_pos),
+                        self._simulation.stations.get_by_position(station_pos),
                         list(self._construction_state.preview_edges)
                     )
                     break

@@ -14,7 +14,7 @@ class PathService:
     def is_blocked(self, pos: Position) -> bool:
         return (self._simulation.graph.has_node_at(pos) and 
                 (self._simulation.signals.has_signal_at(pos) 
-                 or self._simulation.platforms.is_platform_at(pos))) or self._simulation.stations.is_within_station_rect(pos)
+                 or self._simulation.platforms.is_platform_at(pos))) or self._simulation.stations.is_within_any(pos)
 
     def is_cutting_through_platform(self, current_state: Pose, neighbor_state: Pose) -> bool:
         if neighbor_state.direction not in [(1, 1), (1, -1), (-1, 1), (-1, -1)]:

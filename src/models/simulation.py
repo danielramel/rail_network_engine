@@ -39,7 +39,8 @@ class Simulation:
         return self._station_repository
 
     def remove_station_at(self, pos: Position):
-        station = self._station_repository.remove(pos)
+        station = self._station_repository.get_by_position(pos)
+        self._station_repository.remove(station.id)
         for platforms in station.platforms:
             self._platform_service.remove(platforms)
     
@@ -56,49 +57,14 @@ class Simulation:
     
     # -- serialization ---
     def to_dict(self) -> dict:
-        graph_data = nx.node_link_data(self._graph)
-        
-        # convert Position objects in node attributes to dicts
-        for node in graph_data['nodes']:
-            node['id'] = node['id'].to_dict()
-            
-        for link in graph_data['links']:
-            for key in ('source', 'target'):
-                link[key] = link[key].to_dict()
-            if 'station' in link:
-                link['station'] = link['station'].to_dict_simple()
-            
-
         return {
-            'graph': graph_data,
+            'graph': self._graph_service.to_dict(),
             'stations': self._station_repository.to_dict(),
             'schedules': self._schedule_repository.to_dict(),
         }
         
 
     def from_dict(self, data: dict) -> None:
-        graph_data = data['graph']
         self._station_repository = StationRepository.from_dict(data['stations'])
-        self._schedule_repository = ScheduleRepository.from_dict(data['schedules'])
-
-        # convert dicts in node attributes back to Position objects
-        for node in graph_data['nodes']:
-            node['id'] = Position.from_dict(node['id'])
-            if 'signal' in node:
-                node['signal'] = tuple(node['signal'])
-            
-        for link in graph_data['links']:
-            for key in ('source', 'target'):
-                link[key] = Position.from_dict(link[key])
-            if 'station' in link:
-                pos = Position.from_dict(link['station']['position'])
-                link['station'] = self.stations.get(pos)
-
-        temp_graph = nx.node_link_graph(graph_data)
-        
-        self._graph.clear()
-        self._graph.add_nodes_from(temp_graph.nodes(data=True))
-        self._graph.add_edges_from(temp_graph.edges(data=True))
-        
-        
-    
+        self._schedule_repository = ScheduleRepository.from_dict(data['schedules'], self)
+        self._graph_service.from_dict(data['graph'])

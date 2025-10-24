@@ -23,7 +23,7 @@ class Schedule:
             'frequency': self.frequency,
             'stations': [
                 {
-                    'pos': entry['station'].position.to_dict(),
+                    'id': entry['station'].id,
                     'arrival_time': entry['arrival_time'],
                     'departure_time': entry['departure_time']
                 } for entry in self.stations
@@ -35,9 +35,8 @@ class Schedule:
         """Create a Schedule object from a dictionary."""
         stations = []
         for entry in data['stations']:
-            station = simulation.stations.get(Position.from_dict(entry['pos']))
             stations.append({
-                'station': station,
+                'station': simulation.stations.get(entry['id']),
                 'arrival_time': entry['arrival_time'],
                 'departure_time': entry['departure_time']
             })

@@ -15,7 +15,7 @@ class PlatformView(BaseConstructionView):
             middle_point = self._simulation.platforms.get_middle_of_platform(self._construction_state.preview_edges)
             for station_pos in self._simulation.stations.positions():
                 if world_pos.is_within_station_rect(station_pos):
-                    draw_station(self._surface, self._simulation.stations.get(station_pos), self._camera, color=LIGHTBLUE)
+                    draw_station(self._surface, self._simulation.stations.get_by_position(station_pos), self._camera, color=LIGHTBLUE)
                     draw_dotted_line(self._surface, station_pos, middle_point, self._camera, color=LIGHTBLUE)
                     break
             else:

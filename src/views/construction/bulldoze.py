@@ -18,7 +18,7 @@ class BulldozeView(BaseConstructionView):
         if target.kind == BulldozeTargetType.SIGNAL:
             draw_signal(self._surface, self._simulation.signals.get(target.pos), self._camera, color=RED)
         elif target.kind == BulldozeTargetType.STATION:
-            draw_station(self._surface, self._simulation.stations.get(target.pos), self._camera, color=RED)
+            draw_station(self._surface, self._simulation.stations.get_by_position(target.pos), self._camera, color=RED)
         elif target.kind == BulldozeTargetType.NONE:
             draw_node(self._surface, world_pos, self._camera, color=RED)
         elif target.kind == BulldozeTargetType.PLATFORM:

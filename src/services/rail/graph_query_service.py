@@ -1,4 +1,4 @@
-from networkx import Graph
+import networkx as nx
 from config.settings import GRID_SIZE
 from models.geometry import Position, Pose
 from collections import deque
@@ -7,7 +7,7 @@ from models.geometry.edge import Edge
 
 
 class GraphService:
-    def __init__(self, graph: Graph):
+    def __init__(self, graph: nx.Graph):
         self._graph = graph
         
     @property
@@ -140,3 +140,37 @@ class GraphService:
                 stack.append(Pose(neighbor, direction))
         
         return frozenset(nodes), frozenset(edges)
+    
+    
+    def to_dict(self) -> dict:
+        graph_data = nx.node_link_data(self._graph)
+        
+        # convert Position objects in node attributes to dicts
+        for node in graph_data['nodes']:
+            node['id'] = node['id'].to_dict()
+            
+        for link in graph_data['links']:
+            for key in ('source', 'target'):
+                link[key] = link[key].to_dict()
+            if 'station' in link:
+                link['station'] = link['station'].id
+        
+        return graph_data
+    
+    
+
+    def from_dict(self, graph_data: dict) -> None:
+        for node in graph_data['nodes']:
+            node['id'] = Position.from_dict(node['id'])
+            if 'signal' in node:
+                node['signal'] = tuple(node['signal'])
+            
+        for link in graph_data['links']:
+            for key in ('source', 'target'):
+                link[key] = Position.from_dict(link[key])
+
+        temp_graph = nx.node_link_graph(graph_data)
+        
+        self._graph.clear()
+        self._graph.add_nodes_from(temp_graph.nodes(data=True))
+        self._graph.add_edges_from(temp_graph.edges(data=True))
