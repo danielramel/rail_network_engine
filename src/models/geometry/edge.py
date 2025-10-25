@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from models.geometry.direction import Direction
 from models.geometry.position import Position
 
 
@@ -7,9 +8,11 @@ class Edge:
     a: Position
     b: Position
     length: float = 0.0
+    direction: Direction = None
     
     def __post_init__(self):
         object.__setattr__(self, 'length', self.a.distance_to(self.b))
+        object.__setattr__(self, 'direction', self.a.direction_to(self.b))
 
     def __iter__(self):
         return iter((self.a, self.b))
@@ -25,6 +28,11 @@ class Edge:
     
     def midpoint(self) -> Position:
         return Position((self.a.x + self.b.x) / 2, (self.a.y + self.b.y) / 2)
+
+    def move(self, direction: Direction, distance: float) -> 'Edge':
+        new_a = Position(self.a.x + direction.dx * distance, self.a.y + direction.dy * distance)
+        new_b = Position(self.b.x + direction.dx * distance, self.b.y + direction.dy * distance)
+        return Edge(new_a, new_b)
     
     def to_dict(self) -> dict:
         return {

@@ -5,6 +5,7 @@ from config.settings import GRID_SIZE, STATION_RECT_SIZE
 from graphics.camera import Camera
 from models.construction import EdgeType
 from models.geometry import Position, Pose
+from models.geometry.direction import Direction
 from models.geometry.edge import Edge
 from models.station import Station
 from models.train import Train
@@ -205,7 +206,8 @@ def color_from_speed(speed: int) -> tuple[int, int, int]:
 
     return gradient[-1][1]  # fallback
 
-def draw_train_car(surface: pygame.Surface, a: Position, b: Position, camera: Camera):
+def draw_train_car(surface: pygame.Surface, edge: Edge, camera: Camera):
+    a, b = edge
     ax, ay = camera.world_to_screen(a)
     bx, by = camera.world_to_screen(b)
     
@@ -236,7 +238,7 @@ def draw_train_car(surface: pygame.Surface, a: Position, b: Position, camera: Ca
     pygame.draw.polygon(surface, YELLOW, points)
     pygame.draw.polygon(surface, BLACK, points, 2)
 
-def draw_train_lights(surface: pygame.Surface, world_pos: Position, direction: tuple[int, int],
+def draw_train_lights(surface: pygame.Surface, world_pos: Position, direction: Direction,
                       camera: Camera, color: tuple, brightness: float = 1.0, length_factor: float = 1.0, width_factor: float = 1.0):
     # Scale everything based on camera zoom
     light_length = 200 * camera.scale * length_factor
@@ -298,20 +300,17 @@ def draw_train(surface: pygame.Surface, train: Train, camera: Camera):
     if not train.path:
         return
     # Draw train cars
-    dx, dy = train.direction()
     occupied_edges = train.occupied_edges()
-    for a, b in occupied_edges:
-        na = a.move(dx* train.edge_progress, dy* train.edge_progress)
-        nb = b.move(dx* train.edge_progress, dy* train.edge_progress)
-        draw_train_car(surface, na, nb, camera)
+    for edge in occupied_edges:
+        draw_train_car(surface, edge.move(train.direction(), train.edge_progress*GRID_SIZE), camera)
 
     
     first_edge = occupied_edges[0]
-    front_pos = first_edge[1].move(dx * train.edge_progress, dy * train.edge_progress)
-    direction = first_edge[0].direction_to(first_edge[1])
+    front_pos = first_edge.move(train.direction(), train.edge_progress*GRID_SIZE).b
+    direction = first_edge.direction
     draw_train_lights(surface, front_pos, direction, camera, color=WHITE, brightness=1.0)
 
     last_edge = occupied_edges[-1]
-    back_pos = last_edge[0].move(dx * train.edge_progress, dy * train.edge_progress)
-    direction = last_edge[1].direction_to(last_edge[0])
+    back_pos = last_edge.move(train.direction(), train.edge_progress*GRID_SIZE).a
+    direction = last_edge.direction.get_opposite()
     draw_train_lights(surface, back_pos, direction, camera, color=RED, brightness=0.8, length_factor=0.2, width_factor=1.5)

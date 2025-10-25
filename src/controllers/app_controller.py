@@ -117,6 +117,8 @@ class AppController:
             
     def _mock_load(self):
         from models.train import Train
+        from models.geometry.edge import Edge
+        
         
         self.railway.stations.add(Position(100, 100), "Station A")
         self.railway.stations.add(Position(300, 100), "Station B")
@@ -130,6 +132,6 @@ class AppController:
             
         self.railway.graph.add_segment(points, 120)
 
-        edges = [(points[i], points[i + 1]) for i in range(len(points)-1)]
+        edges = [Edge(points[i], points[i + 1]) for i in range(len(points)-1)]
         train = Train(-1, "Train 1", edges)
         self.railway.trains.add(train)

@@ -3,6 +3,8 @@ from config.settings import BULLDOZE_SENSITIVITY, GRID_SIZE, STATION_RECT_SIZE
 from math import hypot
 
 from typing import TYPE_CHECKING
+
+from models.geometry.direction import Direction
 if TYPE_CHECKING:
     from models.geometry.edge import Edge
 
@@ -11,11 +13,18 @@ if TYPE_CHECKING:
 class Position:
     x: int
     y: int
-   
+
+    def __post_init__(self):
+        # Ensure x and y are integers: if not, round them to nearest int.
+        rounded_x = int(round(self.x))
+        rounded_y = int(round(self.y))
+        object.__setattr__(self, 'x', rounded_x)
+        object.__setattr__(self, 'y', rounded_y)
+            
     def __iter__(self):
         return iter((self.x, self.y))
     
-    def direction_to(self, other: 'Position') -> tuple[int, int]:
+    def direction_to(self, other: 'Position') -> Direction:
         """Get direction from this point to another point."""
         def signum(x: int) -> int:
             return (x > 0) - (x < 0)
@@ -24,9 +33,9 @@ class Position:
             return ValueError("Same Point")
         if abs(self.x - other.x) / GRID_SIZE > 1 or abs(self.y - other.y) / GRID_SIZE > 1:
             raise ValueError("Points are not adjacent")
-       
-        return (signum(other.x - self.x), signum(other.y - self.y))
-    
+
+        return Direction(signum(other.x - self.x), signum(other.y - self.y))
+
     def snap_to_grid(self) -> 'Position':
         """Create a new Point snapped to the grid."""
         snapped_x = round(self.x / GRID_SIZE) * GRID_SIZE

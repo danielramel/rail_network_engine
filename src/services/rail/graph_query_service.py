@@ -82,7 +82,7 @@ class GraphService:
         max_nr: int | None = None
     ) -> tuple[frozenset[Position], frozenset[Edge]]:
         
-        edges: set[frozenset[Position, Position]] = set()
+        edges: set[Edge] = set()
         nodes: set[Position] = set()
         stack: deque[Pose] = deque()
 
