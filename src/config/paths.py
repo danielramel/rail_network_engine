@@ -1,6 +1,8 @@
-MODE_ICON_PATHS = {
+GLOBAL_ICON_PATHS = {
     "CONSTRUCTION": "src/icons/construction.png",
-    "SIMULATION": "src/icons/simulation.png"
+    "SIMULATION": "src/icons/simulation.png",
+    "SAVE": "src/icons/save.png",
+    "LOAD": "src/icons/load.png",
 }
 
 CONSTRUCTION_ICON_PATHS = {
