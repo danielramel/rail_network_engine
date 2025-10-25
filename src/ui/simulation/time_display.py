@@ -32,3 +32,6 @@ class TimeDisplay(RectangleUIComponent):
         x = (surface.get_width() - width) // 2
         y = 10
         return pygame.Rect(x, y, width, height)
+    
+    def tick(self) -> None:
+        self._time_state.tick()

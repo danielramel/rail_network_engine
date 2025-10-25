@@ -205,7 +205,7 @@ def color_from_speed(speed: int) -> tuple[int, int, int]:
 
     return gradient[-1][1]  # fallback
 
-def draw_train_car(surface: pygame.Surface, edge: Edge, camera: Camera, color=RED):
+def draw_train_car(surface: pygame.Surface, edge: Edge, camera: Camera):
     a, b = edge
     ax, ay = camera.world_to_screen(a)
     bx, by = camera.world_to_screen(b)
@@ -222,7 +222,7 @@ def draw_train_car(surface: pygame.Surface, edge: Edge, camera: Camera, color=RE
     perp_x, perp_y = -dir_y, dir_x
     
     # Rectangle width (perpendicular to the edge)
-    width = max(8, int(16 * camera.scale))
+    width = 16 * camera.scale
     half_width = width / 2
     
     # Calculate the four corners of the rectangle
@@ -234,7 +234,7 @@ def draw_train_car(surface: pygame.Surface, edge: Edge, camera: Camera, color=RE
     ]
     
     # Draw filled rectangle with border
-    pygame.draw.polygon(surface, color, points)
+    pygame.draw.polygon(surface, YELLOW, points)
     pygame.draw.polygon(surface, BLACK, points, 2)
 
 def draw_train_lights(surface: pygame.Surface, pos_x: float, pos_y: float, dx: int, dy: int, 
@@ -306,23 +306,25 @@ def draw_train_lights(surface: pygame.Surface, pos_x: float, pos_y: float, dx: i
 
 
 def draw_train(surface: pygame.Surface, train: Train, camera: Camera):
-    
+    if not train.edges:
+        return
     # Draw train cars
-    for edge in train.edges:
-        draw_train_car(surface, edge, camera, color=RED)
+    occupied_edges = train.occupied_edges()
+    for edge in occupied_edges:
+        draw_train_car(surface, edge, camera)
     
     # Get train direction
-    dx, dy = train.get_direction()
-    
+    first_edge = occupied_edges[0]
+    dx, dy = first_edge[0].direction_to(first_edge[1])
+
     # Draw white headlights in front of the first train car
-    first_edge = train.edges[0]
-    front_pos = first_edge[1]
+    front_pos = first_edge[1].move(dx * train.edge_progress, dy * train.edge_progress)
     fx, fy = camera.world_to_screen(front_pos)
     draw_train_lights(surface, fx, fy, dx, dy, camera, color=(255, 255, 200), brightness=1.0)
     
     # Draw red taillights at the back of the last train car
-    last_edge = train.edges[-1]
-    back_pos = last_edge[0]
+    last_edge = occupied_edges[-1]
+    back_pos = last_edge[0].move(dx * train.edge_progress, dy * train.edge_progress)
     bx, by = camera.world_to_screen(back_pos)
     # Reverse direction for taillights - shorter, brighter, and wider
     draw_train_lights(surface, bx, by, -dx, -dy, camera, color=(255, 0, 0), brightness=0.8, length_factor=0.2, width_factor=1.5)

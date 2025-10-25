@@ -45,6 +45,10 @@ class RailwaySystem:
     @property
     def platforms(self) -> PlatformService:
         return self._platform_service
+    
+    def tick(self):
+        for train in self._train_repository.all():
+            train.tick()
 
     def remove_station_at(self, pos: Position):
         station = self._station_repository.get_by_position(pos)

@@ -1,6 +1,6 @@
 import pygame
 from config.colors import BLACK
-from config.settings import GRID_SIZE, PLATFORM_LENGTH
+from config.settings import GRID_SIZE, PLATFORM_LENGTH, TRAIN_LENGTH
 from controllers.construction.panel_strategy import ConstructionPanelStrategy
 from models.railway_system import RailwaySystem
 from graphics.camera import Camera
@@ -66,7 +66,7 @@ class AppController:
             self.elements.extend([
                 TimeControlButtons(self.screen, self.time_control_state),
                 TimeDisplay(self.screen, self.time_control_state),
-                SimulationController(self.railway, self.camera, self.screen)
+                SimulationController(self.railway, self.camera, self.time_control_state, self.screen)
             ])
     
     def _remove_mode_elements(self, mode: ViewMode):
@@ -111,8 +111,8 @@ class AppController:
                 
     def tick(self):
         """Advance the simulation time if in simulation mode."""
-        if self.app_state.mode == ViewMode.SIMULATION:
-            self.time_control_state.advance_time()
+        for element in self.elements:
+            element.tick()
             
             
     def _mock_load(self):
@@ -130,5 +130,6 @@ class AppController:
             
         self.railway.graph.add_segment(points, 120)
 
-        train = Train(-1, "Train 1", [(points[i], points[i + 1]) for i in range(PLATFORM_LENGTH, 0, -1)])
+        edges = [(points[i], points[i + 1]) for i in range(len(points)-1)]
+        train = Train(-1, "Train 1", edges)
         self.railway.trains.add(train)

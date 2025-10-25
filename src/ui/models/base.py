@@ -15,3 +15,7 @@ class UIComponent:
     def contains(self, screen_pos: Position) -> bool:
         """Check if a position is within the component's area."""
         return False
+    
+    def tick(self) -> None:
+        """Advance the component's state by one tick."""
+        pass

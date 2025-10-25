@@ -101,6 +101,10 @@ class Position:
     def distance_to(self, other: 'Position') -> float:
         """Calculate the Euclidean distance to another position."""
         return hypot(self.x - other.x, self.y - other.y)
+    
+    def move(self, dx: int, dy: int) -> 'Position':
+        """Return a new Position moved by dx and dy."""
+        return Position(self.x + dx, self.y + dy)
 
     def to_dict(self) -> dict:
         return asdict(self)

@@ -9,7 +9,7 @@ class TimeControlMode(Enum):
     
     
 class TimeControlState:
-    mode: TimeControlMode = TimeControlMode.PAUSE
+    mode: TimeControlMode = TimeControlMode.PLAY
     current_time = 0  # in seconds
     
     def reset(self) -> None:
@@ -17,6 +17,10 @@ class TimeControlState:
         self.mode = TimeControlMode.PAUSE
         self.current_time = 0
         
-    def advance_time(self) -> None:
+    def tick(self) -> None:
         """Advance the current time by the specified number of seconds."""
         self.current_time += 1 * self.mode.value / FPS
+        
+    @property
+    def paused(self) -> bool:
+        return self.mode == TimeControlMode.PAUSE
