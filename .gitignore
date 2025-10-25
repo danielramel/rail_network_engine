@@ -4,3 +4,4 @@ sources.txt
 test*.py
 .vscode/
 maps/
+regi_train/
