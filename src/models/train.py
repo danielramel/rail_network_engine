@@ -1,13 +1,15 @@
 from dataclasses import dataclass
-from models.geometry.edge import Edge
+from models.geometry.pose import Pose
+from models.geometry.position import Position
 
 @dataclass
 class Train:
     id: int
     code: str
-    edges: list[Edge]
-    direction: tuple[int, int]
+    edges: list[tuple[Position, Position]] # the order of the positions matters
     
+    def get_direction(self) -> tuple[int, int]:
+        return self.edges[0][0].direction_to(self.edges[0][1])
         
         
 class TrainRepository:

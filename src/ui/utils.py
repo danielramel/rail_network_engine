@@ -8,6 +8,7 @@ from models.geometry import Position, Pose
 from models.geometry.edge import Edge
 from models.station import Station
 from models.train import Train
+import math
 
 def draw_node(surface: pygame.Surface, node: Position, camera: Camera, color=WHITE):
     """Draw a node on the given surface using the camera."""
@@ -18,7 +19,7 @@ def draw_node(surface: pygame.Surface, node: Position, camera: Camera, color=WHI
     pygame.draw.circle(surface, BLACK, (int(screen_x), int(screen_y)), inner_radius)
 
 
-def draw_signal(surface: pygame.Surface, alignment: Pose, camera: Camera, color=WHITE, offset=False):
+def draw_triangle(surface: pygame.Surface, alignment: Pose, camera: Camera, color=WHITE, size_factor=1.0):
     def get_rotation_angle(direction_vector):
         angle_map = {
             (0, 1): 0,
@@ -32,12 +33,9 @@ def draw_signal(surface: pygame.Surface, alignment: Pose, camera: Camera, color=
         }
         return angle_map[direction_vector]
 
-    size = max(18, int(36 * camera.scale))
+    base_size = max(18, int(36 * camera.scale))
+    size = int(base_size * size_factor)
     screen_x, screen_y = camera.world_to_screen(alignment.position)
-
-    if offset:
-        draw_node(surface, alignment.position, camera, color=YELLOW)
-        screen_y -= GRID_SIZE * camera.scale//1.25
 
     surf = pygame.Surface((size, size), pygame.SRCALPHA)
     h = size // 2
@@ -53,6 +51,21 @@ def draw_signal(surface: pygame.Surface, alignment: Pose, camera: Camera, color=
 
     rect = rotated_surf.get_rect(center=(screen_x, screen_y))
     surface.blit(rotated_surf, rect)
+
+
+def draw_signal(surface: pygame.Surface, alignment: Pose, camera: Camera, color=WHITE, offset=False):
+    """Draw a signal triangle at the given position and orientation."""
+    screen_x, screen_y = camera.world_to_screen(alignment.position)
+
+    if offset:
+        draw_node(surface, alignment.position, camera, color=YELLOW)
+        # Adjust the position for the offset
+        offset_y = GRID_SIZE * camera.scale / 1.25
+        offset_position = Position(alignment.position.x, alignment.position.y - offset_y / camera.scale)
+        offset_alignment = Pose(offset_position, alignment.direction)
+        draw_triangle(surface, offset_alignment, camera, color=color, size_factor=1.0)
+    else:
+        draw_triangle(surface, alignment, camera, color=color, size_factor=1.0)
 
     
 def draw_station(surface: pygame.Surface, station: Station, camera: Camera, color=PURPLE):
@@ -130,7 +143,7 @@ def draw_grid(surface, camera):
 
 def draw_platform(surface: pygame.Surface, edge: Edge, camera: Camera, color=PURPLE):
     a, b = edge
-    offset = 2  # pixels of separation
+    offset = int(2 * camera.scale)  # pixels of separation
     # Calculate direction vector
     ax, ay = camera.world_to_screen(a)
     bx, by = camera.world_to_screen(b)
@@ -192,7 +205,124 @@ def color_from_speed(speed: int) -> tuple[int, int, int]:
 
     return gradient[-1][1]  # fallback
 
+def draw_train_car(surface: pygame.Surface, edge: Edge, camera: Camera, color=RED):
+    a, b = edge
+    ax, ay = camera.world_to_screen(a)
+    bx, by = camera.world_to_screen(b)
+    
+    # Calculate direction vector
+    dx, dy = bx - ax, by - ay
+    length = math.sqrt(dx**2 + dy**2)
+    
+    if length == 0:
+        return
+    
+    # Normalized direction and perpendicular vectors
+    dir_x, dir_y = dx / length, dy / length
+    perp_x, perp_y = -dir_y, dir_x
+    
+    # Rectangle width (perpendicular to the edge)
+    width = max(8, int(16 * camera.scale))
+    half_width = width / 2
+    
+    # Calculate the four corners of the rectangle
+    points = [
+        (ax + perp_x * half_width, ay + perp_y * half_width),
+        (bx + perp_x * half_width, by + perp_y * half_width),
+        (bx - perp_x * half_width, by - perp_y * half_width),
+        (ax - perp_x * half_width, ay - perp_y * half_width)
+    ]
+    
+    # Draw filled rectangle with border
+    pygame.draw.polygon(surface, color, points)
+    pygame.draw.polygon(surface, BLACK, points, 2)
+
+def draw_train_lights(surface: pygame.Surface, pos_x: float, pos_y: float, dx: int, dy: int, 
+                      camera: Camera, color: tuple, brightness: float = 1.0, length_factor: float = 1.0, width_factor: float = 1.0):
+    """Draw two light beams at the given position in the given direction.
+    
+    Args:
+        surface: Surface to draw on
+        pos_x, pos_y: Screen position of the lights
+        dx, dy: Direction vector (normalized)
+        camera: Camera for scaling
+        color: RGB color tuple for the lights
+        brightness: Multiplier for light intensity (0-1)
+        length_factor: Multiplier for light length
+        width_factor: Multiplier for light width
+    """
+    # Scale everything based on camera zoom
+    light_length = 200 * camera.scale * length_factor
+    light_width = 13 * camera.scale * width_factor
+    
+    # Calculate perpendicular vector for positioning the two lights
+    perp_x, perp_y = -dy, dx
+    
+    # Offset for the two lights (spacing between them)
+    light_spacing = 5 * camera.scale
+    
+    # Create a surface for the light effect
+    light_surface = pygame.Surface((surface.get_width(), surface.get_height()), pygame.SRCALPHA)
+    
+    # Draw two separate light beams
+    for light_offset in [-light_spacing, light_spacing]:
+        # Determine if this is left or right light (for outward spreading)
+        side = 1 if light_offset > 0 else -1
+        
+        # Position of this light
+        light_x = pos_x + perp_x * light_offset
+        light_y = pos_y + perp_y * light_offset
+        
+        # Draw multiple layers with decreasing opacity based on distance
+        layers = 50
+        for i in range(layers, 0, -1):
+            # Calculate distance for this layer
+            distance_ratio = i / layers
+            layer_length = light_length * distance_ratio
+            
+            # Calculate end point for this layer
+            end_x = light_x + dx * layer_length
+            end_y = light_y + dy * layer_length
+            
+            # For asymmetric spreading: inner edge stays straight, outer edge spreads
+            width_start = light_width * 0.3
+            width_end_inner = width_start
+            width_end_outer = width_start + light_width * distance_ratio * 0.6
+            
+            # Calculate opacity (stronger near source, fades with distance)
+            alpha = int(150 * brightness * ((layers - i + 1) / layers) ** 1.2)
+            
+            # Create asymmetric trapezoid points
+            layer_points = [
+                (light_x + perp_x * width_start / 2 * side, light_y + perp_y * width_start / 2 * side),
+                (light_x - perp_x * width_start / 2 * side, light_y - perp_y * width_start / 2 * side),
+                (end_x - perp_x * width_end_inner / 2 * side, end_y - perp_y * width_end_inner / 2 * side),
+                (end_x + perp_x * width_end_outer / 2 * side, end_y + perp_y * width_end_outer / 2 * side),
+            ]
+            
+            pygame.draw.polygon(light_surface, (*color, alpha), layer_points)
+    
+    surface.blit(light_surface, (0, 0))
+
+
 def draw_train(surface: pygame.Surface, train: Train, camera: Camera):
-    width = max(1, int(round(3 * camera.scale)))
+    
+    # Draw train cars
     for edge in train.edges:
-        pygame.draw.line(surface, RED, *camera.world_to_screen_from_edge(edge), width=width)
+        draw_train_car(surface, edge, camera, color=RED)
+    
+    # Get train direction
+    dx, dy = train.get_direction()
+    
+    # Draw white headlights in front of the first train car
+    first_edge = train.edges[0]
+    front_pos = first_edge[1]
+    fx, fy = camera.world_to_screen(front_pos)
+    draw_train_lights(surface, fx, fy, dx, dy, camera, color=(255, 255, 200), brightness=1.0)
+    
+    # Draw red taillights at the back of the last train car
+    last_edge = train.edges[-1]
+    back_pos = last_edge[0]
+    bx, by = camera.world_to_screen(back_pos)
+    # Reverse direction for taillights - shorter, brighter, and wider
+    draw_train_lights(surface, bx, by, -dx, -dy, camera, color=(255, 0, 0), brightness=0.8, length_factor=0.2, width_factor=1.5)

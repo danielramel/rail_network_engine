@@ -5,4 +5,4 @@ class ViewMode(Enum):
     CONSTRUCTION = 1    
     
 class AppState:
-    mode: ViewMode = ViewMode.CONSTRUCTION
+    mode: ViewMode = ViewMode.SIMULATION

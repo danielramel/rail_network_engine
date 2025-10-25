@@ -1,6 +1,6 @@
 import pygame
 from config.colors import BLACK
-from config.settings import GRID_SIZE
+from config.settings import GRID_SIZE, PLATFORM_LENGTH
 from controllers.construction.panel_strategy import ConstructionPanelStrategy
 from models.railway_system import RailwaySystem
 from graphics.camera import Camera
@@ -117,7 +117,6 @@ class AppController:
             
     def _mock_load(self):
         from models.train import Train
-        from models.geometry import Edge
         
         self.railway.stations.add(Position(100, 100), "Station A")
         self.railway.stations.add(Position(300, 100), "Station B")
@@ -125,12 +124,11 @@ class AppController:
         self.railway.stations.add(Position(700, 100), "Station D")
 
 
-
         points = []
         for i in range(100):
-            points.append(Position(100 + i * GRID_SIZE, 300))
+            points.append(Position(80 + i * GRID_SIZE, 320))
             
         self.railway.graph.add_segment(points, 120)
 
-        train = Train(-1, "Train 1", [Edge(points[i], points[i + 1]) for i in range(5)], (1, 0))
+        train = Train(-1, "Train 1", [(points[i], points[i + 1]) for i in range(PLATFORM_LENGTH, 0, -1)])
         self.railway.trains.add(train)
