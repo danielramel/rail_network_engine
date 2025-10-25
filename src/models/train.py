@@ -6,26 +6,35 @@ from config.settings import TRAIN_LENGTH
 class Train:
     id: int
     code: str
-    edges: list[tuple[Position, Position]]  # the order of the positions matters
+    path: list[tuple[Position, Position]]  # the order of the positions matters
     edge_progress : float = 0.0
     max_speed: int = 100  # in km/h, default 100
-
-    def get_direction(self) -> tuple[int, int]:
-        return self.edges[0][0].direction_to(self.edges[0][1])
-
+    acceleration: float = 1
+    speed : int = 0  # in km/h, current speed
+    
+    def direction(self) -> tuple[int, int]:
+        return (self.path[TRAIN_LENGTH][1].x - self.path[TRAIN_LENGTH][0].x, self.path[TRAIN_LENGTH][1].y - self.path[TRAIN_LENGTH][0].y)
+        
     def tick(self):
-        edge_progress = self.edge_progress + self.max_speed/1000
+        if self.speed < self.max_speed:
+            # scale acceleration down as speed approaches max_speed (more realistic)
+            ratio = (self.speed / self.max_speed)
+            scaled_acc = self.acceleration * (1 - ratio)
+            # ensure a small minimal acceleration so it still approaches max (adjust factor as needed)
+            delta = scaled_acc / 7.0
+            self.speed = min(self.speed + delta, self.max_speed)
+            
+        edge_progress = round(self.edge_progress + self.speed/1000, 4)
+        
         if edge_progress < 1:
             self.edge_progress = edge_progress
             return
         
-        edge_progress -= 1
-        self.edges.pop(0)
-        
+        self.edge_progress = edge_progress - 1
+        self.path.pop(0)
         
     def occupied_edges(self) -> tuple[tuple[Position, Position]]:
-        """Get the list of edges currently occupied by the train based on its position."""
-        return tuple(reversed(self.edges[:TRAIN_LENGTH]))
+        return tuple(reversed(self.path[:TRAIN_LENGTH]))
         
 class TrainRepository:
     def __init__(self):

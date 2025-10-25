@@ -7,7 +7,7 @@ class Edge:
     a: Position
     b: Position
     length: float = 0.0
-
+    
     def __post_init__(self):
         object.__setattr__(self, 'length', self.a.distance_to(self.b))
 

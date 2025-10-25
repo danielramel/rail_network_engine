@@ -205,8 +205,7 @@ def color_from_speed(speed: int) -> tuple[int, int, int]:
 
     return gradient[-1][1]  # fallback
 
-def draw_train_car(surface: pygame.Surface, edge: Edge, camera: Camera):
-    a, b = edge
+def draw_train_car(surface: pygame.Surface, a: Position, b: Position, camera: Camera):
     ax, ay = camera.world_to_screen(a)
     bx, by = camera.world_to_screen(b)
     
@@ -237,25 +236,15 @@ def draw_train_car(surface: pygame.Surface, edge: Edge, camera: Camera):
     pygame.draw.polygon(surface, YELLOW, points)
     pygame.draw.polygon(surface, BLACK, points, 2)
 
-def draw_train_lights(surface: pygame.Surface, pos_x: float, pos_y: float, dx: int, dy: int, 
+def draw_train_lights(surface: pygame.Surface, world_pos: Position, direction: tuple[int, int],
                       camera: Camera, color: tuple, brightness: float = 1.0, length_factor: float = 1.0, width_factor: float = 1.0):
-    """Draw two light beams at the given position in the given direction.
-    
-    Args:
-        surface: Surface to draw on
-        pos_x, pos_y: Screen position of the lights
-        dx, dy: Direction vector (normalized)
-        camera: Camera for scaling
-        color: RGB color tuple for the lights
-        brightness: Multiplier for light intensity (0-1)
-        length_factor: Multiplier for light length
-        width_factor: Multiplier for light width
-    """
     # Scale everything based on camera zoom
     light_length = 200 * camera.scale * length_factor
     light_width = 13 * camera.scale * width_factor
+    world_x, world_y = camera.world_to_screen(world_pos)
     
     # Calculate perpendicular vector for positioning the two lights
+    dx, dy = direction
     perp_x, perp_y = -dy, dx
     
     # Offset for the two lights (spacing between them)
@@ -270,8 +259,8 @@ def draw_train_lights(surface: pygame.Surface, pos_x: float, pos_y: float, dx: i
         side = 1 if light_offset > 0 else -1
         
         # Position of this light
-        light_x = pos_x + perp_x * light_offset
-        light_y = pos_y + perp_y * light_offset
+        light_x = world_x + perp_x * light_offset
+        light_y = world_y + perp_y * light_offset
         
         # Draw multiple layers with decreasing opacity based on distance
         layers = 50
@@ -306,25 +295,23 @@ def draw_train_lights(surface: pygame.Surface, pos_x: float, pos_y: float, dx: i
 
 
 def draw_train(surface: pygame.Surface, train: Train, camera: Camera):
-    if not train.edges:
+    if not train.path:
         return
     # Draw train cars
+    dx, dy = train.direction()
     occupied_edges = train.occupied_edges()
-    for edge in occupied_edges:
-        draw_train_car(surface, edge, camera)
-    
-    # Get train direction
-    first_edge = occupied_edges[0]
-    dx, dy = first_edge[0].direction_to(first_edge[1])
+    for a, b in occupied_edges:
+        na = a.move(dx* train.edge_progress, dy* train.edge_progress)
+        nb = b.move(dx* train.edge_progress, dy* train.edge_progress)
+        draw_train_car(surface, na, nb, camera)
 
-    # Draw white headlights in front of the first train car
-    front_pos = first_edge[1].move(dx * train.edge_progress, dy * train.edge_progress)
-    fx, fy = camera.world_to_screen(front_pos)
-    draw_train_lights(surface, fx, fy, dx, dy, camera, color=(255, 255, 200), brightness=1.0)
     
-    # Draw red taillights at the back of the last train car
+    first_edge = occupied_edges[0]
+    front_pos = first_edge[1].move(dx * train.edge_progress, dy * train.edge_progress)
+    direction = first_edge[0].direction_to(first_edge[1])
+    draw_train_lights(surface, front_pos, direction, camera, color=WHITE, brightness=1.0)
+
     last_edge = occupied_edges[-1]
     back_pos = last_edge[0].move(dx * train.edge_progress, dy * train.edge_progress)
-    bx, by = camera.world_to_screen(back_pos)
-    # Reverse direction for taillights - shorter, brighter, and wider
-    draw_train_lights(surface, bx, by, -dx, -dy, camera, color=(255, 0, 0), brightness=0.8, length_factor=0.2, width_factor=1.5)
+    direction = last_edge[1].direction_to(last_edge[0])
+    draw_train_lights(surface, back_pos, direction, camera, color=RED, brightness=0.8, length_factor=0.2, width_factor=1.5)

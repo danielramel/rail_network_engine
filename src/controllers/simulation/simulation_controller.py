@@ -30,4 +30,5 @@ class SimulationController(UIComponent):
     def tick(self):
         if self.time_control_state.paused:
             return
-        self._railway.tick()
+        for _ in range(self.time_control_state.mode.value):
+            self._railway.tick()
