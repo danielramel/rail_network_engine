@@ -30,10 +30,8 @@ class AppController:
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
         self.railway = RailwaySystem()
-        # mockup
-        # self._mock_load()
+        self._mock_load()
         
-        # mockup end
         self.camera = Camera()
         self.app_state = AppState()
         self.construction_state = ConstructionState()

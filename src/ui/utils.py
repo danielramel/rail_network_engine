@@ -314,3 +314,20 @@ def draw_train(surface: pygame.Surface, train: Train, camera: Camera):
     back_pos = last_edge.move(last_edge.direction, train.edge_progress*GRID_SIZE).a
     direction = last_edge.direction.get_opposite()
     draw_train_lights(surface, back_pos, direction, camera, color=RED, brightness=0.8, length_factor=0.2, width_factor=1.5)
+    
+    # draw current speed above the train front
+    speed_text = f"{int(round(train.speed))} km/h"
+    font_size = max(12, int(16 * camera.scale))
+    font = pygame.font.SysFont(None, font_size)
+
+    text_fg = font.render(speed_text, True, WHITE)
+    text_bg = font.render(speed_text, True, BLACK)
+
+    sx, sy = camera.world_to_screen(front_pos)
+    offset_y = int(18 * camera.scale)
+
+    bg_rect = text_bg.get_rect(center=(sx + 1, sy - offset_y + 1))
+    fg_rect = text_fg.get_rect(center=(sx, sy - offset_y))
+
+    surface.blit(text_bg, bg_rect)
+    surface.blit(text_fg, fg_rect)
