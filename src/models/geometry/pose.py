@@ -1,4 +1,6 @@
 from typing import NamedTuple
+
+from models.geometry.direction import Direction
 from .position import Position
 
 class Pose(NamedTuple):
@@ -16,7 +18,7 @@ class Pose(NamedTuple):
         return self.get_valid_turns(self.direction)
     
     @staticmethod
-    def get_valid_turns(direction: tuple[int, int]) -> list[tuple[int, int]]:
+    def get_valid_turns(direction: Direction) -> list[tuple[int, int]]:
         """Get valid turn directions from the current direction."""
         VALID_TURNS = {
         (-1, -1): [(-1, -1), (-1, 0), (0, -1)],
@@ -33,4 +35,4 @@ class Pose(NamedTuple):
             (0, -1), (0, 1)
             ]
         }
-        return VALID_TURNS.get(direction, [direction])
+        return VALID_TURNS[tuple(direction)]

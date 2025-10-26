@@ -31,7 +31,7 @@ class AppController:
         self.screen = screen
         self.railway = RailwaySystem()
         # mockup
-        self._mock_load()
+        # self._mock_load()
         
         # mockup end
         self.camera = Camera()
@@ -127,8 +127,11 @@ class AppController:
 
 
         points = []
-        for i in range(100):
+        for i in range(50):
             points.append(Position(80 + i * GRID_SIZE, 320))
+            
+        for i in range(50):
+            points.append(Position(2080 + i * GRID_SIZE, 320 + i * GRID_SIZE))
             
         self.railway.graph.add_segment(points, 120)
 

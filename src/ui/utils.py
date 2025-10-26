@@ -302,15 +302,15 @@ def draw_train(surface: pygame.Surface, train: Train, camera: Camera):
     # Draw train cars
     occupied_edges = train.occupied_edges()
     for edge in occupied_edges:
-        draw_train_car(surface, edge.move(train.direction(), train.edge_progress*GRID_SIZE), camera)
+        draw_train_car(surface, edge.move(edge.direction, train.edge_progress*GRID_SIZE), camera)
 
     
     first_edge = occupied_edges[0]
-    front_pos = first_edge.move(train.direction(), train.edge_progress*GRID_SIZE).b
+    front_pos = first_edge.move(first_edge.direction, train.edge_progress*GRID_SIZE).b
     direction = first_edge.direction
     draw_train_lights(surface, front_pos, direction, camera, color=WHITE, brightness=1.0)
 
     last_edge = occupied_edges[-1]
-    back_pos = last_edge.move(train.direction(), train.edge_progress*GRID_SIZE).a
+    back_pos = last_edge.move(last_edge.direction, train.edge_progress*GRID_SIZE).a
     direction = last_edge.direction.get_opposite()
     draw_train_lights(surface, back_pos, direction, camera, color=RED, brightness=0.8, length_factor=0.2, width_factor=1.5)

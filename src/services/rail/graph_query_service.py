@@ -40,7 +40,7 @@ class GraphService:
         neighbors = tuple(self._graph.neighbors(pos))
         inbound = neighbors[0].direction_to(pos)
         outbound = pos.direction_to(neighbors[1])
-        return outbound not in Pose.get_valid_turns(inbound)
+        return tuple(outbound) not in Pose.get_valid_turns(inbound)
     
     @property
     def junctions(self) -> list[Position]:
