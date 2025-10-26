@@ -1,3 +1,4 @@
+from config.colors import GREEN, RED
 from graphics.camera import Camera
 from models.construction import EdgeType
 from models.geometry.position import Position
@@ -25,7 +26,7 @@ class SimulationView(UIComponent):
             draw_node(self._surface, node, self._camera)
 
         for signal in self._railway.signals.all():
-            draw_signal(self._surface, signal, self._camera)
+            draw_signal(self._surface, signal, self._camera, color=GREEN if signal.allowed else RED)
 
         for station in self._railway.stations.all():
             draw_station(self._surface, station, self._camera)

@@ -33,11 +33,11 @@ def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
             return SignalTarget(
                 kind=SignalTargetType.DEAD_END,
                 snapped=snapped,
-                preview_pose=Pose(position=snapped, direction=railway._graph.nodes[snapped]['signal']),
+                preview_pose=Pose(position=snapped, direction=railway._graph.nodes[snapped]['signal'].direction),
                 offset=True
             )
 
-        current_direction = railway._graph.nodes[snapped]['signal']
+        current_direction = railway._graph.nodes[snapped]['signal'].direction
         neighbors = tuple(railway._graph.neighbors(snapped))
         if snapped.direction_to(neighbors[0]) == current_direction:
             new_dir = snapped.direction_to(neighbors[1])

@@ -19,7 +19,7 @@ class SignalController(BaseConstructionController):
         target = find_signal_target(self._railway, self._camera.screen_to_world(event.screen_pos))
 
         if target.kind == SignalTargetType.TOGGLE:
-            self._railway.signals.toggle(target.snapped)
+            self._railway.signals.toggle_direction(target.snapped)
 
         elif target.kind == SignalTargetType.ADD:
             self._railway.signals.add(target.snapped)

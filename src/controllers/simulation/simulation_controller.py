@@ -16,7 +16,11 @@ class SimulationController(UIComponent):
         self._railway = railway
         self._camera = camera
 
-    def handle_event(self, event):
+    def handle_event(self, event) -> bool:
+        snapped: Position = event.screen_pos.snap_to_grid()
+        if self._railway.graph.has_node_at(snapped) and self._railway.signals.has_signal_at(snapped):
+            signal = self._railway.signals.get(snapped)
+            signal.allow()
         # handle click
         return True
             

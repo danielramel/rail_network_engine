@@ -32,7 +32,7 @@ def draw_triangle(surface: pygame.Surface, alignment: Pose, camera: Camera, colo
             (-1, 0): 270,
             (-1, 1): 315
         }
-        return angle_map[direction_vector]
+        return angle_map[tuple(direction_vector)]
 
     base_size = max(18, int(36 * camera.scale))
     size = int(base_size * size_factor)

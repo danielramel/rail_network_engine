@@ -3,6 +3,15 @@ from models.geometry import Position, Pose
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from models.railway_system import RailwaySystem
+    
+class Signal(Pose):
+    def __init__(self, position: Position, direction: Position):
+        super().__init__(position, direction)
+        self.allowed: bool = False
+        
+    def allow(self) -> None:
+        self.allowed = True
+
 
 class SignalService:
     """Service responsible for adding / toggling / removing signals."""
@@ -12,25 +21,25 @@ class SignalService:
     def has_signal_at(self, pos: Position) -> bool:
         return 'signal' in self._graph.nodes[pos]
     
-    def get(self, pos: Position) -> Pose | None:
-        return Pose(pos, self._graph.nodes[pos]['signal'])
+    def get(self, pos: Position) -> Signal:
+        return self._graph.nodes[pos]['signal']
 
     def add(self, pos: Position) -> None:
-        self._graph.nodes[pos]['signal'] = pos.direction_to(next(self._graph.neighbors(pos)))
+        self._graph.nodes[pos]['signal'] = Signal(pos, pos.direction_to(next(self._graph.neighbors(pos))))
 
     def remove(self, pos: Position) -> None:
         del self._graph.nodes[pos]['signal']
 
-    def toggle(self, pos: Position) -> None:
-        current_direction = self._graph.nodes[pos]['signal']
+    def toggle_direction(self, pos: Position) -> None:
+        current_direction = self._graph.nodes[pos]['signal'].direction
         neighbors = tuple(self._graph.neighbors(pos))
         if len(neighbors) < 2: raise ValueError("Cannot toggle signal at dead end")
 
         if pos.direction_to(neighbors[0]) == current_direction:
-            self._graph.nodes[pos]['signal'] = pos.direction_to(neighbors[1])
+            self._graph.nodes[pos]['signal'].direction = pos.direction_to(neighbors[1])
         else:
-            self._graph.nodes[pos]['signal'] = pos.direction_to(neighbors[0])
+            self._graph.nodes[pos]['signal'].direction = pos.direction_to(neighbors[0])
 
-    def all(self) -> set[Pose]:
-        return {Pose(node, data['signal']) for node, data in self._graph.nodes(data=True) if 'signal' in data}
+    def all(self) -> tuple[Signal]:
+        return tuple(data["signal"] for node, data in self._graph.nodes(data=True) if 'signal' in data)
 
