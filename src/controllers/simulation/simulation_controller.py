@@ -3,7 +3,7 @@ from models.geometry import Position
     
 from graphics.camera import Camera
 from models.railway_system import RailwaySystem
-from models.time import TimeControlMode, TimeControlState
+from models.time import TimeControlState
 from ui.models.base import UIComponent
 from views.simulation.simulation_view import SimulationView
 

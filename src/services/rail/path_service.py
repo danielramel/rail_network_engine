@@ -3,6 +3,8 @@ from models.geometry import Position, Pose
 import heapq
 
 from typing import TYPE_CHECKING
+
+from models.geometry.direction import Direction
 if TYPE_CHECKING:
     from models.railway_system import RailwaySystem
 
@@ -30,16 +32,14 @@ class PathService:
         Find optimal path using A* algorithm with 45° turn constraint.
         """
         def get_valid_turn_neighbors(state: Pose) -> list[tuple[Pose, float]]:
-            def get_direction_cost(direction: tuple[int, int]) -> float:
-                return 1.0 if direction[0] == 0 or direction[1] == 0 else 1.414
-            
+
             neighbors = []
-            for dx, dy in Pose.get_valid_turns(state.direction):
-                nx = state.position.x + dx * GRID_SIZE
-                ny = state.position.y + dy * GRID_SIZE
-                new_state = Pose(Position(nx, ny), (dx, dy))
-                cost = get_direction_cost((dx, dy))
-                neighbors.append((new_state, cost))
+            for dir in Pose.get_valid_turns(state.direction):
+                nx = state.position.x + dir.x * GRID_SIZE
+                ny = state.position.y + dir.y * GRID_SIZE
+                new_state = Pose(Position(nx, ny), dir)
+
+                neighbors.append((new_state, dir.get_cost()))
             return neighbors
 
         def heuristic(a: Position, b: Position) -> float:

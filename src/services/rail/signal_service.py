@@ -1,13 +1,14 @@
+from dataclasses import dataclass
 import networkx as nx
-from models.geometry import Position, Pose
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from models.railway_system import RailwaySystem
-    
-class Signal(Pose):
-    def __init__(self, position: Position, direction: Position):
-        super().__init__(position, direction)
-        self.allowed: bool = False
+from models.geometry import Position
+
+from models.geometry.direction import Direction
+
+@dataclass
+class Signal:    
+    position: Position
+    direction: Direction
+    allowed: bool = False
         
     def allow(self) -> None:
         self.allowed = True

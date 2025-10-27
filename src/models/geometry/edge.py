@@ -30,8 +30,8 @@ class Edge:
         return Position((self.a.x + self.b.x) / 2, (self.a.y + self.b.y) / 2)
 
     def move(self, direction: Direction, distance: float) -> 'Edge':
-        new_a = Position(self.a.x + direction.dx * distance, self.a.y + direction.dy * distance)
-        new_b = Position(self.b.x + direction.dx * distance, self.b.y + direction.dy * distance)
+        new_a = Position(self.a.x + direction.x * distance, self.a.y + direction.y * distance)
+        new_b = Position(self.b.x + direction.x * distance, self.b.y + direction.y * distance)
         return Edge(new_a, new_b)
     
     def to_dict(self) -> dict:

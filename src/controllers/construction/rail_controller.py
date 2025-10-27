@@ -1,5 +1,6 @@
 import pygame
 from controllers.construction.base_construction_controller import BaseConstructionController
+from models.geometry.direction import Direction
 from services.construction.rail_target import find_rail_target, RailTargetType
 from models.geometry import Pose
 from views.construction.rail import RailView
@@ -24,7 +25,7 @@ class RailController(BaseConstructionController):
         target = find_rail_target(self._railway, self._camera.screen_to_world(event.screen_pos), self._construction_state.construction_anchor)
 
         if target.kind == RailTargetType.NODE:
-            self._construction_state.construction_anchor = Pose(target.snapped, (0, 0))
+            self._construction_state.construction_anchor = Pose(target.snapped, Direction(0, 0))
 
         elif target.kind == RailTargetType.ANCHOR_SAME:
             self._construction_state.construction_anchor = None
