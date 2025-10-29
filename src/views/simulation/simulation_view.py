@@ -1,4 +1,4 @@
-from config.colors import BLUE, GREEN, RED
+from config.colors import GREEN, RED, WHITE
 from graphics.camera import Camera
 from models.construction import EdgeType
 from models.geometry.position import Position
@@ -37,4 +37,4 @@ class SimulationView(UIComponent):
         if world_pos is None:
             return
         
-        draw_node(self._surface, world_pos.snap_to_grid(), self._camera, color=GREEN)
+        draw_node(self._surface, world_pos, self._camera, color=WHITE)
