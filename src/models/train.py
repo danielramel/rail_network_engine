@@ -7,6 +7,7 @@ if TYPE_CHECKING:
 
 
 class Train:
+    path : list[Edge]
     edge_progress : float = 0.0
     speed : float = 0.0  # in m/s
     acceleration : float = 2.0  # in km/s²
@@ -20,7 +21,10 @@ class Train:
         self.id = id
         self.code = code
         self.railway_system = railway_system
-        self.path = edges + railway_system.train_service.get_initial_path(edges[-1])
+        path, signal = railway_system.train_service.get_initial_path(edges[-1])
+        self.path = edges + path
+        if signal is not None:
+            signal.subscribe(self.signal_turned_green_ahead)
 
     def direction(self) -> Direction:
         return self.path[TRAIN_LENGTH].direction
@@ -31,7 +35,6 @@ class Train:
     def tick(self):
         max_safe_speed = self.get_max_safe_speed()
         if self.speed > max_safe_speed:
-            print(self.speed - self.deceleration, max_safe_speed)
             if self.speed - self.deceleration > max_safe_speed:
                 raise ValueError("The train is going too fast to stop!!")
             self.speed = max_safe_speed
@@ -58,8 +61,9 @@ class Train:
             return 0.0
         # v_max = sqrt(2 * a * s)
         return (2 * self.deceleration * FPS * distance) ** 0.5
-
-
+    
+    def signal_turned_green_ahead(self) -> bool:
+        print("TURNED GREEN")
 
 
 class TrainRepository:

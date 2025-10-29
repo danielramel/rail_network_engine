@@ -1,5 +1,6 @@
 from .position import Position
 from .pose import Pose
-from .edge import Edge, Edge
+from .edge import Edge
+from .direction import Direction
 
-__all__ = ['Position', 'Pose', 'Edge', 'Edge']
+__all__ = ['Position', 'Pose', 'Edge', 'Direction']

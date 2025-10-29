@@ -1,17 +1,6 @@
-from dataclasses import dataclass
 import networkx as nx
 from models.geometry import Position
-
-from models.geometry.direction import Direction
-
-@dataclass
-class Signal:    
-    position: Position
-    direction: Direction
-    allowed: bool = False
-        
-    def allow(self) -> None:
-        self.allowed = True
+from models.signal import Signal
 
 
 class SignalService:
