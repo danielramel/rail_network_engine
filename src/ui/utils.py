@@ -239,61 +239,25 @@ def draw_train_car(surface: pygame.Surface, edge: Edge, camera: Camera):
     pygame.draw.polygon(surface, BLACK, points, 2)
 
 def draw_train_lights(surface: pygame.Surface, world_pos: Position, direction: Direction,
-                      camera: Camera, color: tuple, brightness: float = 1.0, length_factor: float = 1.0, width_factor: float = 1.0):
-    # Scale everything based on camera zoom
-    light_length = 200 * camera.scale * length_factor
-    light_width = 13 * camera.scale * width_factor
-    world_x, world_y = camera.world_to_screen(world_pos)
-    
-    # Calculate perpendicular vector for positioning the two lights
+                      camera: Camera, color: tuple):
+    screen_x, screen_y = camera.world_to_screen(world_pos)
+
+    # direction is a small vector like (dx, dy) with components in {-1, 0, 1}
     dx, dy = direction
     perp_x, perp_y = -dy, dx
-    
-    # Offset for the two lights (spacing between them)
-    light_spacing = 5 * camera.scale
-    
-    # Create a surface for the light effect
-    light_surface = pygame.Surface((surface.get_width(), surface.get_height()), pygame.SRCALPHA)
-    
-    # Draw two separate light beams
-    for light_offset in [-light_spacing, light_spacing]:
-        # Determine if this is left or right light (for outward spreading)
-        side = 1 if light_offset > 0 else -1
-        
-        # Position of this light
-        light_x = world_x + perp_x * light_offset
-        light_y = world_y + perp_y * light_offset
-        
-        # Draw multiple layers with decreasing opacity based on distance
-        layers = 50
-        for i in range(layers, 0, -1):
-            # Calculate distance for this layer
-            distance_ratio = i / layers
-            layer_length = light_length * distance_ratio
-            
-            # Calculate end point for this layer
-            end_x = light_x + dx * layer_length
-            end_y = light_y + dy * layer_length
-            
-            # For asymmetric spreading: inner edge stays straight, outer edge spreads
-            width_start = light_width * 0.3
-            width_end_inner = width_start
-            width_end_outer = width_start + light_width * distance_ratio * 0.6
-            
-            # Calculate opacity (stronger near source, fades with distance)
-            alpha = int(150 * brightness * ((layers - i + 1) / layers) ** 1.2)
-            
-            # Create asymmetric trapezoid points
-            layer_points = [
-                (light_x + perp_x * width_start / 2 * side, light_y + perp_y * width_start / 2 * side),
-                (light_x - perp_x * width_start / 2 * side, light_y - perp_y * width_start / 2 * side),
-                (end_x - perp_x * width_end_inner / 2 * side, end_y - perp_y * width_end_inner / 2 * side),
-                (end_x + perp_x * width_end_outer / 2 * side, end_y + perp_y * width_end_outer / 2 * side),
-            ]
-            
-            pygame.draw.polygon(light_surface, (*color, alpha), layer_points)
-    
-    surface.blit(light_surface, (0, 0))
+
+    # spacing in screen pixels
+    spacing = max(2, int(4 * camera.scale))
+    radius = max(2, int(3 * camera.scale))
+
+    left_x = int(screen_x + perp_x * -spacing)
+    left_y = int(screen_y + perp_y * -spacing)
+    right_x = int(screen_x + perp_x * spacing)
+    right_y = int(screen_y + perp_y * spacing)
+
+
+    pygame.draw.circle(surface, color, (left_x, left_y), radius)
+    pygame.draw.circle(surface, color, (right_x, right_y), radius)
 
 
 def draw_train(surface: pygame.Surface, train: Train, camera: Camera):
@@ -308,12 +272,12 @@ def draw_train(surface: pygame.Surface, train: Train, camera: Camera):
     first_edge = occupied_edges[0]
     front_pos = first_edge.move(first_edge.direction, train.edge_progress*GRID_SIZE).b
     direction = first_edge.direction
-    draw_train_lights(surface, front_pos, direction, camera, color=WHITE, brightness=1.0)
+    draw_train_lights(surface, front_pos, direction, camera, color=WHITE )
 
     last_edge = occupied_edges[-1]
     back_pos = last_edge.move(last_edge.direction, train.edge_progress*GRID_SIZE).a
     direction = last_edge.direction.get_opposite()
-    draw_train_lights(surface, back_pos, direction, camera, color=RED, brightness=0.8, length_factor=0.2, width_factor=1.5)
+    draw_train_lights(surface, back_pos, direction, camera, color=RED)
     
     # draw current speed above the train front
     speed_text = f"{int(round(train.speed))} km/h"
