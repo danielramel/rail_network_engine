@@ -1,18 +1,29 @@
-from dataclasses import dataclass
 from models.geometry import Edge
 from config.settings import FPS, TRAIN_LENGTH
 from models.geometry.direction import Direction
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from models.railway_system import RailwaySystem
 
-@dataclass
+
 class Train:
-    id: int
-    code: str
-    path: list[Edge]
     edge_progress : float = 0.0
-    max_speed: int = 100  # in km/h, default 100
-    speed : int = 0  # in km/h, current speed
-    acceleration: float = 5
-    deceleration: int = 10
+    speed : float = 0.0  # in m/s
+    acceleration : float = 2.0  # in km/s²
+    max_speed : int  =  120  # in km/h
+    deceleration : float = 5.0 # in km/s²
+
+    def __init__(self, id: int, code: str, edges: tuple[Edge], railway_system: 'RailwaySystem'):
+        if len(edges) != TRAIN_LENGTH:
+            raise ValueError("A train must occupy exactly TRAIN_LENGTH edges.")
+        
+        self.id = id
+        self.code = code
+        self.railway_system = railway_system
+        self.path = edges + railway_system.train_service.get_initial_path(edges[-1])
+
+    def direction(self) -> Direction:
+        return self.path[TRAIN_LENGTH].direction
     
     def direction(self) -> Direction:
         return self.path[TRAIN_LENGTH].direction
@@ -20,6 +31,7 @@ class Train:
     def tick(self):
         max_safe_speed = self.get_max_safe_speed()
         if self.speed > max_safe_speed:
+            print(self.speed - self.deceleration, max_safe_speed)
             if self.speed - self.deceleration > max_safe_speed:
                 raise ValueError("The train is going too fast to stop!!")
             self.speed = max_safe_speed
@@ -41,7 +53,7 @@ class Train:
         return tuple(reversed(self.path[:TRAIN_LENGTH]))
     
     def get_max_safe_speed(self) -> float:
-        distance = len(self.path) - TRAIN_LENGTH - self.edge_progress - 0.5
+        distance = len(self.path) - TRAIN_LENGTH - self.edge_progress - 1.5
         if distance <= 0:
             return 0.0
         # v_max = sqrt(2 * a * s)
@@ -57,8 +69,8 @@ class TrainRepository:
     def add(self, train: Train) -> None:
         self._trains.append(train)
 
-    def remove(self, train: Train) -> None:
-        self._trains.remove(train)
+    def remove(self, id: int) -> None:
+        self._trains = [train for train in self._trains if train.id != id]
 
     def all(self) -> list[Train]:
         return self._trains

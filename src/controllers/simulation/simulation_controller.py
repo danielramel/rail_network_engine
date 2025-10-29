@@ -17,7 +17,7 @@ class SimulationController(UIComponent):
         self._camera = camera
 
     def handle_event(self, event) -> bool:
-        snapped: Position = event.screen_pos.snap_to_grid()
+        snapped: Position = self._camera.screen_to_world(event.screen_pos).snap_to_grid()
         if self._railway.graph.has_node_at(snapped) and self._railway.signals.has_signal_at(snapped):
             signal = self._railway.signals.get(snapped)
             signal.allow()
@@ -26,7 +26,8 @@ class SimulationController(UIComponent):
             
             
     def render(self, screen_pos: Position | None):
-        self.view.render(screen_pos)
+        world_pos = None if screen_pos is None else self._camera.screen_to_world(screen_pos)
+        self.view.render(world_pos)
 
     def contains(self, screen_pos: Position) -> bool:
         return True

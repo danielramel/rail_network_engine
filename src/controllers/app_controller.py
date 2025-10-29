@@ -61,6 +61,7 @@ class AppController:
             ])
         elif mode == ViewMode.SIMULATION:
             self.time_control_state.reset()
+            self._mock_load()
             self.elements.extend([
                 TimeControlButtons(self.screen, self.time_control_state),
                 TimeDisplay(self.screen, self.time_control_state),
@@ -133,6 +134,7 @@ class AppController:
             
         self.railway.graph.add_segment(points, 120)
 
-        edges = [Edge(points[i], points[i + 1]) for i in range(len(points)-1)]
-        train = Train(-1, "Train 1", edges)
+        edges = [Edge(points[i+11], points[i + 12]) for i in range(TRAIN_LENGTH)]
+        train = Train(-1, "Train 1", edges, self.railway)
+        self.railway.trains.remove(-1)
         self.railway.trains.add(train)

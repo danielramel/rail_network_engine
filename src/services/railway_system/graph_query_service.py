@@ -1,3 +1,4 @@
+from typing import Optional
 import networkx as nx
 from config.settings import GRID_SIZE
 from models.geometry import Position, Pose
@@ -27,11 +28,9 @@ class GraphService:
     def has_edge(self, edge: Edge) -> bool:
         return self._graph.has_edge(*edge)
     
-    def edges_with_data(self, key=None) -> dict[Edge, dict]:
-        if key:
-            return {Edge(*edge): data for *edge, data in self._graph.edges.data(key)}
-        
-        return {Edge(*edge): data for *edge, data in self._graph.edges.data()}
+    def edges_with_data(self, key) -> dict[Edge, dict]:
+        return {Edge(*edge): data for *edge, data in self._graph.edges.data(key)}
+
     
     def is_junction(self, pos: Position) -> bool:
         if self._graph.degree[pos] > 2: return True
@@ -46,7 +45,6 @@ class GraphService:
     def junctions(self) -> list[Position]:
         return [n for n in self._graph.nodes if self.is_junction(n)]
     
-
     def get_connections_from_pose(self, pose: Pose, only_straight: bool = False) -> tuple[Pose]:
         connections = []
         for neighbor in self._graph.neighbors(pose.position):
@@ -72,14 +70,11 @@ class GraphService:
             self._graph.add_node(p)
         for a, b in zip(points[:-1], points[1:]):
             self._graph.add_edge(a, b, speed=speed)
+            
+    def get_platform_preview(self, edge: Edge) -> tuple[frozenset[Position], frozenset[Edge]]:
+        return self.get_segment(edge, only_platforms=True, only_straight=True, max_nr=5)
 
-    def get_segment(
-        self,
-        edge: Edge,
-        end_on_signal: bool = False,
-        only_platforms: bool = False,
-        only_straight: bool = False,
-        max_nr: int | None = None
+    def get_segment(self, edge: Edge, end_on_signal: bool = False, only_platforms: bool = False, only_straight: bool = False, max_nr: Optional[int] = None
     ) -> tuple[frozenset[Position], frozenset[Edge]]:
         
         edges: set[Edge] = set()

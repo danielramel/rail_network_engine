@@ -7,15 +7,16 @@ from models.geometry.position import Position
 class Edge:
     a: Position
     b: Position
-    length: float = 0.0
-    direction: Direction = None
-    
-    def __post_init__(self):
-        object.__setattr__(self, 'length', self.a.distance_to(self.b))
-        object.__setattr__(self, 'direction', self.a.direction_to(self.b))
-
     def __iter__(self):
         return iter((self.a, self.b))
+    
+    @property
+    def length(self) -> float:
+        return self.a.distance_to(self.b)
+    
+    @property
+    def direction(self) -> Direction:
+        return self.a.direction_to(self.b)
 
     def __hash__(self):
         # Make it hashable independent of endpoint order

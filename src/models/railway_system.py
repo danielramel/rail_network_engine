@@ -1,9 +1,10 @@
 import networkx as nx
 from models.geometry import Position, Pose, Edge
-from services.rail.graph_query_service import GraphService
-from services.rail.signal_service import SignalService
-from services.rail.path_service import PathService
-from services.rail.platform_service import PlatformService
+from services.railway_system.graph_query_service import GraphService
+from services.railway_system.signal_service import SignalService
+from services.railway_system.path_service import PathService
+from services.railway_system.platform_service import PlatformService
+from services.railway_system.train_service import TrainService
 from models.station import StationRepository
 from models.schedule import ScheduleRepository
 from models.train import TrainRepository
@@ -18,6 +19,7 @@ class RailwaySystem:
         self._station_repository = StationRepository()
         self._schedule_repository = ScheduleRepository()
         self._train_repository = TrainRepository()
+        self._train_service = TrainService(self)
     
     @property
     def graph(self) -> GraphService:
@@ -45,6 +47,10 @@ class RailwaySystem:
     @property
     def platforms(self) -> PlatformService:
         return self._platform_service
+    
+    @property
+    def train_service(self) -> TrainService:
+        return self._train_service
     
     def tick(self):
         for train in self._train_repository.all():

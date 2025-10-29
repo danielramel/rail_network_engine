@@ -1,4 +1,4 @@
-from config.colors import GREEN, RED
+from config.colors import BLUE, GREEN, RED
 from graphics.camera import Camera
 from models.construction import EdgeType
 from models.geometry.position import Position
@@ -13,7 +13,7 @@ class SimulationView(UIComponent):
         self._railway = railway
         self._camera = camera
         
-    def render(self, screen_pos: Position | None) -> None:
+    def render(self, world_pos: Position | None) -> None:
         # draw_grid(self._surface, self._camera)
     
         for edge in self._railway.graph.edges:
@@ -33,3 +33,8 @@ class SimulationView(UIComponent):
 
         for train in self._railway.trains.all():
             draw_train(self._surface, train, self._camera)
+            
+        if world_pos is None:
+            return
+        
+        draw_node(self._surface, world_pos.snap_to_grid(), self._camera, color=GREEN)
