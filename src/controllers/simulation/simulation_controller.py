@@ -11,8 +11,8 @@ from views.simulation.simulation_view import SimulationView
 class SimulationController(UIComponent):
     handled_events = [pygame.MOUSEBUTTONUP]
     def __init__(self, railway: RailwaySystem, camera: Camera, simulation_state: SimulationState, screen: pygame.Surface):
-        self.view = SimulationView(railway, camera, screen)
-        self.simulation_state = simulation_state
+        self.view = SimulationView(railway, camera, screen, simulation_state)
+        self._simulation_state = simulation_state
         self._railway = railway
         self._camera = camera
 
@@ -20,7 +20,7 @@ class SimulationController(UIComponent):
         snapped: Position = self._camera.screen_to_world(event.screen_pos).snap_to_grid()
         if self._railway.graph.has_node_at(snapped) and self._railway.signals.has_signal_at(snapped):
             signal = self._railway.signals.get(snapped)
-            signal.allow()
+            self._simulation_state.selected_signal = signal
         return True
             
             
@@ -32,7 +32,7 @@ class SimulationController(UIComponent):
         return True
     
     def tick(self):
-        if self.simulation_state.time.paused:
+        if self._simulation_state.time.paused:
             return
-        for _ in range(self.simulation_state.time.mode.value):
+        for _ in range(self._simulation_state.time.mode.value):
             self._railway.tick()

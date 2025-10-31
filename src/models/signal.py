@@ -5,14 +5,17 @@ from models.geometry import Position, Direction
 class Signal:    
     position: Position
     direction: Direction
-    allowed: bool = False
+    next_signal : 'Signal' = None
     _subscribers: list[callable] = field(default_factory=list)
         
-    def allow(self) -> None:
-        self.allowed = True
-        
+    def connect(self, next_signal: 'Signal') -> None:
+        self.next_signal = next_signal
         for callback in self._subscribers:
-            callback()
+            callback(next_signal)
+            
+    @property
+    def is_green(self):
+        return self.next_signal is not None
             
     def subscribe(self, callback: callable) -> None:
         self._subscribers.append(callback)

@@ -62,7 +62,7 @@ class Train:
         # v_max = sqrt(2 * a * s)
         return (2 * self.deceleration * FPS * distance) ** 0.5
     
-    def signal_turned_green_ahead(self) -> bool:
+    def signal_turned_green_ahead(self, path: list[Edge]) -> bool:
         print("TURNED GREEN")
 
 

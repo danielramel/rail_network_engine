@@ -134,6 +134,7 @@ class AppController:
             points.append(Position(2080 + i * GRID_SIZE, 320 + i * GRID_SIZE))
             
         self.railway.graph.add_segment(points, 120)
+        self.railway.signals.add(points[27])
 
         edges = [Edge(points[i+11], points[i + 12]) for i in range(TRAIN_LENGTH)]
         train = Train(-1, "Train 1", edges, self.railway)

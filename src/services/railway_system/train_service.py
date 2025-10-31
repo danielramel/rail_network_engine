@@ -1,5 +1,3 @@
-import networkx as nx
-
 from models.geometry.edge import Edge
 from models.signal import Signal
 from typing import TYPE_CHECKING, Optional
@@ -21,7 +19,7 @@ class TrainService:
         while True:
             if self.railway.signals.has_signal_at(pos):
                 signal = self.railway.signals.get(pos)
-                if not signal.allowed:
+                if not signal.is_green:
                     return path, signal
                 
             neighbors = list(self.railway._graph.neighbors(pos))

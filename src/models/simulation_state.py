@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from models.geometry import Position
+from models.signal import Signal
 
 from enum import Enum
 from config.settings import FPS
@@ -30,5 +30,5 @@ class TimeControlState:
 
 @dataclass
 class SimulationState:
-    signals: frozenset[Position] = frozenset()
+    selected_signal: Signal = None
     time: TimeControlState = TimeControlState()
