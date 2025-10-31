@@ -3,7 +3,7 @@ from ui.popups import user_input
 from services.construction.station_target import find_station_target
 from graphics.camera import Camera
 from models.railway_system import RailwaySystem
-from models.construction import ConstructionState
+from models.construction_state import ConstructionState
 import pygame
 from views.construction.station import StationView
 

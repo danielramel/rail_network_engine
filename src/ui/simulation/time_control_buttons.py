@@ -5,7 +5,7 @@ from ui.models.base import UIComponent
 from config.colors import BLACK, GREEN, WHITE, YELLOW, RED
 from config.paths import TIME_CONTROL_ICON_PATHS
 from config.settings import BUTTON_SIZE
-from models.time import TimeControlMode, TimeControlState
+from models.simulation_state import TimeControlMode, TimeControlState
 from config.keyboard_shortcuts import TIME_CONTROL_KEYS
 
 

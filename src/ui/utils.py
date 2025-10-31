@@ -3,7 +3,7 @@ from config.colors import PURPLE, LIGHTBLUE, RED, WHITE, BLACK, YELLOW
 
 from config.settings import GRID_SIZE, STATION_RECT_SIZE
 from graphics.camera import Camera
-from models.construction import EdgeType
+from models.construction_state import EdgeType
 from models.geometry import Position, Pose
 from models.geometry.direction import Direction
 from models.geometry.edge import Edge

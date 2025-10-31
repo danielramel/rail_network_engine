@@ -1,6 +1,6 @@
 from config.colors import GREEN, RED, WHITE
 from graphics.camera import Camera
-from models.construction import EdgeType
+from models.construction_state import EdgeType
 from models.geometry.position import Position
 from models.railway_system import RailwaySystem
 from ui.models.base import UIComponent

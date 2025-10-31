@@ -3,7 +3,7 @@ from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
 from ui.models.base import UIComponent
 from config.colors import BLACK, WHITE, YELLOW, RED
-from models.construction import ConstructionMode, ConstructionState
+from models.construction_state import ConstructionMode, ConstructionState
 from config.paths import CONSTRUCTION_ICON_PATHS
 from config.settings import BUTTON_SIZE
 from config.keyboard_shortcuts import CONSTRUCTION_MODE_SELECTION

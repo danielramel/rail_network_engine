@@ -1,5 +1,5 @@
 from models.railway_system import RailwaySystem
-from models.construction import ConstructionState
+from models.construction_state import ConstructionState
 from graphics.camera import Camera
 from views.construction.base_construction_view import BaseConstructionView
 from models.geometry import Position

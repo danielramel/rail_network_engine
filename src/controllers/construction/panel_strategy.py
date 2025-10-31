@@ -3,7 +3,7 @@ from ui.construction.panels.platform_panel import PlatformPanel
 from ui.construction.panels.rail_panel import RailPanel
 from ui.construction.panels.signal_panel import SignalPanel
 from ui.construction.panels.station_panel import StationPanel
-from models.construction import ConstructionMode
+from models.construction_state import ConstructionMode
 from ui.models.panel import Panel
 
 

@@ -1,6 +1,6 @@
 import pygame
 from config.colors import WHITE, YELLOW
-from models.construction import ConstructionState
+from models.construction_state import ConstructionState
 from ui.construction.panels.base_construction_panel import BaseConstructionPanel
     
 class PlatformPanel(BaseConstructionPanel):

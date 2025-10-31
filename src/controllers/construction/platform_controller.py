@@ -4,7 +4,7 @@ from ui.popups import alert
 from services.construction.platform_target import find_platform_target
 from graphics.camera import Camera
 from models.railway_system import RailwaySystem
-from models.construction import ConstructionState, EdgeType
+from models.construction_state import ConstructionState, EdgeType
 import pygame
 from views.construction.platform import PlatformView, PlatformTargetType
 

@@ -1,6 +1,6 @@
 import pygame
 from models.geometry.position import Position
-from models.time import TimeControlState
+from models.simulation_state import TimeControlState
 from ui.models.rectangle import RectangleUIComponent
 from config.colors import BLACK, WHITE
 

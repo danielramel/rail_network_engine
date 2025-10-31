@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+from models.geometry import Position
+
 from enum import Enum
 from config.settings import FPS
 
@@ -24,3 +27,8 @@ class TimeControlState:
     @property
     def paused(self) -> bool:
         return self.mode == TimeControlMode.PAUSE
+
+@dataclass
+class SimulationState:
+    signals: frozenset[Position] = frozenset()
+    time: TimeControlState = TimeControlState()

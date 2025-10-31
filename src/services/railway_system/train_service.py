@@ -40,4 +40,4 @@ class TrainService:
 
             visited.add(next_pos)
             path.append(Edge(pos, next_pos))
-            pos = next_pos
+            pos = next_pos    

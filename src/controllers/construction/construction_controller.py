@@ -3,7 +3,7 @@ from models.geometry import Position
     
 from graphics.camera import Camera
 from models.railway_system import RailwaySystem
-from models.construction import ConstructionState, ConstructionMode
+from models.construction_state import ConstructionState, ConstructionMode
 from ui.models.base import UIComponent
 from .rail_controller import RailController
 from .platform_controller import PlatformController

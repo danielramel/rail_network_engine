@@ -2,7 +2,7 @@ from controllers.construction.base_construction_controller import BaseConstructi
 from services.construction.bulldoze_target import BulldozeTargetType, find_bulldoze_target
 from graphics.camera import Camera
 from models.railway_system import RailwaySystem
-from models.construction import ConstructionState
+from models.construction_state import ConstructionState
 import pygame
 from views.construction.bulldoze import BulldozeView
 

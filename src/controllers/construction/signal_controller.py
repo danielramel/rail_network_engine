@@ -2,7 +2,7 @@ from controllers.construction.base_construction_controller import BaseConstructi
 from services.construction.signal_target import find_signal_target, SignalTargetType
 from graphics.camera import Camera
 from models.railway_system import RailwaySystem
-from models.construction import ConstructionState
+from models.construction_state import ConstructionState
 import pygame
 from views.construction.signal import SignalView
 

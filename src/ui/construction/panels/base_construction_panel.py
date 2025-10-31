@@ -1,5 +1,5 @@
 import pygame
-from models.construction import ConstructionState
+from models.construction_state import ConstructionState
 from ui.models.panel import Panel
 
 class BaseConstructionPanel(Panel):

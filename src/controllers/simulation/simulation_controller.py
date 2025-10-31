@@ -3,16 +3,16 @@ from models.geometry import Position
     
 from graphics.camera import Camera
 from models.railway_system import RailwaySystem
-from models.time import TimeControlState
+from models.simulation_state import SimulationState
 from ui.models.base import UIComponent
 from views.simulation.simulation_view import SimulationView
 
 
 class SimulationController(UIComponent):
     handled_events = [pygame.MOUSEBUTTONUP]
-    def __init__(self, railway: RailwaySystem, camera: Camera, time_control_state: TimeControlState, screen: pygame.Surface):
+    def __init__(self, railway: RailwaySystem, camera: Camera, simulation_state: SimulationState, screen: pygame.Surface):
         self.view = SimulationView(railway, camera, screen)
-        self.time_control_state = time_control_state
+        self.simulation_state = simulation_state
         self._railway = railway
         self._camera = camera
 
@@ -21,7 +21,6 @@ class SimulationController(UIComponent):
         if self._railway.graph.has_node_at(snapped) and self._railway.signals.has_signal_at(snapped):
             signal = self._railway.signals.get(snapped)
             signal.allow()
-        # handle click
         return True
             
             
@@ -33,7 +32,7 @@ class SimulationController(UIComponent):
         return True
     
     def tick(self):
-        if self.time_control_state.paused:
+        if self.simulation_state.time.paused:
             return
-        for _ in range(self.time_control_state.mode.value):
+        for _ in range(self.simulation_state.time.mode.value):
             self._railway.tick()

@@ -1,4 +1,4 @@
-from models.construction import EdgeType
+from models.construction_state import EdgeType
 from services.construction.bulldoze_target import BulldozeTargetType, find_bulldoze_target
 from views.construction.base_construction_view import BaseConstructionView
 from models.geometry import Position

@@ -5,7 +5,8 @@ from controllers.construction.panel_strategy import ConstructionPanelStrategy
 from models.railway_system import RailwaySystem
 from graphics.camera import Camera
 from models.app_state import AppState, ViewMode
-from models.construction import ConstructionState
+from models.construction_state import ConstructionState
+from models.simulation_state import SimulationState
 from ui.models.base import UIComponent
 from ui.components.load_button import LoadButton
 from ui.components.save_button import SaveButton
@@ -18,7 +19,7 @@ from ui.construction.construction_buttons import ConstructionButtons
 from controllers.construction.construction_controller import ConstructionController
 from models.geometry import Position
 from controllers.simulation.simulation_controller import SimulationController
-from models.time import TimeControlState
+from models.simulation_state import TimeControlState
 from controllers.camera_controller import CameraController
 
 class AppController:
@@ -35,7 +36,7 @@ class AppController:
         self.camera = Camera()
         self.app_state = AppState()
         self.construction_state = ConstructionState()
-        self.time_control_state = TimeControlState()
+        self.simulation_state = SimulationState()
         
         self.elements: list[UIComponent] = [
             ModeSelectorButtons(screen, self.app_state),
@@ -60,12 +61,12 @@ class AppController:
                 ConstructionController(self.railway, self.construction_state, self.camera, self.screen)
             ])
         elif mode == ViewMode.SIMULATION:
-            self.time_control_state.reset()
+            self.simulation_state.time.reset()
             self._mock_load()
             self.elements.extend([
-                TimeControlButtons(self.screen, self.time_control_state),
-                TimeDisplay(self.screen, self.time_control_state),
-                SimulationController(self.railway, self.camera, self.time_control_state, self.screen)
+                TimeControlButtons(self.screen, self.simulation_state.time),
+                TimeDisplay(self.screen, self.simulation_state.time),
+                SimulationController(self.railway, self.camera, self.simulation_state, self.screen)
             ])
     
     def _remove_mode_elements(self, mode: ViewMode):
