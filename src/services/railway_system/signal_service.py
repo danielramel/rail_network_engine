@@ -1,5 +1,5 @@
 import networkx as nx
-from models.geometry import Position
+from models.geometry import Position, Edge
 from models.signal import Signal
 
 
@@ -32,4 +32,8 @@ class SignalService:
 
     def all(self) -> tuple[Signal]:
         return tuple(data["signal"] for node, data in self._graph.nodes(data=True) if 'signal' in data)
-
+    
+    def find_path(self, start: Signal, end: Signal) -> list[Position]:
+        path = nx.shortest_path(self._graph, start.position, end.position)
+        edges = [Edge(path[i], path[i+1]) for i in range(len(path)-1)]
+        return edges

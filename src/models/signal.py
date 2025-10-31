@@ -1,21 +1,20 @@
 from dataclasses import dataclass, field
 from models.geometry import Position, Direction
+from models.geometry.edge import Edge
 
 @dataclass
 class Signal:    
     position: Position
     direction: Direction
-    next_signal : 'Signal' = None
+    is_green: bool = False
     _subscribers: list[callable] = field(default_factory=list)
-        
-    def connect(self, next_signal: 'Signal') -> None:
-        self.next_signal = next_signal
+
+    def connect(self, path: list[Edge], signal: 'Signal') -> None:
+        self.is_green = True
         for callback in self._subscribers:
-            callback(next_signal)
+            callback(path, signal)
             
-    @property
-    def is_green(self):
-        return self.next_signal is not None
+        self._subscribers = []
             
     def subscribe(self, callback: callable) -> None:
         self._subscribers.append(callback)

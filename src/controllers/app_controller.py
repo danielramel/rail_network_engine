@@ -135,6 +135,8 @@ class AppController:
             
         self.railway.graph.add_segment(points, 120)
         self.railway.signals.add(points[27])
+        self.railway.signals.add(points[37])
+        self.railway.signals.add(points[47])
 
         edges = [Edge(points[i+11], points[i + 12]) for i in range(TRAIN_LENGTH)]
         train = Train(-1, "Train 1", edges, self.railway)

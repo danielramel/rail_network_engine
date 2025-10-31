@@ -1,6 +1,7 @@
 from models.geometry import Edge
 from config.settings import FPS, TRAIN_LENGTH
 from models.geometry.direction import Direction
+from models.signal import Signal
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from models.railway_system import RailwaySystem
@@ -62,8 +63,11 @@ class Train:
         # v_max = sqrt(2 * a * s)
         return (2 * self.deceleration * FPS * distance) ** 0.5
     
-    def signal_turned_green_ahead(self, path: list[Edge]) -> bool:
-        print("TURNED GREEN")
+    def signal_turned_green_ahead(self, path: list[Edge], signal: Signal) -> bool:
+        print(f"Train {self.code} notified of green signal ahead.")
+        self.path += path
+        signal.subscribe(self.signal_turned_green_ahead)
+        
 
 
 class TrainRepository:
