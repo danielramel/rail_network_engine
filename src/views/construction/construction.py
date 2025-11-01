@@ -10,11 +10,11 @@ class ConstructionCommonView(BaseConstructionView):
 
         for edge, speed in self._railway.graph.edges_with_data('speed').items():
             if self._construction_state.is_edge_in_preview(edge):
-                draw_edge(self._surface, edge, self._camera, edge_type=self._construction_state.preview_edges_type, speed=speed)
+                draw_edge(self._surface, edge, self._camera, self._construction_state.preview_edges_type, speed=speed)
             elif self._railway.platforms.is_edge_platform(edge):
-                draw_edge(self._surface, edge, self._camera, edge_type=EdgeType.PLATFORM)
+                draw_edge(self._surface, edge, self._camera, EdgeType.PLATFORM)
             else:
-                draw_edge(self._surface, edge, self._camera, speed=speed)
+                draw_edge(self._surface, edge, self._camera, EdgeType.NORMAL, speed=speed)
 
         for node in self._railway.graph.junctions:
             draw_node(self._surface, node, self._camera)

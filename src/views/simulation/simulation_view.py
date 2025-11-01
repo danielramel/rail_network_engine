@@ -20,10 +20,10 @@ class SimulationView(UIComponent):
     
         for edge in self._railway.graph.edges:
             if self._railway.platforms.is_edge_platform(edge):
-                draw_edge(self._surface, edge, self._camera, edge_type=EdgeType.PLATFORM)
+                draw_edge(self._surface, edge, self._camera, EdgeType.PLATFORM)
             else:
                 edge_type = EdgeType.LOCKED if self._railway.graph.is_edge_locked(edge) else EdgeType.NORMAL
-                draw_edge(self._surface, edge, self._camera, edge_type=edge_type)
+                draw_edge(self._surface, edge, self._camera, edge_type)
 
         for node in self._railway.graph.junctions:
             draw_node(self._surface, node, self._camera)

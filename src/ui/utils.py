@@ -98,8 +98,8 @@ def draw_dotted_line(surface: pygame.Surface, start_pos: Position, end_pos: Posi
         dot_x = x1 + (dx * (i * dot_spacing) / distance)
         dot_y = y1 + (dy * (i * dot_spacing) / distance)
         pygame.draw.circle(surface, color, (int(dot_x), int(dot_y)), 1)
-        
-def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type=None, speed=None):
+
+def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type: EdgeType, speed=None):
     # Line width scales with camera zoom; ensure at least 1 pixel
     width = max(1, int(round(3 * camera.scale)))
 
@@ -109,7 +109,7 @@ def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type=Non
         draw_platform(surface, edge, camera, color=LIGHTBLUE)
     elif edge_type == EdgeType.PLATFORM:
         draw_platform(surface, edge, camera, color=PURPLE)
-    elif edge_type is None or edge_type == EdgeType.NORMAL:
+    elif edge_type == EdgeType.NORMAL:
         color = WHITE if speed is None else color_from_speed(speed)
         pygame.draw.line(surface, color, *camera.world_to_screen_from_edge(edge), width=width)
     elif edge_type == EdgeType.LOCKED:
