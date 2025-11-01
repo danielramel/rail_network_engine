@@ -1,6 +1,8 @@
 import networkx as nx
 from models.geometry import Position, Edge
 from models.signal import Signal
+from models.geometry import Pose
+import heapq
 
 
 class SignalService:
@@ -34,6 +36,44 @@ class SignalService:
         return tuple(data["signal"] for node, data in self._graph.nodes(data=True) if 'signal' in data)
     
     def find_path(self, start: Signal, end: Signal) -> list[Position]:
+        """
+        priority_queue: list[tuple[float, float, Pose]] = []
+        came_from: dict[Pose, Pose] = {}
+        g_score: dict[Pose, float] = {}
+        f_score: dict[Pose, float] = {}
+
+        g_score[start] = 0
+        f_score[start] = start.position.heuristic_to(end.position)
+        heapq.heappush(priority_queue, (f_score[start], g_score[start], start))
+
+        while priority_queue:
+            current_f, current_g, current_pose = heapq.heappop(priority_queue)
+
+            if current_pose in g_score and current_g > g_score[current_pose]:
+                continue
+
+            if current_pose.position == end:
+                path = [current_pose.position]
+
+                while current_pose in came_from:
+                    current_pose = came_from[current_pose]
+                    path.append(current_pose.position)
+
+                return tuple(reversed(path))
+
+            for neighbor_state, cost in current_pose.get_valid_neighbors():             
+                tentative_g_score = g_score[current_pose] + cost
+
+                if neighbor_state not in g_score or tentative_g_score < g_score[neighbor_state]:
+                    came_from[neighbor_state] = current_pose
+                    g_score[neighbor_state] = tentative_g_score
+                    f_score[neighbor_state] = tentative_g_score + neighbor_state.position.heuristic_to(end.position)
+
+                    heapq.heappush(priority_queue, (f_score[neighbor_state], g_score[neighbor_state], neighbor_state))
+
+        return ()  # No path found
+        """
+    
         path = nx.shortest_path(self._graph, start.position, end.position)
         edges = [Edge(path[i], path[i+1]) for i in range(len(path)-1)]
         return edges

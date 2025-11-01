@@ -35,6 +35,10 @@ class Position:
             raise ValueError("Points are not adjacent")
 
         return Direction(signum(other.x - self.x), signum(other.y - self.y))
+    
+    def heuristic_to(self, other: 'Position') -> float:
+        """Calculate the heuristic cost to another position using Chebyshev distance."""
+        return max(abs(self.x - other.x), abs(self.y - other.y))
 
     def snap_to_grid(self) -> 'Position':
         """Create a new Point snapped to the grid."""

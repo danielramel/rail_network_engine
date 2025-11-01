@@ -42,7 +42,7 @@ class GraphService:
         neighbors = tuple(self._graph.neighbors(pos))
         inbound = neighbors[0].direction_to(pos)
         outbound = pos.direction_to(neighbors[1])
-        return outbound not in Pose.get_valid_turns(inbound)
+        return outbound not in inbound.get_valid_turns()
     
     @property
     def junctions(self) -> list[Position]:
@@ -54,7 +54,7 @@ class GraphService:
             direction = pose.position.direction_to(neighbor)
             if only_straight and direction != pose.direction:
                 continue
-            if direction in Pose.get_valid_turns(pose.direction):
+            if direction in pose.direction.get_valid_turns():
                 connections.append(Pose(neighbor, direction))
         return tuple(connections)
     

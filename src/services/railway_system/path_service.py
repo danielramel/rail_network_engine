@@ -31,21 +31,6 @@ class PathService:
         """
         Find optimal path using A* algorithm with 45° turn constraint.
         """
-        def get_valid_turn_neighbors(state: Pose) -> list[tuple[Pose, float]]:
-
-            neighbors = []
-            for dir in Pose.get_valid_turns(state.direction):
-                nx = state.position.x + dir.x * GRID_SIZE
-                ny = state.position.y + dir.y * GRID_SIZE
-                new_state = Pose(Position(nx, ny), dir)
-
-                neighbors.append((new_state, dir.get_cost()))
-            return neighbors
-
-        def heuristic(a: Position, b: Position) -> float:
-            return (b.x - a.x) ** 2 + (b.y - a.y) ** 2  # Squared Euclidean distance
-        
-        
         if self.is_blocked(end) or self.is_blocked(start.position):
             return ()
 
@@ -58,7 +43,7 @@ class PathService:
         f_score: dict[Pose, float] = {}
 
         g_score[start] = 0
-        f_score[start] = heuristic(start.position, end)
+        f_score[start] = start.position.heuristic_to(end)
         heapq.heappush(priority_queue, (f_score[start], g_score[start], start))
 
         while priority_queue:
@@ -76,7 +61,7 @@ class PathService:
 
                 return tuple(reversed(path))
 
-            for neighbor_state, cost in get_valid_turn_neighbors(current_pose):
+            for neighbor_state, cost in current_pose.get_valid_neighbors():
                 if self.is_blocked(neighbor_state.position):
                     continue
                 
@@ -88,7 +73,7 @@ class PathService:
                 if neighbor_state not in g_score or tentative_g_score < g_score[neighbor_state]:
                     came_from[neighbor_state] = current_pose
                     g_score[neighbor_state] = tentative_g_score
-                    f_score[neighbor_state] = tentative_g_score + heuristic(neighbor_state.position, end)
+                    f_score[neighbor_state] = tentative_g_score + neighbor_state.position.heuristic_to(end)
 
                     heapq.heappush(priority_queue, (f_score[neighbor_state], g_score[neighbor_state], neighbor_state))
 
