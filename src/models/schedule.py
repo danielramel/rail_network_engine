@@ -11,7 +11,7 @@ class Schedule:
     first_train: int  # e.g., 5 * 60 + 12
     last_train: int  # e.g., 23 * 60 + 45
     frequency: int  # e.g., 20 (in minutes)
-    stations: list[dict[str, Station | int]] = field(default_factory=list)  # List of dicts with 'station', 'arrival_time', 'departure_time'
+    stops: list[dict[str, Station | int]] = field(default_factory=list)  # List of dicts with 'station', 'arrival_time', 'departure_time'
     
     def to_dict(self) -> dict:
         """Convert the Schedule object to a dictionary for serialization."""
@@ -25,7 +25,7 @@ class Schedule:
                     'id': entry['station'].id,
                     'arrival_time': entry['arrival_time'],
                     'departure_time': entry['departure_time']
-                } for entry in self.stations
+                } for entry in self.stops
             ]
         }
         

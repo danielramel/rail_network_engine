@@ -71,7 +71,7 @@ class TimetableWindow(QMainWindow):
         for i, schedule in enumerate(schedules):
             total_rows += 1
             if i in self.expanded_rows:
-                total_rows += len(schedule.stations)
+                total_rows += len(schedule.stops)
         
         self.table.setRowCount(total_rows)
         self.table.clearSpans()
@@ -81,7 +81,7 @@ class TimetableWindow(QMainWindow):
             # Prepare items for columns 0-6
             items = [
                 QTableWidgetItem(schedule.code),
-                QTableWidgetItem(self._format_route(schedule.stations)),
+                QTableWidgetItem(self._format_route(schedule.stops)),
                 QTableWidgetItem(""),  # Arrival - empty for main row
                 QTableWidgetItem(""),  # Departure - empty for main row
                 QTableWidgetItem(self._format_time(schedule.first_train)),
@@ -126,10 +126,10 @@ class TimetableWindow(QMainWindow):
 
             # If expanded, set spans and add station rows
             if i in self.expanded_rows:
-                span = len(schedule.stations) + 1
+                span = len(schedule.stops) + 1
                 for col in (0, 4, 5, 6, 7, 8):
                     self.table.setSpan(row_idx, col, span, 1)
-                for i, station in enumerate(schedule.stations, 1):
+                for i, station in enumerate(schedule.stops, 1):
                     arrival_time = self._format_time(station['arrival_time'])
                     departure_time = self._format_time(station['departure_time'])
                     
@@ -178,7 +178,7 @@ class TimetableWindow(QMainWindow):
             data = dialog.get_data()
             schedule = Schedule(
                 code=data['code'],
-                stations=data['schedule'],
+                stops=data['schedule'],
                 first_train=data['first_train'],
                 last_train=data['last_train'],
                 frequency=data['frequency']
@@ -206,7 +206,7 @@ class TimetableWindow(QMainWindow):
 
             updated_schedule = Schedule(
                 code=data['code'],
-                stations=data['stations'],
+                stops=data['stops'],
                 first_train=data['first_train'],
                 last_train=data['last_train'],
                 frequency=data['frequency']

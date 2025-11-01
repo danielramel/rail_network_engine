@@ -1,6 +1,6 @@
 import pygame
 from config.colors import BLACK
-from config.settings import GRID_SIZE, PLATFORM_LENGTH, TRAIN_LENGTH
+from config.settings import GRID_SIZE, TRAIN_LENGTH
 from controllers.construction.panel_strategy import ConstructionPanelStrategy
 from models.railway_system import RailwaySystem
 from graphics.camera import Camera
@@ -119,11 +119,12 @@ class AppController:
         from models.train import Train
         from models.geometry.edge import Edge
         
+        self.railway.stations._stations.clear()
         
-        self.railway.stations.add(Position(100, 100), "Station A")
-        self.railway.stations.add(Position(300, 100), "Station B")
-        self.railway.stations.add(Position(500, 100), "Station C")
-        self.railway.stations.add(Position(700, 100), "Station D")
+        self.railway.stations.add(Position(80, 120), "Station A")
+        self.railway.stations.add(Position(320, 120), "Station B")
+        self.railway.stations.add(Position(520, 120), "Station C")
+        self.railway.stations.add(Position(720, 120), "Station D")
 
 
         points = []

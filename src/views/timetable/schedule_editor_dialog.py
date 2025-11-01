@@ -140,7 +140,7 @@ class ScheduleEditorDialog(QDialog):
             # Set last train time
             self.last_train_time_edit.setTime(QTime.fromMSecsSinceStartOfDay(schedule_to_edit.last_train * 60 * 1000))
 
-            self.add_station_rows_from_schedule(schedule_to_edit.stations)
+            self.add_station_rows_from_schedule(schedule_to_edit.stops)
         else:
             # Add two empty rows by default for new schedules
             self.add_empty_station_row()
