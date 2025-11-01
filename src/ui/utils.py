@@ -1,5 +1,5 @@
 import pygame
-from config.colors import PURPLE, LIGHTBLUE, RED, WHITE, BLACK, YELLOW
+from config.colors import GREEN, PURPLE, LIGHTBLUE, RED, WHITE, BLACK, YELLOW
 
 from config.settings import GRID_SIZE, STATION_RECT_SIZE
 from graphics.camera import Camera
@@ -112,6 +112,8 @@ def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type=Non
     elif edge_type is None or edge_type == EdgeType.NORMAL:
         color = WHITE if speed is None else color_from_speed(speed)
         pygame.draw.line(surface, color, *camera.world_to_screen_from_edge(edge), width=width)
+    elif edge_type == EdgeType.LOCKED:
+        pygame.draw.line(surface, GREEN, *camera.world_to_screen_from_edge(edge), width=width)
 
 def draw_grid(surface, camera):
     """Draw grid lines with camera transform"""
@@ -267,9 +269,6 @@ def draw_train(surface: pygame.Surface, train: Train, camera: Camera):
     occupied_edges = train.occupied_edges()
     for edge in occupied_edges:
         draw_train_car(surface, edge.move(edge.direction, train.edge_progress*GRID_SIZE), camera)
-
-    
-    
 
     last_edge = occupied_edges[-1]
     back_pos = last_edge.move(last_edge.direction, train.edge_progress*GRID_SIZE).a

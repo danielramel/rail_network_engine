@@ -28,6 +28,9 @@ class GraphService:
     def has_edge(self, edge: Edge) -> bool:
         return self._graph.has_edge(*edge)
     
+    def is_edge_locked(self, edge: Edge) -> bool:
+        return self._graph.edges[edge].get('locked', False)
+    
     def edges_with_data(self, key) -> dict[Edge, dict]:
         return {Edge(*edge): data for *edge, data in self._graph.edges.data(key)}
 

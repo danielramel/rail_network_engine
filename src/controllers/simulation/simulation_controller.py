@@ -31,6 +31,7 @@ class SimulationController(UIComponent):
 
                 path = self._railway.signals.find_path(self._simulation_state.selected_signal, signal)
                 self._simulation_state.selected_signal.connect(path, signal)
+                self._railway.signals.lock_path(path)
                 self._simulation_state.selected_signal = None
                 return True
             self._simulation_state.selected_signal = signal

@@ -18,6 +18,7 @@ class EdgeType(Enum):
     INVALID_PLATFORM = 3
     BULLDOZE = 4
     NORMAL = 5
+    LOCKED = 6
     
 @dataclass
 class ConstructionState:

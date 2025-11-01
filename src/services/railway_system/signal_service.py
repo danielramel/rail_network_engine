@@ -37,3 +37,7 @@ class SignalService:
         path = nx.shortest_path(self._graph, start.position, end.position)
         edges = [Edge(path[i], path[i+1]) for i in range(len(path)-1)]
         return edges
+    
+    def lock_path(self, path: list[Edge]) -> None:
+        for edge in path:
+            self._graph.edges[edge.a, edge.b]['locked'] = True
