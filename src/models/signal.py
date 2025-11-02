@@ -1,11 +1,12 @@
 from dataclasses import dataclass, field
-from models.geometry import Position, Direction
+from models.geometry.direction import Direction
 from models.geometry.edge import Edge
+from models.geometry.pose import Pose
+from models.geometry.position import Position
 
 @dataclass
 class Signal:    
-    position: Position
-    direction: Direction
+    pose: Pose
     is_green: bool = False
     _subscribers: list[callable] = field(default_factory=list)
 
@@ -18,3 +19,11 @@ class Signal:
             
     def subscribe(self, callback: callable) -> None:
         self._subscribers.append(callback)
+        
+    @property
+    def direction(self) -> Direction:
+        return self.pose.direction
+    
+    @property
+    def position(self) -> Position:
+        return self.pose.position

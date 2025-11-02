@@ -17,7 +17,7 @@ class SignalService:
         return self._graph.nodes[pos]['signal']
 
     def add(self, pos: Position) -> None:
-        self._graph.nodes[pos]['signal'] = Signal(pos, pos.direction_to(next(self._graph.neighbors(pos))))
+        self._graph.nodes[pos]['signal'] = Signal(Pose(pos, pos.direction_to(next(self._graph.neighbors(pos)))))
 
     def remove(self, pos: Position) -> None:
         del self._graph.nodes[pos]['signal']
@@ -34,9 +34,9 @@ class SignalService:
 
     def all(self) -> tuple[Signal]:
         return tuple(data["signal"] for node, data in self._graph.nodes(data=True) if 'signal' in data)
-    
-    def find_path(self, start: Signal, end: Signal) -> list[Position]:
-        """
+
+    def _calculate_optimal_route(self, start: Pose, end: Pose) -> list[Position]:
+
         priority_queue: list[tuple[float, float, Pose]] = []
         came_from: dict[Pose, Pose] = {}
         g_score: dict[Pose, float] = {}
@@ -52,7 +52,7 @@ class SignalService:
             if current_pose in g_score and current_g > g_score[current_pose]:
                 continue
 
-            if current_pose.position == end:
+            if current_pose == end:
                 path = [current_pose.position]
 
                 while current_pose in came_from:
@@ -61,7 +61,9 @@ class SignalService:
 
                 return tuple(reversed(path))
 
-            for neighbor_state, cost in current_pose.get_valid_neighbors():             
+            for neighbor_state, cost in current_pose.get_valid_neighbors():
+                if not self._graph.has_node(neighbor_state.position):
+                    continue     
                 tentative_g_score = g_score[current_pose] + cost
 
                 if neighbor_state not in g_score or tentative_g_score < g_score[neighbor_state]:
@@ -72,9 +74,9 @@ class SignalService:
                     heapq.heappush(priority_queue, (f_score[neighbor_state], g_score[neighbor_state], neighbor_state))
 
         return ()  # No path found
-        """
-    
-        path = nx.shortest_path(self._graph, start.position, end.position)
+        
+    def find_path(self, start: Signal, end: Signal) -> list[Edge]:
+        path = self._calculate_optimal_route(start.pose, end.pose)
         edges = [Edge(path[i], path[i+1]) for i in range(len(path)-1)]
         return edges
     
