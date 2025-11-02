@@ -1,4 +1,4 @@
-from models.construction_state import EdgeType
+from models.construction_state import EdgeAction
 from services.construction.bulldoze_target import BulldozeTargetType, find_bulldoze_target
 from views.construction.base_construction_view import BaseConstructionView
 from models.geometry import Position
@@ -7,9 +7,7 @@ from config.colors import RED
 
 class BulldozeView(BaseConstructionView):
     def render(self, world_pos: Position | None):
-        self._construction_state.preview_edges = set()
-        self._construction_state.preview_nodes = set()
-        self._construction_state.preview_edges_type = None
+        self._construction_state.preview.clear()
         
         if world_pos is None:
             return
@@ -22,9 +20,9 @@ class BulldozeView(BaseConstructionView):
         elif target.kind == BulldozeTargetType.NONE:
             draw_node(self._surface, world_pos, self._camera, color=RED)
         elif target.kind == BulldozeTargetType.PLATFORM:
-            self._construction_state.preview_edges = target.edges
-            self._construction_state.preview_edges_type = EdgeType.NORMAL
+            self._construction_state.preview.edges = target.edges
+            self._construction_state.preview.edge_action = EdgeAction.NORMAL
         elif target.kind == BulldozeTargetType.SEGMENT:
-            self._construction_state.preview_edges = target.edges
-            self._construction_state.preview_nodes = target.nodes
-            self._construction_state.preview_edges_type = EdgeType.BULLDOZE
+            self._construction_state.preview.edges = target.edges
+            self._construction_state.preview.nodes = target.nodes
+            self._construction_state.preview.edge_action = EdgeAction.BULLDOZE

@@ -12,7 +12,7 @@ class ConstructionMode(Enum):
     PLATFORM = 4
     BULLDOZE = 5
     
-class EdgeType(Enum):
+class EdgeAction(Enum):
     PLATFORM = 1
     PLATFORM_SELECTED = 2
     INVALID_PLATFORM = 3
@@ -21,15 +21,25 @@ class EdgeType(Enum):
     LOCKED = 6
     
 @dataclass
+class PreviewObjects:
+    edges: frozenset[Edge] = field(default_factory=frozenset)
+    nodes: frozenset[Position] = field(default_factory=frozenset)
+    edge_action: EdgeAction = EdgeAction.NORMAL
+    
+    def clear(self) -> None:
+        self.edges = frozenset()
+        self.nodes = frozenset()
+        self.edge_action = EdgeAction.NORMAL
+    
+    
+@dataclass
 class ConstructionState:
     """Manages the current construction mode and associated state."""
     mode: ConstructionMode = ConstructionMode.RAIL
     construction_anchor: Pose | None = None
     track_speed: int = 120
     moving_station: Optional[Station] = None
-    preview_edges: frozenset[Edge] = field(default_factory=frozenset)
-    preview_nodes: frozenset[Position] = field(default_factory=frozenset)
-    preview_edges_type: Optional[EdgeType] = None
+    preview: PreviewObjects = field(default_factory=PreviewObjects)
     platform_waiting_for_station: bool = False
     
     def switch_mode(self, new_mode: ConstructionMode) -> None:
@@ -40,18 +50,17 @@ class ConstructionState:
         self.mode = new_mode
         self.construction_anchor = None
         self.moving_station = None
-        self.preview_edges = frozenset()
-        self.preview_nodes = frozenset()
-        self.preview_edges_type = None
+        self.preview.clear()
         self.platform_waiting_for_station = False
         
     def is_edge_in_preview(self, edge: Edge) -> bool:
         """Check if an edge (in either direction) is in the preview set."""
-        return edge in self.preview_edges
+        return edge in self.preview.edges
+    
     def is_bulldoze_preview_node(self, pos: Position) -> bool:
         """Check if a position is marked for bulldozing."""
-        return self.mode is ConstructionMode.BULLDOZE and pos in self.preview_nodes
-    
+        return self.mode is ConstructionMode.BULLDOZE and pos in self.preview.nodes
+
     def is_station_being_moved(self, station: Station) -> bool:
         """Check if a specific station is currently being moved."""
         return self.moving_station == station
@@ -62,7 +71,5 @@ class ConstructionState:
         self.construction_anchor = None
         self.track_speed = 120
         self.moving_station = None
-        self.preview_edges = frozenset()
-        self.preview_nodes = frozenset()
-        self.preview_edges_type = None
+        self.preview.clear()
         self.platform_waiting_for_station = False

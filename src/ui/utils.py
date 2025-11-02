@@ -3,7 +3,7 @@ from config.colors import GREEN, PURPLE, LIGHTBLUE, RED, WHITE, BLACK, YELLOW
 
 from config.settings import GRID_SIZE, STATION_RECT_SIZE
 from graphics.camera import Camera
-from models.construction_state import EdgeType
+from models.construction_state import EdgeAction
 from models.geometry import Position, Pose
 from models.geometry.direction import Direction
 from models.geometry.edge import Edge
@@ -99,20 +99,20 @@ def draw_dotted_line(surface: pygame.Surface, start_pos: Position, end_pos: Posi
         dot_y = y1 + (dy * (i * dot_spacing) / distance)
         pygame.draw.circle(surface, color, (int(dot_x), int(dot_y)), 1)
 
-def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type: EdgeType, speed=None):
+def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type: EdgeAction, speed=None):
     # Line width scales with camera zoom; ensure at least 1 pixel
     width = max(1, int(round(3 * camera.scale)))
 
-    if edge_type == EdgeType.BULLDOZE or edge_type == EdgeType.INVALID_PLATFORM:
+    if edge_type == EdgeAction.BULLDOZE or edge_type == EdgeAction.INVALID_PLATFORM:
         pygame.draw.line(surface, RED, *camera.world_to_screen_from_edge(edge), width=width)
-    elif edge_type == EdgeType.PLATFORM_SELECTED:
+    elif edge_type == EdgeAction.PLATFORM_SELECTED:
         draw_platform(surface, edge, camera, color=LIGHTBLUE)
-    elif edge_type == EdgeType.PLATFORM:
+    elif edge_type == EdgeAction.PLATFORM:
         draw_platform(surface, edge, camera, color=PURPLE)
-    elif edge_type == EdgeType.NORMAL:
+    elif edge_type == EdgeAction.NORMAL:
         color = WHITE if speed is None else color_from_speed(speed)
         pygame.draw.line(surface, color, *camera.world_to_screen_from_edge(edge), width=width)
-    elif edge_type == EdgeType.LOCKED:
+    elif edge_type == EdgeAction.LOCKED:
         pygame.draw.line(surface, GREEN, *camera.world_to_screen_from_edge(edge), width=width)
 
 def draw_grid(surface, camera):

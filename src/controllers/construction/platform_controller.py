@@ -4,7 +4,7 @@ from ui.popups import alert
 from services.construction.platform_target import find_platform_target
 from graphics.camera import Camera
 from models.railway_system import RailwaySystem
-from models.construction_state import ConstructionState, EdgeType
+from models.construction_state import ConstructionState, EdgeAction
 import pygame
 from views.construction.platform import PlatformView, PlatformTargetType
 
@@ -27,7 +27,7 @@ class PlatformController(BaseConstructionController):
         if self._construction_state.platform_waiting_for_station:
             for station in self._railway.stations.all():
                 if world_pos.is_within_station_rect(station.position):
-                    self._railway.platforms.add(station, list(self._construction_state.preview_edges))
+                    self._railway.platforms.add(station, list(self._construction_state.preview.edges))
                     break
             self._construction_state.platform_waiting_for_station = False
             return
@@ -48,4 +48,4 @@ class PlatformController(BaseConstructionController):
 
         # prepare to select station
         self._construction_state.platform_waiting_for_station = True
-        self._construction_state.preview_edges_type = EdgeType.PLATFORM_SELECTED
+        self._construction_state.preview.edge_action = EdgeAction.PLATFORM_SELECTED

@@ -1,6 +1,6 @@
 from config.colors import GREEN, RED, WHITE, LIGHTBLUE
 from graphics.camera import Camera
-from models.construction_state import EdgeType
+from models.construction_state import EdgeAction
 from models.geometry.position import Position
 from models.railway_system import RailwaySystem
 from models.simulation_state import SimulationState
@@ -20,9 +20,9 @@ class SimulationView(UIComponent):
     
         for edge in self._railway.graph.edges:
             if self._railway.platforms.is_edge_platform(edge):
-                draw_edge(self._surface, edge, self._camera, EdgeType.PLATFORM)
+                draw_edge(self._surface, edge, self._camera, EdgeAction.PLATFORM)
             else:
-                edge_type = EdgeType.LOCKED if self._railway.graph.is_edge_locked(edge) else EdgeType.NORMAL
+                edge_type = EdgeAction.LOCKED if self._railway.graph.is_edge_locked(edge) else EdgeAction.NORMAL
                 draw_edge(self._surface, edge, self._camera, edge_type)
 
         for node in self._railway.graph.junctions:

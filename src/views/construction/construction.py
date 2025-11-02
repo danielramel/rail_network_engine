@@ -1,4 +1,4 @@
-from models.construction_state import EdgeType
+from models.construction_state import EdgeAction
 from models.geometry.position import Position
 from views.construction.base_construction_view import BaseConstructionView
 from ui.utils import draw_grid, draw_edge, draw_node, draw_signal, draw_station, draw_dotted_line
@@ -9,12 +9,12 @@ class ConstructionCommonView(BaseConstructionView):
         draw_grid(self._surface, self._camera)
 
         for edge, speed in self._railway.graph.edges_with_data('speed').items():
-            if self._construction_state.is_edge_in_preview(edge):
-                draw_edge(self._surface, edge, self._camera, self._construction_state.preview_edges_type, speed=speed)
+            if edge in self._construction_state.preview.edges:
+                draw_edge(self._surface, edge, self._camera, self._construction_state.preview.edge_action, speed=speed)
             elif self._railway.platforms.is_edge_platform(edge):
-                draw_edge(self._surface, edge, self._camera, EdgeType.PLATFORM)
+                draw_edge(self._surface, edge, self._camera, EdgeAction.PLATFORM)
             else:
-                draw_edge(self._surface, edge, self._camera, EdgeType.NORMAL, speed=speed)
+                draw_edge(self._surface, edge, self._camera, EdgeAction.NORMAL, speed=speed)
 
         for node in self._railway.graph.junctions:
             draw_node(self._surface, node, self._camera)

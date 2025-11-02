@@ -6,7 +6,7 @@ class Camera:
         self.y = 0.0
         self.scale = 1.0
         self.min_scale = 0.1
-        self.max_scale = 8.0
+        self.max_scale = 3.0
         self.is_dragging = False
         self.drag_start_x = 0
         self.drag_start_y = 0
@@ -59,8 +59,9 @@ class Camera:
     def zoom(self, mouse_pos: Position, zoom_direction: int):
         """Zoom in/out centered on mouse position"""
 
-        zoom_factor = 1.1 if zoom_direction > 0 else 1.0 / 1.1
-        new_scale = self.scale * zoom_factor
+        zoom_factor = 1.2 if zoom_direction > 0 else 1.0 / 1.2
+        # compute new scale and round to nearest 5% increment (0.05)
+        new_scale = round(self.scale * zoom_factor / 0.05) * 0.05
         new_scale = max(self.min_scale, min(new_scale, self.max_scale))
         
         if new_scale == self.scale:
