@@ -21,7 +21,7 @@ class TimeControlButtons(UIComponent):
         self._surface = surface
         
         
-    def handle_event(self, event: pygame.event) -> bool:      
+    def handle_event(self, event: pygame.event) -> bool:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 if self.time_control_state.mode == TimeControlMode.PAUSE:
