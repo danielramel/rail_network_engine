@@ -56,7 +56,7 @@ class SignalService:
                 return tuple(reversed(path))
 
             for neighbor_pose, cost in current_pose.get_neighbors_in_direction():
-                if not self._graph.has_node(neighbor_pose.position):
+                if not self._graph.has_edge(current_pose.position, neighbor_pose.position):
                     continue
                 
                 tentative_g_score = g_score[current_pose] + cost
