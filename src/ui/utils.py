@@ -74,6 +74,7 @@ def draw_station(surface: pygame.Surface, station: Station, camera: Camera, colo
     w, h = STATION_RECT_SIZE
     rect = pygame.Rect(0, 0, w * camera.scale, h * camera.scale)
     rect.center = tuple(camera.world_to_screen(station.position))
+    pygame.draw.rect(surface, BLACK, rect)
     pygame.draw.rect(surface, color, rect, width)
 
     # Render station name text in the middle of the rect
@@ -94,7 +95,7 @@ def draw_dotted_line(surface: pygame.Surface, start_pos: Position, end_pos: Posi
     distance = start_pos.distance_to(end_pos)
     dot_spacing = 8
     dot_count = int(distance // dot_spacing)
-    for i in range(dot_count + 1):
+    for i in range(dot_count):
         dot_x = x1 + (dx * (i * dot_spacing) / distance)
         dot_y = y1 + (dy * (i * dot_spacing) / distance)
         pygame.draw.circle(surface, color, (int(dot_x), int(dot_y)), 1)

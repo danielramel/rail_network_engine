@@ -28,6 +28,6 @@ class ConstructionCommonView(BaseConstructionView):
         for station in self._railway.stations.all():
             if self._state.is_station_being_moved(station):
                 continue
-            draw_station(self._surface, station, self._camera)
             for middle_point in self._railway.stations.platforms_middle_points(station):
                 draw_dotted_line(self._surface, middle_point, station.position, self._camera, color=PURPLE)
+            draw_station(self._surface, station, self._camera)
