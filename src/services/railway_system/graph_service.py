@@ -1,9 +1,7 @@
 from typing import Optional
-import networkx as nx
 from config.settings import GRID_SIZE, PLATFORM_LENGTH
 from models.geometry import Position, Pose
 from collections import deque
-from models.signal import Signal
 from models.geometry.edge import Edge
 from models.graph_adapter import GraphAdapter
 

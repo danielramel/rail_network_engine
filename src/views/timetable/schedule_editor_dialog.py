@@ -260,7 +260,7 @@ class ScheduleEditorDialog(QDialog):
             self.update_first_last_station_cells()
     
     def get_data(self):
-        stations = []
+        stops = []
         row_count = self.stations_table.rowCount()
         
         for row in range(row_count):
@@ -282,7 +282,7 @@ class ScheduleEditorDialog(QDialog):
                 departure_time = departure_time_widget.time()
                 departure_minutes = departure_time.hour() * 60 + departure_time.minute()
 
-            stations.append({
+            stops.append({
                 'station': self._railway.stations.get_by_name(station_name),
                 'arrival_time': arrival_minutes,
                 'departure_time': departure_minutes
@@ -298,7 +298,7 @@ class ScheduleEditorDialog(QDialog):
         
         return {
             'code': self.code_edit.text(),
-            'stations': stations,
+            'stops': stops,
             'first_train': first_train_minutes,
             'last_train': last_train_minutes,
             'frequency': frequency

@@ -3,15 +3,18 @@ from models.geometry.direction import Direction
 from models.geometry.edge import Edge
 from models.geometry.pose import Pose
 from models.geometry.position import Position
+from typing import Optional
 
 @dataclass
-class Signal:    
+class Signal:
     pose: Pose
-    is_green: bool = False
+    next_signal: Optional['Signal'] = None
+    path_to_next: list[Edge] = field(default_factory=list)
     _subscribers: list[callable] = field(default_factory=list)
 
     def connect(self, path: list[Edge], signal: 'Signal') -> None:
-        self.is_green = True
+        self.next_signal = signal
+        self.path_to_next = path
         for callback in self._subscribers:
             callback(path, signal)
             
@@ -49,6 +52,12 @@ class SignalRepository:
 
     def has_signal_at(self, pos: Position) -> bool:
         return self._graph.has_node_attr(pos, 'signal')
+    
+    def has_signal_with_pose_at(self, pose: Pose) -> bool:
+        if not self.has_signal_at(  pose.position):
+            return False
+        signal: Signal = self.get(pose.position)
+        return signal.direction == pose.direction
     
     def get(self, pos: Position) -> Signal:
         return self._graph.get_node_attr(pos, 'signal')

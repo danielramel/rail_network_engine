@@ -13,10 +13,8 @@ class SignallingService:
         
     def is_edge_locked(self, edge: Edge) -> bool:
         return self._railway.graph.get_edge_attr(edge, 'locked') is True
-    
-    
 
-    def _calculate_optimal_route(self, start: Pose, end: Pose) -> list[Position]:
+    def find_path(self, start: Pose, end: Pose) -> list[Pose] | None:
         priority_queue: list[tuple[float, float, Pose]] = []
         came_from: dict[Pose, Pose] = {}
         g_score: dict[Pose, float] = {}
@@ -33,11 +31,11 @@ class SignallingService:
                 continue
 
             if current_pose == end:
-                path = [current_pose.position]
+                path = [current_pose]
 
                 while current_pose in came_from:
                     current_pose = came_from[current_pose]
-                    path.append(current_pose.position)
+                    path.append(current_pose)
 
                 return tuple(reversed(path))
 
@@ -57,16 +55,30 @@ class SignallingService:
                     heapq.heappush(priority_queue, (f_score[neighbor_pose], g_score[neighbor_pose], neighbor_pose))
 
         return None
-        
-    def find_path(self, start: Signal, end: Signal) -> list[Edge] | None:
-        path = self._calculate_optimal_route(start.pose, end.pose)
-        if path is None:
+
+    def get_path_preview(self, start: Signal, end: Signal) -> list[Edge] | None:
+        poses = self.find_path(start.pose, end.pose)
+        if poses is None:
             return None
-        edges = [Edge(path[i], path[i+1]) for i in range(len(path)-1)]
+        edges = [Edge(poses[i].position, poses[i+1].position) for i in range(len(poses)-1)]
         return edges
-    
-    def lock_path(self, path: list[Edge]) -> None:
-        for edge in path:
+            
+    def connect_signals(self, from_signal: Signal, to_signal: Signal) -> None:
+        poses = self.find_path(from_signal.pose, to_signal.pose)
+        if poses is None:
+            return None
+
+        edges = [Edge(poses[i].position, poses[i+1].position) for i in range(len(poses)-1)]
+        current_signal = from_signal
+        current_signal_index = 0
+        for i, pose in enumerate(poses[1:], start=1):
+            if self._railway.signals.has_signal_with_pose_at(pose):
+                signal = self._railway.signals.get(pose.position)
+                current_signal.connect(edges[current_signal_index:i], signal)
+                current_signal = signal
+                current_signal_index = i
+                
+        for edge in edges:
             self._railway.graph.set_edge_attr(edge, 'locked', True)
 
     def get_initial_path(self, start_edge: Edge) -> tuple[list[Edge], Optional[Signal]]:
@@ -76,7 +88,7 @@ class SignallingService:
         while True:
             if self._railway.signals.has_signal_at(pos):
                 signal = self._railway.signals.get(pos)
-                if not signal.is_green:
+                if signal.next_signal is None:
                     return path, signal
 
             neighbors = self._railway.graph.neighbors(pos)

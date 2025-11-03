@@ -76,7 +76,7 @@ class RailwaySystem:
     
     def to_dict(self) -> dict:
         return {
-            'graph': self._graph_service.to_dict(),
+            'graph': self._graph_adapter.to_dict(),
             'stations': self._station_repository.to_dict(),
             'schedules': self._schedule_repository.to_dict(),
         }

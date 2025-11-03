@@ -35,7 +35,7 @@ class SimulationView(UIComponent):
 
         for signal in self._railway.signals.all():
             color = RED
-            if signal.is_green:
+            if signal.next_signal is not None:
                 color = GREEN
             if signal == self._state.selected_signal:
                 color = LIME
@@ -49,7 +49,7 @@ class SimulationView(UIComponent):
         for train in self._railway.trains.all():
             draw_train(self._surface, train, self._camera)
 
-        if self._state.preview.signal is not None:
+        if self._state.preview.signal is None and world_pos is not None:
             draw_node(self._surface, world_pos, self._camera, color=WHITE)
             
             
@@ -64,5 +64,5 @@ class SimulationView(UIComponent):
             self._state.preview.signal = signal
             if self._state.selected_signal is None:
                 return
-            path = self._railway.signalling.find_path(self._state.selected_signal, signal)
+            path = self._railway.signalling.get_path_preview(self._state.selected_signal, signal)
             self._state.preview.path = path if path is not None else []

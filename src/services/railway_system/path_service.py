@@ -1,11 +1,8 @@
 from config.settings import GRID_SIZE
-from models.geometry import Position, Pose
+from models.geometry import Position, Pose, Edge
 import heapq
 
 from typing import TYPE_CHECKING
-
-from models.geometry.direction import Direction
-from models.geometry.edge import Edge
 if TYPE_CHECKING:
     from models.railway_system import RailwaySystem
 
