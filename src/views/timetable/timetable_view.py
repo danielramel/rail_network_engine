@@ -178,7 +178,7 @@ class TimetableWindow(QMainWindow):
             data = dialog.get_data()
             schedule = Schedule(
                 code=data['code'],
-                stops=data['stations'],
+                stops=data['stops'],
                 first_train=data['first_train'],
                 last_train=data['last_train'],
                 frequency=data['frequency']

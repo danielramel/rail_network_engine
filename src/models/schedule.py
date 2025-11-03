@@ -20,7 +20,7 @@ class Schedule:
             'first_train': self.first_train,
             'last_train': self.last_train,
             'frequency': self.frequency,
-            'stations': [
+            'stops': [
                 {
                     'id': entry['station'].id,
                     'arrival_time': entry['arrival_time'],
@@ -32,9 +32,9 @@ class Schedule:
     @classmethod
     def from_dict(cls, data: dict, railway: 'RailwaySystem') -> 'Schedule':
         """Create a Schedule object from a dictionary."""
-        stations = []
-        for entry in data['stations']:
-            stations.append({
+        stops = []
+        for entry in data['stops']:
+            stops.append({
                 'station': railway.stations.get(entry['id']),
                 'arrival_time': entry['arrival_time'],
                 'departure_time': entry['departure_time']
@@ -44,7 +44,7 @@ class Schedule:
             first_train=data['first_train'],
             last_train=data['last_train'],
             frequency=data['frequency'],
-            stations=stations
+            stops=stops
         )
         
         

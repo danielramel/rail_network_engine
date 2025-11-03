@@ -2,7 +2,7 @@ from models.construction_state import EdgeAction
 from services.construction.bulldoze_target import BulldozeTargetType, find_bulldoze_target
 from views.construction.base_construction_view import BaseConstructionView
 from models.geometry import Position
-from ui.utils import draw_signal, draw_station, draw_node
+from ui.utils import draw_station, draw_node
 from config.colors import RED
 
 class BulldozeView(BaseConstructionView):
