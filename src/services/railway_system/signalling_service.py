@@ -13,6 +13,17 @@ class SignallingService:
         
     def is_edge_locked(self, edge: Edge) -> bool:
         return self._railway.graph.get_edge_attr(edge, 'locked') is True
+    
+    def is_node_locked(self, node: Position) -> bool:
+        return self._railway.graph.get_node_attr(node, 'locked') is True
+    
+    def disconnect_signal(self, signal: Signal) -> None:
+        for edge in signal.path:
+            self._railway.graph.remove_edge_attr(edge, 'locked')
+            self._railway.graph.remove_node_attr(edge.b, 'locked') # the first node is never locked, so we can always use b
+            
+            
+        signal.disconnect()
 
     def find_path(self, start: Pose, end: Pose) -> list[Pose] | None:
         priority_queue: list[tuple[float, float, Pose]] = []
@@ -80,7 +91,7 @@ class SignallingService:
                 
         for edge in edges:
             self._railway.graph.set_edge_attr(edge, 'locked', True)
-        for pose in poses:
+        for pose in poses[1:]:
             self._railway.graph.set_node_attr(pose.position, 'locked', True)
 
     def get_initial_path(self, start_edge: Edge) -> tuple[list[Edge], Optional[Signal]]:

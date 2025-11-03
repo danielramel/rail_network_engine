@@ -1,5 +1,4 @@
-import networkx as nx
-from models.geometry import Position, Pose, Edge
+from models.geometry import Position, Pose
 from models.graph_adapter import GraphAdapter
 from services.railway_system.graph_service import GraphService
 from services.railway_system.path_service import PathService

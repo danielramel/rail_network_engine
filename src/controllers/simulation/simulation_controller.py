@@ -15,26 +15,26 @@ class SimulationController(UIComponent):
         self._simulation_state = simulation_state
         self._railway = railway
         self._camera = graphics.camera
+        
+        self._railway.signals.add_signals_to_dead_ends()
 
-    def process_event(self, event) -> bool:
-        if event.button == 3:
-            self._simulation_state.selected_signal = None
-            return True
-            
+    def process_event(self, event) -> bool:            
         snapped: Position = self._camera.screen_to_world(event.screen_pos).snap_to_grid()
         if self._railway.graph.has_node_at(snapped) and self._railway.signals.has_signal_at(snapped):
             signal = self._railway.signals.get(snapped)
-            if signal.next_signal is not None:
+            
+            if event.button == 3 and signal.next_signal is not None:
+                self._railway.signalling.disconnect_signal(signal)
                 return True
+            
             if self._simulation_state.selected_signal:
-                if self._simulation_state.selected_signal == signal:
-                    self._simulation_state.selected_signal = None
-                    return True
-
                 self._railway.signalling.connect_signals(self._simulation_state.selected_signal, signal)
                 self._simulation_state.selected_signal = None
                 return True
             self._simulation_state.selected_signal = signal
+            
+        if event.button == 3:
+            self._simulation_state.selected_signal = None
         return True
             
             

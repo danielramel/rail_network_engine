@@ -1,6 +1,8 @@
 from models.geometry import Position, Edge
 import networkx as nx
 
+from models.geometry.pose import Pose
+
 class GraphAdapter:
     def __init__(self):
         self._graph = nx.Graph()
@@ -60,6 +62,10 @@ class GraphAdapter:
 
     def neighbors(self, pos: Position) -> tuple[Position]:
         return tuple(self._graph.neighbors(pos))
+    
+    def get_dead_end_poses(self) -> list[Pose]:
+        nodes = [node for node, degree in self._graph.degree() if degree == 1]
+        return [Pose(node, next(iter(self._graph.neighbors(node))).direction_to(node)) for node in nodes]
     
         
     def add_edge(self, a: Position, b: Position, speed: int) -> None:

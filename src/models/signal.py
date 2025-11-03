@@ -9,16 +9,20 @@ from typing import Optional
 class Signal:
     pose: Pose
     next_signal: Optional['Signal'] = None
-    path_to_next: list[Edge] = field(default_factory=list)
+    path: list[Edge] = field(default_factory=list)
     _subscribers: list[callable] = field(default_factory=list)
 
     def connect(self, path: list[Edge], signal: 'Signal') -> None:
         self.next_signal = signal
-        self.path_to_next = path
+        self.path = path
         for callback in self._subscribers:
             callback(path, signal)
             
         self._subscribers = []
+        
+    def disconnect(self) -> None:
+        self.next_signal = None
+        self.path = []
             
     def subscribe(self, callback: callable) -> None:
         self._subscribers.append(callback)

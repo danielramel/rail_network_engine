@@ -31,7 +31,8 @@ class SimulationView(UIComponent):
             draw_edge(self._surface, edge, self._camera, edge_action)
 
         for node in self._railway.graph_service.junctions:
-            draw_node(self._surface, node, self._camera)
+            color = GREEN if self._railway.signalling.is_node_locked(node) else WHITE
+            draw_node(self._surface, node, self._camera, color=color)
 
         for signal in self._railway.signals.all():
             color = RED

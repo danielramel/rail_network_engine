@@ -93,8 +93,8 @@ def draw_dotted_line(surface: pygame.Surface, start_pos: Position, end_pos: Posi
     dx = x2 - x1
     dy = y2 - y1
     distance = start_pos.distance_to(end_pos)
-    dot_spacing = 8
-    dot_count = int(distance // dot_spacing)
+    dot_spacing = 4
+    dot_count = math.ceil(distance / dot_spacing)
     for i in range(dot_count):
         dot_x = x1 + (dx * (i * dot_spacing) / distance)
         dot_y = y1 + (dy * (i * dot_spacing) / distance)
@@ -116,16 +116,17 @@ def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type: Ed
         draw_platform(surface, edge, camera, color=PURPLE)
 
     elif edge_type == EdgeAction.LOCKED_PLATFORM:
-        draw_platform(surface, edge, camera, color=GREEN)
+        pygame.draw.line(surface, PURPLE, start, end, width=width)
+        draw_platform(surface, edge, camera, color=LIME)
 
     elif edge_type == EdgeAction.LOCKED_PREVIEW:
-        pygame.draw.line(surface, LIME, start, end, width=width)
-
-    elif edge_type == EdgeAction.LOCKED:
         pygame.draw.line(surface, GREEN, start, end, width=width)
 
+    elif edge_type == EdgeAction.LOCKED:
+        pygame.draw.line(surface, LIME, start, end, width=width)
+
     elif edge_type == EdgeAction.NORMAL:
-        pygame.draw.line(surface, WHITE, start, end, width=width)
+        draw_dotted_line(surface, edge.a, edge.b, camera, color=WHITE)
     
     elif edge_type == EdgeAction.SPEED:
         if speed is None:
