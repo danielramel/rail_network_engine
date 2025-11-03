@@ -19,4 +19,3 @@ class ConstructionMode(UIController):
             CameraController(graphics.camera),
             ConstructionController(railway, self.state, graphics)
         )
-        

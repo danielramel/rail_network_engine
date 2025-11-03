@@ -1,5 +1,5 @@
 import pygame
-from config.colors import GREEN, PURPLE, LIGHTBLUE, RED, WHITE, BLACK, YELLOW
+from config.colors import GREEN, LIME, PURPLE, LIGHTBLUE, RED, WHITE, BLACK, YELLOW
 
 from config.settings import GRID_SIZE, STATION_RECT_SIZE
 from graphics.camera import Camera
@@ -103,17 +103,34 @@ def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type: Ed
     # Line width scales with camera zoom; ensure at least 1 pixel
     width = max(1, int(round(3 * camera.scale)))
 
-    if edge_type == EdgeAction.BULLDOZE or edge_type == EdgeAction.INVALID_PLATFORM:
-        pygame.draw.line(surface, RED, *camera.world_to_screen_from_edge(edge), width=width)
+    start, end = camera.world_to_screen_from_edge(edge)
+
+    if edge_type in (EdgeAction.BULLDOZE, EdgeAction.INVALID_PLATFORM):
+        pygame.draw.line(surface, RED, start, end, width=width)
+
     elif edge_type == EdgeAction.PLATFORM_SELECTED:
         draw_platform(surface, edge, camera, color=LIGHTBLUE)
+
     elif edge_type == EdgeAction.PLATFORM:
         draw_platform(surface, edge, camera, color=PURPLE)
-    elif edge_type == EdgeAction.NORMAL:
-        color = WHITE if speed is None else color_from_speed(speed)
-        pygame.draw.line(surface, color, *camera.world_to_screen_from_edge(edge), width=width)
+
+    elif edge_type == EdgeAction.LOCKED_PLATFORM:
+        draw_platform(surface, edge, camera, color=GREEN)
+
+    elif edge_type == EdgeAction.LOCKED_PREVIEW:
+        pygame.draw.line(surface, LIME, start, end, width=width)
+
     elif edge_type == EdgeAction.LOCKED:
-        pygame.draw.line(surface, GREEN, *camera.world_to_screen_from_edge(edge), width=width)
+        pygame.draw.line(surface, GREEN, start, end, width=width)
+
+    elif edge_type == EdgeAction.NORMAL:
+        pygame.draw.line(surface, WHITE, start, end, width=width)
+    
+    elif edge_type == EdgeAction.SPEED:
+        if speed is None:
+            raise ValueError("Speed must be provided for SPEED edge type")
+        color = color_from_speed(speed)
+        pygame.draw.line(surface, color, start, end, width=width)
 
 def draw_grid(surface, camera):
     """Draw grid lines with camera transform"""

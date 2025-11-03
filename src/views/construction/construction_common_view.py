@@ -14,7 +14,7 @@ class ConstructionCommonView(BaseConstructionView):
             elif self._railway.platforms.is_edge_platform(edge):
                 draw_edge(self._surface, edge, self._camera, EdgeAction.PLATFORM)
             else:
-                draw_edge(self._surface, edge, self._camera, EdgeAction.NORMAL, speed=speed)
+                draw_edge(self._surface, edge, self._camera, EdgeAction.SPEED, speed=speed)
 
         for node in self._railway.graph.junctions:
             draw_node(self._surface, node, self._camera)

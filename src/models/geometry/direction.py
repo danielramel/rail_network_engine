@@ -31,3 +31,9 @@ class Direction:
                 ]
         }
         return VALID_TURNS[self]
+    
+    def to_dict(self) -> dict:
+        return {
+            "x": self.x,
+            "y": self.y
+        }

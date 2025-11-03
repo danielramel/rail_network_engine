@@ -3,7 +3,7 @@ import networkx as nx
 from config.settings import GRID_SIZE
 from models.geometry import Position, Pose
 from collections import deque
-
+from models.signal import Signal
 from models.geometry.edge import Edge
 
 
@@ -149,6 +149,8 @@ class GraphService:
         # convert Position objects in node attributes to dicts
         for node in graph_data['nodes']:
             node['id'] = node['id'].to_dict()
+            if 'signal' in node:
+                node['signal'] = node['signal'].to_dict()
             
         for link in graph_data['links']:
             link["source"] = link["source"].to_dict()
@@ -164,7 +166,7 @@ class GraphService:
         for node in graph_data['nodes']:
             node['id'] = Position.from_dict(node['id'])
             if 'signal' in node:
-                node['signal'] = tuple(node['signal'])
+                node['signal'] = Signal.from_dict(node['signal'])
             
         for link in graph_data['links']:
             for key in ('source', 'target'):

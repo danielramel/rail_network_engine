@@ -20,13 +20,13 @@ class LoadButton(RectangleUIComponent):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_l and (event.mod & pygame.KMOD_CTRL):
                 # Handle Ctrl+L
-                self.load_game()
+                self.load_game_ui()
                 return True
             return False
         
         elif self._rect.collidepoint(*event.screen_pos):
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                self.load_game()
+                self.load_game_ui()
             return True
            
         return self._rect.collidepoint(*event.screen_pos)
@@ -40,7 +40,7 @@ class LoadButton(RectangleUIComponent):
     def contains(self, screen_pos: Position) -> bool:
         return self._rect.collidepoint(screen_pos.x, screen_pos.y)
     
-    def load_game(self):
+    def load_game_ui(self):
         import tkinter as tk
         from tkinter import filedialog, messagebox
         import json

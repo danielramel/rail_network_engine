@@ -13,15 +13,18 @@ class ConstructionMode(Enum):
     BULLDOZE = 5
     
 class EdgeAction(Enum):
-    PLATFORM = 1
+    NORMAL = 0
+    SPEED = 1
+    PLATFORM = 10
     PLATFORM_SELECTED = 2
     INVALID_PLATFORM = 3
     BULLDOZE = 4
-    NORMAL = 5
-    LOCKED = 6
+    LOCKED = 5
+    LOCKED_PREVIEW = 6
+    LOCKED_PLATFORM = 7
     
 @dataclass
-class PreviewObjects:
+class ConstructionPreview:
     edges: frozenset[Edge] = field(default_factory=frozenset)
     nodes: frozenset[Position] = field(default_factory=frozenset)
     edge_action: EdgeAction = EdgeAction.NORMAL
@@ -39,7 +42,7 @@ class ConstructionState:
     construction_anchor: Pose | None = None
     track_speed: int = 120
     moving_station: Optional[Station] = None
-    preview: PreviewObjects = field(default_factory=PreviewObjects)
+    preview: ConstructionPreview = field(default_factory=ConstructionPreview)
     platform_waiting_for_station: bool = False
     
     def switch_mode(self, new_mode: ConstructionMode) -> None:

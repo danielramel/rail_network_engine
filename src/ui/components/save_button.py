@@ -3,7 +3,7 @@ from config.paths import GLOBAL_ICON_PATHS
 from models.railway_system import RailwaySystem
 from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
-from config.colors import BLACK, WHITE, YELLOW, RED
+from config.colors import BLACK, WHITE
 from config.settings import BUTTON_SIZE
 from ui.models.rectangle import RectangleUIComponent
 

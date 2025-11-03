@@ -1,5 +1,4 @@
-from config.colors import GREEN, RED, WHITE, LIGHTBLUE
-from graphics.camera import Camera
+from config.colors import BLUE, GREEN, LIME, RED, WHITE, LIGHTBLUE
 from models.construction_state import EdgeAction
 from models.geometry.position import Position
 from models.railway_system import RailwaySystem
@@ -11,41 +10,59 @@ from graphics.graphics_context import GraphicsContext
 class SimulationView(UIComponent):
     def __init__(self, railway: RailwaySystem, simulation_state: SimulationState, graphics: GraphicsContext):
         self._railway = railway
-        self._simulation_state = simulation_state
+        self._state = simulation_state
         self._surface = graphics.screen
         self._camera = graphics.camera
         
     def render(self, world_pos: Position | None) -> None:
         # draw_grid(self._surface, self._camera)
-    
+        self.set_preview(world_pos)
+        
         for edge in self._railway.graph.edges:
-            if self._railway.platforms.is_edge_platform(edge):
-                draw_edge(self._surface, edge, self._camera, EdgeAction.PLATFORM)
-            else:
-                edge_type = EdgeAction.LOCKED if self._railway.graph.is_edge_locked(edge) else EdgeAction.NORMAL
-                draw_edge(self._surface, edge, self._camera, edge_type)
+            edge_action = EdgeAction.NORMAL
+            if edge in self._state.preview.path:
+                edge_action = EdgeAction.LOCKED_PREVIEW
+            elif self._railway.platforms.is_edge_platform(edge) and self._railway.graph.is_edge_locked(edge):
+                edge_action = EdgeAction.LOCKED_PLATFORM
+            elif self._railway.graph.is_edge_locked(edge):
+                edge_action = EdgeAction.LOCKED
+            elif self._railway.platforms.is_edge_platform(edge):
+                edge_action = EdgeAction.PLATFORM
+            draw_edge(self._surface, edge, self._camera, edge_action)
 
         for node in self._railway.graph.junctions:
             draw_node(self._surface, node, self._camera)
 
         for signal in self._railway.signals.all():
-            draw_signal(self._surface, signal, self._camera, color=GREEN if signal.is_green else RED)
+            color = RED
+            if signal.is_green:
+                color = GREEN
+            if signal == self._state.selected_signal:
+                color = LIME
+            elif signal == self._state.preview.signal:
+                color = LIGHTBLUE
+            draw_signal(self._surface, signal, self._camera, color)
 
         for station in self._railway.stations.all():
             draw_station(self._surface, station, self._camera)
 
         for train in self._railway.trains.all():
             draw_train(self._surface, train, self._camera)
+
+        if self._state.preview.signal is not None:
+            draw_node(self._surface, world_pos, self._camera, color=WHITE)
             
+            
+    def set_preview(self, world_pos: Position | None):
+        self._state.preview.clear() 
         if world_pos is None:
             return
         
-        
-        if self._simulation_state.selected_signal is not None:
-            draw_signal(self._surface, self._simulation_state.selected_signal, self._camera, color=LIGHTBLUE)
-            
         snapped = world_pos.snap_to_grid()
-        if snapped is not None and self._railway.graph.has_node_at(snapped) and self._railway.signals.has_signal_at(snapped):
-            draw_signal(self._surface, self._railway.signals.get(snapped), self._camera, color=LIGHTBLUE)
-        else:
-            draw_node(self._surface, world_pos, self._camera, color=WHITE)
+        if self._railway.graph.has_node_at(snapped) and self._railway.signals.has_signal_at(snapped):
+            signal = self._railway.signals.get(snapped)
+            self._state.preview.signal = signal
+            if self._state.selected_signal is None:
+                return
+            path = self._railway.signals.find_path(self._state.selected_signal, signal)
+            self._state.preview.path = path if path is not None else []

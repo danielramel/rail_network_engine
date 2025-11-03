@@ -22,3 +22,16 @@ class Pose(NamedTuple):
 
             neighbors.append((new_state, dir.get_cost()))
         return neighbors
+    
+    def to_dict(self) -> dict:
+        return {
+            "position": self.position.to_dict(),
+            "direction": self.direction.to_dict()
+        }
+        
+    @classmethod
+    def from_dict(cls, data: dict) -> 'Pose':
+        return cls(
+            position=Position.from_dict(data["position"]),
+            direction=Direction(**data["direction"])
+        )

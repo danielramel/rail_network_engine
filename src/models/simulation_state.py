@@ -1,4 +1,6 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from models.geometry.edge import Edge
+from models.geometry.position import Position
 from models.signal import Signal
 
 from enum import Enum
@@ -27,8 +29,18 @@ class TimeControlState:
     @property
     def paused(self) -> bool:
         return self.mode == TimeControlMode.PAUSE
+    
+@dataclass
+class SimulationPreview:
+    path: list[Edge] = field(default_factory=list)
+    signal: Position = None
+    
+    def clear(self) -> None:
+        self.path = []
+        self.signal = None
 
 @dataclass
 class SimulationState:
     selected_signal: Signal = None
     time: TimeControlState = TimeControlState()
+    preview: SimulationPreview = field(default_factory=SimulationPreview)

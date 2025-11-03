@@ -27,3 +27,13 @@ class Signal:
     @property
     def position(self) -> Position:
         return self.pose.position
+    
+    def to_dict(self) -> dict:
+        return {
+            "pose": self.pose.to_dict(),
+        }
+        
+    def from_dict(data: dict) -> 'Signal':
+        return Signal(
+            pose=Pose.from_dict(data["pose"]),
+        )
