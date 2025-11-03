@@ -5,23 +5,24 @@ from models.railway_system import RailwaySystem
 from models.construction_state import ConstructionState
 import pygame
 from views.construction.bulldoze_view import BulldozeView
+from graphics.graphics_context import GraphicsContext
 
 class BulldozeController(BaseConstructionController):
-    def __init__(self, railway: RailwaySystem, state: ConstructionState, camera: Camera, screen: pygame.Surface):
-        view = BulldozeView(railway, state, camera, screen)
-        super().__init__(view, railway, state, camera)
-        
-    def handle_event(self, event: pygame.event.Event) -> bool:
+    def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
+        view = BulldozeView(railway, state, graphics)
+        super().__init__(view, railway, state, graphics.camera)
+
+    def _handle_filtered_event(self, event: pygame.event.Event) -> bool:
         if event.button == 3:
             self._construction_state.switch_mode(None)
             return True
         world_pos = self._camera.screen_to_world(event.screen_pos)
         target = find_bulldoze_target(self._railway, world_pos, self._camera.scale)
         if target.kind == BulldozeTargetType.SIGNAL:
-            self._railway.signals.remove(target.pos)
+            self._railway.signals.remove(target.position)
             return True
         elif target.kind == BulldozeTargetType.STATION:
-            self._railway.remove_station_at(target.pos)
+            self._railway.remove_station_at(target.position)
             return True
         elif target.kind == BulldozeTargetType.PLATFORM:
             self._railway.remove_platform_at(target.edge)

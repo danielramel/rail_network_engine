@@ -1,7 +1,7 @@
 import pygame
 
 from models.geometry.position import Position
-from ui.models.base import UIComponent
+from ui.models.ui_component import UIComponent
 
     
 class RectangleUIComponent(UIComponent):
@@ -14,5 +14,5 @@ class RectangleUIComponent(UIComponent):
     def contains(self, screen_pos: Position) -> bool:
         return self._rect.collidepoint(*screen_pos)
     
-    def handle_event(self, event):
+    def _handle_filtered_event(self, event):
         return self._rect.collidepoint(*event.screen_pos)

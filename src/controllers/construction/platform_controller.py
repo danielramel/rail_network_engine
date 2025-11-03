@@ -1,20 +1,19 @@
 from controllers.construction.base_construction_controller import BaseConstructionController
-from config.settings import PLATFORM_LENGTH
 from ui.popups import alert
 from services.construction.platform_target import find_platform_target
-from graphics.camera import Camera
 from models.railway_system import RailwaySystem
 from models.construction_state import ConstructionState, EdgeAction
 import pygame
 from views.construction.platform_view import PlatformView, PlatformTargetType
+from graphics.graphics_context import GraphicsContext
 
 class PlatformController(BaseConstructionController):
-    def __init__(self, railway: RailwaySystem, state: ConstructionState, camera: Camera, screen: pygame.Surface):
-        view = PlatformView(railway, state, camera, screen)
-        super().__init__(view, railway, state, camera)
+    def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
+        view = PlatformView(railway, state, graphics)
+        super().__init__(view, railway, state, graphics.camera)
 
 
-    def handle_event(self, event: pygame.event.Event) -> None:
+    def _handle_filtered_event(self, event: pygame.event.Event) -> None:
         if event.button == 3:
             if self._construction_state.platform_waiting_for_station:
                 self._construction_state.platform_waiting_for_station = False

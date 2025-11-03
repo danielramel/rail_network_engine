@@ -1,22 +1,22 @@
 import pygame
 from models.geometry import Position
     
-from graphics.camera import Camera
 from models.railway_system import RailwaySystem
 from models.simulation_state import SimulationState
-from ui.models.base import UIComponent
+from ui.models.ui_component import UIComponent
 from views.simulation.simulation_view import SimulationView
+from graphics.graphics_context import GraphicsContext
 
 
 class SimulationController(UIComponent):
     handled_events = [pygame.MOUSEBUTTONUP]
-    def __init__(self, railway: RailwaySystem, camera: Camera, simulation_state: SimulationState, screen: pygame.Surface):
-        self.view = SimulationView(railway, camera, screen, simulation_state)
+    def __init__(self, railway: RailwaySystem, simulation_state: SimulationState, graphics: GraphicsContext):
+        self.view = SimulationView(railway, simulation_state, graphics)
         self._simulation_state = simulation_state
         self._railway = railway
-        self._camera = camera
+        self._camera = graphics.camera
 
-    def handle_event(self, event) -> bool:
+    def _handle_filtered_event(self, event) -> bool:
         if event.button == 3:
             self._simulation_state.selected_signal = None
             return True

@@ -1,4 +1,4 @@
-from ui.models.base import UIComponent
+from ui.models.ui_component import UIComponent
 import pygame
 from graphics.camera import Camera
 
@@ -7,7 +7,7 @@ class CameraController(UIComponent):
     def __init__(self, camera: Camera):
         self._camera = camera
         
-    def handle_event(self, event):
+    def _handle_filtered_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             self._camera.start_drag(event.screen_pos)
 

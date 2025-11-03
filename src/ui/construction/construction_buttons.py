@@ -1,7 +1,7 @@
 import pygame
 from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
-from ui.models.base import UIComponent
+from ui.models.ui_component import UIComponent
 from config.colors import BLACK, WHITE, YELLOW, RED
 from models.construction_state import ConstructionMode, ConstructionState
 from config.paths import CONSTRUCTION_ICON_PATHS
@@ -21,7 +21,7 @@ class ConstructionButtons(UIComponent):
         self._surface = surface
         
         
-    def handle_event(self, event: pygame.event) -> bool:   
+    def _handle_filtered_event(self, event: pygame.event) -> bool:   
         if event.type == pygame.KEYDOWN:
             if event.key in CONSTRUCTION_MODE_SELECTION:
                 self.construction_state.switch_mode(CONSTRUCTION_MODE_SELECTION[event.key])

@@ -4,15 +4,16 @@ from services.construction.station_target import find_station_target
 from graphics.camera import Camera
 from models.railway_system import RailwaySystem
 from models.construction_state import ConstructionState
-import pygame
 from views.construction.station_view import StationView
+from graphics.graphics_context import GraphicsContext
+import pygame
 
 class StationController(BaseConstructionController):
-    def __init__(self, railway: RailwaySystem, state: ConstructionState, camera: Camera, screen: pygame.Surface):
-        view = StationView(railway, state, camera, screen)
-        super().__init__(view, railway, state, camera)
+    def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
+        view = StationView(railway, state, graphics)
+        super().__init__(view, railway, state, graphics.camera)
 
-    def handle_event(self, event: pygame.event.Event) -> None:
+    def _handle_filtered_event(self, event: pygame.event.Event) -> None:
         if event.button == 3:
             if self._construction_state.moving_station is not None:
                 self._construction_state.moving_station = None

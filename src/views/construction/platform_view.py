@@ -11,8 +11,8 @@ class PlatformView(BaseConstructionView):
             return
         
         # handle the “select_station” preview mode first
-        if self._construction_state.platform_waiting_for_station:
-            middle_point = self._railway.platforms.get_middle_of_platform(self._construction_state.preview.edges)
+        if self._state.platform_waiting_for_station:
+            middle_point = self._railway.platforms.get_middle_of_platform(self._state.preview.edges)
             for station in self._railway.stations.all():
                 if world_pos.is_within_station_rect(station.position):
                     draw_station(self._surface, station, self._camera, color=LIGHTBLUE)
@@ -23,7 +23,7 @@ class PlatformView(BaseConstructionView):
             return
 
         # reset preview edges/state
-        self._construction_state.preview.clear()
+        self._state.preview.clear()
 
         # handle the platform target preview
         target = find_platform_target(self._railway, world_pos, self._camera.scale)
@@ -31,5 +31,5 @@ class PlatformView(BaseConstructionView):
             draw_node(self._surface, world_pos, self._camera, color=PURPLE)
             return
 
-        self._construction_state.preview.edges = target.edges
-        self._construction_state.preview.edge_action = EdgeAction.PLATFORM if target.is_valid else EdgeAction.INVALID_PLATFORM
+        self._state.preview.edges = target.edges
+        self._state.preview.edge_action = EdgeAction.PLATFORM if target.is_valid else EdgeAction.INVALID_PLATFORM

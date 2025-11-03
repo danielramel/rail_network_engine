@@ -1,124 +1,49 @@
 import pygame
 from config.colors import BLACK
 from config.settings import GRID_SIZE, TRAIN_LENGTH
-from controllers.construction.panel_strategy import ConstructionPanelStrategy
+from controllers.mode_manager import ModeController
 from models.geometry.pose import Pose
 from models.railway_system import RailwaySystem
 from graphics.camera import Camera
-from models.app_state import AppState, ViewMode
-from models.construction_state import ConstructionState
-from models.simulation_state import SimulationState
-from ui.models.base import UIComponent
+from models.app_state import AppState
+from ui.models.ui_component import UIComponent
 from ui.components.load_button import LoadButton
 from ui.components.save_button import SaveButton
-from ui.components.mode_buttons import ModeSelectorButtons
-from ui.simulation.time_control_buttons import TimeControlButtons
-from ui.simulation.time_display import TimeDisplay
+from ui.components.mode_selector_buttons import ModeSelectorButtons
+
 from ui.components.timetable_button import TimeTableButton
 from ui.components.zoom_button import ZoomButton
-from ui.construction.construction_buttons import ConstructionButtons
-from controllers.construction.construction_controller import ConstructionController
 from models.geometry import Position
-from controllers.simulation.simulation_controller import SimulationController
-from models.simulation_state import TimeControlState
-from controllers.camera_controller import CameraController
+from graphics.graphics_context import GraphicsContext
+from ui.models.ui_handler import UILayer
 
-class AppController:
-    construction_element_types: dict[ViewMode, tuple[type]] = {
-        ViewMode.CONSTRUCTION: (ConstructionButtons, ConstructionPanelStrategy, ConstructionController),
-        ViewMode.SIMULATION: (TimeControlButtons, TimeDisplay, SimulationController),
-    }
-    
+class AppController(UILayer):    
     def __init__(self, screen: pygame.Surface):
-        self.screen = screen
+        self.graphics = GraphicsContext(screen, Camera())
         self.railway = RailwaySystem()
-        self._mock_load()
-        
-        self.camera = Camera()
         self.app_state = AppState()
-        self.construction_state = ConstructionState()
-        self.simulation_state = SimulationState()
         
         self.elements: list[UIComponent] = [
             ModeSelectorButtons(screen, self.app_state),
             TimeTableButton(screen, self.railway),
-            ZoomButton(screen, self.camera),
+            ZoomButton(screen, self.graphics.camera),
             LoadButton(screen, self.railway),
             SaveButton(screen, self.railway),
-            CameraController(self.camera)
+            ModeController(self.app_state, self.railway, self.graphics)
         ]
-        
-        self._add_mode_elements(self.app_state.mode)
     
-    def _add_mode_elements(self, mode: ViewMode):
-        """Create and add elements for the specified mode."""
-        if mode == ViewMode.CONSTRUCTION:
-            self.construction_state.reset()
-            self.elements.extend([
-                ConstructionButtons(self.screen, self.construction_state),
-                SaveButton(self.screen, self.railway),
-                LoadButton(self.screen, self.railway),
-                ConstructionPanelStrategy(self.screen, self.construction_state),
-                ConstructionController(self.railway, self.construction_state, self.camera, self.screen)
-            ])
-        elif mode == ViewMode.SIMULATION:
-            self.simulation_state.time.reset()
-            self._mock_load()
-            self.elements.extend([
-                TimeControlButtons(self.screen, self.simulation_state.time),
-                TimeDisplay(self.screen, self.simulation_state.time),
-                SimulationController(self.railway, self.camera, self.simulation_state, self.screen)
-            ])
-    
-    def _remove_mode_elements(self, mode: ViewMode):
-        """Remove elements specific to the given mode."""
-        element_types = self.construction_element_types[mode]
-        self.elements = [e for e in self.elements if not isinstance(e, element_types)]
-    
-    def handle_event(self, event: pygame.event):
-        old_app_mode = self.app_state.mode
-        
+    def handle_event(self, event: pygame.event):        
         if event.type == pygame.QUIT \
             or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             return "quit"
-        
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_c:
-                self.app_state.mode = ViewMode.CONSTRUCTION
-            elif event.key == pygame.K_s:
-                self.app_state.mode = ViewMode.SIMULATION
-            if old_app_mode != self.app_state.mode:
-                self._remove_mode_elements(old_app_mode)
-                self._add_mode_elements(self.app_state.mode)
-            return
 
         event.screen_pos = Position(*pygame.mouse.get_pos())
-        for element in self.elements:
-            if hasattr(element, "handled_events") and event.type not in element.handled_events:
-                continue
-            handled = element.handle_event(event)
-            if handled:
-                break
-        
-        # Handle mode change
-        if old_app_mode != self.app_state.mode:
-            self._remove_mode_elements(old_app_mode)
-            self._add_mode_elements(self.app_state.mode)
+        super().handle_event(event)
     
     def render_view(self):
-        self.screen.fill(BLACK)
-        pos = Position(*pygame.mouse.get_pos())
-        elements_above_cursor = []
-        for element in self.elements:
-            elements_above_cursor.append(element)
-            if element.contains(pos):
-                break
-        
-        for element in reversed(self.elements):
-            if element in elements_above_cursor:
-                element.render(pos)
-            else:
-                element.render(None)
+        self.graphics.screen.fill(BLACK)
+        screen_pos = Position(*pygame.mouse.get_pos())
+        super().render(screen_pos)
                 
     def tick(self):
         """Advance the simulation time if in simulation mode."""

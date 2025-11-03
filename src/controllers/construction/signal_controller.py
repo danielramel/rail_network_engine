@@ -3,15 +3,16 @@ from services.construction.signal_target import find_signal_target, SignalTarget
 from graphics.camera import Camera
 from models.railway_system import RailwaySystem
 from models.construction_state import ConstructionState
-import pygame
 from views.construction.signal_view import SignalView
+from graphics.graphics_context import GraphicsContext
+import pygame
 
 class SignalController(BaseConstructionController):
-    def __init__(self, railway: RailwaySystem, state: ConstructionState, camera: Camera, screen: pygame.Surface):
-        view = SignalView(railway, state, camera, screen)
-        super().__init__(view, railway, state, camera)
-        
-    def handle_event(self, event: pygame.event.Event) -> None:
+    def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
+        view = SignalView(railway, state, graphics)
+        super().__init__(view, railway, state, graphics.camera)
+
+    def _handle_filtered_event(self, event: pygame.event.Event) -> None:
         if event.button == 3:
             self._construction_state.switch_mode(None)
             return

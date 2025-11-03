@@ -4,17 +4,17 @@ from models.geometry.direction import Direction
 from services.construction.rail_target import find_rail_target, RailTargetType
 from models.geometry import Pose
 from views.construction.rail_view import RailView
-from graphics.camera import Camera
+from graphics.graphics_context import GraphicsContext
 from models.railway_system import RailwaySystem
 from models.construction_state import ConstructionState
 
 class RailController(BaseConstructionController):
-    def __init__(self, railway: RailwaySystem, state: ConstructionState, camera: Camera, screen: pygame.Surface):
-        view = RailView(railway, state, camera, screen)
-        super().__init__(view, railway, state, camera)
+    def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
+        view = RailView(railway, state, graphics)
+        super().__init__(view, railway, state, graphics.camera)
         
         
-    def handle_event(self, event: pygame.event.Event) -> None:
+    def _handle_filtered_event(self, event: pygame.event.Event) -> None:
         if event.button == 3:
             if self._construction_state.construction_anchor is not None:
                 self._construction_state.construction_anchor = None

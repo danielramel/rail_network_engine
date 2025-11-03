@@ -10,7 +10,7 @@ class StationView(BaseConstructionView):
     def render(self, world_pos: Position | None):
         if world_pos is None:
             return
-        moving_station = self._construction_state.moving_station
+        moving_station = self._state.moving_station
         target = find_station_target(self._railway, world_pos, moving_station)
 
         # Hovering over an existing station while not moving

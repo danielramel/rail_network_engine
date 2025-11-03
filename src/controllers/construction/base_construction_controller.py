@@ -3,7 +3,7 @@ from models.construction_state import ConstructionState
 from graphics.camera import Camera
 from views.construction.base_construction_view import BaseConstructionView
 from models.geometry import Position
-from ui.models.base import UIComponent
+from ui.models.ui_component import UIComponent
 
 class BaseConstructionController(UIComponent):
     """Base class for controllers that manage construction modes."""

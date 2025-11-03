@@ -5,7 +5,7 @@ from ui.models.rectangle import RectangleUIComponent
 from config.colors import BLACK, WHITE
 
 class TimeDisplay(RectangleUIComponent):
-    def __init__(self, surface: pygame.Surface, time_state: TimeControlState):
+    def __init__(self, time_state: TimeControlState, surface: pygame.Surface):
         self._rect = self._get_rect(surface)
         self._surface = surface
         self._time_state = time_state

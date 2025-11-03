@@ -2,7 +2,7 @@ import pygame
 from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
 from models.app_state import AppState, ViewMode
-from ui.models.base import UIComponent
+from ui.models.ui_component import UIComponent
 from config.colors import BLACK, GREEN, WHITE, YELLOW, RED
 from config.paths import GLOBAL_ICON_PATHS
 from config.settings import BUTTON_SIZE
@@ -21,13 +21,12 @@ class ModeSelectorButtons(UIComponent):
         self._surface = surface
         
         
-    def handle_event(self, event: pygame.event) -> bool:
-        
-        # if event.type == pygame.KEYDOWN:
-        #     if event.key in MODE_SELECTION:
-        #         self.state.mode = MODE_SELECTION[event.key]
-        #         return True
-        #     return False
+    def _handle_filtered_event(self, event: pygame.event) -> bool:
+        if event.type == pygame.KEYDOWN:
+            if event.key in MODE_SELECTION:
+                self.state.mode = MODE_SELECTION[event.key]
+                return True
+            return False
 
         for mode, btn in self.buttons:
             if btn.collidepoint(*event.screen_pos):
@@ -45,7 +44,7 @@ class ModeSelectorButtons(UIComponent):
             icon_rect = icon.get_rect(center=btn_rect.center)
             self._surface.blit(icon, icon_rect)
 
-            if mode == self.state.mode:
+            if mode == self.state._mode:
                 pygame.draw.rect(self._surface, GREEN, btn_rect, 2, border_radius=10)
             else:
                 pygame.draw.rect(self._surface, WHITE, btn_rect, 2, border_radius=10)

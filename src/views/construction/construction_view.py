@@ -9,8 +9,8 @@ class ConstructionCommonView(BaseConstructionView):
         draw_grid(self._surface, self._camera)
 
         for edge, speed in self._railway.graph.edges_with_data('speed').items():
-            if edge in self._construction_state.preview.edges:
-                draw_edge(self._surface, edge, self._camera, self._construction_state.preview.edge_action, speed=speed)
+            if edge in self._state.preview.edges:
+                draw_edge(self._surface, edge, self._camera, self._state.preview.edge_action, speed=speed)
             elif self._railway.platforms.is_edge_platform(edge):
                 draw_edge(self._surface, edge, self._camera, EdgeAction.PLATFORM)
             else:
@@ -20,13 +20,13 @@ class ConstructionCommonView(BaseConstructionView):
             draw_node(self._surface, node, self._camera)
 
         for signal in self._railway.signals.all():
-            if self._construction_state.is_bulldoze_preview_node(signal.position):
+            if self._state.is_bulldoze_preview_node(signal.position):
                 draw_signal(self._surface, signal, self._camera, color=RED)
             else:
                 draw_signal(self._surface, signal, self._camera)
 
         for station in self._railway.stations.all():
-            if self._construction_state.is_station_being_moved(station):
+            if self._state.is_station_being_moved(station):
                 continue
             draw_station(self._surface, station, self._camera)
             for middle_point in self._railway.platforms.platforms_middle_points(station):

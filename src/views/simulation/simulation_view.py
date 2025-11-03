@@ -4,16 +4,16 @@ from models.construction_state import EdgeAction
 from models.geometry.position import Position
 from models.railway_system import RailwaySystem
 from models.simulation_state import SimulationState
-from ui.models.base import UIComponent
+from ui.models.ui_component import UIComponent
 from ui.utils import draw_train, draw_edge, draw_node, draw_signal, draw_station
-import pygame
+from graphics.graphics_context import GraphicsContext
 
 class SimulationView(UIComponent):
-    def __init__(self, railway: RailwaySystem, camera: Camera, screen: pygame.Surface, simulation_state: SimulationState):
-        self._surface = screen
+    def __init__(self, railway: RailwaySystem, simulation_state: SimulationState, graphics: GraphicsContext):
         self._railway = railway
-        self._camera = camera
         self._simulation_state = simulation_state
+        self._surface = graphics.screen
+        self._camera = graphics.camera
         
     def render(self, world_pos: Position | None) -> None:
         # draw_grid(self._surface, self._camera)

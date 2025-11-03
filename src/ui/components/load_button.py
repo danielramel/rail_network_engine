@@ -16,7 +16,7 @@ class LoadButton(RectangleUIComponent):
         super().__init__(rect, surface)
         self._railway = railway
 
-    def handle_event(self, event: pygame.event) -> bool:   
+    def _handle_filtered_event(self, event: pygame.event) -> bool:   
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_l and (event.mod & pygame.KMOD_CTRL):
                 # Handle Ctrl+L

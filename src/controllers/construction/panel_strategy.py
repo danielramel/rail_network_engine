@@ -23,10 +23,10 @@ class ConstructionPanelStrategy(Panel):
             return
         self._panels[self._construction_state.mode].render(screen_pos)
 
-    def handle_event(self, event):
+    def _handle_filtered_event(self, event):
         if self._construction_state.mode is None:
             return
-        return self._panels[self._construction_state.mode].handle_event(event)
+        return self._panels[self._construction_state.mode]._handle_filtered_event(event)
     
     def contains(self, screen_pos):
         if self._construction_state.mode is None:

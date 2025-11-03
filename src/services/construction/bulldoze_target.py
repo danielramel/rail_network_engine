@@ -14,7 +14,7 @@ class BulldozeTargetType:
 @dataclass
 class BulldozeTarget:
     kind: BulldozeTargetType
-    pos: Optional[Any] = None    # Position for nodes/signals/stations
+    position: Optional[Any] = None    # Position for nodes/signals/stations
     edge: Optional[Any] = None   # single edge for removal
     edges: Optional[Set[Any]] = None  # set of edges for preview
     nodes: Optional[Set[Any]] = None  # set of nodes for preview
@@ -22,15 +22,15 @@ class BulldozeTarget:
 def find_bulldoze_target(railway: RailwaySystem, world_pos: Position, camera_scale) -> BulldozeTarget:
     snapped = world_pos.snap_to_grid()
     if railway.graph.has_node_at(snapped) and railway.signals.has_signal_at(snapped):
-        return BulldozeTarget(kind=BulldozeTargetType.SIGNAL, pos=snapped)
+        return BulldozeTarget(kind=BulldozeTargetType.SIGNAL, position=snapped)
 
     for station in railway.stations.all():
         if world_pos.is_within_station_rect(station.position):
-            return BulldozeTarget(kind=BulldozeTargetType.STATION, pos=station.position)
+            return BulldozeTarget(kind=BulldozeTargetType.STATION, position=station.position)
 
     closest_edge = world_pos.closest_edge(railway.graph.edges, camera_scale)
     if closest_edge is None:
-        return BulldozeTarget(kind=BulldozeTargetType.NONE, pos=world_pos)
+        return BulldozeTarget(kind=BulldozeTargetType.NONE, position=world_pos)
 
     if railway.platforms.is_edge_platform(closest_edge):
         edges = railway.platforms.get_platform_from_edge(closest_edge) ## edges return None TODO

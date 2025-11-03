@@ -1,10 +1,10 @@
 import pygame
+from graphics.graphics_context import GraphicsContext
 from models.geometry import Position
     
-from graphics.camera import Camera
 from models.railway_system import RailwaySystem
 from models.construction_state import ConstructionState, ConstructionMode
-from ui.models.base import UIComponent
+from ui.models.ui_component import UIComponent
 from .rail_controller import RailController
 from .platform_controller import PlatformController
 from .signal_controller import SignalController
@@ -15,37 +15,37 @@ from .base_construction_controller import BaseConstructionController
 
 class ConstructionController(UIComponent):
     handled_events = [pygame.MOUSEBUTTONUP]
-    def __init__(self, railway: RailwaySystem, state: ConstructionState, camera: Camera, screen: pygame.Surface):
-        self.view = ConstructionCommonView(railway, state, camera, screen)
+    def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
+        self.view = ConstructionCommonView(railway, state, graphics)
         self._railway = railway
-        self._construction_state = state
-        self._camera = camera
+        self._state = state
+        self._graphics = graphics
 
         self._controllers: dict[ConstructionMode, BaseConstructionController] = {
-            ConstructionMode.RAIL: RailController(railway, state, camera, screen),
-            ConstructionMode.SIGNAL: SignalController(railway, state, camera, screen),
-            ConstructionMode.STATION: StationController(railway, state, camera, screen),
-            ConstructionMode.PLATFORM: PlatformController(railway, state, camera, screen),
-            ConstructionMode.BULLDOZE: BulldozeController(railway, state, camera, screen),
+            ConstructionMode.RAIL: RailController(railway, state, graphics),
+            ConstructionMode.SIGNAL: SignalController(railway, state, graphics),
+            ConstructionMode.STATION: StationController(railway, state, graphics),
+            ConstructionMode.PLATFORM: PlatformController(railway, state, graphics),
+            ConstructionMode.BULLDOZE: BulldozeController(railway, state, graphics),
         }
         
-    def handle_event(self, event):                
-        if self._construction_state.mode is None:
+    def _handle_filtered_event(self, event):                
+        if self._state.mode is None:
             return
         
         if event.button not in (1, 3):
             return
         
-        self._controllers[self._construction_state.mode].handle_event(event)
+        self._controllers[self._state.mode]._handle_filtered_event(event)
             
             
     def render(self, screen_pos: Position | None):
         self.view.render(screen_pos)
         
-        if self._construction_state.mode is None:
+        if self._state.mode is None:
             return
-    
-        self._controllers[self._construction_state.mode].render(screen_pos)
+
+        self._controllers[self._state.mode].render(screen_pos)
 
     def contains(self, screen_pos: Position) -> bool:
         return True
