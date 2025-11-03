@@ -68,10 +68,12 @@ class SignalService:
 
                     heapq.heappush(priority_queue, (f_score[neighbor_pose], g_score[neighbor_pose], neighbor_pose))
 
-        return ()  # No path found
+        return None
         
-    def find_path(self, start: Signal, end: Signal) -> list[Edge]:
+    def find_path(self, start: Signal, end: Signal) -> list[Edge] | None:
         path = self._calculate_optimal_route(start.pose, end.pose)
+        if path is None:
+            return None
         edges = [Edge(path[i], path[i+1]) for i in range(len(path)-1)]
         return edges
     

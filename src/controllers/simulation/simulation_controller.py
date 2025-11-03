@@ -24,12 +24,17 @@ class SimulationController(UIComponent):
         snapped: Position = self._camera.screen_to_world(event.screen_pos).snap_to_grid()
         if self._railway.graph.has_node_at(snapped) and self._railway.signals.has_signal_at(snapped):
             signal = self._railway.signals.get(snapped)
+            if signal.is_green:
+                return True
             if self._simulation_state.selected_signal:
                 if self._simulation_state.selected_signal == signal:
                     self._simulation_state.selected_signal = None
                     return True
 
                 path = self._railway.signals.find_path(self._simulation_state.selected_signal, signal)
+                if path is None:
+                    self._simulation_state.selected_signal = None
+                    return True
                 self._simulation_state.selected_signal.connect(path, signal)
                 self._railway.signals.lock_path(path)
                 self._simulation_state.selected_signal = None
