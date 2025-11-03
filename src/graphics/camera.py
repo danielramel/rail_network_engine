@@ -54,7 +54,10 @@ class Camera:
         """Stop dragging the camera"""
         was_dragging = self.is_dragging
         self.is_dragging = False
-        return was_dragging and (pos.x != self.drag_start_x or pos.y != self.drag_start_y)
+        buffer = 5  # pixels tolerance to avoid tiny accidental drags
+        dx = pos.x - self.drag_start_x
+        dy = pos.y - self.drag_start_y
+        return was_dragging and (abs(dx) > buffer or abs(dy) > buffer)
 
     def zoom(self, mouse_pos: Position, zoom_direction: int):
         """Zoom in/out centered on mouse position"""

@@ -117,6 +117,7 @@ class AppController:
             
             
     def _mock_load(self):
+        return  # Disable mock load
         from models.train import Train
         from models.geometry.edge import Edge
         
