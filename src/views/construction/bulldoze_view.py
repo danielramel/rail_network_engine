@@ -21,7 +21,7 @@ class BulldozeView(BaseConstructionView):
             draw_node(self._surface, world_pos, self._camera, color=RED)
         elif target.kind == BulldozeTargetType.PLATFORM:
             self._state.preview.edges = target.edges
-            self._state.preview.edge_action = EdgeAction.NORMAL
+            self._state.preview.edge_action = EdgeAction.SPEED
         elif target.kind == BulldozeTargetType.SEGMENT:
             self._state.preview.edges = target.edges
             self._state.preview.nodes = target.nodes
