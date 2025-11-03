@@ -22,15 +22,15 @@ class SimulationView(UIComponent):
             edge_action = EdgeAction.NORMAL
             if edge in self._state.preview.path:
                 edge_action = EdgeAction.LOCKED_PREVIEW
-            elif self._railway.platforms.is_edge_platform(edge) and self._railway.graph.is_edge_locked(edge):
+            elif self._railway.platforms.is_edge_platform(edge) and self._railway.signalling.is_edge_locked(edge):
                 edge_action = EdgeAction.LOCKED_PLATFORM
-            elif self._railway.graph.is_edge_locked(edge):
+            elif self._railway.signalling.is_edge_locked(edge):
                 edge_action = EdgeAction.LOCKED
             elif self._railway.platforms.is_edge_platform(edge):
                 edge_action = EdgeAction.PLATFORM
             draw_edge(self._surface, edge, self._camera, edge_action)
 
-        for node in self._railway.graph.junctions:
+        for node in self._railway.graph_service.junctions:
             draw_node(self._surface, node, self._camera)
 
         for signal in self._railway.signals.all():
@@ -64,5 +64,5 @@ class SimulationView(UIComponent):
             self._state.preview.signal = signal
             if self._state.selected_signal is None:
                 return
-            path = self._railway.signals.find_path(self._state.selected_signal, signal)
+            path = self._railway.signalling.find_path(self._state.selected_signal, signal)
             self._state.preview.path = path if path is not None else []

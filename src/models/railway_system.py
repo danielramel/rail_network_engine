@@ -1,32 +1,38 @@
 import networkx as nx
 from models.geometry import Position, Pose, Edge
-from services.railway_system.graph_query_service import GraphService
-from services.railway_system.signal_service import SignalService
+from models.graph_adapter import GraphAdapter
+from services.railway_system.graph_service import GraphService
 from services.railway_system.path_service import PathService
-from services.railway_system.platform_service import PlatformService
-from services.railway_system.train_service import TrainService
+from models.platform_repository import PlatformRepository
+from services.railway_system.signalling_service import SignallingService
 from models.station import StationRepository
 from models.schedule import ScheduleRepository
 from models.train import TrainRepository
+from models.signal import SignalRepository
 
 class RailwaySystem:
     def __init__(self):
         self._graph = nx.Graph()
-        self._graph_service = GraphService(self._graph)
-        self._signal_service = SignalService(self._graph)
-        self._platform_service = PlatformService(self._graph, self._graph_service)
-        self._pathfinder = PathService(self)
+        self._graph_adapter = GraphAdapter(self._graph)
+        self._graph_service = GraphService(self._graph_adapter)
+        self._signal_service = SignalRepository(self._graph_adapter)
+        self._platform_service = PlatformRepository(self._graph_adapter)
         self._station_repository = StationRepository()
         self._schedule_repository = ScheduleRepository()
         self._train_repository = TrainRepository()
-        self._train_service = TrainService(self)
+        self._pathfinder = PathService(self)
+        self._signalling_service = SignallingService(self)
     
     @property
-    def graph(self) -> GraphService:
+    def graph(self) -> GraphAdapter:
+        return self._graph_adapter
+    
+    @property
+    def graph_service(self) -> GraphService:
         return self._graph_service
     
     @property
-    def signals(self) -> SignalService:
+    def signals(self) -> SignalRepository:
         return self._signal_service
     
     @property
@@ -45,12 +51,12 @@ class RailwaySystem:
         return self._pathfinder.find_grid_path(start, end)
     
     @property
-    def platforms(self) -> PlatformService:
+    def platforms(self) -> PlatformRepository:
         return self._platform_service
     
     @property
-    def train_service(self) -> TrainService:
-        return self._train_service
+    def signalling(self) -> SignallingService:
+        return self._signalling_service
     
     def tick(self):
         for train in self._train_repository.all():
@@ -78,4 +84,4 @@ class RailwaySystem:
     def from_dict(self, data: dict) -> None:
         self._station_repository = StationRepository.from_dict(data['stations'])
         self._schedule_repository = ScheduleRepository.from_dict(data['schedules'], self)
-        self._graph_service.from_dict(data['graph'])
+        self._graph_adapter.from_dict(data['graph'])

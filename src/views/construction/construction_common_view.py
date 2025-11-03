@@ -8,7 +8,7 @@ class ConstructionCommonView(BaseConstructionView):
     def render(self, screen_pos: Position | None) -> None:
         draw_grid(self._surface, self._camera)
 
-        for edge, speed in self._railway.graph.edges_with_data('speed').items():
+        for edge, speed in self._railway.graph.all_edges_with_attr('speed'):
             if edge in self._state.preview.edges:
                 draw_edge(self._surface, edge, self._camera, self._state.preview.edge_action, speed=speed)
             elif self._railway.platforms.is_edge_platform(edge):
@@ -16,7 +16,7 @@ class ConstructionCommonView(BaseConstructionView):
             else:
                 draw_edge(self._surface, edge, self._camera, EdgeAction.SPEED, speed=speed)
 
-        for node in self._railway.graph.junctions:
+        for node in self._railway.graph_service.junctions:
             draw_node(self._surface, node, self._camera)
 
         for signal in self._railway.signals.all():

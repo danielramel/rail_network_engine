@@ -19,6 +19,13 @@ class RailView(BaseConstructionView):
         if target.kind in (RailTargetType.NODE, RailTargetType.ANCHOR_SAME):
             draw_node(self._surface, target.snapped, self._camera, color=color)
             return
+        
+        if target.kind == RailTargetType.BLOCKED:
+            draw_node(self._surface, target.snapped, self._camera, color=RED)
+            
+            if self._state.construction_anchor is not None:
+                draw_node(self._surface, self._state.construction_anchor.position, self._camera, color=color)
+            return
 
         if target.kind == RailTargetType.NO_PATH:
             draw_node(self._surface, target.snapped, self._camera, color=RED)

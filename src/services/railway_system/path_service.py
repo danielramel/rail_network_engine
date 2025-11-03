@@ -5,6 +5,7 @@ import heapq
 from typing import TYPE_CHECKING
 
 from models.geometry.direction import Direction
+from models.geometry.edge import Edge
 if TYPE_CHECKING:
     from models.railway_system import RailwaySystem
 
@@ -14,7 +15,7 @@ class PathService:
         self._railway = railway
 
     def is_blocked(self, pos: Position) -> bool:
-        return (self._railway.graph.has_node_at(pos) and 
+        return (self._railway.graph.has_node_at(pos) and
                 (self._railway.signals.has_signal_at(pos) 
                  or self._railway.platforms.is_platform_at(pos))) or self._railway.stations.is_within_any(pos)
 
@@ -24,7 +25,7 @@ class PathService:
         # Check for corner cutting
         corner1 = Position(current_state.position.x + neighbor_state.direction[0] * GRID_SIZE, current_state.position.y)
         corner2 = Position(current_state.position.x, current_state.position.y + neighbor_state.direction[1] * GRID_SIZE)
-        return self._railway.graph.has_edge((corner1, corner2)) and self._railway.platforms.is_edge_platform((corner1, corner2))
+        return self._railway.graph.has_edge(Edge(corner1, corner2)) and self._railway.platforms.is_edge_platform((corner1, corner2))
 
         
     def find_grid_path(self, start: Pose, end: Position) -> tuple[Position, ...]:

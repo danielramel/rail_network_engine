@@ -1,36 +1,22 @@
-import networkx as nx
+import heapq
+from typing import Optional
 from models.geometry import Position, Edge
 from models.signal import Signal
 from models.geometry import Pose
-import heapq
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from models.railway_system import RailwaySystem
 
-
-class SignalService:
-    """Service responsible for adding / toggling / removing signals."""
-    def __init__(self, graph: nx.Graph):
-        self._graph = graph
-
-    def has_signal_at(self, pos: Position) -> bool:
-        return 'signal' in self._graph.nodes[pos]
+class SignallingService:
+    def __init__(self, railway: 'RailwaySystem'):
+        self._railway = railway
+        
+    def is_edge_locked(self, edge: Edge) -> bool:
+        return self._railway.graph.get_edge_attr(edge, 'locked') is True
     
-    def get(self, pos: Position) -> Signal:
-        return self._graph.nodes[pos]['signal']
-
-    def add(self, pose: Pose) -> None:
-        self._graph.nodes[pose.position]['signal'] = Signal(pose)
-
-    def remove(self, pos: Position) -> None:
-        del self._graph.nodes[pos]['signal']
-
-    def toggle(self, pose: Pose) -> None:
-        self.remove(pose.position)
-        self.add(pose)
-
-    def all(self) -> tuple[Signal]:
-        return tuple(data["signal"] for node, data in self._graph.nodes(data=True) if 'signal' in data)
+    
 
     def _calculate_optimal_route(self, start: Pose, end: Pose) -> list[Position]:
-
         priority_queue: list[tuple[float, float, Pose]] = []
         came_from: dict[Pose, Pose] = {}
         g_score: dict[Pose, float] = {}
@@ -56,7 +42,9 @@ class SignalService:
                 return tuple(reversed(path))
 
             for neighbor_pose, cost in current_pose.get_neighbors_in_direction():
-                if not self._graph.has_edge(current_pose.position, neighbor_pose.position):
+                if not self._railway.graph.has_edge(Edge(current_pose.position, neighbor_pose.position)):
+                    continue
+                if self._railway.graph.get_edge_attr(Edge(current_pose.position, neighbor_pose.position), 'locked'):
                     continue
                 
                 tentative_g_score = g_score[current_pose] + cost
@@ -79,4 +67,29 @@ class SignalService:
     
     def lock_path(self, path: list[Edge]) -> None:
         for edge in path:
-            self._graph.edges[edge.a, edge.b]['locked'] = True
+            self._railway.graph.set_edge_attr(edge, 'locked', True)
+
+    def get_initial_path(self, start_edge: Edge) -> tuple[list[Edge], Optional[Signal]]:
+        visited = {start_edge.a, start_edge.b}
+        pos = start_edge.b
+        path = []
+        while True:
+            if self._railway.signals.has_signal_at(pos):
+                signal = self._railway.signals.get(pos)
+                if not signal.is_green:
+                    return path, signal
+
+            neighbors = self._railway.graph.neighbors(pos)
+            if len(neighbors) == 1:
+                path.append(Edge(pos, neighbors[0]))
+                visited.add(pos)
+                return path, None
+            
+            if neighbors[0] in visited and neighbors[1] in visited:
+                return path, None
+            
+            next_pos = neighbors[0] if neighbors[0] not in visited else neighbors[1]
+
+            visited.add(next_pos)
+            path.append(Edge(pos, next_pos))
+            pos = next_pos

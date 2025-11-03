@@ -1,48 +1,21 @@
 from typing import Optional
 import networkx as nx
-from config.settings import GRID_SIZE
+from config.settings import GRID_SIZE, PLATFORM_LENGTH
 from models.geometry import Position, Pose
 from collections import deque
 from models.signal import Signal
 from models.geometry.edge import Edge
-
+from models.graph_adapter import GraphAdapter
 
 class GraphService:
-    def __init__(self, graph: nx.Graph):
+    def __init__(self, graph: GraphAdapter):
         self._graph = graph
-        
-    @property
-    def nodes(self) -> set[Position]:
-        return self._graph.nodes
-    
-    @property
-    def edges(self) -> frozenset[Edge]:
-        return frozenset((Edge(*edge) for edge in self._graph.edges))
-    
-    def has_node_at(self, pos: Position) -> bool:
-        return pos in self._graph.nodes
-    
-    def degree_at(self, pos: Position) -> int:
-        return self._graph.degree[pos]
-    
-    def has_edge(self, edge: Edge) -> bool:
-        return self._graph.has_edge(*edge)
-    
-    def is_edge_locked(self, edge: Edge) -> bool:
-        return self._graph.edges[edge].get('locked', False)
-    
-    def edges_with_data(self, key) -> dict[Edge, dict]:
-        return {Edge(*edge): data for *edge, data in self._graph.edges.data(key)}
-    
-    def neighbors(self, pos: Position) -> tuple[Position]:
-        return tuple(self._graph.neighbors(pos))
 
-    
     def is_junction(self, pos: Position) -> bool:
-        if self._graph.degree[pos] > 2: return True
-        if self._graph.degree[pos] < 2: return False
+        if self._graph.degree_at(pos) > 2: return True
+        if self._graph.degree_at(pos) < 2: return False
 
-        neighbors = self.neighbors(pos)
+        neighbors = self._graph.neighbors(pos)
         inbound = neighbors[0].direction_to(pos)
         outbound = pos.direction_to(neighbors[1])
         return outbound not in inbound.get_valid_turns()
@@ -53,7 +26,7 @@ class GraphService:
     
     def get_connections_from_pose(self, pose: Pose, only_straight: bool = False) -> tuple[Pose]:
         connections = []
-        for neighbor in self.neighbors(pose.position):
+        for neighbor in self._graph.neighbors(pose.position):
             direction = pose.position.direction_to(neighbor)
             if only_straight and direction != pose.direction:
                 continue
@@ -88,13 +61,12 @@ class GraphService:
         stack: deque[Pose] = deque()
 
         a, b = edge
-        if only_platforms and 'station' not in self._graph.edges[edge]: raise ValueError("No platform on the given edge")
         if max_nr is not None and not only_straight: raise ValueError("max_nr can only be used with only_straight=True")
         
         edges.add(edge)
         
-        a_has_signal = 'signal' in self._graph[a]
-        b_has_signal = 'signal' in self._graph[b]
+        a_has_signal = self._graph.has_node_attr(a, 'signal')
+        b_has_signal = self._graph.has_node_attr(b, 'signal')
         is_a_junction = self.is_junction(a)
         is_b_junction = self.is_junction(b)
         pose_to_a = Pose.from_positions(b, a)
@@ -115,12 +87,12 @@ class GraphService:
 
             for neighbor, direction in connections:
                 edge = Edge(pose.position, neighbor)
-                                
-                if 'station' in self._graph.edges[edge] and not only_platforms:
+
+                if self._graph.has_edge_attr(edge, 'station') and not only_platforms:
                     nodes.remove(pose.position) # ezt nézd át, miért csak itt van
                     continue
-                
-                if only_platforms and 'station' not in self._graph.edges[edge]:
+
+                if only_platforms and not self._graph.has_edge_attr(edge, 'station'):
                     continue
                 
                 edges.add(edge)
@@ -134,8 +106,8 @@ class GraphService:
                 
                 if self.is_junction(neighbor):
                     continue
-                
-                if end_on_signal and 'signal' in self._graph[neighbor]:
+
+                if end_on_signal and self._graph.has_node_attr(neighbor, 'signal'):
                     continue
                 
                 stack.append(Pose(neighbor, direction))
@@ -143,37 +115,11 @@ class GraphService:
         return frozenset(nodes), frozenset(edges)
     
     
-    def to_dict(self) -> dict:
-        graph_data = nx.node_link_data(self._graph)
-        
-        # convert Position objects in node attributes to dicts
-        for node in graph_data['nodes']:
-            node['id'] = node['id'].to_dict()
-            if 'signal' in node:
-                node['signal'] = node['signal'].to_dict()
-            
-        for link in graph_data['links']:
-            link["source"] = link["source"].to_dict()
-            link["target"] = link["target"].to_dict()
-            if 'station' in link:
-                link['station'] = link['station'].id
-        
-        return graph_data
-    
-    
+    def calculate_platform_preview(self, edge: Edge) -> tuple[bool, frozenset[Edge]]:
+        _, edges = self.get_segment(edge, only_straight=True, max_nr=PLATFORM_LENGTH)
+        for edge in edges:
+            # TODO check for platform corner cutting
+            pass
 
-    def from_dict(self, graph_data: dict) -> None:
-        for node in graph_data['nodes']:
-            node['id'] = Position.from_dict(node['id'])
-            if 'signal' in node:
-                node['signal'] = Signal.from_dict(node['signal'])
-            
-        for link in graph_data['links']:
-            for key in ('source', 'target'):
-                link[key] = Position.from_dict(link[key])
-
-        temp_graph = nx.node_link_graph(graph_data)
-        
-        self._graph.clear()
-        self._graph.add_nodes_from(temp_graph.nodes(data=True))
-        self._graph.add_edges_from(temp_graph.edges(data=True))
+        edge = next(iter(edges))
+        return edge.length * len(edges) >= PLATFORM_LENGTH * GRID_SIZE, edges

@@ -18,7 +18,7 @@ class SignalTarget:
 def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
     snapped = pos.snap_to_grid()
 
-    if not railway.graph.has_node_at(snapped) or railway.graph.is_junction(snapped):
+    if not railway.graph.has_node_at(snapped) or railway.graph_service.is_junction(snapped):
         return SignalTarget(
             kind=SignalTargetType.INVALID,
             pose=Pose(position=snapped, direction=(1, 0)),
@@ -26,10 +26,11 @@ def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
         )
 
     if railway.signals.has_signal_at(snapped):
+        signal = railway.signals.get(snapped)
         if railway.graph.degree_at(snapped) == 1:
-                pose=Pose(position=snapped, direction=railway._graph.nodes[snapped]['signal'].direction),
+            pose = Pose(position=snapped, direction=signal.direction)
 
-        current_direction = railway._graph.nodes[snapped]['signal'].direction
+        current_direction = signal.direction
         neighbors = railway.graph.neighbors(snapped)
         direction = snapped.direction_to(neighbors[0])
         if direction == current_direction and railway.graph.degree_at(snapped) == 2:
