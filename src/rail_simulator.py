@@ -23,7 +23,7 @@ class RailSimulator:
         running = True
         while running:
             for event in pygame.event.get():
-                action = self.app_controller.handle_event(event)
+                action = self.app_controller.dispatch_event(event)
                 if action == "quit":
                     running = False
                     break
@@ -31,7 +31,7 @@ class RailSimulator:
             # Process Qt events without blocking (allows Qt windows to function)
             self.qt_app.processEvents()
 
-            self.app_controller.render_view()
+            self.app_controller.render()
 
             pygame.display.flip()
             self.clock.tick(FPS)

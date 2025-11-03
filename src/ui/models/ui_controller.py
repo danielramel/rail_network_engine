@@ -1,12 +1,12 @@
 import pygame
 from ui.models.ui_component import UIComponent
 
-class UILayer(UIComponent):
+class UIController(UIComponent):
     elements: tuple[UIComponent]
     
-    def handle_event(self, event):
+    def dispatch_event(self, event):
         for element in self.elements:
-            if element.handle_event(event):
+            if element.dispatch_event(event):
                 return True
             
         return False
@@ -24,3 +24,7 @@ class UILayer(UIComponent):
                 element.render(screen_pos)
             else:
                 element.render(None)
+                
+    def tick(self):
+        for element in self.elements:
+            element.tick()

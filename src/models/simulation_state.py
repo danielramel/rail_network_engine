@@ -12,7 +12,7 @@ class TimeControlMode(Enum):
     
     
 class TimeControlState:
-    mode: TimeControlMode = TimeControlMode.PLAY
+    mode: TimeControlMode = TimeControlMode.PAUSE
     current_time = 0  # in seconds
     
     def reset(self) -> None:

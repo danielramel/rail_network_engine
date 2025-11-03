@@ -6,16 +6,16 @@ from graphics.graphics_context import GraphicsContext
 from models.geometry import Position
 
 from ui.models.ui_component import UIComponent
-from ui.models.ui_handler import UILayer
+from ui.models.ui_controller import UIController
 
 
 class ModeController(UIComponent):
     def __init__(self, app_state: AppState, railway: RailwaySystem, graphics: GraphicsContext):
         self._state = app_state
         app_state.subscribe(self.switch_to)
-        self._current_mode: UILayer = None
+        self._current_mode: UIController = None
         
-        self._modes: dict[ViewMode, lambda: UILayer] = {
+        self._modes: dict[ViewMode, lambda: UIController] = {
             ViewMode.CONSTRUCTION: lambda: ConstructionMode(railway, graphics),
             ViewMode.SIMULATION: lambda: SimulationMode(railway, graphics)
         }
@@ -26,14 +26,17 @@ class ModeController(UIComponent):
         self._current_mode = self._modes[new_mode]()
         
         
-    def _handle_filtered_event(self, event) -> bool:            
+    def process_event(self, event) -> bool:
         if self._current_mode is None:
             return False
         
-        self._current_mode.handle_event(event)
+        self._current_mode.dispatch_event(event)
         
     def render(self, screen_pos: Position | None):
         if self._current_mode is None:
             return
         
         self._current_mode.render(screen_pos)
+        
+    def tick(self):
+        self._current_mode.tick()

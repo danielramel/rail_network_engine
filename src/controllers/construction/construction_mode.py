@@ -7,9 +7,9 @@ from controllers.construction.panel_strategy import ConstructionPanelStrategy
 from models.construction_state import ConstructionState
 from models.railway_system import RailwaySystem
 from graphics.graphics_context import GraphicsContext
-from ui.models.ui_handler import UILayer
+from ui.models.ui_controller import UIController
 
-class ConstructionMode(UILayer):
+class ConstructionMode(UIController):
     elements: tuple[UIComponent]
     def __init__(self, railway: RailwaySystem, graphics: GraphicsContext):
         self.state = ConstructionState()

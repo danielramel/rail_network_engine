@@ -21,7 +21,7 @@ class ConstructionButtons(UIComponent):
         self._surface = surface
         
         
-    def _handle_filtered_event(self, event: pygame.event) -> bool:   
+    def process_event(self, event: pygame.event) -> bool:   
         if event.type == pygame.KEYDOWN:
             if event.key in CONSTRUCTION_MODE_SELECTION:
                 self.construction_state.switch_mode(CONSTRUCTION_MODE_SELECTION[event.key])

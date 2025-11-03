@@ -16,7 +16,7 @@ class SimulationController(UIComponent):
         self._railway = railway
         self._camera = graphics.camera
 
-    def _handle_filtered_event(self, event) -> bool:
+    def process_event(self, event) -> bool:
         if event.button == 3:
             self._simulation_state.selected_signal = None
             return True

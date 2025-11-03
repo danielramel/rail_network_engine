@@ -21,7 +21,7 @@ class ModeSelectorButtons(UIComponent):
         self._surface = surface
         
         
-    def _handle_filtered_event(self, event: pygame.event) -> bool:
+    def process_event(self, event: pygame.event) -> bool:
         if event.type == pygame.KEYDOWN:
             if event.key in MODE_SELECTION:
                 self.state.mode = MODE_SELECTION[event.key]

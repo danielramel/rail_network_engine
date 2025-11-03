@@ -94,7 +94,7 @@ class RailPanel(BaseConstructionPanel):
         speed_surface = self.instruction_font.render(speed_val, True, YELLOW)
         self._surface.blit(speed_surface, speed_surface.get_rect(center=self.speed_center))
 
-    def _handle_filtered_event(self, event: pygame.event.Event) -> bool:
+    def process_event(self, event: pygame.event.Event) -> bool:
         """Handle +/- clicks; return True if the event was consumed."""     
         if event.type != pygame.MOUSEBUTTONUP or event.button != 1:
             return self._rect.collidepoint(*event.screen_pos)

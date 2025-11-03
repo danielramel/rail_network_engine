@@ -2,13 +2,13 @@ from models.railway_system import RailwaySystem
 from graphics.graphics_context import GraphicsContext
 from models.simulation_state import SimulationState
 from ui.models.ui_component import UIComponent
-from ui.models.ui_handler import UILayer
+from ui.models.ui_controller import UIController
 from ui.simulation.time_control_buttons import TimeControlButtons
 from ui.simulation.time_display import TimeDisplay
 from controllers.simulation.simulation_controller import SimulationController
 from controllers.camera_controller import CameraController
 
-class SimulationMode(UILayer):
+class SimulationMode(UIController):
     elements: tuple[UIComponent]
     def __init__(self, railway: RailwaySystem, graphics: GraphicsContext):
         self.state = SimulationState()

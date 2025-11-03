@@ -29,14 +29,14 @@ class ConstructionController(UIComponent):
             ConstructionMode.BULLDOZE: BulldozeController(railway, state, graphics),
         }
         
-    def _handle_filtered_event(self, event):                
+    def process_event(self, event):                
         if self._state.mode is None:
             return
         
         if event.button not in (1, 3):
             return
         
-        self._controllers[self._state.mode]._handle_filtered_event(event)
+        self._controllers[self._state.mode].process_event(event)
             
             
     def render(self, screen_pos: Position | None):

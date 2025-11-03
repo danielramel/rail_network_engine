@@ -14,5 +14,5 @@ class RectangleUIComponent(UIComponent):
     def contains(self, screen_pos: Position) -> bool:
         return self._rect.collidepoint(*screen_pos)
     
-    def _handle_filtered_event(self, event):
+    def process_event(self, event):
         return self._rect.collidepoint(*event.screen_pos)

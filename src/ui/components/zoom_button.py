@@ -26,7 +26,7 @@ class ZoomButton(RectangleUIComponent):
     def _get_zoom_box(self, surface: pygame.Surface) -> pygame.Rect:
         return pygame.Rect(surface.get_width() - 100, 10, 80, 30)
     
-    def _handle_filtered_event(self, event: pygame.event) -> bool:
+    def process_event(self, event: pygame.event) -> bool:
         if self.is_hidden():
             return False
         

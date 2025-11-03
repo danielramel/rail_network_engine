@@ -13,7 +13,7 @@ class PlatformController(BaseConstructionController):
         super().__init__(view, railway, state, graphics.camera)
 
 
-    def _handle_filtered_event(self, event: pygame.event.Event) -> None:
+    def process_event(self, event: pygame.event.Event) -> None:
         if event.button == 3:
             if self._construction_state.platform_waiting_for_station:
                 self._construction_state.platform_waiting_for_station = False

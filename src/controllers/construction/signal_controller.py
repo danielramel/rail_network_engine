@@ -12,7 +12,7 @@ class SignalController(BaseConstructionController):
         view = SignalView(railway, state, graphics)
         super().__init__(view, railway, state, graphics.camera)
 
-    def _handle_filtered_event(self, event: pygame.event.Event) -> None:
+    def process_event(self, event: pygame.event.Event) -> None:
         if event.button == 3:
             self._construction_state.switch_mode(None)
             return

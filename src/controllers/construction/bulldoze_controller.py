@@ -12,7 +12,7 @@ class BulldozeController(BaseConstructionController):
         view = BulldozeView(railway, state, graphics)
         super().__init__(view, railway, state, graphics.camera)
 
-    def _handle_filtered_event(self, event: pygame.event.Event) -> bool:
+    def process_event(self, event: pygame.event.Event) -> bool:
         if event.button == 3:
             self._construction_state.switch_mode(None)
             return True

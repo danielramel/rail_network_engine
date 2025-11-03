@@ -19,7 +19,7 @@ class TimeTableButton(RectangleUIComponent):
         super().__init__(rect, surface)
         self.timetable_window = None  # Store window reference
         
-    def _handle_filtered_event(self, event: pygame.event) -> bool:
+    def process_event(self, event: pygame.event) -> bool:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_t and (event.mod & pygame.KMOD_CTRL):
                 self.open_timetable_window()

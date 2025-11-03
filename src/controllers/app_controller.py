@@ -15,9 +15,9 @@ from ui.components.timetable_button import TimeTableButton
 from ui.components.zoom_button import ZoomButton
 from models.geometry import Position
 from graphics.graphics_context import GraphicsContext
-from ui.models.ui_handler import UILayer
+from ui.models.ui_controller import UIController
 
-class AppController(UILayer):    
+class AppController(UIController):
     def __init__(self, screen: pygame.Surface):
         self.graphics = GraphicsContext(screen, Camera())
         self.railway = RailwaySystem()
@@ -32,23 +32,18 @@ class AppController(UILayer):
             ModeController(self.app_state, self.railway, self.graphics)
         ]
     
-    def handle_event(self, event: pygame.event):        
+    def dispatch_event(self, event: pygame.event):        
         if event.type == pygame.QUIT \
             or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             return "quit"
 
         event.screen_pos = Position(*pygame.mouse.get_pos())
-        super().handle_event(event)
+        super().dispatch_event(event)
     
-    def render_view(self):
+    def render(self):
         self.graphics.screen.fill(BLACK)
         screen_pos = Position(*pygame.mouse.get_pos())
         super().render(screen_pos)
-                
-    def tick(self):
-        """Advance the simulation time if in simulation mode."""
-        for element in self.elements:
-            element.tick()
             
             
     def _mock_load(self):

@@ -3,13 +3,13 @@ import pygame
 from models.geometry.position import Position
 
 class UIComponent:
-    def handle_event(self, event: pygame.event.Event) -> bool:
+    def dispatch_event(self, event: pygame.event.Event) -> bool:
         """Process a pygame event. Return True if consumed."""
         if hasattr(self, 'handled_events') and event.type not in self.handled_events:
             return False
-        return self._handle_filtered_event(event)
+        return self.process_event(event)
     
-    def _handle_filtered_event(self, event: pygame.event.Event) -> bool:
+    def process_event(self, event: pygame.event.Event) -> bool:
         """Process a pygame event that has already been filtered by type. Return True if consumed."""
         return False
 
