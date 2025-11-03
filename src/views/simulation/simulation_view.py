@@ -22,11 +22,11 @@ class SimulationView(UIComponent):
             edge_action = EdgeAction.NORMAL
             if edge in self._state.preview.path:
                 edge_action = EdgeAction.LOCKED_PREVIEW
-            elif self._railway.platforms.is_edge_platform(edge) and self._railway.signalling.is_edge_locked(edge):
+            elif self._railway.stations.is_edge_platform(edge) and self._railway.signalling.is_edge_locked(edge):
                 edge_action = EdgeAction.LOCKED_PLATFORM
             elif self._railway.signalling.is_edge_locked(edge):
                 edge_action = EdgeAction.LOCKED
-            elif self._railway.platforms.is_edge_platform(edge):
+            elif self._railway.stations.is_edge_platform(edge):
                 edge_action = EdgeAction.PLATFORM
             draw_edge(self._surface, edge, self._camera, edge_action)
 

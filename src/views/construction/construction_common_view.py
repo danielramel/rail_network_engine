@@ -11,7 +11,7 @@ class ConstructionCommonView(BaseConstructionView):
         for edge, speed in self._railway.graph.all_edges_with_attr('speed'):
             if edge in self._state.preview.edges:
                 draw_edge(self._surface, edge, self._camera, self._state.preview.edge_action, speed=speed)
-            elif self._railway.platforms.is_edge_platform(edge):
+            elif self._railway.stations.is_edge_platform(edge):
                 draw_edge(self._surface, edge, self._camera, EdgeAction.PLATFORM)
             else:
                 draw_edge(self._surface, edge, self._camera, EdgeAction.SPEED, speed=speed)
@@ -29,5 +29,5 @@ class ConstructionCommonView(BaseConstructionView):
             if self._state.is_station_being_moved(station):
                 continue
             draw_station(self._surface, station, self._camera)
-            for middle_point in self._railway.platforms.platforms_middle_points(station):
+            for middle_point in self._railway.stations.platforms_middle_points(station):
                 draw_dotted_line(self._surface, middle_point, station.position, self._camera, color=PURPLE)

@@ -12,7 +12,7 @@ class PlatformView(BaseConstructionView):
         
         # handle the “select_station” preview mode first
         if self._state.platform_waiting_for_station:
-            middle_point = self._railway.platforms.get_middle_of_platform(self._state.preview.edges)
+            middle_point = self._railway.stations.get_middle_of_platform(self._state.preview.edges)
             for station in self._railway.stations.all():
                 if world_pos.is_within_station_rect(station.position):
                     draw_station(self._surface, station, self._camera, color=LIGHTBLUE)

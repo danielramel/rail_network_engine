@@ -2,8 +2,8 @@ from models.geometry import Position, Edge
 import networkx as nx
 
 class GraphAdapter:
-    def __init__(self, graph: nx.Graph):
-        self._graph = graph
+    def __init__(self):
+        self._graph = nx.Graph()
         
     @property
     def nodes(self) -> set[Position]:
@@ -73,38 +73,35 @@ class GraphAdapter:
         
         
     def to_dict(self) -> dict:
-        graph_data = nx.node_link_data(self._graph)
+        graph_data = nx.node_link_data(self._graph, edges="edges")
         
         # convert Position objects in node attributes to dicts
         for node in graph_data['nodes']:
             node['id'] = node['id'].to_dict()
-            if 'signal' in node:
-                node['signal'] = node['signal'].to_dict()
+            for key in list(node.keys()):
+                if key != "id":
+                    del node[key]
             
-        for link in graph_data['links']:
-            link["source"] = link["source"].to_dict()
-            link["target"] = link["target"].to_dict()
-            if 'station' in link:
-                link['station'] = link['station'].id
+        for edge in graph_data['edges']:
+            edge["source"] = edge["source"].to_dict()
+            edge["target"] = edge["target"].to_dict()
+            for key in list(edge.keys()):
+                if key not in ("source", "target", "speed"):
+                    del edge[key]
         
         return graph_data
     
-    
-
-    def from_dict(self, graph_data: dict) -> None:
-        from models.signal import Signal
+    @classmethod
+    def from_dict(cls, graph_data: dict) -> None:
+        instance = cls()
         
         for node in graph_data['nodes']:
             node['id'] = Position.from_dict(node['id'])
-            if 'signal' in node:
-                node['signal'] = Signal.from_dict(node['signal'])
             
-        for link in graph_data['links']:
-            for key in ('source', 'target'):
-                link[key] = Position.from_dict(link[key])
+        for edge in graph_data['edges']:
+            edge['source'] = Position.from_dict(edge['source'])
+            edge['target'] = Position.from_dict(edge['target'])
 
-        temp_graph = nx.node_link_graph(graph_data)
+        instance._graph = nx.node_link_graph(graph_data, edges="edges")
         
-        self._graph.clear()
-        self._graph.add_nodes_from(temp_graph.nodes(data=True))
-        self._graph.add_edges_from(temp_graph.edges(data=True))
+        return instance

@@ -42,7 +42,7 @@ class SignallingService:
             for neighbor_pose, cost in current_pose.get_neighbors_in_direction():
                 if not self._railway.graph.has_edge(Edge(current_pose.position, neighbor_pose.position)):
                     continue
-                if self._railway.graph.get_edge_attr(Edge(current_pose.position, neighbor_pose.position), 'locked'):
+                if self._railway.graph.get_node_attr(neighbor_pose.position, 'locked'):
                     continue
                 
                 tentative_g_score = g_score[current_pose] + cost
@@ -80,6 +80,8 @@ class SignallingService:
                 
         for edge in edges:
             self._railway.graph.set_edge_attr(edge, 'locked', True)
+        for pose in poses:
+            self._railway.graph.set_node_attr(pose.position, 'locked', True)
 
     def get_initial_path(self, start_edge: Edge) -> tuple[list[Edge], Optional[Signal]]:
         visited = {start_edge.a, start_edge.b}

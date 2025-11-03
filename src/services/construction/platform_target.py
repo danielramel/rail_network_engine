@@ -23,7 +23,7 @@ def find_platform_target(railway: RailwaySystem, world_pos: Position, camera_sca
     if closest_edge is None:
         return PlatformTarget(kind=PlatformTargetType.NONE, closest_edge=None)
 
-    if railway.platforms.is_edge_platform(closest_edge):
+    if railway.stations.is_edge_platform(closest_edge):
         return PlatformTarget(kind=PlatformTargetType.EXISTING_PLATFORM, closest_edge=closest_edge)
 
     is_valid, edges = railway.graph_service.calculate_platform_preview(closest_edge)

@@ -26,7 +26,7 @@ class PlatformController(BaseConstructionController):
         if self._construction_state.platform_waiting_for_station:
             for station in self._railway.stations.all():
                 if world_pos.is_within_station_rect(station.position):
-                    self._railway.platforms.add(station, list(self._construction_state.preview.edges))
+                    self._railway.stations.add_platform(station.id, list(self._construction_state.preview.edges))
                     break
             self._construction_state.platform_waiting_for_station = False
             return

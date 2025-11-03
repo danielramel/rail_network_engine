@@ -36,7 +36,7 @@ class GraphService:
         nodes, edges = self.get_segment(edge)
         if len(nodes) == 0 and len(edges) == 1:
             # Special case: single edge between two intersections
-            self._graph.remove_edge(*next(iter(edges)))
+            self._graph.remove_edge(next(iter(edges)))
             return
         
         for n in nodes:

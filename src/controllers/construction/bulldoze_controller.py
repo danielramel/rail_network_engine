@@ -22,10 +22,10 @@ class BulldozeController(BaseConstructionController):
             self._railway.signals.remove(target.position)
             return True
         elif target.kind == BulldozeTargetType.STATION:
-            self._railway.remove_station_at(target.position)
+            self._railway.stations.remove_station_at(target.position)
             return True
         elif target.kind == BulldozeTargetType.PLATFORM:
-            self._railway.remove_platform_at(target.edge)
+            self._railway.stations.remove_platform_at(target.edge)
             return True
         elif target.kind == BulldozeTargetType.SEGMENT:
             self._railway.graph_service.remove_segment_at(target.edge)

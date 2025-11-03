@@ -142,9 +142,7 @@ class ScheduleEditorDialog(QDialog):
 
             self.add_station_rows_from_schedule(schedule_to_edit.stops)
         else:
-            # Add two empty rows by default for new schedules
             self.add_empty_station_row()
-            # self.add_station_row()
                 
         self.update_first_last_station_cells()
             
@@ -357,4 +355,5 @@ class ScheduleEditorDialog(QDialog):
         time_widget = QTimeEdit()
         time_widget.setDisplayFormat("HH:mm")
         time_widget.setTime(time)
+        time_widget.timeChanged.connect(lambda t: print(t.toString("HH:mm")))
         return time_widget

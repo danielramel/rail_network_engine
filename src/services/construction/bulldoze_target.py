@@ -32,8 +32,8 @@ def find_bulldoze_target(railway: RailwaySystem, world_pos: Position, camera_sca
     if closest_edge is None:
         return BulldozeTarget(kind=BulldozeTargetType.NONE, position=world_pos)
 
-    if railway.platforms.is_edge_platform(closest_edge):
-        edges = railway.platforms.get_platform_from_edge(closest_edge) ## edges return None TODO
+    if railway.stations.is_edge_platform(closest_edge):
+        edges = railway.stations.get_platform_from_edge(closest_edge) ## edges return None TODO
         return BulldozeTarget(kind=BulldozeTargetType.PLATFORM, edge=closest_edge, edges=edges)
 
     nodes, edges = railway.graph_service.get_segment(closest_edge)
