@@ -4,7 +4,7 @@ from graphics.camera import Camera
 from models.railway_system import RailwaySystem
 from models.construction_state import ConstructionState
 import pygame
-from views.construction.signal import SignalView
+from views.construction.signal_view import SignalView
 
 class SignalController(BaseConstructionController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, camera: Camera, screen: pygame.Surface):
@@ -19,7 +19,7 @@ class SignalController(BaseConstructionController):
         target = find_signal_target(self._railway, self._camera.screen_to_world(event.screen_pos))
 
         if target.kind == SignalTargetType.TOGGLE:
-            self._railway.signals.toggle_direction(target.snapped)
+            self._railway.signals.toggle(target.pose)
 
         elif target.kind == SignalTargetType.ADD:
-            self._railway.signals.add(target.snapped)
+            self._railway.signals.add(target.pose)

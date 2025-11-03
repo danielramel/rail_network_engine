@@ -4,7 +4,7 @@ from graphics.camera import Camera
 from models.railway_system import RailwaySystem
 from models.construction_state import ConstructionState
 import pygame
-from views.construction.bulldoze import BulldozeView
+from views.construction.bulldoze_view import BulldozeView
 
 class BulldozeController(BaseConstructionController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, camera: Camera, screen: pygame.Surface):

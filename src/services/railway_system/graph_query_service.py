@@ -33,13 +33,16 @@ class GraphService:
     
     def edges_with_data(self, key) -> dict[Edge, dict]:
         return {Edge(*edge): data for *edge, data in self._graph.edges.data(key)}
+    
+    def neighbors(self, pos: Position) -> tuple[Position]:
+        return tuple(self._graph.neighbors(pos))
 
     
     def is_junction(self, pos: Position) -> bool:
         if self._graph.degree[pos] > 2: return True
         if self._graph.degree[pos] < 2: return False
-        
-        neighbors = tuple(self._graph.neighbors(pos))
+
+        neighbors = self.neighbors(pos)
         inbound = neighbors[0].direction_to(pos)
         outbound = pos.direction_to(neighbors[1])
         return outbound not in inbound.get_valid_turns()
@@ -50,7 +53,7 @@ class GraphService:
     
     def get_connections_from_pose(self, pose: Pose, only_straight: bool = False) -> tuple[Pose]:
         connections = []
-        for neighbor in self._graph.neighbors(pose.position):
+        for neighbor in self.neighbors(pose.position):
             direction = pose.position.direction_to(neighbor)
             if only_straight and direction != pose.direction:
                 continue

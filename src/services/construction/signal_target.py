@@ -6,15 +6,13 @@ from models.railway_system import RailwaySystem
 
 class SignalTargetType(Enum):
     INVALID = 0
-    DEAD_END = 1
     TOGGLE = 2
     ADD = 3
 
 @dataclass
 class SignalTarget:
     kind: SignalTargetType
-    snapped: Position
-    preview_pose: Optional[Pose] = None
+    pose: Pose
     offset: bool = False
 
 def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
@@ -23,39 +21,36 @@ def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
     if not railway.graph.has_node_at(snapped) or railway.graph.is_junction(snapped):
         return SignalTarget(
             kind=SignalTargetType.INVALID,
-            snapped=snapped,
-            preview_pose=Pose(position=snapped, direction=(-1, 0)),
+            pose=Pose(position=snapped, direction=(1, 0)),
             offset=True
         )
 
     if railway.signals.has_signal_at(snapped):
         if railway.graph.degree_at(snapped) == 1:
-            return SignalTarget(
-                kind=SignalTargetType.DEAD_END,
-                snapped=snapped,
-                preview_pose=Pose(position=snapped, direction=railway._graph.nodes[snapped]['signal'].direction),
-                offset=True
-            )
+                pose=Pose(position=snapped, direction=railway._graph.nodes[snapped]['signal'].direction),
 
         current_direction = railway._graph.nodes[snapped]['signal'].direction
-        neighbors = tuple(railway._graph.neighbors(snapped))
-        if snapped.direction_to(neighbors[0]) == current_direction:
-            new_dir = snapped.direction_to(neighbors[1])
-        else:
-            new_dir = snapped.direction_to(neighbors[0])
+        neighbors = railway.graph.neighbors(snapped)
+        direction = snapped.direction_to(neighbors[0])
+        if direction == current_direction and railway.graph.degree_at(snapped) == 2:
+            direction = snapped.direction_to(neighbors[1])
 
         return SignalTarget(
             kind=SignalTargetType.TOGGLE,
-            snapped=snapped,
-            preview_pose=Pose(position=snapped, direction=new_dir),
+            pose=Pose(snapped, direction),
             offset=True
         )
 
     # no signal at node -> preview toward first neighbor
-    neighbor = next(railway._graph.neighbors(snapped))
+    neighbors = sorted(railway.graph.neighbors(snapped), reverse=True)
+    
+    direction = snapped.direction_to(neighbors[0])
+    
+    if railway.graph.degree_at(snapped) == 1:
+        direction = direction.get_opposite()
+        
     return SignalTarget(
         kind=SignalTargetType.ADD,
-        snapped=snapped,
-        preview_pose=Pose(position=snapped, direction=snapped.direction_to(neighbor)),
+        pose=Pose(snapped, direction),
         offset=False
     )

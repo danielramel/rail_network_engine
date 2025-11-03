@@ -3,7 +3,7 @@ from controllers.construction.base_construction_controller import BaseConstructi
 from models.geometry.direction import Direction
 from services.construction.rail_target import find_rail_target, RailTargetType
 from models.geometry import Pose
-from views.construction.rail import RailView
+from views.construction.rail_view import RailView
 from graphics.camera import Camera
 from models.railway_system import RailwaySystem
 from models.construction_state import ConstructionState

@@ -5,7 +5,7 @@ from graphics.camera import Camera
 from models.railway_system import RailwaySystem
 from models.construction_state import ConstructionState
 import pygame
-from views.construction.station import StationView
+from views.construction.station_view import StationView
 
 class StationController(BaseConstructionController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, camera: Camera, screen: pygame.Surface):

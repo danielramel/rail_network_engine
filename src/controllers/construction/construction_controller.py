@@ -10,7 +10,7 @@ from .platform_controller import PlatformController
 from .signal_controller import SignalController
 from .station_controller import StationController
 from .bulldoze_controller import BulldozeController
-from views.construction.construction import ConstructionCommonView
+from views.construction.construction_view import ConstructionCommonView
 from .base_construction_controller import BaseConstructionController
 
 class ConstructionController(UIComponent):

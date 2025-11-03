@@ -16,21 +16,15 @@ class SignalService:
     def get(self, pos: Position) -> Signal:
         return self._graph.nodes[pos]['signal']
 
-    def add(self, pos: Position) -> None:
-        self._graph.nodes[pos]['signal'] = Signal(Pose(pos, pos.direction_to(next(self._graph.neighbors(pos)))))
+    def add(self, pose: Pose) -> None:
+        self._graph.nodes[pose.position]['signal'] = Signal(pose)
 
     def remove(self, pos: Position) -> None:
         del self._graph.nodes[pos]['signal']
 
-    def toggle_direction(self, pos: Position) -> None:
-        current_direction = self._graph.nodes[pos]['signal'].direction
-        neighbors = tuple(self._graph.neighbors(pos))
-        if len(neighbors) < 2: raise ValueError("Cannot toggle signal at dead end")
-
-        if pos.direction_to(neighbors[0]) == current_direction:
-            self._graph.nodes[pos]['signal'].direction = pos.direction_to(neighbors[1])
-        else:
-            self._graph.nodes[pos]['signal'].direction = pos.direction_to(neighbors[0])
+    def toggle(self, pose: Pose) -> None:
+        self.remove(pose.position)
+        self.add(pose)
 
     def all(self) -> tuple[Signal]:
         return tuple(data["signal"] for node, data in self._graph.nodes(data=True) if 'signal' in data)
@@ -61,17 +55,18 @@ class SignalService:
 
                 return tuple(reversed(path))
 
-            for neighbor_state, cost in current_pose.get_valid_neighbors():
-                if not self._graph.has_node(neighbor_state.position):
-                    continue     
+            for neighbor_pose, cost in current_pose.get_neighbors_in_direction():
+                if not self._graph.has_node(neighbor_pose.position):
+                    continue
+                
                 tentative_g_score = g_score[current_pose] + cost
 
-                if neighbor_state not in g_score or tentative_g_score < g_score[neighbor_state]:
-                    came_from[neighbor_state] = current_pose
-                    g_score[neighbor_state] = tentative_g_score
-                    f_score[neighbor_state] = tentative_g_score + neighbor_state.position.heuristic_to(end.position)
+                if neighbor_pose not in g_score or tentative_g_score < g_score[neighbor_pose]:
+                    came_from[neighbor_pose] = current_pose
+                    g_score[neighbor_pose] = tentative_g_score
+                    f_score[neighbor_pose] = tentative_g_score + neighbor_pose.position.heuristic_to(end.position)
 
-                    heapq.heappush(priority_queue, (f_score[neighbor_state], g_score[neighbor_state], neighbor_state))
+                    heapq.heappush(priority_queue, (f_score[neighbor_pose], g_score[neighbor_pose], neighbor_pose))
 
         return ()  # No path found
         

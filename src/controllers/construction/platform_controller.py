@@ -6,7 +6,7 @@ from graphics.camera import Camera
 from models.railway_system import RailwaySystem
 from models.construction_state import ConstructionState, EdgeAction
 import pygame
-from views.construction.platform import PlatformView, PlatformTargetType
+from views.construction.platform_view import PlatformView, PlatformTargetType
 
 class PlatformController(BaseConstructionController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, camera: Camera, screen: pygame.Surface):

@@ -48,7 +48,7 @@ def draw_triangle(surface: pygame.Surface, alignment: Pose, camera: Camera, colo
     pygame.draw.polygon(surf, BLACK, points)
     pygame.draw.polygon(surf, color, points, 2)
 
-    rotated_surf = pygame.transform.rotate(surf, get_rotation_angle(alignment.direction))
+    rotated_surf = pygame.transform.rotate(surf, 180+get_rotation_angle(alignment.direction))
 
     rect = rotated_surf.get_rect(center=(screen_x, screen_y))
     surface.blit(rotated_surf, rect)

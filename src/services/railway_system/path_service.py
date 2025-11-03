@@ -61,7 +61,7 @@ class PathService:
 
                 return tuple(reversed(path))
 
-            for neighbor_state, cost in current_pose.get_valid_neighbors():
+            for neighbor_state, cost in current_pose.get_neighbors_in_direction():
                 if self.is_blocked(neighbor_state.position):
                     continue
                 

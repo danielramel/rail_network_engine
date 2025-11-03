@@ -22,7 +22,7 @@ class TrainService:
                 if not signal.is_green:
                     return path, signal
                 
-            neighbors = list(self.railway._graph.neighbors(pos))
+            neighbors = self.railway.graph.neighbors(pos)
             if len(neighbors) == 1:
                 path.append(Edge(pos, neighbors[0]))
                 visited.add(pos)

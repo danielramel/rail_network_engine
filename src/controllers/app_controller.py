@@ -2,6 +2,7 @@ import pygame
 from config.colors import BLACK
 from config.settings import GRID_SIZE, TRAIN_LENGTH
 from controllers.construction.panel_strategy import ConstructionPanelStrategy
+from models.geometry.pose import Pose
 from models.railway_system import RailwaySystem
 from graphics.camera import Camera
 from models.app_state import AppState, ViewMode
@@ -127,7 +128,7 @@ class AppController:
         self.railway.stations.add(Position(720, 120), "Station D")
 
 
-        points = []
+        points: list[Position] = []
         for i in range(50):
             points.append(Position(80 + i * GRID_SIZE, 320))
             
@@ -135,9 +136,9 @@ class AppController:
             points.append(Position(2080 + i * GRID_SIZE, 320 + i * GRID_SIZE))
             
         self.railway.graph.add_segment(points, 120)
-        self.railway.signals.add(points[27])
-        self.railway.signals.add(points[37])
-        self.railway.signals.add(points[47])
+        self.railway.signals.add(Pose(points[27], direction=points[27].direction_to(points[28])))
+        self.railway.signals.add(Pose(points[37], direction=points[37].direction_to(points[38])))
+        self.railway.signals.add(Pose(points[47], direction=points[47].direction_to(points[48])))
 
         edges = [Edge(points[i+11], points[i + 12]) for i in range(TRAIN_LENGTH)]
         train = Train(-1, "Train 1", edges, self.railway)
