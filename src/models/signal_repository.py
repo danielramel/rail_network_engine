@@ -11,9 +11,9 @@ class SignalRepository:
         return self._graph.has_node_attr(pos, 'signal')
     
     def has_signal_with_pose_at(self, pose: Pose) -> bool:
-        if not self.has_signal_at(  pose.position):
+        if not self.has_signal_at(pose.position):
             return False
-        signal: Signal = self.get(pose.position)
+        signal = self.get(pose.position)
         return signal.direction == pose.direction
     
     def get(self, pos: Position) -> Signal:
