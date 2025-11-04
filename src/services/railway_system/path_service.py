@@ -12,9 +12,7 @@ class PathService:
         self._railway = railway
 
     def is_blocked(self, pos: Position) -> bool:
-        return (self._railway.graph.has_node_at(pos) and
-                (self._railway.signals.has_signal_at(pos) 
-                 or self._railway.stations.is_platform_at(pos))) or self._railway.stations.is_within_any(pos)
+        return self._railway.stations.is_within_any(pos)
 
     def is_cutting_through_platform(self, current_state: Pose, neighbor_state: Pose) -> bool:
         if neighbor_state.direction not in [(1, 1), (1, -1), (-1, 1), (-1, -1)]:
@@ -65,6 +63,17 @@ class PathService:
                 
                 if self.is_cutting_through_platform(current_pose, neighbor_state):
                     continue
+                
+                if self._railway.graph.has_node_at(neighbor_state.position) and self._railway.signals.has_signal_at(neighbor_state.position):
+                    signal = self._railway.signals.get(neighbor_state.position)
+                    if neighbor_state.direction not in (signal.direction , signal.direction.opposite()):
+                        continue
+
+                if not self._railway.graph.has_edge(Edge(current_pose.position, neighbor_state.position)) and \
+                   ((self._railway.graph.has_node_at(current_pose.position) and self._railway.stations.is_platform_at(current_pose.position)) or \
+                    (self._railway.graph.has_node_at(neighbor_state.position) and self._railway.stations.is_platform_at(neighbor_state.position))):
+                    continue
+                    
 
                 tentative_g_score = g_score[current_pose] + cost
 

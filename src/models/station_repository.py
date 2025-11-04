@@ -47,6 +47,8 @@ class StationRepository:
     def add_platform(self, station_id: str, edges: frozenset[Edge]) -> None:
         for edge in edges:
             self._graph.set_edge_attr(edge, 'station', station_id)
+            self._graph.set_node_attr(edge.a, 'station', station_id)
+            self._graph.set_node_attr(edge.b, 'station', station_id)
         self._stations[station_id].platforms.add(frozenset(edges))
     
     def remove_platform(self, edges: frozenset[Edge]) -> None:
@@ -57,10 +59,7 @@ class StationRepository:
         self._stations[station_id].platforms.remove(edges)
     
     def is_platform_at(self, pos: Position) -> bool:
-        edges = self._graph.get_edges(pos)
-        if len(edges) == 1:
-            return False
-        return all(self._graph.has_edge_attr(edge, 'station') for edge in edges)
+        return self._graph.has_node_attr(pos, 'station')
     
     def is_edge_platform(self, edge: Edge) -> bool:
         return self._graph.has_edge_attr(edge, 'station')

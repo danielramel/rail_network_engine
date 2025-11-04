@@ -48,7 +48,7 @@ def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
     direction = snapped.direction_to(neighbors[0])
     
     if railway.graph.degree_at(snapped) == 1:
-        direction = direction.get_opposite()
+        direction = direction.opposite()
         
     return SignalTarget(
         kind=SignalTargetType.ADD,

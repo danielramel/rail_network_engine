@@ -5,7 +5,7 @@ class Direction:
     x : int
     y : int
     
-    def get_opposite(self):
+    def opposite(self):
         return Direction(-self.x, -self.y)
     
     def get_cost(self) -> float:

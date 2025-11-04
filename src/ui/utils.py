@@ -291,7 +291,7 @@ def draw_train(surface: pygame.Surface, train: Train, camera: Camera):
 
     last_edge = occupied_edges[-1]
     back_pos = last_edge.move(last_edge.direction, train.edge_progress*GRID_SIZE).a
-    direction = last_edge.direction.get_opposite()
+    direction = last_edge.direction.opposite()
     draw_train_lights(surface, back_pos, direction, camera, color=RED)
     
     # draw current speed above the train front
