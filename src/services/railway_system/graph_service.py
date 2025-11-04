@@ -65,10 +65,10 @@ class GraphService:
         initial_track_speed = self._graph.get_edge_attr(edge, 'speed')
 
 
-        if not (is_a_junction or (end_on_signal and a_has_signal)):
+        if not (is_a_junction or (end_on_signal and a_has_signal and self._graph.degree_at(a) > 1)):
             stack.append(pose_to_a)
 
-        if not (is_b_junction or (end_on_signal and b_has_signal)):
+        if not (is_b_junction or (end_on_signal and b_has_signal and self._graph.degree_at(b) > 1)):
             stack.append(pose_to_b)
 
         while stack:
