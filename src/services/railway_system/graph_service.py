@@ -41,12 +41,12 @@ class GraphService:
         
         for n in nodes:
             self._graph.remove_node(n)
-            
-    def add_segment(self, points: list[Position], speed: int) -> None:
+
+    def add_segment(self, points: list[Position], speed: int, length: int) -> None:
         for p in points:
             self._graph.add_node(p)
         for a, b in zip(points[:-1], points[1:]):
-            self._graph.add_edge(a, b, speed=speed)
+            self._graph.add_edge(a, b, speed=speed, length=length)
             
     def get_platform_preview(self, edge: Edge) -> tuple[frozenset[Position], frozenset[Edge]]:
         return self.get_segment(edge, only_platforms=True, only_straight=True, max_nr=5)

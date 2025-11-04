@@ -4,12 +4,17 @@ from models.construction_state import ConstructionState
 from ui.construction.panels.base_construction_panel import BaseConstructionPanel
     
 class RailPanel(BaseConstructionPanel):
-    """Rail construction panel with +/- controls for track speed."""
+    """Rail construction panel with +/- controls for track speed and length."""
     
     # Speed configuration constants
     MIN_SPEED = 10
     MAX_SPEED = 200
     SPEED_INCREMENT = 10
+    
+    # Length configuration constants
+    MIN_LENGTH = 50
+    MAX_LENGTH = 500
+    LENGTH_INCREMENT = 25
     
     def __init__(self, surface: pygame.Surface, state: ConstructionState) -> None:
         super().__init__(surface, state)
@@ -18,7 +23,8 @@ class RailPanel(BaseConstructionPanel):
         
         # Pre-render static text
         self.title_surface = self.title_font.render("Rail Construction", True, YELLOW)
-        self.label_surface = self.instruction_font.render("Track speed:", True, WHITE)
+        self.speed_label_surface = self.instruction_font.render("Track speed:", True, WHITE)
+        self.length_label_surface = self.instruction_font.render("Track length:", True, WHITE)
         self.minus_text = self.instruction_font.render("-", True, WHITE)
         self.plus_text = self.instruction_font.render("+", True, WHITE)
         
@@ -34,6 +40,16 @@ class RailPanel(BaseConstructionPanel):
     def can_increase_speed(self) -> bool:
         """Check if speed can be increased."""
         return self._construction_state.track_speed < self.MAX_SPEED
+    
+    @property
+    def can_decrease_length(self) -> bool:
+        """Check if length can be decreased."""
+        return self._construction_state.track_length > self.MIN_LENGTH
+    
+    @property
+    def can_increase_length(self) -> bool:
+        """Check if length can be increased."""
+        return self._construction_state.track_length < self.MAX_LENGTH
        
     def _init_layout(self) -> None:
         """Compute and persist all rects for layout."""
@@ -43,22 +59,39 @@ class RailPanel(BaseConstructionPanel):
             top=self._rect.top + self.padding
         )
         
-        # Label position
-        self.label_rect = self.label_surface.get_rect(
+        # Speed label position
+        self.speed_label_rect = self.speed_label_surface.get_rect(
             left=self._rect.left + self.padding,
             top=self.title_rect.bottom + 20
         )
         
-        # Button positions
-        button_y = self.label_rect.top - 4
-        minus_x = self.label_rect.right + 20
-        plus_x = minus_x + self.button_size + 120
+        # Speed button positions
+        speed_button_y = self.speed_label_rect.top - 4
+        speed_minus_x = self.speed_label_rect.right + 20
+        speed_plus_x = speed_minus_x + self.button_size + 120
         
-        self.minus_rect = pygame.Rect(minus_x, button_y, self.button_size, self.button_size)
-        self.plus_rect = pygame.Rect(plus_x, button_y, self.button_size, self.button_size)
+        self.speed_minus_rect = pygame.Rect(speed_minus_x, speed_button_y, self.button_size, self.button_size)
+        self.speed_plus_rect = pygame.Rect(speed_plus_x, speed_button_y, self.button_size, self.button_size)
         
         # Speed value position (center between buttons)
-        self.speed_center = (self.minus_rect.right + 60, self.minus_rect.centery)
+        self.speed_center = (self.speed_minus_rect.right + 60, self.speed_minus_rect.centery)
+        
+        # Length label position
+        self.length_label_rect = self.length_label_surface.get_rect(
+            left=self._rect.left + self.padding,
+            top=self.speed_label_rect.bottom + 30
+        )
+        
+        # Length button positions
+        length_button_y = self.length_label_rect.top - 4
+        length_minus_x = self.length_label_rect.right + 20
+        length_plus_x = length_minus_x + self.button_size + 120
+        
+        self.length_minus_rect = pygame.Rect(length_minus_x, length_button_y, self.button_size, self.button_size)
+        self.length_plus_rect = pygame.Rect(length_plus_x, length_button_y, self.button_size, self.button_size)
+        
+        # Length value position (center between buttons)
+        self.length_center = (self.length_minus_rect.right + 60, self.length_minus_rect.centery)
     
     def _render_button(self, rect: pygame.Rect, text_surface: pygame.Surface, enabled: bool) -> None:
         """Render a button with consistent styling."""
@@ -74,6 +107,14 @@ class RailPanel(BaseConstructionPanel):
             self.MIN_SPEED, 
             min(self.MAX_SPEED, self._construction_state.track_speed)
         )
+    
+    def _adjust_length(self, delta: int) -> None:
+        """Adjust track length by delta, clamping to valid range."""
+        self._construction_state.track_length += delta
+        self._construction_state.track_length = max(
+            self.MIN_LENGTH, 
+            min(self.MAX_LENGTH, self._construction_state.track_length)
+        )
        
     def render(self, screen_pos) -> None:
         """Minimal render method - just blit pre-computed surfaces."""
@@ -82,29 +123,51 @@ class RailPanel(BaseConstructionPanel):
         # Title
         self._surface.blit(self.title_surface, self.title_rect)
         
-        # Label
-        self._surface.blit(self.label_surface, self.label_rect)
+        # Speed label
+        self._surface.blit(self.speed_label_surface, self.speed_label_rect)
         
-        # Buttons
-        self._render_button(self.minus_rect, self.minus_text, self.can_decrease_speed)
-        self._render_button(self.plus_rect, self.plus_text, self.can_increase_speed)
+        # Speed buttons
+        self._render_button(self.speed_minus_rect, self.minus_text, self.can_decrease_speed)
+        self._render_button(self.speed_plus_rect, self.plus_text, self.can_increase_speed)
         
-        # Speed value (only dynamic part)
+        # Speed value
         speed_val = f"{self._construction_state.track_speed} km/h"
         speed_surface = self.instruction_font.render(speed_val, True, YELLOW)
         self._surface.blit(speed_surface, speed_surface.get_rect(center=self.speed_center))
+        
+        # Length label
+        self._surface.blit(self.length_label_surface, self.length_label_rect)
+        
+        # Length buttons
+        self._render_button(self.length_minus_rect, self.minus_text, self.can_decrease_length)
+        self._render_button(self.length_plus_rect, self.plus_text, self.can_increase_length)
+        
+        # Length value
+        length_val = f"{self._construction_state.track_length} m"
+        length_surface = self.instruction_font.render(length_val, True, YELLOW)
+        self._surface.blit(length_surface, length_surface.get_rect(center=self.length_center))
 
     def process_event(self, event: pygame.event.Event) -> bool:
         """Handle +/- clicks; return True if the event was consumed."""     
         if event.type != pygame.MOUSEBUTTONUP or event.button != 1:
             return self._rect.collidepoint(*event.screen_pos)
         
-        if self.minus_rect.collidepoint(*event.screen_pos) and self.can_decrease_speed:
+        # Speed controls
+        if self.speed_minus_rect.collidepoint(*event.screen_pos) and self.can_decrease_speed:
             self._adjust_speed(-self.SPEED_INCREMENT)
             return True
         
-        if self.plus_rect.collidepoint(*event.screen_pos) and self.can_increase_speed:
+        if self.speed_plus_rect.collidepoint(*event.screen_pos) and self.can_increase_speed:
             self._adjust_speed(self.SPEED_INCREMENT)
+            return True
+        
+        # Length controls
+        if self.length_minus_rect.collidepoint(*event.screen_pos) and self.can_decrease_length:
+            self._adjust_length(-self.LENGTH_INCREMENT)
+            return True
+        
+        if self.length_plus_rect.collidepoint(*event.screen_pos) and self.can_increase_length:
+            self._adjust_length(self.LENGTH_INCREMENT)
             return True
         
         return self._rect.collidepoint(*event.screen_pos)

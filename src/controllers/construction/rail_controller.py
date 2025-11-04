@@ -32,7 +32,7 @@ class RailController(BaseConstructionController):
 
 
         elif target.kind == RailTargetType.PATH:
-            self._railway.graph_service.add_segment(target.found_path, self._construction_state.track_speed)
+            self._railway.graph_service.add_segment(target.found_path, self._construction_state.track_speed, self._construction_state.track_length)
             self._construction_state.construction_anchor = Pose(
                 target.snapped,
                 target.found_path[-2].direction_to(target.snapped)

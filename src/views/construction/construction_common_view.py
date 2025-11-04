@@ -1,20 +1,22 @@
 from models.construction_state import EdgeAction
 from models.geometry.position import Position
 from views.construction.base_construction_view import BaseConstructionView
-from ui.utils import draw_grid, draw_edge, draw_node, draw_signal, draw_station, draw_dotted_line
+from ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station, draw_dotted_line
 from config.colors import RED, PURPLE
 
 class ConstructionCommonView(BaseConstructionView):
     def render(self, screen_pos: Position | None) -> None:
         draw_grid(self._surface, self._camera)
 
-        for edge, speed in self._railway.graph.all_edges_with_attr('speed'):
+        for edge, data in self._railway.graph.all_edges_with_data():
+            speed = data.get('speed')
+            length = data.get('length')
             if edge in self._state.preview.edges:
-                draw_edge(self._surface, edge, self._camera, self._state.preview.edge_action, speed=speed)
+                draw_track(self._surface, edge, self._camera, self._state.preview.edge_action, speed=speed, length=length)
             elif self._railway.stations.is_edge_platform(edge):
-                draw_edge(self._surface, edge, self._camera, EdgeAction.PLATFORM)
+                draw_track(self._surface, edge, self._camera, EdgeAction.PLATFORM, length=length)
             else:
-                draw_edge(self._surface, edge, self._camera, EdgeAction.SPEED, speed=speed)
+                draw_track(self._surface, edge, self._camera, EdgeAction.SPEED, speed=speed, length=length)
 
         for node in self._railway.graph_service.junctions:
             draw_node(self._surface, node, self._camera)

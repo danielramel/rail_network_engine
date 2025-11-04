@@ -83,7 +83,7 @@ def draw_station(surface: pygame.Surface, station: Station, camera: Camera, colo
     text_rect = text_surface.get_rect(center=rect.center)
     surface.blit(text_surface, text_rect)
 
-def draw_dotted_line(surface: pygame.Surface, start_pos: Position, end_pos: Position, camera: Camera, color):
+def draw_dotted_line(surface: pygame.Surface, start_pos: Position, end_pos: Position, camera: Camera, color, num_dots: int = None):
     """Draw a dotted line on the surface from start_pos to end_pos."""
     start_pos = camera.world_to_screen(start_pos)
     end_pos = camera.world_to_screen(end_pos)
@@ -92,47 +92,73 @@ def draw_dotted_line(surface: pygame.Surface, start_pos: Position, end_pos: Posi
     x2, y2 = end_pos
     dx = x2 - x1
     dy = y2 - y1
+    
     distance = start_pos.distance_to(end_pos)
-    dot_spacing = 4
-    dot_count = math.ceil(distance / dot_spacing)
-    for i in range(dot_count):
+    if num_dots is None:
+        num_dots = max(1, int(distance // 10))  # default: one dot every 10 pixels
+    dot_spacing = distance / num_dots
+    for i in range(num_dots):
         dot_x = x1 + (dx * (i * dot_spacing) / distance)
         dot_y = y1 + (dy * (i * dot_spacing) / distance)
         pygame.draw.circle(surface, color, (int(dot_x), int(dot_y)), 1)
+        
+def draw_dashed_line(surface: pygame.Surface, start_pos: Position, end_pos: Position, camera: Camera, color, num_dashes: int = 10):
+    """Draw a dashed line on the surface from start_pos to end_pos."""
+    start_pos = camera.world_to_screen(start_pos)
+    end_pos = camera.world_to_screen(end_pos)
 
-def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type: EdgeAction, speed=None):
+    x1, y1 = start_pos
+    x2, y2 = end_pos
+    dx = x2 - x1
+    dy = y2 - y1
+    
+    distance = start_pos.distance_to(end_pos)
+    dash_length = distance / (num_dashes * 2)
+    
+    for i in range(num_dashes):
+        dash_start_x = x1 + (dx * (i * 2 * dash_length) / distance)
+        dash_start_y = y1 + (dy * (i * 2 * dash_length) / distance)
+        dash_end_x = x1 + (dx * ((i * 2 + 1) * dash_length) / distance)
+        dash_end_y = y1 + (dy * ((i * 2 + 1) * dash_length) / distance)
+        pygame.draw.line(surface, color, (int(dash_start_x), int(dash_start_y)), (int(dash_end_x), int(dash_end_y)), 2)
+
+
+def draw_track(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type: EdgeAction, length: int, speed: int = None):
     # Line width scales with camera zoom; ensure at least 1 pixel
     width = max(1, int(round(3 * camera.scale)))
-
     start, end = camera.world_to_screen_from_edge(edge)
-
+    
+    # Calculate number of dots based on length (one dot per 25 meters)
+    num_dots = max(1, length // 25)
+    
     if edge_type in (EdgeAction.BULLDOZE, EdgeAction.INVALID_PLATFORM):
-        pygame.draw.line(surface, RED, start, end, width=width)
-
+        draw_edge(surface, edge, camera, color=RED, length=length)
     elif edge_type == EdgeAction.PLATFORM_SELECTED:
         draw_platform(surface, edge, camera, color=LIGHTBLUE)
-
     elif edge_type == EdgeAction.PLATFORM:
         draw_platform(surface, edge, camera, color=PURPLE)
-
     elif edge_type == EdgeAction.LOCKED_PLATFORM:
-        pygame.draw.line(surface, PURPLE, start, end, width=width)
+        draw_edge(surface, edge, camera, color=PURPLE, length=length)
         draw_platform(surface, edge, camera, color=LIME)
-
     elif edge_type == EdgeAction.LOCKED_PREVIEW:
-        pygame.draw.line(surface, GREEN, start, end, width=width)
-
+        draw_edge(surface, edge, camera, color=GREEN, length=length)
     elif edge_type == EdgeAction.LOCKED:
-        pygame.draw.line(surface, LIME, start, end, width=width)
-
+        draw_edge(surface, edge, camera, color=LIME, length=length)
     elif edge_type == EdgeAction.NORMAL:
-        draw_dotted_line(surface, edge.a, edge.b, camera, color=WHITE)
-    
+        draw_edge(surface, edge, camera, color=WHITE, length=length)
     elif edge_type == EdgeAction.SPEED:
         if speed is None:
             raise ValueError("Speed must be provided for SPEED edge type")
         color = color_from_speed(speed)
-        pygame.draw.line(surface, color, start, end, width=width)
+        draw_edge(surface, edge, camera, color=color, length=length)
+
+def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, color: tuple[int, int, int], length: int):
+    """Draw a track as a dotted line on the surface from edge.a to edge.b."""
+    num_dots = max(1, length // 25)
+    if num_dots < 5:
+        draw_dashed_line(surface, edge.a, edge.b, camera, color=color, num_dashes=num_dots)
+    else:
+        draw_dotted_line(surface, edge.a, edge.b, camera, color=color, num_dots=num_dots)
 
 def draw_grid(surface, camera):
     """Draw grid lines with camera transform"""
@@ -192,16 +218,6 @@ def draw_platform(surface: pygame.Surface, edge: Edge, camera: Camera, color=PUR
         
         
 def color_from_speed(speed: int) -> tuple[int, int, int]:
-    """
-    Map a speed value (0–200) to a visible RGB color.
-
-    The gradient goes:
-        Purple → Blue → Cyan → Green → Yellow → Red
-    for maximum visual distinction.
-
-    Returns:
-        (R, G, B)
-    """
     # Clamp to valid range
     speed = max(0, min(speed, 200))
 
@@ -227,6 +243,8 @@ def color_from_speed(speed: int) -> tuple[int, int, int]:
 
     return gradient[-1][1]  # fallback
 
+
+"""
 def draw_train_car(surface: pygame.Surface, edge: Edge, camera: Camera):
     a, b = edge
     ax, ay = camera.world_to_screen(a)
@@ -312,3 +330,4 @@ def draw_train(surface: pygame.Surface, train: Train, camera: Camera):
 
     surface.blit(text_bg, bg_rect)
     surface.blit(text_fg, fg_rect)
+"""

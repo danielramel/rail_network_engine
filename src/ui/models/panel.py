@@ -16,7 +16,7 @@ class Panel(RectangleUIComponent):
         """Calculate and return the rectangle for the panel."""
         # Panel dimensions
         panel_width = 400
-        panel_height = 120
+        panel_height = 160
         
         # Position in middle bottom
         screen_width, screen_height = self._surface.get_size()

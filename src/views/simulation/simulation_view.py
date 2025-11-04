@@ -4,7 +4,7 @@ from models.geometry.position import Position
 from models.railway_system import RailwaySystem
 from models.simulation_state import SimulationState
 from ui.models.ui_component import UIComponent
-from ui.utils import draw_train, draw_edge, draw_node, draw_signal, draw_station
+from ui.utils import draw_track, draw_node, draw_signal, draw_station
 from graphics.graphics_context import GraphicsContext
 
 class SimulationView(UIComponent):
@@ -17,8 +17,8 @@ class SimulationView(UIComponent):
     def render(self, world_pos: Position | None) -> None:
         # draw_grid(self._surface, self._camera)
         self.set_preview(world_pos)
-        
-        for edge in self._railway.graph.edges:
+
+        for edge, data in self._railway.graph.all_edges_with_data():
             edge_action = EdgeAction.NORMAL
             if edge in self._state.preview.path:
                 edge_action = EdgeAction.LOCKED_PREVIEW
@@ -28,7 +28,7 @@ class SimulationView(UIComponent):
                 edge_action = EdgeAction.LOCKED
             elif self._railway.stations.is_edge_platform(edge):
                 edge_action = EdgeAction.PLATFORM
-            draw_edge(self._surface, edge, self._camera, edge_action)
+            draw_track(self._surface, edge, self._camera, edge_action, data["length"])
 
         for node in self._railway.graph_service.junctions:
             color = GREEN if self._railway.signalling.is_node_locked(node) else WHITE
@@ -47,8 +47,8 @@ class SimulationView(UIComponent):
         for station in self._railway.stations.all():
             draw_station(self._surface, station, self._camera)
 
-        for train in self._railway.trains.all():
-            draw_train(self._surface, train, self._camera)
+        # for train in self._railway.trains.all():
+        #     draw_train(self._surface, train, self._camera)
 
         if self._state.preview.signal is None and world_pos is not None:
             draw_node(self._surface, world_pos, self._camera, color=WHITE)

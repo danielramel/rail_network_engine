@@ -57,8 +57,8 @@ class GraphAdapter:
     def remove_edge_attr(self, edge: Edge, key: str) -> None:
         del self._graph.edges[edge][key]
 
-    def all_edges_with_attr(self, key: str) -> list[tuple[Edge, object]]:
-        return [(Edge(a, b), data[key]) for a, b, data in self._graph.edges(data=True) if key in data]
+    def all_edges_with_data(self) -> list[tuple[Edge, dict]]:
+        return [(Edge(a, b), data) for a, b, data in self._graph.edges(data=True)]
 
     def neighbors(self, pos: Position) -> tuple[Position]:
         return tuple(self._graph.neighbors(pos))
@@ -66,10 +66,10 @@ class GraphAdapter:
     def get_dead_end_poses(self) -> list[Pose]:
         nodes = [node for node, degree in self._graph.degree() if degree == 1]
         return [Pose(node, next(iter(self._graph.neighbors(node))).direction_to(node)) for node in nodes]
-    
-        
-    def add_edge(self, a: Position, b: Position, speed: int) -> None:
-        self._graph.add_edge(a, b, speed=speed)
+
+
+    def add_edge(self, a: Position, b: Position, speed: int, length: int) -> None:
+        self._graph.add_edge(a, b, speed=speed, length=length)
 
     def remove_edge(self, edge: Edge) -> None:
         self._graph.remove_edge(edge.a, edge.b)
@@ -92,7 +92,7 @@ class GraphAdapter:
             edge["source"] = edge["source"].to_dict()
             edge["target"] = edge["target"].to_dict()
             for key in list(edge.keys()):
-                if key not in ("source", "target", "speed"):
+                if key not in ("source", "target", "speed", "length"):
                     del edge[key]
         
         return graph_data
