@@ -35,6 +35,9 @@ class GraphService:
     def remove_segment(self, nodes: list[Position], edges: list[Edge]) -> None:
         for n in nodes:
             self._graph.remove_node(n)
+            
+        for e in edges:
+            self._graph.remove_edge(e)
 
     def add_segment(self, points: list[Position], speed: int, length: int) -> None:
         for p in points:
@@ -42,15 +45,13 @@ class GraphService:
         for a, b in zip(points[:-1], points[1:]):
             self._graph.add_edge(a, b, speed=speed, length=length)
 
-    def get_segment(self, edge: Edge, end_on_signal: bool = False, only_platforms: bool = False, only_straight: bool = False, max_nr: Optional[int] = None
-    ) -> tuple[frozenset[Position], frozenset[Edge]]:
+    def get_segment(self, edge: Edge, end_on_signal: bool = False, max_nr: Optional[int] = None) -> tuple[frozenset[Position], frozenset[Edge]]:
         
         edges: set[Edge] = set()
         nodes: set[Position] = set()
         stack: deque[Pose] = deque()
 
         a, b = edge
-        if max_nr is not None and not only_straight: raise ValueError("max_nr can only be used with only_straight=True")
         
         edges.add(edge)
         
@@ -73,20 +74,13 @@ class GraphService:
 
         while stack:
             pose = stack.popleft()
-            connections = self.get_connections_from_pose(pose, only_straight=only_straight)
+            connections = self.get_connections_from_pose(pose, only_straight=max_nr is not None)
             
             nodes.add(pose.position)
 
             for neighbor, direction in connections:
                 edge = Edge(pose.position, neighbor)
 
-                if self._graph.has_edge_attr(edge, 'station') and not only_platforms:
-                    nodes.remove(pose.position) # ezt nézd át, miért csak itt van
-                    continue
-
-                if only_platforms and not self._graph.has_edge_attr(edge, 'station'):
-                    continue
-                
                 if not max_nr and self._graph.get_edge_attr(edge, 'length') != initial_track_length:
                     continue
 
@@ -95,7 +89,7 @@ class GraphService:
                 
                 edges.add(edge)
 
-                if max_nr is not None and only_straight and edge.length * len(edges) >= max_nr * GRID_SIZE:
+                if max_nr is not None and edge.length * len(edges) >= max_nr * GRID_SIZE:
                     return frozenset(nodes), frozenset(edges)
                 
                 # skip conditions
@@ -114,7 +108,7 @@ class GraphService:
     
     
     def calculate_platform_preview(self, edge: Edge) -> tuple[bool, frozenset[Edge]]:
-        _, edges = self.get_segment(edge, only_straight=True, max_nr=PLATFORM_LENGTH)
+        _, edges = self.get_segment(edge, max_nr=PLATFORM_LENGTH)
         for edge in edges:
             # TODO check for platform corner cutting
             pass
