@@ -4,7 +4,7 @@ from models.construction_state import ConstructionState
 from ui.construction.panels.base_construction_panel import BaseConstructionPanel
     
 class RailPanel(BaseConstructionPanel):
-    """Rail construction panel with +/- controls for track speed and length."""
+    """Rail construction panel with +/- controls for track speed and toggle for track length."""
     
     # Speed configuration constants
     MIN_SPEED = 10
@@ -12,9 +12,8 @@ class RailPanel(BaseConstructionPanel):
     SPEED_INCREMENT = 10
     
     # Length configuration constants
-    MIN_LENGTH = 50
-    MAX_LENGTH = 500
-    LENGTH_INCREMENT = 25
+    SHORT_LENGTH = 50
+    LONG_LENGTH = 500
     
     def __init__(self, surface: pygame.Surface, state: ConstructionState) -> None:
         super().__init__(surface, state)
@@ -40,16 +39,6 @@ class RailPanel(BaseConstructionPanel):
     def can_increase_speed(self) -> bool:
         """Check if speed can be increased."""
         return self._construction_state.track_speed < self.MAX_SPEED
-    
-    @property
-    def can_decrease_length(self) -> bool:
-        """Check if length can be decreased."""
-        return self._construction_state.track_length > self.MIN_LENGTH
-    
-    @property
-    def can_increase_length(self) -> bool:
-        """Check if length can be increased."""
-        return self._construction_state.track_length < self.MAX_LENGTH
        
     def _init_layout(self) -> None:
         """Compute and persist all rects for layout."""
@@ -82,16 +71,19 @@ class RailPanel(BaseConstructionPanel):
             top=self.speed_label_rect.bottom + 30
         )
         
-        # Length button positions
-        length_button_y = self.length_label_rect.top - 4
-        length_minus_x = self.length_label_rect.right + 20
-        length_plus_x = length_minus_x + self.button_size + 120
+        # Length toggle buttons (50m and 500m)
+        toggle_button_y = self.length_label_rect.top - 4
+        toggle_start_x = self.length_label_rect.right + 20
+        toggle_width = 80
+        toggle_spacing = 10
         
-        self.length_minus_rect = pygame.Rect(length_minus_x, length_button_y, self.button_size, self.button_size)
-        self.length_plus_rect = pygame.Rect(length_plus_x, length_button_y, self.button_size, self.button_size)
-        
-        # Length value position (center between buttons)
-        self.length_center = (self.length_minus_rect.right + 60, self.length_minus_rect.centery)
+        self.length_short_rect = pygame.Rect(toggle_start_x, toggle_button_y, toggle_width, self.button_size)
+        self.length_long_rect = pygame.Rect(
+            toggle_start_x + toggle_width + toggle_spacing, 
+            toggle_button_y, 
+            toggle_width, 
+            self.button_size
+        )
     
     def _render_button(self, rect: pygame.Rect, text_surface: pygame.Surface, enabled: bool) -> None:
         """Render a button with consistent styling."""
@@ -100,20 +92,24 @@ class RailPanel(BaseConstructionPanel):
             pygame.draw.rect(self._surface, WHITE, rect, width=2, border_radius=6)
             self._surface.blit(text_surface, text_surface.get_rect(center=rect.center))
     
+    def _render_toggle_button(self, rect: pygame.Rect, text: str, is_selected: bool) -> None:
+        """Render a toggle button with selected/unselected states."""
+        if is_selected:
+            pygame.draw.rect(self._surface, WHITE, rect, border_radius=6)
+            text_surface = self.instruction_font.render(text, True, BLACK)
+        else:
+            pygame.draw.rect(self._surface, BLACK, rect, border_radius=6)
+            pygame.draw.rect(self._surface, WHITE, rect, width=2, border_radius=6)
+            text_surface = self.instruction_font.render(text, True, WHITE)
+        
+        self._surface.blit(text_surface, text_surface.get_rect(center=rect.center))
+    
     def _adjust_speed(self, delta: int) -> None:
         """Adjust track speed by delta, clamping to valid range."""
         self._construction_state.track_speed += delta
         self._construction_state.track_speed = max(
             self.MIN_SPEED, 
             min(self.MAX_SPEED, self._construction_state.track_speed)
-        )
-    
-    def _adjust_length(self, delta: int) -> None:
-        """Adjust track length by delta, clamping to valid range."""
-        self._construction_state.track_length += delta
-        self._construction_state.track_length = max(
-            self.MIN_LENGTH, 
-            min(self.MAX_LENGTH, self._construction_state.track_length)
         )
        
     def render(self, screen_pos) -> None:
@@ -138,17 +134,13 @@ class RailPanel(BaseConstructionPanel):
         # Length label
         self._surface.blit(self.length_label_surface, self.length_label_rect)
         
-        # Length buttons
-        self._render_button(self.length_minus_rect, self.minus_text, self.can_decrease_length)
-        self._render_button(self.length_plus_rect, self.plus_text, self.can_increase_length)
-        
-        # Length value
-        length_val = f"{self._construction_state.track_length} m"
-        length_surface = self.instruction_font.render(length_val, True, YELLOW)
-        self._surface.blit(length_surface, length_surface.get_rect(center=self.length_center))
+        # Length toggle buttons
+        is_short = self._construction_state.track_length == self.SHORT_LENGTH
+        self._render_toggle_button(self.length_short_rect, "50 m", is_short)
+        self._render_toggle_button(self.length_long_rect, "500 m", not is_short)
 
     def process_event(self, event: pygame.event.Event) -> bool:
-        """Handle +/- clicks; return True if the event was consumed."""     
+        """Handle +/- clicks and length toggle; return True if the event was consumed."""     
         if event.type != pygame.MOUSEBUTTONUP or event.button != 1:
             return self._rect.collidepoint(*event.screen_pos)
         
@@ -161,13 +153,13 @@ class RailPanel(BaseConstructionPanel):
             self._adjust_speed(self.SPEED_INCREMENT)
             return True
         
-        # Length controls
-        if self.length_minus_rect.collidepoint(*event.screen_pos) and self.can_decrease_length:
-            self._adjust_length(-self.LENGTH_INCREMENT)
+        # Length toggle
+        if self.length_short_rect.collidepoint(*event.screen_pos):
+            self._construction_state.track_length = self.SHORT_LENGTH
             return True
         
-        if self.length_plus_rect.collidepoint(*event.screen_pos) and self.can_increase_length:
-            self._adjust_length(self.LENGTH_INCREMENT)
+        if self.length_long_rect.collidepoint(*event.screen_pos):
+            self._construction_state.track_length = self.LONG_LENGTH
             return True
         
         return self._rect.collidepoint(*event.screen_pos)

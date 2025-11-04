@@ -31,14 +31,8 @@ class GraphService:
             if direction in pose.direction.get_valid_turns():
                 connections.append(Pose(neighbor, direction))
         return tuple(connections)
-    
-    def remove_segment_at(self, edge: Edge) -> None:
-        nodes, edges = self.get_segment(edge)
-        if len(nodes) == 0 and len(edges) == 1:
-            # Special case: single edge between two intersections
-            self._graph.remove_edge(next(iter(edges)))
-            return
-        
+
+    def remove_segment(self, nodes: list[Position], edges: list[Edge]) -> None:
         for n in nodes:
             self._graph.remove_node(n)
 
@@ -47,9 +41,6 @@ class GraphService:
             self._graph.add_node(p)
         for a, b in zip(points[:-1], points[1:]):
             self._graph.add_edge(a, b, speed=speed, length=length)
-            
-    def get_platform_preview(self, edge: Edge) -> tuple[frozenset[Position], frozenset[Edge]]:
-        return self.get_segment(edge, only_platforms=True, only_straight=True, max_nr=5)
 
     def get_segment(self, edge: Edge, end_on_signal: bool = False, only_platforms: bool = False, only_straight: bool = False, max_nr: Optional[int] = None
     ) -> tuple[frozenset[Position], frozenset[Edge]]:
@@ -69,6 +60,9 @@ class GraphService:
         is_b_junction = self.is_junction(b)
         pose_to_a = Pose.from_positions(b, a)
         pose_to_b = Pose.from_positions(a, b)
+        
+        initial_track_length = self._graph.get_edge_attr(edge, 'length')
+        initial_track_speed = self._graph.get_edge_attr(edge, 'speed')
 
 
         if not (is_a_junction or (end_on_signal and a_has_signal)):
@@ -93,6 +87,12 @@ class GraphService:
                 if only_platforms and not self._graph.has_edge_attr(edge, 'station'):
                     continue
                 
+                if not max_nr and self._graph.get_edge_attr(edge, 'length') != initial_track_length:
+                    continue
+
+                if not max_nr and self._graph.get_edge_attr(edge, 'speed') != initial_track_speed:
+                    continue
+                
                 edges.add(edge)
 
                 if max_nr is not None and only_straight and edge.length * len(edges) >= max_nr * GRID_SIZE:
@@ -105,7 +105,7 @@ class GraphService:
                 if self.is_junction(neighbor):
                     continue
 
-                if end_on_signal and self._graph.has_node_attr(neighbor, 'signal'):
+                if end_on_signal and self._graph.has_node_attr(neighbor, 'signal') and self._graph.degree_at(neighbor) > 1:
                     continue
                 
                 stack.append(Pose(neighbor, direction))

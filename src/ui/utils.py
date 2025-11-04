@@ -158,12 +158,14 @@ def draw_track(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type: E
 
 def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, color: tuple[int, int, int], length: int) -> None:
     """Draw a track as a dotted line on the surface from edge.a to edge.b."""
-    draw_dashed_line_simple(surface, edge.a, edge.b, camera, color=color, dash_length=length//(25/2))
+    # draw_dashed_line_simple(surface, edge.a, edge.b, camera, color=color, dash_length=length//(25/2))
     # num_dots = round(max(1, length // 25))
     # if num_dots < 5:
     #     draw_dashed_line(surface, edge.a, edge.b, camera, color=color, num_dashes=num_dots)
     # else:
     #     draw_dotted_line(surface, edge.a, edge.b, camera, color=color, num_dots=num_dots)
+
+    pygame.draw.aaline(surface, color, tuple(camera.world_to_screen(edge.a)), tuple(camera.world_to_screen(edge.b)), max(1, 2*int(camera.scale)))
 
 def draw_platform(surface: pygame.Surface, edge: Edge, camera: Camera, length: int, color=PURPLE):
     a, b = camera.world_to_screen(edge)
