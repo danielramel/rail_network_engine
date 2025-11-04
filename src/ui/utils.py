@@ -2,6 +2,7 @@ import pygame
 from config.colors import GREEN, LIME, PURPLE, LIGHTBLUE, RED, WHITE, BLACK, YELLOW
 
 from config.settings import GRID_SIZE, STATION_RECT_SIZE
+from graphics import camera
 from graphics.camera import Camera
 from models.construction_state import EdgeAction
 from models.geometry import Position, Pose
@@ -115,7 +116,26 @@ def draw_dashed_line(surface: pygame.Surface, world_a: Position, world_b: Positi
         dash_end_y = a_y + (dy * ((i * 2 + 1) * dash_length) / distance)
         pygame.draw.line(surface, color, (int(dash_start_x), int(dash_start_y)), (int(dash_end_x), int(dash_end_y)), 2)
 
+def draw_dashed_line_simple(surface: pygame.Surface, world_a: Position, world_b: Position, camera:Camera,color, dash_length: int = 10):
+    """Draw a dashed line on the surface from start_pos to end_pos."""
+    a = camera.world_to_screen(world_a)
+    b = camera.world_to_screen(world_b)
+    (a_x, a_y), (b_x, b_y) = a, b
+    dx = b_x - a_x
+    dy = b_y - a_y
 
+    distance = a.distance_to(b)
+    num_dashes = max(1, int(distance // (dash_length * 2)))
+    
+    for i in range(num_dashes):
+        dash_start_x = a_x + (dx * (i * 2 * dash_length) / distance)
+        dash_start_y = a_y + (dy * (i * 2 * dash_length) / distance)
+        dash_end_x = a_x + (dx * ((i * 2 + 1) * dash_length) / distance)
+        dash_end_y = a_y + (dy * ((i * 2 + 1) * dash_length) / distance)
+        pygame.draw.line(surface, color, (int(dash_start_x), int(dash_start_y)), (int(dash_end_x), int(dash_end_y)), 2)
+        
+        
+        
 def draw_track(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type: EdgeAction, length: int, speed: int = None):   
     if edge_type in (EdgeAction.BULLDOZE, EdgeAction.INVALID_PLATFORM):
         draw_edge(surface, edge, camera, color=RED, length=length)
@@ -138,11 +158,12 @@ def draw_track(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type: E
 
 def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, color: tuple[int, int, int], length: int) -> None:
     """Draw a track as a dotted line on the surface from edge.a to edge.b."""
-    num_dots = round(max(1, length // 25))
-    if num_dots < 5:
-        draw_dashed_line(surface, edge.a, edge.b, camera, color=color, num_dashes=num_dots)
-    else:
-        draw_dotted_line(surface, edge.a, edge.b, camera, color=color, num_dots=num_dots)
+    draw_dashed_line_simple(surface, edge.a, edge.b, camera, color=color, dash_length=length//(25/2))
+    # num_dots = round(max(1, length // 25))
+    # if num_dots < 5:
+    #     draw_dashed_line(surface, edge.a, edge.b, camera, color=color, num_dashes=num_dots)
+    # else:
+    #     draw_dotted_line(surface, edge.a, edge.b, camera, color=color, num_dots=num_dots)
 
 def draw_platform(surface: pygame.Surface, edge: Edge, camera: Camera, length: int, color=PURPLE):
     a, b = camera.world_to_screen(edge)
