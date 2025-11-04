@@ -1,4 +1,5 @@
 from models.construction_state import EdgeAction
+from models.geometry.edge import Edge
 from models.geometry.position import Position
 from views.construction.base_construction_view import BaseConstructionView
 from ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station, draw_dotted_line

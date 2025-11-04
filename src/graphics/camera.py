@@ -1,4 +1,5 @@
 from models.geometry import Position
+from models.geometry.edge import Edge
 
 class Camera:
     def __init__(self):
@@ -13,23 +14,23 @@ class Camera:
         self.drag_start_cam_x = 0
         self.drag_start_cam_y = 0
 
-    def screen_to_world(self, pos: Position | None) -> Position | None:
+    def screen_to_world(self, pos: Position | Edge) -> Position | Edge:
         """Convert screen coordinates to world coordinates"""
-        if pos is None:
-            return None
+        if isinstance(pos, Edge):
+            return Edge(self.screen_to_world(pos.a), self.screen_to_world(pos.b))
+
         world_x = (pos.x / self.scale) - self.x
         world_y = (pos.y / self.scale) - self.y
         return Position(world_x, world_y)
 
-    def world_to_screen(self, pos: Position) -> Position:
+    def world_to_screen(self, obj: Position | Edge) -> Position | Edge:
         """Convert world coordinates to screen coordinates"""
-        screen_x = (pos.x + self.x) * self.scale
-        screen_y = (pos.y + self.y) * self.scale
+        if isinstance(obj, Edge):
+            return Edge(self.world_to_screen(obj.a), self.world_to_screen(obj.b))
+
+        screen_x = (obj.x + self.x) * self.scale
+        screen_y = (obj.y + self.y) * self.scale
         return Position(screen_x, screen_y)
-    
-    def world_to_screen_from_edge(self, edge: frozenset[Position, Position]) -> tuple[Position, Position]:
-        a, b = edge
-        return (tuple(self.world_to_screen(a)), tuple(self.world_to_screen(b)))
 
     
     def start_drag(self, mouse_pos: Position):

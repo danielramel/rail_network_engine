@@ -14,5 +14,8 @@ class BaseConstructionController(UIComponent):
         self._camera = camera
 
     def render(self, screen_pos: Position):
+        if screen_pos is None:
+            self.view.render(None)
+            return
         world_pos = self._camera.screen_to_world(screen_pos)
         self.view.render(world_pos)
