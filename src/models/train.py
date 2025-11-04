@@ -64,7 +64,6 @@ class Train:
         return (2 * self.deceleration * FPS * distance) ** 0.5
     
     def signal_turned_green_ahead(self, path: list[Edge], signal: Signal) -> bool:
-        print(f"Train {self.code} notified of green signal ahead.")
         self.path += path
         signal.subscribe(self.signal_turned_green_ahead)
         
