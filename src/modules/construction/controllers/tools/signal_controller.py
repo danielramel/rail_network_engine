@@ -1,4 +1,4 @@
-from modules.construction.controllers.base_construction_tool_controller import BaseConstructionToolController
+from modules.construction.controllers.tools.base_construction_tool_controller import BaseConstructionToolController
 from modules.construction.services.signal_target import find_signal_target, SignalTargetType
 from modules.construction.models.construction_state import ConstructionState
 from core.models.railway.railway_system import RailwaySystem

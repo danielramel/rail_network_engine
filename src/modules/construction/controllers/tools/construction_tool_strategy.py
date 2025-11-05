@@ -4,7 +4,7 @@ from modules.construction.models.construction_state import ConstructionState
 from core.graphics.graphics_context import GraphicsContext
 from shared.ui.models.ui_component import UIComponent
 from modules.construction.views.construction_common_view import ConstructionCommonView
-from modules.construction.models.construction_state import ConstructionMode
+from modules.construction.models.construction_state import ConstructionTool
 from core.models.geometry.position import Position
 from .rail_controller import RailController
 from .platform_controller import PlatformController
@@ -21,31 +21,31 @@ class ConstructionToolStrategy(UIComponent):
         self._state = state
         self._graphics = graphics
 
-        self._controllers: dict[ConstructionMode, BaseConstructionToolController] = {
-            ConstructionMode.RAIL: RailController(railway, state, graphics),
-            ConstructionMode.SIGNAL: SignalController(railway, state, graphics),
-            ConstructionMode.STATION: StationController(railway, state, graphics),
-            ConstructionMode.PLATFORM: PlatformController(railway, state, graphics),
-            ConstructionMode.BULLDOZE: BulldozeController(railway, state, graphics),
+        self._controllers: dict[ConstructionTool, BaseConstructionToolController] = {
+            ConstructionTool.RAIL: RailController(railway, state, graphics),
+            ConstructionTool.SIGNAL: SignalController(railway, state, graphics),
+            ConstructionTool.STATION: StationController(railway, state, graphics),
+            ConstructionTool.PLATFORM: PlatformController(railway, state, graphics),
+            ConstructionTool.BULLDOZE: BulldozeController(railway, state, graphics),
         }
         
     def process_event(self, event):                
-        if self._state.mode is None:
+        if self._state.tool is None:
             return
         
         if event.button not in (1, 3):
             return
         
-        self._controllers[self._state.mode].process_event(event)
+        self._controllers[self._state.tool].process_event(event)
             
             
     def render(self, screen_pos: Position | None):
         self.view.render(screen_pos)
         
-        if self._state.mode is None:
+        if self._state.tool is None:
             return
 
-        self._controllers[self._state.mode].render(screen_pos)
+        self._controllers[self._state.tool].render(screen_pos)
 
     def contains(self, screen_pos: Position) -> bool:
         return True

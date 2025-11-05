@@ -1,8 +1,8 @@
 
 from shared.controllers.camera_controller import CameraController
-from modules.construction.controllers.construction_tool_strategy import ConstructionToolStrategy
+from modules.construction.controllers.tools.construction_tool_strategy import ConstructionToolStrategy
 from modules.construction.ui.construction_buttons import ConstructionButtons
-from modules.construction.controllers.construction_panel_strategy import ConstructionPanelStrategy
+from modules.construction.ui.panels.construction_panel_strategy import ConstructionPanelStrategy
 from modules.construction.models.construction_state import ConstructionState
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.graphics_context import GraphicsContext

@@ -1,5 +1,5 @@
 import pygame
-from modules.construction.controllers.base_construction_tool_controller import BaseConstructionToolController
+from modules.construction.controllers.tools.base_construction_tool_controller import BaseConstructionToolController
 from core.models.geometry.direction import Direction
 from modules.construction.services.rail_target import find_rail_target, RailTargetType
 from core.models.geometry import Pose

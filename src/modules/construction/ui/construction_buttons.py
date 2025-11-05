@@ -3,7 +3,7 @@ from core.graphics.icon_loader import IconLoader
 from core.models.geometry.position import Position
 from shared.ui.models.ui_component import UIComponent
 from core.config.colors import BLACK, WHITE, YELLOW, RED
-from modules.construction.models.construction_state import ConstructionMode, ConstructionState
+from modules.construction.models.construction_state import ConstructionTool, ConstructionState
 from core.config.paths import ICON_PATHS
 from core.config.settings import BUTTON_SIZE
 from core.config.keyboard_shortcuts import CONSTRUCTION_MODE_SELECTION
@@ -14,7 +14,7 @@ class ConstructionButtons(UIComponent):
     def __init__(self, surface: pygame.Surface, construction_state: ConstructionState):
         self.icon_cache = {
             mode: IconLoader().get_icon(ICON_PATHS[mode.name], BUTTON_SIZE)
-            for mode in ConstructionMode
+            for mode in ConstructionTool
         }
         self.buttons = self._get_buttons(surface)
         self.construction_state = construction_state
@@ -44,8 +44,8 @@ class ConstructionButtons(UIComponent):
             icon_rect = icon.get_rect(center=btn_rect.center)
             self._surface.blit(icon, icon_rect)
 
-            if mode == self.construction_state.mode:
-                color = YELLOW if not self.construction_state.mode is ConstructionMode.BULLDOZE else RED
+            if mode == self.construction_state.tool:
+                color = YELLOW if not self.construction_state.tool is ConstructionTool.BULLDOZE else RED
                 pygame.draw.rect(self._surface, color, btn_rect.inflate(10, 10), 5, border_radius=10)
             else:
                 pygame.draw.rect(self._surface, WHITE, btn_rect.inflate(-2, -2), 1, border_radius=10)
@@ -54,13 +54,13 @@ class ConstructionButtons(UIComponent):
         return any(btn.collidepoint(*screen_pos) for _, btn in self.buttons)
 
 
-    def _get_buttons(self, surface: pygame.Surface) -> list[tuple[ConstructionMode, pygame.Rect]]:
+    def _get_buttons(self, surface: pygame.Surface) -> list[tuple[ConstructionTool, pygame.Rect]]:
         button_margin = BUTTON_SIZE // 5
         _, h = surface.get_size()
         buttons = []
-        for i, mode in enumerate(ConstructionMode):
+        for i, mode in enumerate(ConstructionTool):
             offset = (BUTTON_SIZE + button_margin) * i
-            if mode is ConstructionMode.BULLDOZE:
+            if mode is ConstructionTool.BULLDOZE:
                 offset += (BUTTON_SIZE + button_margin)
             rect = pygame.Rect(
                 button_margin + offset,

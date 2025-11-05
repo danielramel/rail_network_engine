@@ -1,4 +1,4 @@
-from modules.construction.controllers.base_construction_tool_controller import BaseConstructionToolController
+from modules.construction.controllers.tools.base_construction_tool_controller import BaseConstructionToolController
 from shared.ui.popups import user_input
 from modules.construction.services.station_target import find_station_target
 from core.models.railway.railway_system import RailwaySystem

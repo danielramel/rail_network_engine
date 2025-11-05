@@ -1,4 +1,4 @@
-from modules.construction.controllers.base_construction_tool_controller import BaseConstructionToolController
+from modules.construction.controllers.tools.base_construction_tool_controller import BaseConstructionToolController
 from shared.ui.popups import alert
 from modules.construction.services.platform_target import find_platform_target
 from modules.construction.models.construction_state import ConstructionState

@@ -5,7 +5,7 @@ from core.models.geometry import Position, Edge, Pose
 from core.models.station import Station
 from core.models.edge_action import EdgeAction
 
-class ConstructionMode(Enum):
+class ConstructionTool(Enum):
     RAIL = 1
     SIGNAL = 2
     STATION = 3
@@ -27,7 +27,7 @@ class ConstructionPreview:
 @dataclass
 class ConstructionState:
     """Manages the current construction mode and associated state."""
-    mode: ConstructionMode = ConstructionMode.RAIL
+    tool: ConstructionTool = ConstructionTool.RAIL
     construction_anchor: Pose | None = None
     track_speed: int = 120
     track_length: int = 50
@@ -35,12 +35,12 @@ class ConstructionState:
     preview: ConstructionPreview = field(default_factory=ConstructionPreview)
     platform_waiting_for_station: bool = False
     
-    def switch_mode(self, new_mode: ConstructionMode) -> None:
+    def switch_mode(self, new_mode: ConstructionTool) -> None:
         """Switch to a new construction mode, clearing previous state."""
-        if new_mode == self.mode:
+        if new_mode == self.tool:
             return
         
-        self.mode = new_mode
+        self.tool = new_mode
         self.construction_anchor = None
         self.moving_station = None
         self.preview.clear()
@@ -52,7 +52,7 @@ class ConstructionState:
     
     def is_bulldoze_preview_node(self, pos: Position) -> bool:
         """Check if a position is marked for bulldozing."""
-        return self.mode is ConstructionMode.BULLDOZE and pos in self.preview.nodes
+        return self.tool is ConstructionTool.BULLDOZE and pos in self.preview.nodes
 
     def is_station_being_moved(self, station: Station) -> bool:
         """Check if a specific station is currently being moved."""
@@ -60,7 +60,7 @@ class ConstructionState:
     
     def reset(self) -> None:
         """Reset the construction state to its initial values."""
-        self.mode = ConstructionMode.RAIL
+        self.tool = ConstructionTool.RAIL
         self.construction_anchor = None
         self.track_speed = 120
         self.moving_station = None
