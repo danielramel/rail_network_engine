@@ -6,7 +6,7 @@ from core.models.geometry import Pose
 from modules.construction.views.rail_view import RailView
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
-from modules.construction.construction_state import ConstructionState
+from modules.construction.models.construction_state import ConstructionState
 
 class RailController(BaseConstructionToolController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):

@@ -1,6 +1,6 @@
 import pygame
 from shared.ui.models.panel import Panel
-from modules.construction.construction_state import ConstructionState
+from modules.construction.models.construction_state import ConstructionState
 from core.config.colors import WHITE, YELLOW
 from modules.construction.ui.panels.base_construction_panel import BaseConstructionPanel
     

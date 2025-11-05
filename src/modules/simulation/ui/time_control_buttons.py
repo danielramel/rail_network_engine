@@ -6,7 +6,7 @@ from core.config.colors import BLACK, GREEN, WHITE, YELLOW, RED
 from core.config.paths import ICON_PATHS
 from core.config.settings import BUTTON_SIZE
 from core.config.keyboard_shortcuts import TIME_CONTROL_KEYS
-from modules.simulation.simulation_state import TimeControlMode, TimeControlState
+from modules.simulation.models.simulation_state import TimeControlMode, TimeControlState
 
 
 class TimeControlButtons(UIComponent):

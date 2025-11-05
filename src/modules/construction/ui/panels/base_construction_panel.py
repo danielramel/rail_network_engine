@@ -1,6 +1,6 @@
 import pygame
 from shared.ui.models.panel import Panel
-from modules.construction.construction_state import ConstructionState
+from modules.construction.models.construction_state import ConstructionState
 
 class BaseConstructionPanel(Panel):
     """Base class for construction panels."""

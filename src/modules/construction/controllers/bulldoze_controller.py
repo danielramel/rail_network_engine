@@ -1,6 +1,6 @@
 import pygame
 from core.models.railway.railway_system import RailwaySystem
-from modules.construction.construction_state import ConstructionState
+from modules.construction.models.construction_state import ConstructionState
 from core.graphics.graphics_context import GraphicsContext
 from modules.construction.controllers.base_construction_tool_controller import BaseConstructionToolController
 from modules.construction.views.bulldoze_view import BulldozeView

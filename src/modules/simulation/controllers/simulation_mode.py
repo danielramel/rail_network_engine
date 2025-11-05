@@ -7,7 +7,7 @@ from modules.simulation.ui.time_display import TimeDisplay
 from shared.controllers.camera_controller import CameraController
 from modules.simulation.controllers.simulation_controller import SimulationController
 from core.models.railway.railway_system import RailwaySystem
-from modules.simulation.simulation_state import SimulationState
+from modules.simulation.models.simulation_state import SimulationState
 
 class SimulationMode(UIController):
     elements: tuple[UIComponent]

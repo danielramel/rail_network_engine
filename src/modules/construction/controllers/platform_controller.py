@@ -1,7 +1,7 @@
 from modules.construction.controllers.base_construction_tool_controller import BaseConstructionToolController
 from shared.ui.popups import alert
 from modules.construction.services.platform_target import find_platform_target
-from modules.construction.construction_state import ConstructionState
+from modules.construction.models.construction_state import ConstructionState
 from core.models.railway.railway_system import RailwaySystem
 import pygame
 from modules.construction.views.platform_view import PlatformView, PlatformTargetType

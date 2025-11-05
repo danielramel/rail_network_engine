@@ -2,7 +2,7 @@ import pygame
 from core.config.colors import BLACK, WHITE
 from core.models.geometry.position import Position
 from shared.ui.models.rectangle import RectangleUIComponent
-from modules.simulation.simulation_state import TimeControlState
+from modules.simulation.models.simulation_state import TimeControlState
 
 class TimeDisplay(RectangleUIComponent):
     def __init__(self, time_state: TimeControlState, surface: pygame.Surface):

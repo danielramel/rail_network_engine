@@ -2,7 +2,7 @@ from modules.construction.controllers.base_construction_tool_controller import B
 from shared.ui.popups import user_input
 from modules.construction.services.station_target import find_station_target
 from core.models.railway.railway_system import RailwaySystem
-from modules.construction.construction_state import ConstructionState
+from modules.construction.models.construction_state import ConstructionState
 from modules.construction.views.station_view import StationView
 from core.graphics.graphics_context import GraphicsContext
 import pygame

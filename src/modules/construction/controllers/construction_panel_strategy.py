@@ -1,4 +1,4 @@
-from modules.construction.construction_state import ConstructionState, ConstructionMode
+from modules.construction.models.construction_state import ConstructionState, ConstructionMode
 from shared.ui.models.panel import Panel
 from modules.construction.ui.panels.rail_panel import RailPanel
 from modules.construction.ui.panels.signal_panel import SignalPanel

@@ -1,10 +1,10 @@
 import pygame
 from core.models.railway.railway_system import RailwaySystem
-from modules.construction.construction_state import ConstructionState
+from modules.construction.models.construction_state import ConstructionState
 from core.graphics.graphics_context import GraphicsContext
 from shared.ui.models.ui_component import UIComponent
 from modules.construction.views.construction_common_view import ConstructionCommonView
-from modules.construction.construction_state import ConstructionMode
+from modules.construction.models.construction_state import ConstructionMode
 from core.models.geometry.position import Position
 from .rail_controller import RailController
 from .platform_controller import PlatformController

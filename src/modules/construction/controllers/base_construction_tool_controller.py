@@ -1,5 +1,5 @@
 from core.models.railway.railway_system import RailwaySystem
-from modules.construction.construction_state import ConstructionState
+from modules.construction.models.construction_state import ConstructionState
 from core.graphics.camera import Camera
 from shared.ui.models.ui_component import UIComponent
 from shared.views.base_view import BaseView
