@@ -2,7 +2,8 @@ import pygame
 from shared.views.base_view import BaseView
 from core.models.geometry import Position
 from core.config.colors import RED
-from shared.ui.utils import draw_node, color_from_speed
+from shared.ui.utils import draw_node
+from shared.ui.services.color_from_speed import color_from_speed
 from modules.construction.services.rail_target import find_rail_target, RailTargetType
 
 class RailView(BaseView):
