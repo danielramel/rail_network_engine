@@ -41,7 +41,7 @@ class ConstructionState:
     mode: ConstructionMode = ConstructionMode.RAIL
     construction_anchor: Pose | None = None
     track_speed: int = 120
-    track_length: int = 100
+    track_length: int = 50
     moving_station: Optional[Station] = None
     preview: ConstructionPreview = field(default_factory=ConstructionPreview)
     platform_waiting_for_station: bool = False

@@ -164,9 +164,13 @@ def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, color: tuple[
     #     draw_dashed_line(surface, edge.a, edge.b, camera, color=color, num_dashes=num_dots)
     # else:
     #     draw_dotted_line(surface, edge.a, edge.b, camera, color=color, num_dots=num_dots)
-
-    pygame.draw.aaline(surface, color, tuple(camera.world_to_screen(edge.a)), tuple(camera.world_to_screen(edge.b)), max(1, 2*int(camera.scale)))
-
+    if length == 50:
+        pygame.draw.aaline(surface, color, tuple(camera.world_to_screen(edge.a)), tuple(camera.world_to_screen(edge.b)), max(1, 2*int(camera.scale)))
+    elif length == 500:
+        draw_dotted_line(surface, edge.a, edge.b, camera, color=color, num_dots=5)
+    else:
+        raise NotImplementedError("Edge length drawing not implemented for length:", length)
+        
 def draw_platform(surface: pygame.Surface, edge: Edge, camera: Camera, length: int, color=PURPLE):
     a, b = camera.world_to_screen(edge)
     offset = int(2 * camera.scale)  # pixels of separation
