@@ -2,8 +2,9 @@ from enum import Enum
 from typing import Callable, Optional
 
 class ViewMode(Enum):
-    SIMULATION = 0
+    SETUP = 0
     CONSTRUCTION = 1
+    SIMULATION = 2
     
 class AppState:
     def __init__(self) -> None:

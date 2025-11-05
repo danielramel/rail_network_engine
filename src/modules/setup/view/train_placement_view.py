@@ -12,5 +12,5 @@ class TrainPlacementView(BaseView):
         if self._railway.stations.is_edge_platform(closest_edge):
             platform = self._railway.stations.get_platform_from_edge(closest_edge)
             for edge in platform.edges:
-                from ui.utils import draw_edge
+                from shared.ui.utils import draw_edge
                 draw_edge(self._surface, edge, self._camera, YELLOW, 50)

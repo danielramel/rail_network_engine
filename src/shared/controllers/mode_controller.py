@@ -1,5 +1,6 @@
-from modules.construction.controllers.construction_mode import ConstructionMode 
-from modules.simulation.controllers.simulation_mode import SimulationMode
+from modules.construction.construction_mode import ConstructionMode 
+from modules.setup.setup_mode import SetupMode
+from modules.simulation.simulation_mode import SimulationMode
 from core.models.app_state import AppState, ViewMode
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.graphics_context import GraphicsContext
@@ -17,6 +18,7 @@ class ModeController(UIComponent):
         
         self._modes: dict[ViewMode, lambda: UIController] = {
             ViewMode.CONSTRUCTION: lambda: ConstructionMode(railway, graphics),
+            ViewMode.SETUP: lambda: SetupMode(railway, graphics),
             ViewMode.SIMULATION: lambda: SimulationMode(railway, graphics)
         }
         
