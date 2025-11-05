@@ -1,11 +1,11 @@
 import pygame
-from views.construction.base_construction_view import BaseConstructionView
+from views.construction.base_view import BaseView
 from models.geometry import Position
 from config.colors import RED
 from ui.utils import draw_node, color_from_speed
 from services.construction.rail_target import find_rail_target, RailTargetType
 
-class RailView(BaseConstructionView):
+class RailView(BaseView):
     def render(self, world_pos: Position | None):
         if world_pos is None:
             if self._state.construction_anchor is not None:

@@ -1,5 +1,5 @@
 import pygame
-from config.paths import GLOBAL_ICON_PATHS
+from config.paths import ICON_PATHS
 from models.railway_system import RailwaySystem
 from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
@@ -11,7 +11,7 @@ from ui.models.rectangle import RectangleUIComponent
 class SaveButton(RectangleUIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
     def __init__(self, surface: pygame.Surface, railway: RailwaySystem):
-        self.icon = IconLoader().get_icon(GLOBAL_ICON_PATHS["SAVE"], BUTTON_SIZE)
+        self.icon = IconLoader().get_icon(ICON_PATHS["SAVE"], BUTTON_SIZE)
         rect = pygame.Rect(BUTTON_SIZE//5, 700, BUTTON_SIZE, BUTTON_SIZE)
         super().__init__(rect, surface)
         self._railway = railway
@@ -38,12 +38,6 @@ class SaveButton(RectangleUIComponent):
         self._surface.blit(self.icon, icon_rect)
         pygame.draw.rect(self._surface, WHITE, self._rect, 2, border_radius=10)
         
-
-
-
-    def contains(self, screen_pos: Position) -> bool:
-        return self._rect.collidepoint(screen_pos.x, screen_pos.y)
-    
     def save_game(self):
         data = self._railway.to_dict()
         

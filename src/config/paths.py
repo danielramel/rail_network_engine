@@ -1,6 +1,7 @@
 GLOBAL_ICON_PATHS = {
     "CONSTRUCTION": "src/icons/construction.png",
     "SIMULATION": "src/icons/simulation.png",
+    "TIMETABLE": "src/icons/timetable.png",
     "SAVE": "src/icons/save.png",
     "LOAD": "src/icons/load.png",
 }
@@ -13,11 +14,18 @@ CONSTRUCTION_ICON_PATHS = {
     "PLATFORM": "src/icons/construction/platform.png",
 }
 
-TIME_CONTROL_ICON_PATHS = {
+
+SIMULATION_ICON_PATHS = {
+    "TRAIN_PLACEMENT": "src/icons/simulation/train_placement.png",
     "PLAY": "src/icons/simulation/play.png",
     "PAUSE": "src/icons/simulation/pause.png",
     "FAST_FORWARD": "src/icons/simulation/3x.png",
     "SUPER_FAST_FORWARD": "src/icons/simulation/10x.png",
 }
 
-TIMETABLE_ICON_PATH = "src/icons/timetable.png"
+
+ICON_PATHS = {
+    **GLOBAL_ICON_PATHS,
+    **CONSTRUCTION_ICON_PATHS,
+    **SIMULATION_ICON_PATHS
+}

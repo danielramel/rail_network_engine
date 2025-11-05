@@ -1,11 +1,11 @@
 from models.construction_state import EdgeAction
-from views.construction.base_construction_view import BaseConstructionView
+from views.construction.base_view import BaseView
 from models.geometry import Position
 from config.colors import PURPLE, LIGHTBLUE
 from ui.utils import draw_node, draw_station, draw_dotted_line
 from services.construction.platform_target import PlatformTargetType, find_platform_target
 
-class PlatformView(BaseConstructionView):
+class PlatformView(BaseView):
     def render(self, world_pos: Position | None):
         if world_pos is None:
             return

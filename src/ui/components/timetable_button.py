@@ -4,7 +4,7 @@ from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
 from ui.models.rectangle import RectangleUIComponent
 from config.colors import BLACK, GREEN, WHITE, YELLOW, RED
-from config.paths import TIMETABLE_ICON_PATH
+from config.paths import ICON_PATHS
 from config.settings import BUTTON_SIZE
 from views.timetable.timetable_view import TimetableWindow
 
@@ -14,7 +14,7 @@ class TimeTableButton(RectangleUIComponent):
     def __init__(self, surface: pygame.Surface, railway: RailwaySystem):
         self._railway = railway
 
-        self.icon = IconLoader().get_icon(TIMETABLE_ICON_PATH, BUTTON_SIZE)
+        self.icon = IconLoader().get_icon(ICON_PATHS["TIMETABLE"], BUTTON_SIZE)
         rect = pygame.Rect(BUTTON_SIZE//5, 300, BUTTON_SIZE, BUTTON_SIZE)
         super().__init__(rect, surface)
         self.timetable_window = None  # Store window reference

@@ -1,10 +1,10 @@
-from views.construction.base_construction_view import BaseConstructionView
+from views.construction.base_view import BaseView
 from models.geometry import Position
 from config.colors import RED, YELLOW
 from ui.utils import draw_signal
 from services.construction.signal_target import find_signal_target, SignalTargetType
 
-class SignalView(BaseConstructionView):
+class SignalView(BaseView):
     def render(self, world_pos: Position | None):
         if world_pos is None:
             return

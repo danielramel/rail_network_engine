@@ -1,5 +1,5 @@
 import pygame
-from config.paths import GLOBAL_ICON_PATHS
+from config.paths import ICON_PATHS
 from models.railway_system import RailwaySystem
 from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
@@ -12,7 +12,7 @@ class LoadButton(RectangleUIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
     def __init__(self, surface: pygame.Surface, railway: RailwaySystem):
         rect = pygame.Rect(BUTTON_SIZE//5, 800, BUTTON_SIZE, BUTTON_SIZE)
-        self.icon = IconLoader().get_icon(GLOBAL_ICON_PATHS["LOAD"], BUTTON_SIZE)
+        self.icon = IconLoader().get_icon(ICON_PATHS["LOAD"], BUTTON_SIZE)
         super().__init__(rect, surface)
         self._railway = railway
 
@@ -36,10 +36,7 @@ class LoadButton(RectangleUIComponent):
         icon_rect = self.icon.get_rect(center=self._rect.center)
         self._surface.blit(self.icon, icon_rect)
         pygame.draw.rect(self._surface, WHITE, self._rect.inflate(-2, -2), 1, border_radius=10)
-
-    def contains(self, screen_pos: Position) -> bool:
-        return self._rect.collidepoint(screen_pos.x, screen_pos.y)
-    
+        
     def load_game_ui(self):
         import tkinter as tk
         from tkinter import filedialog, messagebox

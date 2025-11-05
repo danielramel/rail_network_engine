@@ -3,7 +3,7 @@ from graphics.icon_loader import IconLoader
 from models.geometry.position import Position
 from ui.models.ui_component import UIComponent
 from config.colors import BLACK, GREEN, WHITE, YELLOW, RED
-from config.paths import TIME_CONTROL_ICON_PATHS
+from config.paths import ICON_PATHS
 from config.settings import BUTTON_SIZE
 from models.simulation_state import TimeControlMode, TimeControlState
 from config.keyboard_shortcuts import TIME_CONTROL_KEYS
@@ -13,7 +13,7 @@ class TimeControlButtons(UIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
     def __init__(self, time_control: TimeControlState, surface: pygame.Surface):
         self.icon_cache = {
-            mode: IconLoader().get_icon(TIME_CONTROL_ICON_PATHS[mode.name], BUTTON_SIZE)
+            mode: IconLoader().get_icon(ICON_PATHS[mode.name], BUTTON_SIZE)
             for mode in TimeControlMode
         }
         self.buttons = self._get_buttons(surface)

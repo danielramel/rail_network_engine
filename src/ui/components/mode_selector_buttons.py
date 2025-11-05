@@ -4,7 +4,7 @@ from models.geometry.position import Position
 from models.app_state import AppState, ViewMode
 from ui.models.ui_component import UIComponent
 from config.colors import BLACK, GREEN, WHITE, YELLOW, RED
-from config.paths import GLOBAL_ICON_PATHS
+from config.paths import ICON_PATHS
 from config.settings import BUTTON_SIZE
 from config.keyboard_shortcuts import MODE_SELECTION
 
@@ -13,7 +13,7 @@ class ModeSelectorButtons(UIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
     def __init__(self, surface: pygame.Surface, app_state: AppState):
         self.icon_cache = {
-            mode: IconLoader().get_icon(GLOBAL_ICON_PATHS[mode.name], BUTTON_SIZE)
+            mode: IconLoader().get_icon(ICON_PATHS[mode.name], BUTTON_SIZE)
             for mode in ViewMode
         }
         self.buttons = self._get_buttons(surface)

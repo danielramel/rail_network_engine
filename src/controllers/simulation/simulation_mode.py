@@ -4,9 +4,10 @@ from models.simulation_state import SimulationState
 from ui.models.ui_component import UIComponent
 from ui.models.ui_controller import UIController
 from ui.simulation.time_control_buttons import TimeControlButtons
+from ui.simulation.train_placement_button import TrainPlacementButton
 from ui.simulation.time_display import TimeDisplay
-from controllers.simulation.simulation_controller import SimulationController
 from controllers.camera_controller import CameraController
+from controllers.simulation.simulation_controller import SimulationController
 
 class SimulationMode(UIController):
     elements: tuple[UIComponent]
@@ -14,6 +15,7 @@ class SimulationMode(UIController):
         self.state = SimulationState()
         self.elements = (
             TimeControlButtons(self.state.time, graphics.screen),
+            TrainPlacementButton(railway, graphics.screen),
             TimeDisplay(self.state.time, graphics.screen),
             CameraController(graphics.camera),
             SimulationController(railway, self.state, graphics),

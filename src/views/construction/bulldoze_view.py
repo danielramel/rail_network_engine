@@ -1,11 +1,11 @@
 from models.construction_state import EdgeAction
 from services.construction.bulldoze_target import BulldozeTargetType, find_bulldoze_target
-from views.construction.base_construction_view import BaseConstructionView
+from views.construction.base_view import BaseView
 from models.geometry import Position
 from ui.utils import draw_station, draw_node
 from config.colors import RED
 
-class BulldozeView(BaseConstructionView):
+class BulldozeView(BaseView):
     def render(self, world_pos: Position | None):
         self._state.preview.clear()
         
