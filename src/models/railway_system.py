@@ -11,7 +11,7 @@ from models.signal_repository import SignalRepository
 class RailwaySystem:
     def __init__(self):
         self._graph_adapter = GraphAdapter()
-        self._graph_service = GraphService(self._graph_adapter)
+        self._graph_service = GraphService(self)
         self._signal_repository = SignalRepository(self._graph_adapter)
         self._station_repository = StationRepository(self._graph_adapter)
         self._schedule_repository = ScheduleRepository()
@@ -67,5 +67,3 @@ class RailwaySystem:
         self._station_repository = StationRepository.from_dict(self._graph_adapter, data["station_repository"])
         self._signal_repository = SignalRepository.from_dict(self._graph_adapter, data["signal_repository"])
         self._schedule_repository = ScheduleRepository.from_dict(self, data['schedule_repository'])
-        
-        self._graph_service = GraphService(self._graph_adapter)

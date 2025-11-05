@@ -50,7 +50,6 @@ class AppController(UIController):
             
     def _mock_load(self):
         import json
-        
         filename = "C:/Users/lemar/elte/szakdolgozat/simulator/maps/cegléd.json"
         with open(filename, 'r', encoding='utf-8') as f:
             data = json.loads(f.read())

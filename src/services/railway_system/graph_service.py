@@ -1,30 +1,31 @@
-from typing import Optional
 from config.settings import GRID_SIZE, PLATFORM_LENGTH
 from models.geometry import Position, Pose
 from collections import deque
 from models.geometry.edge import Edge
-from models.graph_adapter import GraphAdapter
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from models.railway_system import RailwaySystem
 
 class GraphService:
-    def __init__(self, graph: GraphAdapter):
-        self._graph = graph
+    def __init__(self, railway: 'RailwaySystem'):
+        self._railway = railway
 
     def is_junction(self, pos: Position) -> bool:
-        if self._graph.degree_at(pos) > 2: return True
-        if self._graph.degree_at(pos) < 2: return False
+        if self._railway.graph.degree_at(pos) > 2: return True
+        if self._railway.graph.degree_at(pos) < 2: return False
 
-        neighbors = self._graph.neighbors(pos)
+        neighbors = self._railway.graph.neighbors(pos)
         inbound = neighbors[0].direction_to(pos)
         outbound = pos.direction_to(neighbors[1])
         return outbound not in inbound.get_valid_turns()
     
     @property
     def junctions(self) -> list[Position]:
-        return [n for n in self._graph.nodes if self.is_junction(n)]
+        return [n for n in self._railway.graph.nodes if self.is_junction(n)]
     
     def get_connections_from_pose(self, pose: Pose, only_straight: bool = False) -> tuple[Pose]:
         connections = []
-        for neighbor in self._graph.neighbors(pose.position):
+        for neighbor in self._railway.graph.neighbors(pose.position):
             direction = pose.position.direction_to(neighbor)
             if only_straight and direction != pose.direction:
                 continue
@@ -32,20 +33,44 @@ class GraphService:
                 connections.append(Pose(neighbor, direction))
         return tuple(connections)
 
-    def remove_segment(self, nodes: list[Position], edges: list[Edge]) -> None:
-        for n in nodes:
-            self._graph.remove_node(n)
-            
-        for e in edges:
-            self._graph.remove_edge(e)
+    def remove_segment(self, nodes: list[Position], edges: list[Edge]) -> None:      
+        for edge in edges:
+            self._railway.graph.remove_edge(edge)
+
+        for node in list(self._railway.graph.nodes):
+            if self._railway.graph.degree_at(node) == 0:
+                self._railway.graph.remove_node(node)
 
     def add_segment(self, points: list[Position], speed: int, length: int) -> None:
         for p in points:
-            self._graph.add_node(p)
+            self._railway.graph.add_node(p) 
         for a, b in zip(points[:-1], points[1:]):
-            self._graph.add_edge(a, b, speed=speed, length=length)
+            self._railway.graph.add_edge(a, b, speed=speed, length=length)
 
-    def get_segment(self, edge: Edge, end_on_signal: bool = False, max_nr: Optional[int] = None) -> tuple[frozenset[Position], frozenset[Edge]]:
+    def get_segment(self, edge: Edge, preferred_nr: int = None) -> tuple[frozenset[Position], frozenset[Edge]]:
+        def should_stop_at_node(pos: Position) -> bool:
+            if self.is_junction(pos):
+                return True
+            if not preferred_nr and self._railway.graph.has_node_attr(pos, 'signal') and self._railway.graph.degree_at(pos) > 1:
+                return True
+            
+            return False
+        
+        def should_stop_at_edge(edge: Edge) -> bool:
+            if is_initial_platform != self._railway.stations.is_edge_platform(edge):
+                return True
+            
+            if preferred_nr:
+                return False
+            
+            if self._railway.graph.get_edge_attr(edge, 'length') != initial_track_length:
+                return True
+            
+            if self._railway.graph.get_edge_attr(edge, 'speed') != initial_track_speed:
+                return True
+            
+            return False
+        
         
         edges: set[Edge] = set()
         nodes: set[Position] = set()
@@ -55,51 +80,40 @@ class GraphService:
         
         edges.add(edge)
         
-        a_has_signal = self._graph.has_node_attr(a, 'signal')
-        b_has_signal = self._graph.has_node_attr(b, 'signal')
-        is_a_junction = self.is_junction(a)
-        is_b_junction = self.is_junction(b)
+        
+        initial_track_length = self._railway.graph.get_edge_attr(edge, 'length')
+        initial_track_speed = self._railway.graph.get_edge_attr(edge, 'speed')
+        is_initial_platform = self._railway.stations.is_edge_platform(edge)
+
         pose_to_a = Pose.from_positions(b, a)
         pose_to_b = Pose.from_positions(a, b)
-        
-        initial_track_length = self._graph.get_edge_attr(edge, 'length')
-        initial_track_speed = self._graph.get_edge_attr(edge, 'speed')
 
-
-        if not (is_a_junction or (end_on_signal and a_has_signal and self._graph.degree_at(a) > 1)):
+        if not should_stop_at_node(a):
             stack.append(pose_to_a)
 
-        if not (is_b_junction or (end_on_signal and b_has_signal and self._graph.degree_at(b) > 1)):
+        if not should_stop_at_node(b):
             stack.append(pose_to_b)
 
         while stack:
             pose = stack.popleft()
-            connections = self.get_connections_from_pose(pose, only_straight=max_nr is not None)
+            connections = self.get_connections_from_pose(pose, only_straight=preferred_nr is not None)
             
             nodes.add(pose.position)
 
             for neighbor, direction in connections:
                 edge = Edge(pose.position, neighbor)
-
-                if not max_nr and self._graph.get_edge_attr(edge, 'length') != initial_track_length:
-                    continue
-
-                if not max_nr and self._graph.get_edge_attr(edge, 'speed') != initial_track_speed:
+                if should_stop_at_edge(edge):
                     continue
                 
                 edges.add(edge)
 
-                if max_nr is not None and edge.length * len(edges) >= max_nr * GRID_SIZE:
+                if preferred_nr is not None and edge.length * len(edges) >= preferred_nr * GRID_SIZE:
                     return frozenset(nodes), frozenset(edges)
                 
-                # skip conditions
                 if neighbor in nodes or neighbor in {s.position for s in stack}:
                     continue
                 
-                if self.is_junction(neighbor):
-                    continue
-
-                if end_on_signal and self._graph.has_node_attr(neighbor, 'signal') and self._graph.degree_at(neighbor) > 1:
+                if should_stop_at_node(neighbor):
                     continue
                 
                 stack.append(Pose(neighbor, direction))
@@ -108,7 +122,7 @@ class GraphService:
     
     
     def calculate_platform_preview(self, edge: Edge) -> tuple[bool, frozenset[Edge]]:
-        _, edges = self.get_segment(edge, max_nr=PLATFORM_LENGTH)
+        _, edges = self.get_segment(edge, preferred_nr=PLATFORM_LENGTH)
         for edge in edges:
             # TODO check for platform corner cutting
             pass
