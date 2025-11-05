@@ -1,6 +1,6 @@
 import pygame
-from config.settings import FPS
-from controllers.app_controller import AppController
+from shared.controllers.app_controller import AppController
+from core.config.settings import FPS
 from PyQt6.QtWidgets import QApplication
 import sys
 

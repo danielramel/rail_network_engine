@@ -1,7 +1,8 @@
 import pygame
-from config.colors import WHITE, YELLOW
-from models.construction_state import ConstructionState
-from ui.construction.panels.base_construction_panel import BaseConstructionPanel
+from core.config.colors import WHITE, YELLOW
+from modules.construction.construction_state import ConstructionState
+from modules.construction.ui.panels.base_construction_panel import BaseConstructionPanel
+
     
 class PlatformPanel(BaseConstructionPanel):
     """Platform placement panel with instructions."""

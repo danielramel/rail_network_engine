@@ -1,6 +1,6 @@
 import pygame
 
-from models.geometry.position import Position
+from core.models.geometry.position import Position
 
 class UIComponent:
     def dispatch_event(self, event: pygame.event.Event, mouse_event_filter: bool = True) -> bool:

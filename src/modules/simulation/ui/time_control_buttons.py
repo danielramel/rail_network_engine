@@ -1,12 +1,12 @@
 import pygame
-from graphics.icon_loader import IconLoader
-from models.geometry.position import Position
-from ui.models.ui_component import UIComponent
-from config.colors import BLACK, GREEN, WHITE, YELLOW, RED
-from config.paths import ICON_PATHS
-from config.settings import BUTTON_SIZE
-from models.simulation_state import TimeControlMode, TimeControlState
-from config.keyboard_shortcuts import TIME_CONTROL_KEYS
+from core.graphics.icon_loader import IconLoader
+from core.models.geometry.position import Position
+from shared.ui.models.ui_component import UIComponent
+from core.config.colors import BLACK, GREEN, WHITE, YELLOW, RED
+from core.config.paths import ICON_PATHS
+from core.config.settings import BUTTON_SIZE
+from core.config.keyboard_shortcuts import TIME_CONTROL_KEYS
+from modules.simulation.simulation_state import TimeControlMode, TimeControlState
 
 
 class TimeControlButtons(UIComponent):

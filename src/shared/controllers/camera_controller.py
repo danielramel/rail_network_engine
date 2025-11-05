@@ -1,6 +1,6 @@
-from ui.models.ui_component import UIComponent
+from shared.ui.models.ui_component import UIComponent
 import pygame
-from graphics.camera import Camera
+from core.graphics.camera import Camera
 
 class CameraController(UIComponent):
     handled_events = [pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION, pygame.MOUSEWHEEL, pygame.MOUSEBUTTONUP]

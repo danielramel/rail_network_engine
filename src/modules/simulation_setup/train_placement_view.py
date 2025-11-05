@@ -1,6 +1,6 @@
-from config.colors import YELLOW
-from models.geometry import Position
-from views.base_view import BaseView
+from core.config.colors import YELLOW
+from core.models.geometry.position import Position
+from shared.views.base_view import BaseView
 
 class TrainPlacementView(BaseView):
     def render(self, world_pos: Position | None):

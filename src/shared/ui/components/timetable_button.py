@@ -1,12 +1,12 @@
 import pygame
-from models.railway_system import RailwaySystem
-from graphics.icon_loader import IconLoader
-from models.geometry.position import Position
-from ui.models.rectangle import RectangleUIComponent
-from config.colors import BLACK, GREEN, WHITE, YELLOW, RED
-from config.paths import ICON_PATHS
-from config.settings import BUTTON_SIZE
-from views.timetable.timetable_view import TimetableWindow
+from core.models.railway.railway_system import RailwaySystem
+from core.graphics.icon_loader import IconLoader
+from core.models.geometry.position import Position
+from shared.ui.models.rectangle import RectangleUIComponent
+from core.config.colors import BLACK, GREEN, WHITE, YELLOW, RED
+from core.config.paths import ICON_PATHS
+from core.config.settings import BUTTON_SIZE
+from modules.timetable.views.timetable_view import TimetableWindow
 
 
 class TimeTableButton(RectangleUIComponent):

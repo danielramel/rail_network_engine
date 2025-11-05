@@ -1,7 +1,7 @@
 import pygame
-from models.app_state import ViewMode
-from models.construction_state import ConstructionMode
-from models.simulation_state import TimeControlMode
+from core.models.app_state import ViewMode
+from modules.construction.construction_state import ConstructionMode
+from modules.simulation.simulation_state import TimeControlMode
         
 MODE_SELECTION = {
     pygame.K_s: ViewMode.SIMULATION,

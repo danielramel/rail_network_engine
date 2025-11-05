@@ -1,7 +1,7 @@
 import pygame
 
-from models.geometry.position import Position
-from ui.models.ui_component import UIComponent
+from core.models.geometry.position import Position
+from shared.ui.models.ui_component import UIComponent
 
     
 class RectangleUIComponent(UIComponent):

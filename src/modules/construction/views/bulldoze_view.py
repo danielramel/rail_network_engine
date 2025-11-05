@@ -1,9 +1,9 @@
-from models.construction_state import EdgeAction
-from services.construction.bulldoze_target import BulldozeTargetType, find_bulldoze_target
-from views.base_view import BaseView
-from models.geometry import Position
-from ui.utils import draw_station, draw_node
-from config.colors import RED
+from core.models.edge_action import EdgeAction
+from modules.construction.services.bulldoze_target import BulldozeTargetType, find_bulldoze_target
+from shared.views.base_view import BaseView
+from core.models.geometry import Position
+from shared.ui.utils import draw_station, draw_node
+from core.config.colors import RED
 
 class BulldozeView(BaseView):
     def render(self, world_pos: Position | None):

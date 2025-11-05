@@ -1,3 +1,8 @@
+from core.models.schedule import Schedule
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from core.models.railway.railway_system import RailwaySystem
+
 class ScheduleRepository:
     def __init__(self):
         self._schedules : list[Schedule] = []
@@ -18,9 +23,9 @@ class ScheduleRepository:
         return [schedule.to_dict() for schedule in self._schedules]
     
     @classmethod
-    def from_dict(cls, simulation: 'RailwaySystem', data: list[dict]) -> 'ScheduleRepository':
+    def from_dict(cls, railway: 'RailwaySystem', data: list[dict]) -> 'ScheduleRepository':
         repo = cls()
         for schedule_data in data:
-            schedule = Schedule.from_dict(schedule_data, simulation)
+            schedule = Schedule.from_dict(schedule_data, railway)
             repo.add(schedule)
         return repo

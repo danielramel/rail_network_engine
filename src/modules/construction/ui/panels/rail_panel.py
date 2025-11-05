@@ -1,7 +1,7 @@
 import pygame
-from config.colors import BLACK, WHITE, YELLOW
-from models.construction_state import ConstructionState
-from ui.construction.panels.base_construction_panel import BaseConstructionPanel
+from core.config.colors import BLACK, WHITE, YELLOW
+from modules.construction.construction_state import ConstructionState
+from modules.construction.ui.panels.base_construction_panel import BaseConstructionPanel
     
 class RailPanel(BaseConstructionPanel):
     """Rail construction panel with +/- controls for track speed and toggle for track length."""

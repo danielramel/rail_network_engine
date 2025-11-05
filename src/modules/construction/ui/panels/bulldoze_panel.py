@@ -1,7 +1,8 @@
 import pygame
-from config.colors import WHITE, YELLOW
-from models.construction_state import ConstructionState
-from ui.construction.panels.base_construction_panel import BaseConstructionPanel
+from shared.ui.models.panel import Panel
+from modules.construction.construction_state import ConstructionState
+from core.config.colors import WHITE, YELLOW
+from modules.construction.ui.panels.base_construction_panel import BaseConstructionPanel
     
 class BulldozePanel(BaseConstructionPanel):
     """Bulldoze panel with instructions."""

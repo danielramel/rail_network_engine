@@ -1,4 +1,4 @@
-from models.station import Station
+from core.models.station import Station
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -46,8 +46,3 @@ class Schedule:
             frequency=data['frequency'],
             stops=stops
         )
-        
-        
-        
-from models.schedule import Schedule
-

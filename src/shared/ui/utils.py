@@ -1,13 +1,13 @@
 import pygame
-from config.colors import GREEN, LIME, PURPLE, LIGHTBLUE, RED, WHITE, BLACK, YELLOW
+from core.config.colors import GREEN, LIME, PURPLE, LIGHTBLUE, RED, WHITE, BLACK, YELLOW
 
-from config.settings import GRID_SIZE, STATION_RECT_SIZE
-from graphics import camera
-from graphics.camera import Camera
-from models.construction_state import EdgeAction
-from models.geometry import Position, Pose
-from models.geometry.edge import Edge
-from models.station import Station
+from core.config.settings import GRID_SIZE, STATION_RECT_SIZE
+from core.graphics.camera import Camera
+from core.models.geometry import Position, Pose
+from core.models.geometry.edge import Edge
+from core.models.station import Station
+from core.models.edge_action import EdgeAction
+
 
 def draw_node(surface: pygame.Surface, node: Position, camera: Camera, color=WHITE):
     """Draw a node on the given surface using the camera."""

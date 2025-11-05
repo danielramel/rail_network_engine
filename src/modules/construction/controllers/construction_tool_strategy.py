@@ -1,19 +1,19 @@
 import pygame
-from graphics.graphics_context import GraphicsContext
-from models.geometry import Position
-    
-from models.railway_system import RailwaySystem
-from models.construction_state import ConstructionState, ConstructionMode
-from ui.models.ui_component import UIComponent
+from core.models.railway.railway_system import RailwaySystem
+from modules.construction.construction_state import ConstructionState
+from core.graphics.graphics_context import GraphicsContext
+from shared.ui.models.ui_component import UIComponent
+from modules.construction.views.construction_common_view import ConstructionCommonView
+from modules.construction.construction_state import ConstructionMode
+from core.models.geometry.position import Position
 from .rail_controller import RailController
 from .platform_controller import PlatformController
 from .signal_controller import SignalController
 from .station_controller import StationController
 from .bulldoze_controller import BulldozeController
-from views.construction.construction_common_view import ConstructionCommonView
-from .base_construction_controller import BaseConstructionController
+from .base_construction_tool_controller import BaseConstructionToolController
 
-class ConstructionController(UIComponent):
+class ConstructionToolStrategy(UIComponent):
     handled_events = [pygame.MOUSEBUTTONUP]
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
         self.view = ConstructionCommonView(railway, state, graphics)
@@ -21,7 +21,7 @@ class ConstructionController(UIComponent):
         self._state = state
         self._graphics = graphics
 
-        self._controllers: dict[ConstructionMode, BaseConstructionController] = {
+        self._controllers: dict[ConstructionMode, BaseConstructionToolController] = {
             ConstructionMode.RAIL: RailController(railway, state, graphics),
             ConstructionMode.SIGNAL: SignalController(railway, state, graphics),
             ConstructionMode.STATION: StationController(railway, state, graphics),

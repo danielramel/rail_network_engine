@@ -1,10 +1,10 @@
-from config.settings import GRID_SIZE, PLATFORM_LENGTH
-from models.geometry import Position, Pose
+from core.config.settings import GRID_SIZE, PLATFORM_LENGTH
+from core.models.geometry import Position, Pose
 from collections import deque
-from models.geometry.edge import Edge
+from core.models.geometry.edge import Edge
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from models.railway_system import RailwaySystem
+    from core.models.railway.railway_system import RailwaySystem
 
 class GraphService:
     def __init__(self, railway: 'RailwaySystem'):

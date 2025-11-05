@@ -1,11 +1,11 @@
 import pygame
-from config.paths import ICON_PATHS
-from models.railway_system import RailwaySystem
-from graphics.icon_loader import IconLoader
-from models.geometry.position import Position
-from config.colors import BLACK, WHITE, YELLOW, RED
-from config.settings import BUTTON_SIZE
-from ui.models.rectangle import RectangleUIComponent
+from core.config.paths import ICON_PATHS
+from core.models.railway.railway_system import RailwaySystem
+from core.graphics.icon_loader import IconLoader
+from core.models.geometry.position import Position
+from core.config.colors import BLACK, WHITE, YELLOW, RED
+from core.config.settings import BUTTON_SIZE
+from shared.ui.models.rectangle import RectangleUIComponent
 
 
 class LoadButton(RectangleUIComponent):

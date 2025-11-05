@@ -1,12 +1,12 @@
-from controllers.construction.base_construction_controller import BaseConstructionController
-from services.construction.bulldoze_target import BulldozeTargetType, find_bulldoze_target
-from models.railway_system import RailwaySystem
-from models.construction_state import ConstructionState
 import pygame
-from views.construction.bulldoze_view import BulldozeView
-from graphics.graphics_context import GraphicsContext
+from core.models.railway.railway_system import RailwaySystem
+from modules.construction.construction_state import ConstructionState
+from core.graphics.graphics_context import GraphicsContext
+from modules.construction.controllers.base_construction_tool_controller import BaseConstructionToolController
+from modules.construction.views.bulldoze_view import BulldozeView
+from modules.construction.services.bulldoze_target import BulldozeTargetType, find_bulldoze_target
 
-class BulldozeController(BaseConstructionController):
+class BulldozeController(BaseConstructionToolController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
         view = BulldozeView(railway, state, graphics)
         super().__init__(view, railway, state, graphics.camera)

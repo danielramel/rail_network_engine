@@ -1,5 +1,4 @@
-import pygame
-from ui.models.ui_component import UIComponent
+from shared.ui.models.ui_component import UIComponent
 
 class UIController(UIComponent):
     elements: tuple[UIComponent]

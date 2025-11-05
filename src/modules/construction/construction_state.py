@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
-from models.geometry import Position, Pose
-from models.geometry.edge import Edge
-from models.station import Station
+from core.models.geometry import Position, Edge, Pose
+from core.models.station import Station
+from core.models.edge_action import EdgeAction
 
 class ConstructionMode(Enum):
     RAIL = 1
@@ -11,17 +11,6 @@ class ConstructionMode(Enum):
     STATION = 3
     PLATFORM = 4
     BULLDOZE = 5
-    
-class EdgeAction(Enum):
-    NORMAL = 0
-    SPEED = 1
-    PLATFORM = 10
-    PLATFORM_SELECTED = 2
-    INVALID_PLATFORM = 3
-    BULLDOZE = 4
-    LOCKED = 5
-    LOCKED_PREVIEW = 6
-    LOCKED_PLATFORM = 7
     
 @dataclass
 class ConstructionPreview:

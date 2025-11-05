@@ -3,14 +3,14 @@ from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout,
                               QPushButton, QDialog)
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor
-from config.colors import BLACK, LIGHTBLUE, RED, YELLOW
-from models.station import Station
-from models.schedule import Schedule
-from views.timetable.schedule_editor_dialog import ScheduleEditorDialog
-from views.timetable.timetable_stylesheet import TIMETABLE_STYLESHEET
+from core.config.colors import BLACK, LIGHTBLUE, RED, YELLOW
+from core.models.station import Station
+from core.models.schedule import Schedule
+from modules.timetable.views.schedule_editor_dialog import ScheduleEditorDialog
+from modules.timetable.views.timetable_stylesheet import TIMETABLE_STYLESHEET
 from PyQt6.QtCore import pyqtSignal
-from models.railway_system import RailwaySystem
 from PyQt6.QtWidgets import QHeaderView, QSizePolicy
+from core.models.railway.railway_system import RailwaySystem
 
 class TimetableWindow(QMainWindow):
     window_closed = pyqtSignal()

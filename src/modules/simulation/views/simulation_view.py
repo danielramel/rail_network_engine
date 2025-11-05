@@ -1,11 +1,12 @@
-from config.colors import BLUE, GREEN, LIME, RED, WHITE, LIGHTBLUE
-from models.construction_state import EdgeAction
-from models.geometry.position import Position
-from models.railway_system import RailwaySystem
-from models.simulation_state import SimulationState
-from ui.models.ui_component import UIComponent
-from ui.utils import draw_track, draw_node, draw_signal, draw_station
-from graphics.graphics_context import GraphicsContext
+from core.config.colors import BLUE, GREEN, LIME, RED, WHITE, LIGHTBLUE
+from shared.ui.models.ui_component import UIComponent
+from shared.ui.utils import draw_track, draw_node, draw_signal, draw_station
+from core.graphics.graphics_context import GraphicsContext
+from core.models.railway.railway_system import RailwaySystem
+from modules.simulation.simulation_state import SimulationState
+from core.models.edge_action import EdgeAction
+from core.models.geometry.position import Position
+
 
 class SimulationView(UIComponent):
     def __init__(self, railway: RailwaySystem, simulation_state: SimulationState, graphics: GraphicsContext):

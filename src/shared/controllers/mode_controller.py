@@ -1,12 +1,12 @@
 from modules.construction.controllers.construction_mode import ConstructionMode 
 from modules.simulation.controllers.simulation_mode import SimulationMode
-from models.app_state import AppState, ViewMode
-from models.railway_system import RailwaySystem
-from graphics.graphics_context import GraphicsContext
-from models.geometry import Position
+from core.models.app_state import AppState, ViewMode
+from core.models.railway.railway_system import RailwaySystem
+from core.graphics.graphics_context import GraphicsContext
+from core.models.geometry import Position
 
-from ui.models.ui_component import UIComponent
-from ui.models.ui_controller import UIController
+from shared.ui.models.ui_component import UIComponent
+from shared.ui.models.ui_controller import UIController
 
 
 class ModeController(UIComponent):

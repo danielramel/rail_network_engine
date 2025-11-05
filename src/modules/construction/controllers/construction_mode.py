@@ -1,13 +1,14 @@
 
 from shared.controllers.camera_controller import CameraController
-from shared.ui.components import UIComponent
-from modules.construction.controllers.construction_controller import ConstructionController
+from modules.construction.controllers.construction_tool_strategy import ConstructionToolStrategy
 from modules.construction.ui.construction_buttons import ConstructionButtons
 from modules.construction.controllers.construction_panel_strategy import ConstructionPanelStrategy
 from modules.construction.construction_state import ConstructionState
-from core.models.railway import RailwaySystem
-from core.graphics import GraphicsContext
-from ui.models.ui_controller import UIController
+from core.models.railway.railway_system import RailwaySystem
+from core.graphics.graphics_context import GraphicsContext
+from shared.ui.models.ui_controller import UIController
+from shared.ui.models.ui_component import UIComponent
+
 
 class ConstructionMode(UIController):
     elements: tuple[UIComponent]
@@ -17,5 +18,5 @@ class ConstructionMode(UIController):
             ConstructionButtons(graphics.screen, self.state),
             ConstructionPanelStrategy(graphics.screen, self.state),
             CameraController(graphics.camera),
-            ConstructionController(railway, self.state, graphics)
+            ConstructionToolStrategy(railway, self.state, graphics)
         )

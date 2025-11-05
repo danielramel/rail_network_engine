@@ -1,21 +1,20 @@
 import pygame
-from config.colors import BLACK
-from config.settings import GRID_SIZE, TRAIN_LENGTH
-from controllers.mode_controller import ModeController
-from models.geometry.pose import Pose
-from models.railway_system import RailwaySystem
-from graphics.camera import Camera
-from models.app_state import AppState
-from ui.models.ui_component import UIComponent
-from ui.components.load_button import LoadButton
-from ui.components.save_button import SaveButton
-from ui.components.mode_selector_buttons import ModeSelectorButtons
+from core.config.colors import BLACK
+from core.config.settings import GRID_SIZE, TRAIN_LENGTH
+from shared.controllers.mode_controller import ModeController
+from core.models.railway.railway_system import RailwaySystem
+from core.graphics.camera import Camera
+from core.models.app_state import AppState
+from shared.ui.models.ui_component import UIComponent
+from shared.ui.components.load_button import LoadButton
+from shared.ui.components.save_button import SaveButton
+from shared.ui.components.mode_selector_buttons import ModeSelectorButtons
 
-from ui.components.timetable_button import TimeTableButton
-from ui.components.zoom_button import ZoomButton
-from models.geometry import Position
-from graphics.graphics_context import GraphicsContext
-from ui.models.ui_controller import UIController
+from shared.ui.components.timetable_button import TimeTableButton
+from shared.ui.components.zoom_button import ZoomButton
+from core.models.geometry import Position
+from core.graphics.graphics_context import GraphicsContext
+from shared.ui.models.ui_controller import UIController
 
 class AppController(UIController):
     def __init__(self, screen: pygame.Surface):

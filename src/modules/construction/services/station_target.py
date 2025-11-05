@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import Optional
-from models.geometry import Position
-from models.railway_system import RailwaySystem
-from models.station import Station
+from core.models.geometry import Position
+from core.models.railway.railway_system import RailwaySystem
+from core.models.station import Station
 
 @dataclass
 class StationTarget:

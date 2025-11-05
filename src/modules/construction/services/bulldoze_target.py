@@ -1,8 +1,7 @@
 from dataclasses import dataclass
-from typing import Optional, Set, Any
-
-from models.geometry.position import Position
-from models.railway_system import RailwaySystem
+from core.models.geometry.edge import Edge
+from core.models.geometry.position import Position
+from core.models.railway.railway_system import RailwaySystem
 
 class BulldozeTargetType:
     SIGNAL = 0
@@ -14,10 +13,10 @@ class BulldozeTargetType:
 @dataclass
 class BulldozeTarget:
     kind: BulldozeTargetType
-    position: Optional[Any] = None    # Position for nodes/signals/stations
-    edge: Optional[Any] = None   # single edge for removal
-    edges: Optional[Set[Any]] = None  # set of edges for preview
-    nodes: Optional[Set[Any]] = None  # set of nodes for preview
+    position: Position = None    # Position for nodes/signals/stations
+    edge: Edge = None   # single edge for removal
+    edges: frozenset[Edge] = None  # set of edges for preview
+    nodes: frozenset[Position] = None  # set of nodes for preview
 
 def find_bulldoze_target(railway: RailwaySystem, world_pos: Position, camera_scale) -> BulldozeTarget:
     snapped = world_pos.snap_to_grid()

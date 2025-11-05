@@ -1,9 +1,9 @@
-from models.construction_state import EdgeAction
-from views.base_view import BaseView
-from models.geometry import Position
-from config.colors import PURPLE, LIGHTBLUE
-from ui.utils import draw_node, draw_station, draw_dotted_line
-from services.construction.platform_target import PlatformTargetType, find_platform_target
+from core.models.edge_action import EdgeAction
+from shared.views.base_view import BaseView
+from core.models.geometry import Position
+from core.config.colors import PURPLE, LIGHTBLUE
+from shared.ui.utils import draw_node, draw_station, draw_dotted_line
+from modules.construction.services.platform_target import PlatformTargetType, find_platform_target
 
 class PlatformView(BaseView):
     def render(self, world_pos: Position | None):

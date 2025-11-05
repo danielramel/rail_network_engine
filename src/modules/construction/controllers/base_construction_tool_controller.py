@@ -1,11 +1,12 @@
-from models.railway_system import RailwaySystem
-from models.construction_state import ConstructionState
-from graphics.camera import Camera
-from views.base_view import BaseView
-from models.geometry import Position
-from ui.models.ui_component import UIComponent
+from core.models.railway.railway_system import RailwaySystem
+from modules.construction.construction_state import ConstructionState
+from core.graphics.camera import Camera
+from shared.ui.models.ui_component import UIComponent
+from shared.views.base_view import BaseView
+from core.models.geometry.position import Position
 
-class BaseConstructionController(UIComponent):
+
+class BaseConstructionToolController(UIComponent):
     """Base class for controllers that manage construction modes."""
     def __init__(self, view: BaseView, railway: RailwaySystem, state: ConstructionState, camera: Camera):
         self.view = view

@@ -1,7 +1,7 @@
-from models.geometry import Edge
-from config.settings import FPS, TRAIN_LENGTH
-from models.geometry.direction import Direction
-from models.signal import Signal
+from core.models.geometry import Edge
+from core.config.settings import FPS, TRAIN_LENGTH
+from core.models.geometry.direction import Direction
+from core.models.signal import Signal
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from core.models.railway.railway_system import RailwaySystem

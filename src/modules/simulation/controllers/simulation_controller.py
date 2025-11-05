@@ -1,11 +1,10 @@
 import pygame
-from models.geometry import Position
-    
-from models.railway_system import RailwaySystem
-from models.simulation_state import SimulationState
-from ui.models.ui_component import UIComponent
+from core.models.geometry import Position
+from core.models.railway.railway_system import RailwaySystem
+from modules.simulation.simulation_state import SimulationState
+from shared.ui.models.ui_component import UIComponent
 from modules.simulation.views.simulation_view import SimulationView
-from graphics.graphics_context import GraphicsContext
+from core.graphics.graphics_context import GraphicsContext
 
 
 class SimulationController(UIComponent):

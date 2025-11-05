@@ -1,12 +1,12 @@
 from dataclasses import dataclass, asdict
-from config.settings import BULLDOZE_SENSITIVITY, GRID_SIZE, STATION_RECT_SIZE
+from core.config.settings import BULLDOZE_SENSITIVITY, GRID_SIZE, STATION_RECT_SIZE
 from math import hypot
 
 from typing import TYPE_CHECKING
 
-from models.geometry.direction import Direction
+from core.models.geometry.direction import Direction
 if TYPE_CHECKING:
-    from models.geometry.edge import Edge
+    from core.models.geometry.edge import Edge
 
 
 @dataclass(frozen=True, order=True)

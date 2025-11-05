@@ -3,14 +3,14 @@ from PyQt6.QtWidgets import (QDialog, QFormLayout, QComboBox,
                               QVBoxLayout, QHBoxLayout, QPushButton, QWidget,
                               QTableWidget, QTableWidgetItem, QHeaderView)
 from PyQt6.QtCore import Qt, QTime
-from models.railway_system import RailwaySystem
-from models.schedule import Schedule
+from core.models.schedule import Schedule
 from PyQt6.QtWidgets import QLineEdit
-from views.timetable.schedule_editor_stylesheet import (
+from modules.timetable.views.schedule_editor_stylesheet import (
     TABLE_STYLE, MOVE_UP_BUTTON_STYLE, MOVE_DOWN_BUTTON_STYLE,
     ADD_BUTTON_STYLE, REMOVE_BUTTON_STYLE
 )
 from PyQt6.QtGui import QBrush
+from core.models.railway.railway_system import RailwaySystem
 
 class ScheduleEditorDialog(QDialog):
     def __init__(self, parent, railway: RailwaySystem, schedule_to_edit: Schedule = None):

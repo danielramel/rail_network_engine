@@ -1,10 +1,10 @@
 import pygame
-from views.base_view import BaseView
-from models.geometry import Position
-from models.station import Station
-from config.colors import LIGHTBLUE, RED, YELLOW
-from ui.utils import draw_station, draw_dotted_line
-from services.construction.station_target import find_station_target
+from shared.views.base_view import BaseView
+from core.models.geometry import Position
+from core.models.station import Station
+from core.config.colors import LIGHTBLUE, RED, YELLOW
+from shared.ui.utils import draw_station, draw_dotted_line
+from modules.construction.services.station_target import find_station_target
 
 class StationView(BaseView):
     def render(self, world_pos: Position | None):

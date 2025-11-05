@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from models.geometry.direction import Direction
-from models.geometry.position import Position
+from core.models.geometry.direction import Direction
+from core.models.geometry.position import Position
 
 
 @dataclass(frozen=True, order=True)

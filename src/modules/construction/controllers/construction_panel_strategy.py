@@ -1,10 +1,10 @@
-from ui.construction.panels.bulldoze_panel import BulldozePanel
-from ui.construction.panels.platform_panel import PlatformPanel
-from ui.construction.panels.rail_panel import RailPanel
-from ui.construction.panels.signal_panel import SignalPanel
-from ui.construction.panels.station_panel import StationPanel
-from models.construction_state import ConstructionMode, ConstructionState
-from ui.models.panel import Panel
+from modules.construction.construction_state import ConstructionState, ConstructionMode
+from shared.ui.models.panel import Panel
+from modules.construction.ui.panels.rail_panel import RailPanel
+from modules.construction.ui.panels.signal_panel import SignalPanel
+from modules.construction.ui.panels.station_panel import StationPanel
+from modules.construction.ui.panels.platform_panel import PlatformPanel
+from modules.construction.ui.panels.bulldoze_panel import BulldozePanel
 import pygame
 
 

@@ -2,10 +2,9 @@
 from dataclasses import dataclass
 from enum import Enum
 from typing import Optional, Set, Any
-from config.settings import PLATFORM_LENGTH, GRID_SIZE
-from models.geometry import Position
-from models.railway_system import RailwaySystem
-
+from core.config.settings import PLATFORM_LENGTH, GRID_SIZE
+from core.models.geometry import Position
+from core.models.railway.railway_system import RailwaySystem
 class PlatformTargetType(Enum):
     NONE = 0
     EXISTING_PLATFORM = 1

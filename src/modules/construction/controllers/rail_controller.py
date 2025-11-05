@@ -1,14 +1,14 @@
 import pygame
-from controllers.construction.base_construction_controller import BaseConstructionController
-from models.geometry.direction import Direction
-from services.construction.rail_target import find_rail_target, RailTargetType
-from models.geometry import Pose
-from views.construction.rail_view import RailView
-from graphics.graphics_context import GraphicsContext
-from models.railway_system import RailwaySystem
-from models.construction_state import ConstructionState
+from modules.construction.controllers.base_construction_tool_controller import BaseConstructionToolController
+from core.models.geometry.direction import Direction
+from modules.construction.services.rail_target import find_rail_target, RailTargetType
+from core.models.geometry import Pose
+from modules.construction.views.rail_view import RailView
+from core.graphics.graphics_context import GraphicsContext
+from core.models.railway.railway_system import RailwaySystem
+from modules.construction.construction_state import ConstructionState
 
-class RailController(BaseConstructionController):
+class RailController(BaseConstructionToolController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
         view = RailView(railway, state, graphics)
         super().__init__(view, railway, state, graphics.camera)

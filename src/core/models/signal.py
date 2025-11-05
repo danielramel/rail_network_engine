@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
-from models.geometry.direction import Direction
-from models.geometry.edge import Edge
-from models.geometry.pose import Pose
-from models.geometry.position import Position
+from core.models.geometry.direction import Direction
+from core.models.geometry.edge import Edge
+from core.models.geometry.pose import Pose
+from core.models.geometry.position import Position
 from typing import Optional
 
 @dataclass

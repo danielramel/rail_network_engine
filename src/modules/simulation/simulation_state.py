@@ -1,10 +1,10 @@
 from dataclasses import dataclass, field
-from models.geometry.edge import Edge
-from models.geometry.position import Position
-from models.signal import Signal
+from core.models.geometry.edge import Edge
+from core.models.geometry.position import Position
+from core.models.signal import Signal
 
 from enum import Enum
-from config.settings import FPS
+from core.config.settings import FPS
 
 class TimeControlMode(Enum):
     PAUSE = 0

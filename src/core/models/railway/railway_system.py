@@ -1,11 +1,11 @@
-from models.geometry import Position, Pose
+from core.models.geometry import Position, Pose
 from core.models.railway.graph_adapter import GraphAdapter
-from services.railway_system.graph_service import GraphService
-from services.railway_system.path_service import PathService
-from services.railway_system.signalling_service import SignallingService
+from core.models.railway.graph_service import GraphService
+from core.models.railway.path_service import PathService
+from core.models.railway.signalling_service import SignallingService
 from core.models.repositories.station_repository import StationRepository
-from models.schedule import ScheduleRepository
-from models.train import TrainRepository
+from core.models.repositories.schedule_repository import ScheduleRepository
+from core.models.repositories.train_repository import TrainRepository
 from core.models.repositories.signal_repository import SignalRepository
 
 class RailwaySystem:

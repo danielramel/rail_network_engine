@@ -1,13 +1,14 @@
-from controllers.construction.base_construction_controller import BaseConstructionController
-from ui.popups import alert
-from services.construction.platform_target import find_platform_target
-from models.railway_system import RailwaySystem
-from models.construction_state import ConstructionState, EdgeAction
+from modules.construction.controllers.base_construction_tool_controller import BaseConstructionToolController
+from shared.ui.popups import alert
+from modules.construction.services.platform_target import find_platform_target
+from modules.construction.construction_state import ConstructionState
+from core.models.railway.railway_system import RailwaySystem
 import pygame
-from views.construction.platform_view import PlatformView, PlatformTargetType
-from graphics.graphics_context import GraphicsContext
+from modules.construction.views.platform_view import PlatformView, PlatformTargetType
+from core.graphics.graphics_context import GraphicsContext
+from core.models.edge_action import EdgeAction
 
-class PlatformController(BaseConstructionController):
+class PlatformController(BaseConstructionToolController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
         view = PlatformView(railway, state, graphics)
         super().__init__(view, railway, state, graphics.camera)

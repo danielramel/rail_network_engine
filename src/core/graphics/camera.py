@@ -1,5 +1,5 @@
-from models.geometry import Position
-from models.geometry.edge import Edge
+from core.models.geometry import Position
+from core.models.geometry.edge import Edge
 
 class Camera:
     def __init__(self):

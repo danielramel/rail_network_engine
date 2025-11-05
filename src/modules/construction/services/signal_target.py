@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
-from models.geometry import Position, Pose
-from models.railway_system import RailwaySystem
+from core.models.geometry import Position, Pose
+from core.models.railway.railway_system import RailwaySystem
 
 class SignalTargetType(Enum):
     INVALID = 0

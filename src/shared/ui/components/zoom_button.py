@@ -1,8 +1,8 @@
 import pygame
-from models.geometry.position import Position
-from ui.models.rectangle import RectangleUIComponent
-from config.colors import BLACK, WHITE
-from graphics.camera import Camera
+from core.models.geometry.position import Position
+from shared.ui.models.rectangle import RectangleUIComponent
+from core.config.colors import BLACK, WHITE
+from core.graphics.camera import Camera
 
 
 class ZoomButton(RectangleUIComponent):

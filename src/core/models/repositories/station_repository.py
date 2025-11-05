@@ -1,5 +1,5 @@
-from models.geometry import Position, Edge
-from models.station import Station
+from core.models.geometry import Position, Edge
+from core.models.station import Station
 from core.models.railway.graph_adapter import GraphAdapter
 
 class StationRepository:

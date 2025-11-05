@@ -1,6 +1,6 @@
-from models.geometry import Position, Pose   
 from core.models.railway.graph_adapter import GraphAdapter
-from models.signal import Signal
+from core.models.geometry import Position, Pose
+from core.models.signal import Signal
 
 class SignalRepository:
     """Service responsible for adding / toggling / removing signals."""

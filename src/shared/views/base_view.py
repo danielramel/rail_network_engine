@@ -1,12 +1,10 @@
-from graphics.graphics_context import GraphicsContext
-from models.railway_system import RailwaySystem
-from models.construction_state import ConstructionState
+from core.graphics.graphics_context import GraphicsContext
+from core.models.railway.railway_system import RailwaySystem
 
-from models.geometry.position import Position
-from models.simulation_state import SimulationState
+from core.models.geometry.position import Position
 
-class BaseView():
-    def __init__(self, railway: RailwaySystem, state: ConstructionState | SimulationState, graphics: GraphicsContext):
+class BaseView:
+    def __init__(self, railway: RailwaySystem, state, graphics: GraphicsContext):
         self._railway = railway
         self._state = state
         self._surface = graphics.screen

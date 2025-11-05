@@ -1,8 +1,8 @@
-from views.base_view import BaseView
-from models.geometry import Position
-from config.colors import RED, YELLOW
-from ui.utils import draw_signal
-from services.construction.signal_target import find_signal_target, SignalTargetType
+from shared.views.base_view import BaseView
+from core.models.geometry import Position
+from core.config.colors import RED, YELLOW
+from shared.ui.utils import draw_signal
+from modules.construction.services.signal_target import find_signal_target, SignalTargetType
 
 class SignalView(BaseView):
     def render(self, world_pos: Position | None):

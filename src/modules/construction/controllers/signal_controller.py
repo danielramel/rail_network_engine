@@ -1,13 +1,12 @@
-from controllers.construction.base_construction_controller import BaseConstructionController
-from services.construction.signal_target import find_signal_target, SignalTargetType
-from graphics.camera import Camera
-from models.railway_system import RailwaySystem
-from models.construction_state import ConstructionState
-from views.construction.signal_view import SignalView
-from graphics.graphics_context import GraphicsContext
+from modules.construction.controllers.base_construction_tool_controller import BaseConstructionToolController
+from modules.construction.services.signal_target import find_signal_target, SignalTargetType
+from modules.construction.construction_state import ConstructionState
+from core.models.railway.railway_system import RailwaySystem
+from modules.construction.views.signal_view import SignalView
+from core.graphics.graphics_context import GraphicsContext
 import pygame
 
-class SignalController(BaseConstructionController):
+class SignalController(BaseConstructionToolController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
         view = SignalView(railway, state, graphics)
         super().__init__(view, railway, state, graphics.camera)

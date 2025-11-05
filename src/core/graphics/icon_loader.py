@@ -1,5 +1,5 @@
 import pygame
-from config.colors import WHITE
+from core.config.colors import WHITE
 
 class IconLoader:
     _instance = None

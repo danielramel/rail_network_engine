@@ -1,10 +1,10 @@
-from config.settings import GRID_SIZE
-from models.geometry import Position, Pose, Edge
+from core.config.settings import GRID_SIZE
+from core.models.geometry import Position, Pose, Edge
 import heapq
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from models.railway_system import RailwaySystem
+    from core.models.railway_system import RailwaySystem
 
 
 class PathService:

@@ -1,11 +1,11 @@
 import heapq
 from typing import Optional
-from models.geometry import Position, Edge
-from models.signal import Signal
-from models.geometry import Pose
+from core.models.geometry import Position, Edge
+from core.models.signal import Signal
+from core.models.geometry import Pose
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from models.railway_system import RailwaySystem
+    from core.models.railway.railway_system import RailwaySystem
 
 class SignallingService:
     def __init__(self, railway: 'RailwaySystem'):
