@@ -1,0 +1,42 @@
+from modules.construction.controllers.construction_mode import ConstructionMode 
+from modules.simulation.controllers.simulation_mode import SimulationMode
+from models.app_state import AppState, ViewMode
+from models.railway_system import RailwaySystem
+from graphics.graphics_context import GraphicsContext
+from models.geometry import Position
+
+from ui.models.ui_component import UIComponent
+from ui.models.ui_controller import UIController
+
+
+class ModeController(UIComponent):
+    def __init__(self, app_state: AppState, railway: RailwaySystem, graphics: GraphicsContext):
+        self._state = app_state
+        app_state.subscribe(self.switch_to)
+        self._current_mode: UIController = None
+        
+        self._modes: dict[ViewMode, lambda: UIController] = {
+            ViewMode.CONSTRUCTION: lambda: ConstructionMode(railway, graphics),
+            ViewMode.SIMULATION: lambda: SimulationMode(railway, graphics)
+        }
+        
+        self.switch_to(app_state.mode)
+    
+    def switch_to(self, new_mode: ViewMode):
+        self._current_mode = self._modes[new_mode]()
+        
+        
+    def process_event(self, event) -> bool:
+        if self._current_mode is None:
+            return False
+        
+        self._current_mode.dispatch_event(event)
+        
+    def render(self, screen_pos: Position | None):
+        if self._current_mode is None:
+            return
+        
+        self._current_mode.render(screen_pos)
+        
+    def tick(self):
+        self._current_mode.tick()
