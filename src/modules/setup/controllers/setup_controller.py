@@ -21,10 +21,15 @@ class SetupController(ClickableComponent):
         
         closest_edge = event.world_pos.closest_edge(self._railway.graph.edges, self._camera.scale)
         if closest_edge and self._railway.stations.is_edge_platform(closest_edge):
-            platform = self._railway.stations.get_platform_from_edge(closest_edge)
-            sorted_platform = sorted(platform)
-            pos = sorted_platform[0].a
-            self._railway.trains.add_to_platform(sorted_platform, pos)
+            platform = sorted(self._railway.stations.get_platform_from_edge(closest_edge))
+            train = self._railway.trains.get_train_on_edge(closest_edge)
+            if train is not None:
+                self._railway.trains.switch_direction(train)
+                
+            else:
+                self._railway.trains.add_to_platform(platform)
+                
+        return True
 
     def render(self, screen_pos: Position | None):
         world_pos = None if screen_pos is None else self._camera.screen_to_world(screen_pos)

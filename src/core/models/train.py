@@ -22,6 +22,15 @@ class Train:
         self.path = list(edges) + path
         if signal is not None:
             signal.subscribe(self.signal_turned_green_ahead)
+            
+    def switch_direction(self, edges: tuple[Edge], path: tuple[Edge], signal: Signal | None = None) -> None:
+        if len(edges) != TRAIN_LENGTH:
+            raise ValueError("A train must occupy exactly TRAIN_LENGTH edges.")
+        
+        self.path = list(edges) + list(path)
+        self.edge_progress = 0.0
+        if signal is not None:
+            signal.subscribe(self.signal_turned_green_ahead)
 
     def direction(self) -> Direction:
         return self.path[TRAIN_LENGTH].direction
@@ -50,13 +59,22 @@ class Train:
         self.path.pop(0)
         
     def occupied_edges(self) -> tuple[Edge]:
-        return tuple(reversed(self.path[:TRAIN_LENGTH]))
+        return tuple(self.path[:TRAIN_LENGTH])
     
     def occupies_edge(self, edge: Edge) -> bool:
         return edge in self.occupied_edges()
     
     def get_locomotive_edge(self) -> Edge:
         return self.path[TRAIN_LENGTH - 1]
+    def get_last_carriage_edge(self) -> Edge:
+        return self.path[0]
+    
+    def get_locomotive_position(self) -> float:
+        if self.path[TRAIN_LENGTH - 1].a == self.path[TRAIN_LENGTH - 2].b:
+            return self.path[TRAIN_LENGTH - 1].b
+        else:
+            return self.path[TRAIN_LENGTH - 1].a
+    
     
     def get_max_safe_speed(self) -> float:
         distance = len(self.path) - TRAIN_LENGTH - self.edge_progress - 1.5

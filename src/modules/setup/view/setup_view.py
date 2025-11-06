@@ -40,8 +40,11 @@ class SetupView(ClickableComponent):
 
         for train in self._railway.trains.all():
             locomotive_edge = train.get_locomotive_edge()
+            draw_dashed_line(self._surface, locomotive_edge.a, locomotive_edge.b, self._camera, color=WHITE, num_dashes=1)
+            
+            last_carriage_edge = train.get_last_carriage_edge()
+            draw_dashed_line(self._surface, last_carriage_edge.a, last_carriage_edge.b, self._camera, color=RED, num_dashes=1)
 
-            draw_dashed_line(self._surface, locomotive_edge.a, locomotive_edge.b, self._camera, color=BLUE, num_dashes=5)
         if world_pos is None:
             return
                 
