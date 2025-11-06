@@ -21,11 +21,20 @@ class SimulationView(ClickableComponent):
 
         for edge, data in self._railway.graph.all_edges_with_data():
             edge_action = EdgeAction.NORMAL
-            if edge in self._state.preview.path:
+            is_edge_platform = self._railway.stations.is_edge_platform(edge)
+            is_edge_occupied = self._railway.trains.is_edge_occupied(edge)
+            is_edge_locked = self._railway.signalling.is_edge_locked(edge)
+            is_edge_in_preview = edge in self._state.preview.path
+            
+            if is_edge_occupied and is_edge_platform:
+                edge_action = EdgeAction.OCCUPIED_PLATFORM
+            elif is_edge_occupied:
+                edge_action = EdgeAction.OCCUPIED
+            elif is_edge_in_preview:
                 edge_action = EdgeAction.LOCKED_PREVIEW
-            elif self._railway.stations.is_edge_platform(edge) and self._railway.signalling.is_edge_locked(edge):
+            elif is_edge_platform and is_edge_locked:
                 edge_action = EdgeAction.LOCKED_PLATFORM
-            elif self._railway.signalling.is_edge_locked(edge):
+            elif is_edge_locked:
                 edge_action = EdgeAction.LOCKED
             elif self._railway.stations.is_edge_platform(edge):
                 edge_action = EdgeAction.PLATFORM

@@ -7,6 +7,13 @@ from core.models.geometry.position import Position
 class Edge:
     a: Position
     b: Position
+
+    def __post_init__(self):
+        # Initialize ordered endpoints for a frozen dataclass
+        a, b = min(self.a, self.b), max(self.a, self.b)
+        object.__setattr__(self, "a", a)
+        object.__setattr__(self, "b", b)
+        
     def __iter__(self):
         return iter((self.a, self.b))
     

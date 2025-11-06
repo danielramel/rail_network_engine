@@ -16,18 +16,14 @@ class TrainRepository:
         self._trains.append(train)
         
     def add_to_platform(self, platform: frozenset[Edge]) -> None:
-        locomotive_pos = sorted(platform)[0].a
-        path, signal = self._railway.signalling.get_initial_path(platform, locomotive_pos)
-        edges = tuple(list(platform))
-        train = Train(edges, path, signal)
+        platform = sorted(platform)
+        locomotive_pose = Pose.from_positions(platform[-1].a, platform[-1].b)
+        path, signal = self._railway.signalling.get_initial_path(locomotive_pose)
+        train = Train(platform, path, signal)
         self.add(train)
         
     def switch_direction(self, train: Train) -> None:
-        occupied_edges = train.occupied_edges()
-        if occupied_edges[0].b == occupied_edges[0].a:
-            locomotive_pos = occupied_edges[0].a
-        else:
-            locomotive_pos = occupied_edges[0].b
+        return
         path, signal = self._railway.signalling.get_initial_path(occupied_edges, locomotive_pos)
         train.switch_direction(tuple(reversed(occupied_edges)), path, signal)
 

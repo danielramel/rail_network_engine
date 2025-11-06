@@ -94,33 +94,29 @@ class SignallingService:
         for pose in poses[1:]:
             self._railway.graph.set_node_attr(pose.position, 'locked', True)
 
-    def get_initial_path(self, platform: frozenset[Edge], start_pos: Position) -> tuple[list[Edge], Optional[Signal]]:
-        
-        visited = {edge.a for edge in platform}.union({edge.b for edge in platform})
-        pos = start_pos
+    def get_initial_path(self, start_pose: Pose) -> tuple[list[Edge], Optional[Signal]]:
+        visited = set[Position]()
+        pose = start_pose
         path = []
         while True:
-            if self._railway.signals.has_signal_at(pos):
-                signal = self._railway.signals.get(pos)
+            visited.add(pose.position)
+            if self._railway.signals.has_signal_at(pose.position):
+                signal = self._railway.signals.get(pose.position)
                 if signal.next_signal is None:
                     return path, signal
                 else:
                     raise NotImplementedError("The next signal is already set, cannot create initial path.")
 
-            neighbors = self._railway.graph.neighbors(pos)
-            if len(neighbors) == 1:
-                if neighbors[0] in visited:
-                     return path, None
-                 
-                path.append(Edge(pos, neighbors[0]))
-                visited.add(pos)
+            neighbors = self._railway.graph_service.get_connections_from_pose(pose)
+            if len(neighbors) == 0:
                 return path, None
             
-            if neighbors[0] in visited and neighbors[1] in visited:
-                return path, None
+            if len(neighbors) > 1:
+                raise NotImplementedError("Branching paths are not supported in initial path generation.")
             
-            next_pos = neighbors[0] if neighbors[0] not in visited else neighbors[1]
+            connection = neighbors[0]
+            if connection.position in visited:
+                return path, None
 
-            visited.add(next_pos)
-            path.append(Edge(pos, next_pos))
-            pos = next_pos
+            path.append(Edge(pose.position, connection.position))
+            pose = connection

@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 class Train:
     path : list[Edge]
-    edge_progress : float = 0.0
+    edge_progress : float = 1.0
     speed : float = 0.0  # in m/s
     acceleration : float = 2.0  # in km/s²
     max_speed : int  =  120  # in km/h
@@ -77,7 +77,7 @@ class Train:
     
     
     def get_max_safe_speed(self) -> float:
-        distance = len(self.path) - TRAIN_LENGTH - self.edge_progress - 1.5
+        distance = len(self.path) - TRAIN_LENGTH - self.edge_progress - 0.1
         if distance <= 0:
             return 0.0
         # v_max = sqrt(2 * a * s)
