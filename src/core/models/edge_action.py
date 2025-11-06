@@ -10,3 +10,5 @@ class EdgeAction(Enum):
     LOCKED = 5
     LOCKED_PREVIEW = 6
     LOCKED_PLATFORM = 7
+    OCCUPIED = 8
+    OCCUPIED_PLATFORM = 9
