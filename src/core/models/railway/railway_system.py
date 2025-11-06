@@ -15,7 +15,7 @@ class RailwaySystem:
         self._signal_repository = SignalRepository(self._graph_adapter)
         self._station_repository = StationRepository(self._graph_adapter)
         self._schedule_repository = ScheduleRepository()
-        self._train_repository = TrainRepository()
+        self._train_repository = TrainRepository(self)
         self._pathfinder = PathService(self)
         self._signalling_service = SignallingService(self)
     

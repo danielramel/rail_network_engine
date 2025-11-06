@@ -1,7 +1,9 @@
 from core.models.geometry.edge import Edge
 from core.models.geometry.pose import Pose
 from core.models.train import Train
-from core.models.railway.railway_system import RailwaySystem
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from core.models.railway.railway_system import RailwaySystem
 
 
 class TrainRepository:

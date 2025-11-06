@@ -30,7 +30,3 @@ class CameraController(UIComponent):
                 return False  # Not handled further
             
         return True
-    
-    def render(self, screen_pos):
-        if screen_pos is None:
-            self._is_dragging = False
