@@ -23,12 +23,15 @@ class Train:
         if signal is not None:
             signal.subscribe(self.signal_turned_green_ahead)
             
-    def switch_direction(self, edges: tuple[Edge], path: tuple[Edge], signal: Signal | None = None) -> None:
+    def switch_direction(self, edges: tuple[Edge], path: tuple[Edge], signal: Signal | None = None, edge_progress: float = None) -> None:
         if len(edges) != TRAIN_LENGTH:
             raise ValueError("A train must occupy exactly TRAIN_LENGTH edges.")
         
         self.path = list(edges) + list(path)
-        self.edge_progress = 0.0
+        if edge_progress is not None:
+            self.edge_progress = edge_progress
+        else:
+            self.edge_progress = 1 - self.edge_progress
         if signal is not None:
             signal.subscribe(self.signal_turned_green_ahead)
 

@@ -23,9 +23,16 @@ class TrainRepository:
         self.add(train)
         
     def switch_direction(self, train: Train) -> None:
-        return
-        path, signal = self._railway.signalling.get_initial_path(occupied_edges, locomotive_pos)
-        train.switch_direction(tuple(reversed(occupied_edges)), path, signal)
+        platform = train.occupied_edges()
+        if train.get_locomotive_edge() > train.get_last_carriage_edge():
+            # facing positive
+            locomotive_pose = Pose.from_positions(platform[0].b, platform[0].a)
+        else:
+            # facing negative
+            locomotive_pose = Pose.from_positions(platform[0].a, platform[0].b)
+            
+        path, signal = self._railway.signalling.get_initial_path(locomotive_pose)
+        train.switch_direction(tuple(reversed(platform)), path, signal, edge_progress=1.0)
 
     def remove(self, id: int) -> None:
         self._trains = [train for train in self._trains if train.id != id]
