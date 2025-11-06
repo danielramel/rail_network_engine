@@ -20,8 +20,7 @@ class AppController(UIController):
         self._graphics = GraphicsContext(screen, Camera())
         self._railway = RailwaySystem()
         self._app_state = AppState()
-        self._last_left_mouse_button_down_pos: Position | None = None
-        self._last_right_mouse_button_down_pos: Position | None = None
+        self._last_mouse_down_pos: Position | None = None
         
         self._mock_load()
         
@@ -43,17 +42,11 @@ class AppController(UIController):
 
         screen_pos = Position(*pygame.mouse.get_pos())
         world_pos = self._graphics.camera.screen_to_world(screen_pos)
-        event = Event(pygame_event, screen_pos, world_pos, self._last_left_mouse_button_down_pos, self._last_right_mouse_button_down_pos)
+        event = Event(pygame_event, screen_pos, world_pos, self._last_mouse_down_pos)
         if pygame_event.type == pygame.MOUSEBUTTONDOWN:
-            if pygame_event.button == 1:
-                self._last_left_mouse_button_down_pos = mouse_pos
-            elif pygame_event.button == 3:
-                self._last_right_mouse_button_down_pos = mouse_pos
+            self._last_mouse_down_pos = screen_pos
         elif pygame_event.type == pygame.MOUSEBUTTONUP:
-            if pygame_event.button == 1:
-                self._last_left_mouse_button_down_pos = None
-            elif pygame_event.button == 3:
-                self._last_right_mouse_button_down_pos = None
+            self._last_mouse_down_pos = None
         
         
         super().dispatch_event(event)
