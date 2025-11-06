@@ -15,15 +15,11 @@ class Train:
     max_speed : int  =  120  # in km/h
     deceleration : float = 5.0 # in km/s²
 
-    def __init__(self, id: int, code: str, edges: tuple[Edge], railway_system: 'RailwaySystem'):
+    def __init__(self, edges: tuple[Edge], path: tuple[Edge], signal: Signal | None = None):
         if len(edges) != TRAIN_LENGTH:
             raise ValueError("A train must occupy exactly TRAIN_LENGTH edges.")
         
-        self.id = id
-        self.code = code
-        self.railway_system = railway_system
-        path, signal = railway_system.train_service.get_initial_path(edges[-1])
-        self.path = edges + path
+        self.path = list(edges) + path
         if signal is not None:
             signal.subscribe(self.signal_turned_green_ahead)
 
@@ -55,6 +51,9 @@ class Train:
         
     def occupied_edges(self) -> tuple[Edge]:
         return tuple(reversed(self.path[:TRAIN_LENGTH]))
+    
+    def occupies_edge(self, edge: Edge) -> bool:
+        return edge in self.occupied_edges()
     
     def get_max_safe_speed(self) -> float:
         distance = len(self.path) - TRAIN_LENGTH - self.edge_progress - 1.5

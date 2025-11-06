@@ -19,10 +19,15 @@ class SetupView(ClickableComponent):
         for edge, data in self._railway.graph.all_edges_with_data():
             speed = data.get('speed')
             length = data.get('length')
-            if self._railway.stations.is_edge_platform(edge):
-                draw_track(self._surface, edge, self._camera, EdgeAction.PLATFORM, length=length)
-            else:
-                draw_track(self._surface, edge, self._camera, EdgeAction.SPEED, speed=speed, length=length)
+            edge_action = EdgeAction.SPEED
+            if self._railway.trains.is_edge_occupied(edge) and self._railway.stations.is_edge_platform(edge):
+                edge_action = EdgeAction.OCCUPIED_PLATFORM
+            elif self._railway.trains.is_edge_occupied(edge):
+                edge_action = EdgeAction.OCCUPIED
+            elif self._railway.stations.is_edge_platform(edge):
+                edge_action = EdgeAction.PLATFORM
+            
+            draw_track(self._surface, edge, self._camera, edge_action, length=length, speed=speed)
 
         for node in self._railway.graph_service.junctions:
             draw_node(self._surface, node, self._camera, color=WHITE)
@@ -33,8 +38,8 @@ class SetupView(ClickableComponent):
         for station in self._railway.stations.all():
             draw_station(self._surface, station, self._camera)
 
-        # for train in self._railway.trains.all():
-        #     draw_train(self._surface, train, self._camera)
+            
+            
         if world_pos is None:
             return
                 

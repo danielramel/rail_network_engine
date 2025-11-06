@@ -6,27 +6,32 @@ from core.graphics.camera import Camera
 from core.models.geometry import Position, Pose
 from core.models.geometry.edge import Edge
 from core.models.edge_action import EdgeAction
-from shared.ui.utils.draw_line import draw_dotted_line
+from shared.ui.utils.draw_line import draw_dashed_line, draw_dotted_line
 from shared.ui.services.color_from_speed import color_from_speed
 
         
-def draw_track(surface: pygame.Surface, edge: Edge, camera: Camera, edge_type: EdgeAction, length: int, speed: int = None):   
-    if edge_type in (EdgeAction.BULLDOZE, EdgeAction.INVALID_PLATFORM):
+def draw_track(surface: pygame.Surface, edge: Edge, camera: Camera, edge_action: EdgeAction, length: int, speed: int = None):   
+    if edge_action in (EdgeAction.BULLDOZE, EdgeAction.INVALID_PLATFORM):
         draw_edge(surface, edge, camera, color=RED, length=length)
-    elif edge_type == EdgeAction.PLATFORM_SELECTED:
+    elif edge_action == EdgeAction.PLATFORM_SELECTED:
         draw_platform(surface, edge, camera, length=length, color=LIGHTBLUE)
-    elif edge_type == EdgeAction.PLATFORM:
+    elif edge_action == EdgeAction.PLATFORM:
         draw_platform(surface, edge, camera, length=length, color=PURPLE)
-    elif edge_type == EdgeAction.LOCKED_PLATFORM:
+    elif edge_action == EdgeAction.OCCUPIED_PLATFORM:
+        draw_platform(surface, edge, camera, length=length, color=PURPLE)
+        draw_dashed_line(surface, edge.a, edge.b, camera, color=YELLOW, num_dashes=1)
+    elif edge_action == EdgeAction.OCCUPIED:
+        draw_dashed_line(surface, edge.a, edge.b, camera, color=YELLOW, num_dashes=1)
+    elif edge_action == EdgeAction.LOCKED_PLATFORM:
         draw_edge(surface, edge, camera, color=PURPLE, length=length)
         draw_platform(surface, edge, camera, length=length, color=LIME)
-    elif edge_type == EdgeAction.LOCKED_PREVIEW:
+    elif edge_action == EdgeAction.LOCKED_PREVIEW:
         draw_edge(surface, edge, camera, color=GREEN, length=length)
-    elif edge_type == EdgeAction.LOCKED:
+    elif edge_action == EdgeAction.LOCKED:
         draw_edge(surface, edge, camera, color=LIME, length=length)
-    elif edge_type == EdgeAction.NORMAL:
+    elif edge_action == EdgeAction.NORMAL:
         draw_edge(surface, edge, camera, color=WHITE, length=length)
-    elif edge_type == EdgeAction.SPEED:
+    elif edge_action == EdgeAction.SPEED:
         color = color_from_speed(speed)
         draw_edge(surface, edge, camera, color=color, length=length)
 
@@ -59,10 +64,10 @@ def draw_platform(surface: pygame.Surface, edge: Edge, camera: Camera, length: i
         Position(bx + perp_x * offset, by + perp_y * offset)
     )
     edge1 = camera.screen_to_world(edge1)
-    draw_edge(surface, edge1, camera, color=color, length=length)  # Draw main track line
+    pygame.draw.aaline(surface, color, tuple(camera.world_to_screen(edge1.a)), tuple(camera.world_to_screen(edge1.b)), max(1, 2*int(camera.scale)))  # Draw platform line
     edge2 = Edge(
         Position(ax - perp_x * offset, ay - perp_y * offset),
         Position(bx - perp_x * offset, by - perp_y * offset)
     )
     edge2 = camera.screen_to_world(edge2)
-    draw_edge(surface, edge2, camera, color=color, length=length)  # Draw platform line
+    pygame.draw.aaline(surface, color, tuple(camera.world_to_screen(edge2.a)), tuple(camera.world_to_screen(edge2.b)), max(1, 2*int(camera.scale)))  # Draw platform line

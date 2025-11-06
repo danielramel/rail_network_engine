@@ -1,5 +1,6 @@
 from core.models.geometry.edge import Edge
 from core.models.geometry.pose import Pose
+from core.models.geometry.position import Position
 from core.models.train import Train
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -14,11 +15,21 @@ class TrainRepository:
     def add(self, train: Train) -> None:
         self._trains.append(train)
         
-    def add_to_platform(self, platform: frozenset[Edge], locomotive_pose: Pose) -> None:
-        self._railway.signalling.get_initial_path(platform, locomotive_pose)
+    def add_to_platform(self, platform: frozenset[Edge], locomotive_pos: Position) -> None:
+        path, signal = self._railway.signalling.get_initial_path(platform, locomotive_pos)
+        edges = tuple(list(platform))
+        train = Train(edges, path, signal)
+        self.add(train)
+        
 
     def remove(self, id: int) -> None:
         self._trains = [train for train in self._trains if train.id != id]
+        
+    def is_edge_occupied(self, edge: Edge) -> bool:
+        for train in self._trains:
+            if train.occupies_edge(edge):
+                return True
+        return False
 
     def all(self) -> list[Train]:
         return self._trains

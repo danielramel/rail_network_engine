@@ -94,16 +94,18 @@ class SignallingService:
         for pose in poses[1:]:
             self._railway.graph.set_node_attr(pose.position, 'locked', True)
 
-    def get_initial_path(self, platform: frozenset[Edge], start_pose: Pose) -> tuple[list[Edge], Optional[Signal]]:
+    def get_initial_path(self, platform: frozenset[Edge], start_pos: Position) -> tuple[list[Edge], Optional[Signal]]:
         
         visited = {edge.a for edge in platform}.union({edge.b for edge in platform})
-        pos = start_pose.position
+        pos = start_pos
         path = []
         while True:
             if self._railway.signals.has_signal_at(pos):
                 signal = self._railway.signals.get(pos)
                 if signal.next_signal is None:
                     return path, signal
+                else:
+                    raise NotImplementedError("The next signal is already set, cannot create initial path.")
 
             neighbors = self._railway.graph.neighbors(pos)
             if len(neighbors) == 1:

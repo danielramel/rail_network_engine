@@ -3,8 +3,6 @@ from core.models.railway.railway_system import RailwaySystem
 from modules.setup.view.setup_view import SetupView
 from shared.ui.models.clickable_component import ClickableComponent
 from core.graphics.graphics_context import GraphicsContext
-from shared.ui.utils import draw_dashed_line
-from core.config.colors import YELLOW
 import pygame
 
 
@@ -21,15 +19,13 @@ class SetupController(ClickableComponent):
         if event.button != 1:
             return False
         
-        
         closest_edge = event.world_pos.closest_edge(self._railway.graph.edges, self._camera.scale)
         if closest_edge and self._railway.stations.is_edge_platform(closest_edge):
             platform = self._railway.stations.get_platform_from_edge(closest_edge)
-            sorted_platform = frozenset(sorted(platform))
-            pose = sorted_platform[0].a
-            self._railway.trains.add_to_platform(platform, event.world_pos)
-            
-            
+            sorted_platform = sorted(platform)
+            pos = sorted_platform[0].a
+            self._railway.trains.add_to_platform(platform, pos)
+
     def render(self, screen_pos: Position | None):
         world_pos = None if screen_pos is None else self._camera.screen_to_world(screen_pos)
         self.view.render(world_pos)

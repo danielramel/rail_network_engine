@@ -38,7 +38,6 @@ class AppController(UIController):
             or (pygame_event.type == pygame.KEYDOWN and pygame_event.key == pygame.K_ESCAPE):
             return "quit"
 
-        mouse_pos = Position(*pygame.mouse.get_pos())
 
         screen_pos = Position(*pygame.mouse.get_pos())
         world_pos = self._graphics.camera.screen_to_world(screen_pos)

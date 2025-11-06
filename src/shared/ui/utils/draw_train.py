@@ -1,4 +1,3 @@
-
 """
 def draw_train_car(surface: pygame.Surface, edge: Edge, camera: Camera):
     a, b = edge
