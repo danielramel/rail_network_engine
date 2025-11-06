@@ -94,9 +94,10 @@ class SignallingService:
         for pose in poses[1:]:
             self._railway.graph.set_node_attr(pose.position, 'locked', True)
 
-    def get_initial_path(self, start_edge: Edge) -> tuple[list[Edge], Optional[Signal]]:
-        visited = {start_edge.a, start_edge.b}
-        pos = start_edge.b
+    def get_initial_path(self, platform: frozenset[Edge], start_pose: Pose) -> tuple[list[Edge], Optional[Signal]]:
+        
+        visited = {edge.a for edge in platform}.union({edge.b for edge in platform})
+        pos = start_pose.position
         path = []
         while True:
             if self._railway.signals.has_signal_at(pos):
@@ -106,6 +107,9 @@ class SignallingService:
 
             neighbors = self._railway.graph.neighbors(pos)
             if len(neighbors) == 1:
+                if neighbors[0] in visited:
+                     return path, None
+                 
                 path.append(Edge(pos, neighbors[0]))
                 visited.add(pos)
                 return path, None

@@ -32,26 +32,8 @@ def draw_dashed_line(surface: pygame.Surface, world_a: Position, world_b: Positi
     dash_length = distance // (num_dashes * 2)
     
     for i in range(num_dashes):
-        dash_start_x = a_x + (dx * (i * 2 * dash_length) / distance)
-        dash_start_y = a_y + (dy * (i * 2 * dash_length) / distance)
-        dash_end_x = a_x + (dx * ((i * 2 + 1) * dash_length) / distance)
-        dash_end_y = a_y + (dy * ((i * 2 + 1) * dash_length) / distance)
-        pygame.draw.line(surface, color, (int(dash_start_x), int(dash_start_y)), (int(dash_end_x), int(dash_end_y)), 2)
-
-def draw_dashed_line_simple(surface: pygame.Surface, world_a: Position, world_b: Position, camera:Camera,color, dash_length: int = 10):
-    """Draw a dashed line on the surface from start_pos to end_pos."""
-    a = camera.world_to_screen(world_a)
-    b = camera.world_to_screen(world_b)
-    (a_x, a_y), (b_x, b_y) = a, b
-    dx = b_x - a_x
-    dy = b_y - a_y
-
-    distance = a.distance_to(b)
-    num_dashes = max(1, int(distance // (dash_length * 2)))
-    
-    for i in range(num_dashes):
-        dash_start_x = a_x + (dx * (i * 2 * dash_length) / distance)
-        dash_start_y = a_y + (dy * (i * 2 * dash_length) / distance)
-        dash_end_x = a_x + (dx * ((i * 2 + 1) * dash_length) / distance)
-        dash_end_y = a_y + (dy * ((i * 2 + 1) * dash_length) / distance)
-        pygame.draw.line(surface, color, (int(dash_start_x), int(dash_start_y)), (int(dash_end_x), int(dash_end_y)), 2)
+        dash_start_x = a_x + (dx * ((i * 2 + 0.5) * dash_length) / distance)
+        dash_start_y = a_y + (dy * ((i * 2 + 0.5) * dash_length) / distance)
+        dash_end_x = a_x + (dx * ((i * 2 + 1.5) * dash_length) / distance)
+        dash_end_y = a_y + (dy * ((i * 2 + 1.5) * dash_length) / distance)
+        pygame.draw.aaline(surface, color, (int(dash_start_x), int(dash_start_y)), (int(dash_end_x), int(dash_end_y)), 2)

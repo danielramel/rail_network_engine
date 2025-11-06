@@ -2,6 +2,7 @@ import pygame
 from core.config.colors import BLACK, WHITE, YELLOW
 from modules.construction.models.construction_state import ConstructionState
 from modules.construction.ui.panels.base_construction_panel import BaseConstructionPanel
+from core.models.event import Event
     
 class RailPanel(BaseConstructionPanel):
     """Rail construction panel with +/- controls for track speed and toggle for track length."""
@@ -139,9 +140,9 @@ class RailPanel(BaseConstructionPanel):
         self._render_toggle_button(self.length_short_rect, "50 m", is_short)
         self._render_toggle_button(self.length_long_rect, "500 m", not is_short)
 
-    def process_event(self, event: pygame.event.Event) -> bool:
+    def process_event(self, event: Event) -> bool:
         """Handle +/- clicks and length toggle; return True if the event was consumed."""     
-        if event.type != pygame.MOUSEBUTTONUP or event.button != 1:
+        if not event.is_left_click:
             return self._rect.collidepoint(*event.screen_pos)
         
         # Speed controls

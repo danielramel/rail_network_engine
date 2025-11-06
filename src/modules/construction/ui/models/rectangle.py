@@ -5,6 +5,7 @@ from shared.ui.models.clickable_component import ClickableComponent
 
     
 class RectangleUIComponent(ClickableComponent):
+    handled_events = [pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP, pygame.MOUSEWHEEL]
     """A rectangular UI element defined by a pygame.Rect."""
     def __init__(self, rect: pygame.Rect, surface: pygame.Surface):
         self._rect = rect

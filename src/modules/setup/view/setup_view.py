@@ -1,14 +1,14 @@
-from core.config.colors import BLUE, GREEN, LIME, RED, WHITE, LIGHTBLUE
-from shared.ui.models.ui_component import UIComponent
+from core.config.colors import BLUE, GREEN, LIME, RED, WHITE, LIGHTBLUE, YELLOW
+from shared.ui.models.clickable_component import ClickableComponent
 from shared.ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
-from modules.simulation.models.simulation_state import SimulationState
 from core.models.edge_action import EdgeAction
 from core.models.geometry.position import Position
+from shared.ui.utils import draw_dashed_line
 
 
-class SetupView(UIComponent):
+class SetupView(ClickableComponent):
     def __init__(self, railway: RailwaySystem, graphics: GraphicsContext):
         self._railway = railway
         self._surface = graphics.screen
@@ -37,5 +37,12 @@ class SetupView(UIComponent):
         #     draw_train(self._surface, train, self._camera)
         if world_pos is None:
             return
+                
         
-        draw_node(self._surface, world_pos, self._camera, color=WHITE)
+        closest_edge = world_pos.closest_edge(self._railway.graph.edges, self._camera.scale)
+        if closest_edge and self._railway.stations.is_edge_platform(closest_edge):
+            platform = self._railway.stations.get_platform_from_edge(closest_edge)
+            for edge in platform:
+                draw_dashed_line(self._surface, edge.a, edge.b, self._camera, color=YELLOW, num_dashes=1)
+        else:
+            draw_node(self._surface, world_pos, self._camera, color=WHITE)

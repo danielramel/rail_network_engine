@@ -1,13 +1,13 @@
-import pygame
 from core.models.geometry import Position
 from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
-from shared.ui.models.ui_component import UIComponent
+from shared.ui.models.clickable_component import ClickableComponent
 from modules.simulation.views.simulation_view import SimulationView
 from core.graphics.graphics_context import GraphicsContext
+import pygame
 
 
-class SimulationController(UIComponent):
+class SimulationController(ClickableComponent):
     handled_events = [pygame.MOUSEBUTTONUP]
     def __init__(self, railway: RailwaySystem, simulation_state: SimulationState, graphics: GraphicsContext):
         self.view = SimulationView(railway, simulation_state, graphics)
@@ -41,8 +41,6 @@ class SimulationController(UIComponent):
         world_pos = None if screen_pos is None else self._camera.screen_to_world(screen_pos)
         self.view.render(world_pos)
 
-    def contains(self, screen_pos: Position) -> bool:
-        return True
     
     def tick(self):
         if self._simulation_state.time.paused:

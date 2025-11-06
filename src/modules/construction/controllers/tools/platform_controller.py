@@ -3,7 +3,7 @@ from shared.ui.utils.popups import alert
 from modules.construction.services.platform_target import find_platform_target
 from modules.construction.models.construction_state import ConstructionState
 from core.models.railway.railway_system import RailwaySystem
-import pygame
+from core.models.event import Event
 from modules.construction.views.platform_view import PlatformView, PlatformTargetType
 from core.graphics.graphics_context import GraphicsContext
 from core.models.edge_action import EdgeAction
@@ -14,7 +14,7 @@ class PlatformController(BaseConstructionToolController):
         super().__init__(view, railway, state, graphics.camera)
 
 
-    def process_event(self, event: pygame.event.Event) -> None:
+    def process_event(self, event: Event) -> None:
         if event.button == 3:
             if self._construction_state.platform_waiting_for_station:
                 self._construction_state.platform_waiting_for_station = False

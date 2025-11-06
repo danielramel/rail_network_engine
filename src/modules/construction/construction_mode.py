@@ -6,8 +6,8 @@ from modules.construction.ui.panels.construction_panel_strategy import Construct
 from modules.construction.models.construction_state import ConstructionState
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.graphics_context import GraphicsContext
-from shared.ui.models.ui_controller import UIController
 from shared.ui.models.ui_component import UIComponent
+from shared.ui.models.ui_controller import UIController
 
 
 class ConstructionMode(UIController):

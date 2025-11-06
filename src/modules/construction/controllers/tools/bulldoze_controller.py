@@ -5,13 +5,14 @@ from core.graphics.graphics_context import GraphicsContext
 from modules.construction.controllers.tools.base_construction_tool_controller import BaseConstructionToolController
 from modules.construction.views.bulldoze_view import BulldozeView
 from modules.construction.services.bulldoze_target import BulldozeTargetType, find_bulldoze_target
+from core.models.event import Event
 
 class BulldozeController(BaseConstructionToolController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
         view = BulldozeView(railway, state, graphics)
         super().__init__(view, railway, state, graphics.camera)
 
-    def process_event(self, event: pygame.event.Event) -> bool:
+    def process_event(self, event: Event) -> bool:
         if event.button == 3:
             self._construction_state.switch_mode(None)
             return True

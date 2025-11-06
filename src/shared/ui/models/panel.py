@@ -4,7 +4,6 @@ from shared.ui.models.rectangle import RectangleUIComponent
 import pygame
 
 class Panel(RectangleUIComponent):
-    handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL]
     def __init__(self, surface: pygame.Surface):
         self._surface = surface
         self._rect = self._get_panel_rect()

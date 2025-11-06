@@ -8,7 +8,6 @@ class Camera:
         self.scale = 1.0
         self.min_scale = 0.1
         self.max_scale = 3.0
-        self.is_dragging = False
         self.drag_start_x = 0
         self.drag_start_y = 0
         self.drag_start_cam_x = 0
@@ -35,7 +34,6 @@ class Camera:
     
     def start_drag(self, mouse_pos: Position):
         """Start dragging the camera"""
-        self.is_dragging = True
         self.drag_start_x = mouse_pos.x
         self.drag_start_y = mouse_pos.y
         self.drag_start_cam_x = self.x
@@ -43,8 +41,6 @@ class Camera:
 
     def update_drag(self, mouse_pos : Position):
         """Update camera position during drag"""
-        if not self.is_dragging:
-            return
         dx = mouse_pos.x - self.drag_start_x
         dy = mouse_pos.y - self.drag_start_y
         self.x = self.drag_start_cam_x + dx / self.scale
@@ -53,12 +49,8 @@ class Camera:
     
     def stop_drag(self, pos: Position):
         """Stop dragging the camera"""
-        was_dragging = self.is_dragging
-        self.is_dragging = False
         buffer = 5  # pixels tolerance to avoid tiny accidental drags
-        dx = pos.x - self.drag_start_x
-        dy = pos.y - self.drag_start_y
-        return was_dragging and (abs(dx) > buffer or abs(dy) > buffer)
+        return pos.distance_to(Position(self.drag_start_x, self.drag_start_y)) < buffer
 
     def zoom(self, mouse_pos: Position, zoom_direction: int):
         """Zoom in/out centered on mouse position"""

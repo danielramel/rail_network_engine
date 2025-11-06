@@ -1,4 +1,4 @@
-from .draw_line import draw_dotted_line
+from .draw_line import draw_dotted_line, draw_dashed_line
 from .draw_station import draw_station
 from .draw_edge import draw_track
 from .draw_node import draw_node

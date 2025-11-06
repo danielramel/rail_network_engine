@@ -1,5 +1,5 @@
 from core.config.colors import BLUE, GREEN, LIME, RED, WHITE, LIGHTBLUE
-from shared.ui.models.ui_component import UIComponent
+from shared.ui.models.clickable_component import ClickableComponent
 from shared.ui.utils import draw_track, draw_node, draw_signal, draw_station
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
@@ -8,7 +8,7 @@ from core.models.edge_action import EdgeAction
 from core.models.geometry.position import Position
 
 
-class SimulationView(UIComponent):
+class SimulationView(ClickableComponent):
     def __init__(self, railway: RailwaySystem, simulation_state: SimulationState, graphics: GraphicsContext):
         self._railway = railway
         self._state = simulation_state

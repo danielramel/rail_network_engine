@@ -1,8 +1,7 @@
-import pygame
 from core.models.railway.railway_system import RailwaySystem
 from modules.construction.models.construction_state import ConstructionState
 from core.graphics.graphics_context import GraphicsContext
-from shared.ui.models.ui_component import UIComponent
+from shared.ui.models.clickable_component import ClickableComponent
 from modules.construction.views.construction_common_view import ConstructionCommonView
 from modules.construction.models.construction_state import ConstructionTool
 from core.models.geometry.position import Position
@@ -12,9 +11,9 @@ from .signal_controller import SignalController
 from .station_controller import StationController
 from .bulldoze_controller import BulldozeController
 from .base_construction_tool_controller import BaseConstructionToolController
+import pygame
 
-class ConstructionToolStrategy(UIComponent):
-    handled_events = [pygame.MOUSEBUTTONUP]
+class ConstructionToolStrategy(ClickableComponent):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
         self.view = ConstructionCommonView(railway, state, graphics)
         self._railway = railway
@@ -33,10 +32,7 @@ class ConstructionToolStrategy(UIComponent):
         if self._state.tool is None:
             return
         
-        if event.button not in (1, 3):
-            return
-        
-        self._controllers[self._state.tool].process_event(event)
+        self._controllers[self._state.tool].dispatch_event(event)
             
             
     def render(self, screen_pos: Position | None):

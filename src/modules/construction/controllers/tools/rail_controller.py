@@ -1,4 +1,3 @@
-import pygame
 from modules.construction.controllers.tools.base_construction_tool_controller import BaseConstructionToolController
 from core.models.geometry.direction import Direction
 from modules.construction.services.rail_target import find_rail_target, RailTargetType
@@ -7,6 +6,7 @@ from modules.construction.views.rail_view import RailView
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from modules.construction.models.construction_state import ConstructionState
+from core.models.event import Event
 
 class RailController(BaseConstructionToolController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
@@ -14,8 +14,8 @@ class RailController(BaseConstructionToolController):
         super().__init__(view, railway, state, graphics.camera)
         
         
-    def process_event(self, event: pygame.event.Event) -> None:
-        if event.button == 3:
+    def process_event(self, event: Event) -> None:
+        if event.is_right_click:
             if self._construction_state.construction_anchor is not None:
                 self._construction_state.construction_anchor = None
             else:

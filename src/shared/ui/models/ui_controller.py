@@ -1,9 +1,10 @@
 from shared.ui.models.ui_component import UIComponent
+from core.models.event import Event
 
 class UIController(UIComponent):
     elements: tuple[UIComponent]
     
-    def dispatch_event(self, event):
+    def dispatch_event(self, event: Event):
         for element in self.elements:
             if element.dispatch_event(event):
                 return True

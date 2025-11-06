@@ -9,7 +9,6 @@ from shared.ui.models.rectangle import RectangleUIComponent
 
 
 class SaveButton(RectangleUIComponent):
-    handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
     def __init__(self, surface: pygame.Surface, railway: RailwaySystem):
         self.icon = IconLoader().get_icon(ICON_PATHS["SAVE"], BUTTON_SIZE)
         rect = pygame.Rect(BUTTON_SIZE//5, 700, BUTTON_SIZE, BUTTON_SIZE)

@@ -1,15 +1,16 @@
 import pygame
 from core.graphics.icon_loader import IconLoader
 from core.models.geometry.position import Position
-from shared.ui.models.ui_component import UIComponent
+from shared.ui.models.clickable_component import ClickableComponent
 from core.config.colors import BLACK, GREEN, WHITE, YELLOW, RED
 from core.config.paths import ICON_PATHS
 from core.config.settings import BUTTON_SIZE
 from core.config.keyboard_shortcuts import TIME_CONTROL_KEYS
 from modules.simulation.models.simulation_state import TimeControlMode, TimeControlState
+from core.models.event import Event
 
 
-class TimeControlButtons(UIComponent):
+class TimeControlButtons(ClickableComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
     def __init__(self, time_control: TimeControlState, surface: pygame.Surface):
         self.icon_cache = {
@@ -21,7 +22,7 @@ class TimeControlButtons(UIComponent):
         self._surface = surface
         
         
-    def process_event(self, event: pygame.event) -> bool:
+    def process_event(self, event: Event) -> bool:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 if self.time_control_state.mode == TimeControlMode.PAUSE:

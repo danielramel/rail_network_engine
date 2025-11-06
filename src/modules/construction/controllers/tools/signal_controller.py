@@ -4,14 +4,14 @@ from modules.construction.models.construction_state import ConstructionState
 from core.models.railway.railway_system import RailwaySystem
 from modules.construction.views.signal_view import SignalView
 from core.graphics.graphics_context import GraphicsContext
-import pygame
+from core.models.event import Event
 
 class SignalController(BaseConstructionToolController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
         view = SignalView(railway, state, graphics)
         super().__init__(view, railway, state, graphics.camera)
 
-    def process_event(self, event: pygame.event.Event) -> None:
+    def process_event(self, event: Event) -> None:
         if event.button == 3:
             self._construction_state.switch_mode(None)
             return

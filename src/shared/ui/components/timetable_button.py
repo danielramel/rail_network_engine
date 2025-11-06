@@ -10,7 +10,6 @@ from modules.timetable.views.timetable_view import TimetableWindow
 
 
 class TimeTableButton(RectangleUIComponent):
-    handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
     def __init__(self, surface: pygame.Surface, railway: RailwaySystem):
         self._railway = railway
 

@@ -1,5 +1,5 @@
 from core.graphics.graphics_context import GraphicsContext
-from shared.ui.models.ui_component import UIComponent
+from shared.ui.models.clickable_component import ClickableComponent
 from shared.ui.models.ui_controller import UIController
 from modules.simulation.ui.time_control_buttons import TimeControlButtons
 from modules.simulation.ui.time_display import TimeDisplay
@@ -9,7 +9,7 @@ from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
 
 class SimulationMode(UIController):
-    elements: tuple[UIComponent]
+    elements: tuple[ClickableComponent]
     def __init__(self, railway: RailwaySystem, graphics: GraphicsContext):
         self.state = SimulationState()
         self.elements = (

@@ -1,7 +1,8 @@
 import pygame
 from core.graphics.icon_loader import IconLoader
+from core.models.event import Event
 from core.models.geometry.position import Position
-from shared.ui.models.ui_component import UIComponent
+from shared.ui.models.clickable_component import ClickableComponent
 from core.config.colors import BLACK, WHITE, YELLOW, RED
 from modules.construction.models.construction_state import ConstructionTool, ConstructionState
 from core.config.paths import ICON_PATHS
@@ -9,7 +10,7 @@ from core.config.settings import BUTTON_SIZE
 from core.config.keyboard_shortcuts import CONSTRUCTION_MODE_SELECTION
 
 
-class ConstructionButtons(UIComponent):
+class ConstructionButtons(ClickableComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
     def __init__(self, surface: pygame.Surface, construction_state: ConstructionState):
         self.icon_cache = {
@@ -21,7 +22,7 @@ class ConstructionButtons(UIComponent):
         self._surface = surface
         
         
-    def process_event(self, event: pygame.event) -> bool:   
+    def process_event(self, event: Event) -> bool:
         if event.type == pygame.KEYDOWN:
             if event.key in CONSTRUCTION_MODE_SELECTION:
                 self.construction_state.switch_mode(CONSTRUCTION_MODE_SELECTION[event.key])
@@ -30,7 +31,7 @@ class ConstructionButtons(UIComponent):
              
         for mode, btn in self.buttons:
             if btn.collidepoint(*event.screen_pos):
-                if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                if event.is_left_click:
                     self.construction_state.switch_mode(mode)
                 return True
         return False
