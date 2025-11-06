@@ -38,8 +38,10 @@ class SetupView(ClickableComponent):
         for station in self._railway.stations.all():
             draw_station(self._surface, station, self._camera)
 
-            
-            
+        for train in self._railway.trains.all():
+            locomotive_edge = train.get_locomotive_edge()
+
+            draw_dashed_line(self._surface, locomotive_edge.a, locomotive_edge.b, self._camera, color=BLUE, num_dashes=5)
         if world_pos is None:
             return
                 

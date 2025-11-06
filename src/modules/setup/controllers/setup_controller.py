@@ -24,7 +24,7 @@ class SetupController(ClickableComponent):
             platform = self._railway.stations.get_platform_from_edge(closest_edge)
             sorted_platform = sorted(platform)
             pos = sorted_platform[0].a
-            self._railway.trains.add_to_platform(platform, pos)
+            self._railway.trains.add_to_platform(sorted_platform, pos)
 
     def render(self, screen_pos: Position | None):
         world_pos = None if screen_pos is None else self._camera.screen_to_world(screen_pos)

@@ -55,6 +55,9 @@ class Train:
     def occupies_edge(self, edge: Edge) -> bool:
         return edge in self.occupied_edges()
     
+    def get_locomotive_edge(self) -> Edge:
+        return self.path[TRAIN_LENGTH - 1]
+    
     def get_max_safe_speed(self) -> float:
         distance = len(self.path) - TRAIN_LENGTH - self.edge_progress - 1.5
         if distance <= 0:
