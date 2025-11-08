@@ -1,11 +1,14 @@
 import pygame
+from core.models.event import Event
 from core.models.geometry.position import Position
 from shared.ui.models.rectangle import RectangleUIComponent
+from shared.ui.models.clickable_ui_component import ClickableUIComponent
+
 from core.config.colors import BLACK, WHITE
 from core.graphics.camera import Camera
 
 
-class ZoomButton(RectangleUIComponent):
+class ZoomButton(RectangleUIComponent, ClickableUIComponent):
     def __init__(self, surface: pygame.Surface, camera: Camera):
         self._camera = camera 
         self._rect = self._get_zoom_box(surface)
@@ -26,15 +29,9 @@ class ZoomButton(RectangleUIComponent):
     def _get_zoom_box(self, surface: pygame.Surface) -> pygame.Rect:
         return pygame.Rect(surface.get_width() - 100, 10, 80, 30)
     
-    def process_event(self, event: pygame.event) -> bool:
-        if self.is_hidden():
-            return False
-        
-        if self._rect.collidepoint(*event.screen_pos):
-            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                self._camera.reset()
-            return True
-        return False
+    def _on_click(self, event: Event) -> bool:        
+        if event.is_left_click:
+            self._camera.reset()
     
     def contains(self, screen_pos):
         if self.is_hidden():

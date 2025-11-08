@@ -1,13 +1,14 @@
 from core.models.geometry import Position
 from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
-from shared.ui.models.clickable_component import ClickComponent
+from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
+from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from modules.simulation.views.simulation_view import SimulationView
 from core.graphics.graphics_context import GraphicsContext
 import pygame
 
 
-class SimulationController(ClickComponent):
+class SimulationController(ClickableUIComponent, FullScreenUIComponent):
     handled_events = [pygame.MOUSEBUTTONUP]
     def __init__(self, railway: RailwaySystem, simulation_state: SimulationState, graphics: GraphicsContext):
         self.view = SimulationView(railway, simulation_state, graphics)
@@ -17,7 +18,7 @@ class SimulationController(ClickComponent):
         
         self._railway.signals.add_signals_to_dead_ends()
 
-    def process_event(self, event) -> bool:            
+    def _on_click(self, event) -> bool:            
         snapped: Position = self._camera.screen_to_world(event.screen_pos).snap_to_grid()
         if self._railway.graph.has_node_at(snapped) and self._railway.signals.has_signal_at(snapped):
             signal = self._railway.signals.get(snapped)

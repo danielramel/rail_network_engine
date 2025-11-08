@@ -140,7 +140,7 @@ class RailPanel(ConstructionToolPanel):
         self._render_toggle_button(self.length_short_rect, "50 m", is_short)
         self._render_toggle_button(self.length_long_rect, "500 m", not is_short)
 
-    def process_event(self, event: Event) -> bool:
+    def _on_click(self, event: Event) -> bool:
         """Handle +/- clicks and length toggle; return True if the event was consumed."""     
         if not event.is_left_click:
             return self._rect.collidepoint(*event.screen_pos)

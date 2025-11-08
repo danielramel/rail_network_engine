@@ -30,6 +30,12 @@ class TimeControlState:
     def paused(self) -> bool:
         return self.mode == TimeControlMode.PAUSE
     
+    def switch_mode(self, mode: TimeControlMode) -> None:
+        self.mode = mode
+        
+    def toggle_pause(self) -> None:
+        self.mode = TimeControlMode.PLAY if self.paused else TimeControlMode.PAUSE
+    
 @dataclass
 class SimulationPreview:
     path: list[Edge] = field(default_factory=list)

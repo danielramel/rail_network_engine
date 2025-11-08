@@ -17,9 +17,9 @@ class AppState:
     @property
     def mode(self) -> ViewMode:
         return self._mode
-
-    @mode.setter
-    def mode(self, value: ViewMode) -> None:
-        self._mode = value
+    
+    
+    def switch_mode(self, new_mode: ViewMode) -> None:
+        self._mode = new_mode
         if self.callback is not None:
-            self.callback(value)
+            self.callback(new_mode)

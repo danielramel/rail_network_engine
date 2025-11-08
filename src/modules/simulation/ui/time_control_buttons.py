@@ -1,16 +1,17 @@
 import pygame
 from core.graphics.icon_loader import IconLoader
 from core.models.geometry.position import Position
-from shared.ui.models.clickable_component import ClickComponent
+from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from core.config.colors import BLACK, GREEN, WHITE, YELLOW, RED
 from core.config.paths import ICON_PATHS
 from core.config.settings import BUTTON_SIZE
 from core.config.keyboard_shortcuts import TIME_CONTROL_KEYS
 from modules.simulation.models.simulation_state import TimeControlMode, TimeControlState
 from core.models.event import Event
+from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 
 
-class TimeControlButtons(ClickComponent):
+class TimeControlButtons(ClickableUIComponent, ShortcutUIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
     def __init__(self, time_control: TimeControlState, surface: pygame.Surface):
         self.icon_cache = {
@@ -21,20 +22,19 @@ class TimeControlButtons(ClickComponent):
         self.time_control_state = time_control
         self._surface = surface
         
+        self._shortcuts = {
+            (key, False): lambda mode=mode: self.set_time_control_mode(mode)
+            for key, mode in TIME_CONTROL_KEYS.items()
+        }
+            
+    def set_time_control_mode(self, mode: TimeControlMode | str):
+        if mode == "toggle_pause":
+            self.time_control_state.toggle_pause()
+        else:
+            self.time_control_state.switch_mode(mode)
         
-    def process_event(self, event: Event) -> bool:
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                if self.time_control_state.mode == TimeControlMode.PAUSE:
-                    self.time_control_state.mode = TimeControlMode.PLAY
-                else:
-                    self.time_control_state.mode = TimeControlMode.PAUSE
-                return True
-            elif event.key in TIME_CONTROL_KEYS:
-                self.time_control_state.mode = TIME_CONTROL_KEYS[event.key]
-                return True
-            return False
-          
+        
+    def _on_click(self, event: Event) -> bool:          
         for mode, btn in self.buttons:
             if btn.collidepoint(*event.screen_pos):
                 if event.type == pygame.MOUSEBUTTONUP and event.button == 1:

@@ -1,10 +1,10 @@
 import pygame
 from core.config.colors import BLACK
-from shared.controllers.mode_controller import ModeController
+from shared.controllers.mode_strategy import ModeStrategy
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.camera import Camera
 from core.models.app_state import AppState
-from shared.ui.models.clickable_component import ClickComponent
+from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.buttons.load_button import LoadButton
 from shared.ui.buttons.save_button import SaveButton
 from shared.ui.buttons.mode_selector_buttons import ModeSelectorButtons
@@ -14,8 +14,9 @@ from core.models.geometry import Position
 from core.graphics.graphics_context import GraphicsContext
 from shared.ui.models.ui_controller import UIController
 from shared.ui.buttons.time_table_button import TimeTableButton
+from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 
-class AppController(UIController):
+class AppController(UIController, FullScreenUIComponent):
     def __init__(self, screen: pygame.Surface):
         self._graphics = GraphicsContext(screen, Camera())
         self._railway = RailwaySystem()
@@ -24,13 +25,13 @@ class AppController(UIController):
         
         self._mock_load()
         
-        self.elements: list[ClickComponent] = [
+        self.elements: list[ClickableUIComponent] = [
             TimeTableButton(screen, self._railway),
             ZoomButton(screen, self._graphics.camera),
             LoadButton(screen, self._railway),
             SaveButton(screen, self._railway),
             ModeSelectorButtons(screen, self._app_state),
-            ModeController(self._app_state, self._railway, self._graphics)
+            ModeStrategy(self._app_state, self._railway, self._graphics)
         ]
     
     def dispatch_event(self, pygame_event: pygame.event):        

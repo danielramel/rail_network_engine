@@ -6,11 +6,11 @@ from core.models.railway.railway_system import RailwaySystem
 from core.graphics.graphics_context import GraphicsContext
 from core.models.geometry import Position
 
-from shared.ui.models.ui_component import UIComponent
 from shared.ui.models.ui_controller import UIController
+from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 
 
-class ModeController(UIComponent):
+class ModeStrategy(FullScreenUIComponent):
     def __init__(self, app_state: AppState, railway: RailwaySystem, graphics: GraphicsContext):
         self._state = app_state
         app_state.subscribe(self.switch_to)
@@ -28,7 +28,7 @@ class ModeController(UIComponent):
         self._current_mode = self._modes[new_mode]()
         
         
-    def process_event(self, event) -> bool:
+    def handle_event(self, event) -> bool:
         if self._current_mode is None:
             return False
         

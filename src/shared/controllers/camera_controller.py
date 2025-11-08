@@ -8,8 +8,7 @@ class CameraController(UIComponent):
         self._camera = camera
         self._is_dragging = False
         
-        
-    def process_event(self, event: Event) -> bool:
+    def handle_event(self, event: Event) -> bool:
         if event.type == pygame.MOUSEBUTTONDOWN and event.button in (1, 3):
             self._is_dragging = True
             self._camera.start_drag(event.screen_pos)
@@ -30,3 +29,9 @@ class CameraController(UIComponent):
                 return False  # Not handled further
             
         return True
+    
+    def render(self, screen_pos):
+        pass
+    
+    def contains(self, screen_pos):
+        return False

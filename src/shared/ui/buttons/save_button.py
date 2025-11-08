@@ -6,35 +6,30 @@ from core.models.geometry.position import Position
 from core.config.colors import BLACK, WHITE
 from core.config.settings import BUTTON_SIZE
 from shared.ui.models.rectangle import RectangleUIComponent
+from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
+from core.models.event import Event
+from shared.ui.models.clickable_ui_component import ClickableUIComponent
 
 
-class SaveButton(RectangleUIComponent):
+class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent):
     def __init__(self, surface: pygame.Surface, railway: RailwaySystem):
-        self.icon = IconLoader().get_icon(ICON_PATHS["SAVE"], BUTTON_SIZE)
+        self._icon = IconLoader().get_icon(ICON_PATHS["SAVE"], BUTTON_SIZE)
         rect = pygame.Rect(BUTTON_SIZE//5, 700, BUTTON_SIZE, BUTTON_SIZE)
         super().__init__(rect, surface)
         self._railway = railway
+        self._shortcuts = {
+            (pygame.K_s, True): self.save_game
+        }
 
-    def process_event(self, event: pygame.event) -> bool:   
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_s and (event.mod & pygame.KMOD_CTRL):
-                # Handle Ctrl+S
-                self.save_game()
-                return True
-            return False
-        
-        elif self._rect.collidepoint(*event.screen_pos):
-            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                self.save_game()
-            return True
-           
-        return self._rect.collidepoint(*event.screen_pos)
+    def _on_click(self, event: Event) -> bool:        
+        if event.is_left_click:
+            self.save_game()
 
     def render(self, screen_pos: Position) -> None:
         pygame.draw.rect(self._surface, BLACK, self._rect, border_radius=10)
 
-        icon_rect = self.icon.get_rect(center=self._rect.center)
-        self._surface.blit(self.icon, icon_rect)
+        icon_rect = self._icon.get_rect(center=self._rect.center)
+        self._surface.blit(self._icon, icon_rect)
         pygame.draw.rect(self._surface, WHITE, self._rect, 2, border_radius=10)
         
     def save_game(self):

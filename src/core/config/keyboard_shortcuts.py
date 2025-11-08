@@ -6,8 +6,8 @@ from modules.simulation.models.simulation_state import TimeControlMode
 MODE_SELECTION = {
     pygame.K_s: ViewMode.SETUP,
     pygame.K_c: ViewMode.CONSTRUCTION,
+    pygame.K_p: ViewMode.SIMULATION,
 }
-
 CONSTRUCTION_MODE_SELECTION = {
     pygame.K_1: ConstructionTool.RAIL,
     pygame.K_2: ConstructionTool.SIGNAL,
@@ -21,4 +21,5 @@ TIME_CONTROL_KEYS = {
     pygame.K_2: TimeControlMode.PLAY,
     pygame.K_3: TimeControlMode.FAST_FORWARD,
     pygame.K_4: TimeControlMode.SUPER_FAST_FORWARD,
+    pygame.K_SPACE: "toggle_pause",
 }

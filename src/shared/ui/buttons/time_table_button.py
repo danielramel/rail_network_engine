@@ -7,29 +7,26 @@ from core.config.colors import BLACK, GREEN, WHITE, YELLOW, RED
 from core.config.paths import ICON_PATHS
 from core.config.settings import BUTTON_SIZE
 from modules.timetable.views.timetable_view import TimetableWindow
+from core.models.event import Event
+from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
+from shared.ui.models.clickable_ui_component import ClickableUIComponent
 
 
-class TimeTableButton(RectangleUIComponent):
+class TimeTableButton(RectangleUIComponent, ShortcutUIComponent, ClickableUIComponent):
     def __init__(self, surface: pygame.Surface, railway: RailwaySystem):
         self._railway = railway
 
-        self.icon = IconLoader().get_icon(ICON_PATHS["TIMETABLE"], BUTTON_SIZE)
+        self._icon = IconLoader().get_icon(ICON_PATHS["TIMETABLE"], BUTTON_SIZE)
         rect = pygame.Rect(BUTTON_SIZE//5, 300, BUTTON_SIZE, BUTTON_SIZE)
         super().__init__(rect, surface)
         self.timetable_window = None  # Store window reference
-        
-    def process_event(self, event: pygame.event) -> bool:
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_t and (event.mod & pygame.KMOD_CTRL):
-                self.open_timetable_window()
-                return True
-            return False
-        
-        elif self._rect.collidepoint(*event.screen_pos):
-            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                self.open_timetable_window()
-            return True
-        return False
+        self._shortcuts = {
+            (pygame.K_t, True): self.open_timetable_window
+        }
+
+    def _on_click(self, event: Event) -> bool:
+        if event.is_left_click:
+            self.open_timetable_window()
     
     def open_timetable_window(self):
         if self.timetable_window is None:
@@ -47,6 +44,6 @@ class TimeTableButton(RectangleUIComponent):
 
     def render(self, screen_pos: Position) -> None:
         pygame.draw.rect(self._surface, BLACK, self._rect, border_radius=10)
-        icon_rect = self.icon.get_rect(center=self._rect.center)
-        self._surface.blit(self.icon, icon_rect)
+        icon_rect = self._icon.get_rect(center=self._rect.center)
+        self._surface.blit(self._icon, icon_rect)
         pygame.draw.rect(self._surface, WHITE, self._rect, 2, border_radius=10)

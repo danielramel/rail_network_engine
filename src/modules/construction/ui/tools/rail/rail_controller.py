@@ -14,7 +14,7 @@ class RailController(ConstructionToolController):
         super().__init__(view, railway, state, graphics.camera)
         
         
-    def process_event(self, event: Event) -> None:
+    def _on_click(self, event: Event) -> None:
         if event.is_right_click:
             if self._construction_state.construction_anchor is not None:
                 self._construction_state.construction_anchor = None

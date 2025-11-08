@@ -2,14 +2,16 @@ import pygame
 from core.graphics.icon_loader import IconLoader
 from core.models.geometry.position import Position
 from core.models.app_state import AppState, ViewMode
-from shared.ui.models.clickable_component import ClickComponent
+from shared.ui.models.clickable_ui_component import ClickableUIComponent
+from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 from core.config.colors import BLACK, GREEN, WHITE, YELLOW, RED
 from core.config.paths import ICON_PATHS
 from core.config.settings import BUTTON_SIZE
+from core.models.event import Event
 from core.config.keyboard_shortcuts import MODE_SELECTION
 
 
-class ModeSelectorButtons(ClickComponent):
+class ModeSelectorButtons(ShortcutUIComponent, ClickableUIComponent):
     def __init__(self, surface: pygame.Surface, app_state: AppState):
         self.icon_cache = {
             mode: IconLoader().get_icon(ICON_PATHS[mode.name], BUTTON_SIZE)
@@ -19,18 +21,18 @@ class ModeSelectorButtons(ClickComponent):
         self._state = app_state
         self._surface = surface
         
+        self._shortcuts = {
+            (key, False): lambda mode=mode: self._state.switch_mode(mode)
+            for key, mode in MODE_SELECTION.items()
+        }
         
-    def process_event(self, event: pygame.event) -> bool:
-        if event.type == pygame.KEYDOWN:
-            if event.key in MODE_SELECTION:
-                self._state.mode = MODE_SELECTION[event.key]
-                return True
+        
+    def _on_click(self, event: Event) -> bool:
+        if not event.is_left_click:
             return False
-
         for mode, btn in self._buttons:
             if btn.collidepoint(*event.screen_pos):
-                if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                    self._state.mode = mode
+                self._state.switch_mode(mode)
                 return True
         return False
 

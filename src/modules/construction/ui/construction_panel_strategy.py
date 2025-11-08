@@ -24,7 +24,7 @@ class ConstructionPanelStrategy(Panel):
             return
         self._panels[self._state.tool].render(screen_pos)
 
-    def process_event(self, event):
+    def _on_click(self, event):
         if self._state.tool is None:
             return
         return self._panels[self._state.tool].dispatch_event(event)

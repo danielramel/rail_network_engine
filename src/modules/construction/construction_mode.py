@@ -7,9 +7,10 @@ from modules.construction.ui.construction_tool_strategy import ConstructionToolS
 from modules.construction.ui.construction_buttons import ConstructionButtons
 from modules.construction.ui.construction_panel_strategy import ConstructionPanelStrategy
 from modules.construction.models.construction_state import ConstructionState
+from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 
 
-class ConstructionMode(UIController):
+class ConstructionMode(UIController, FullScreenUIComponent):
     elements: tuple[UIComponent]
     def __init__(self, railway: RailwaySystem, graphics: GraphicsContext):
         self.state = ConstructionState()

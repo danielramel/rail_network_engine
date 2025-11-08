@@ -11,7 +11,7 @@ class SignalController(ConstructionToolController):
         view = SignalView(railway, state, graphics)
         super().__init__(view, railway, state, graphics.camera)
 
-    def process_event(self, event: Event) -> None:
+    def _on_click(self, event: Event) -> None:
         if event.button == 3:
             self._construction_state.switch_mode(None)
             return

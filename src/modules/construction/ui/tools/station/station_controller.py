@@ -11,7 +11,7 @@ class StationController(ConstructionToolController):
         view = StationView(railway, state, graphics)
         super().__init__(view, railway, state, graphics.camera)
 
-    def process_event(self, event: Event) -> None:
+    def _on_click(self, event: Event) -> None:
         if event.button == 3:
             if self._construction_state.moving_station is not None:
                 self._construction_state.moving_station = None
