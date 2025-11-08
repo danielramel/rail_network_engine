@@ -1,7 +1,7 @@
 from core.config.colors import BLUE, GREEN, LIME, RED, WHITE, LIGHTBLUE, YELLOW
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
-from shared.ui.utils import draw_track, draw_node, draw_signal, draw_station, draw_train
+from shared.ui.utils import draw_track, draw_node, draw_signal, draw_station, draw_train, draw_dotted_line
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
@@ -53,6 +53,7 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             elif signal == self._state.preview.signal:
                 color = LIGHTBLUE
             draw_signal(self._surface, signal, self._camera, color)
+        
 
         for station in self._railway.stations.all():
             draw_station(self._surface, station, self._camera)
@@ -61,8 +62,12 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             edges = train.occupied_edges()
             draw_train(self._surface, edges, self._camera, edge_progress=train.edge_progress)
 
+        
         if self._state.preview.signal is None and world_pos is not None:
-            draw_node(self._surface, world_pos, self._camera, color=WHITE)
+            draw_node(self._surface, world_pos, self._camera, color=LIME)
+            
+            if self._state.selected_signal is not None and len(self._state.preview.path) == 0:
+                draw_dotted_line(self._surface, self._state.selected_signal.position, world_pos, self._camera, color=LIME)
             
             
     def set_preview(self, world_pos: Position | None):
