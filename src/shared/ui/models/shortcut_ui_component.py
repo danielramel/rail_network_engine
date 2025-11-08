@@ -2,7 +2,6 @@ import pygame
 from shared.ui.models.ui_component import UIComponent
 
 class ShortcutUIComponent(UIComponent):
-    handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEWHEEL, pygame.KEYDOWN]
     _shortcuts: dict[tuple[int, bool], callable] = {}
 
     def dispatch_event(self, event):

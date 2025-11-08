@@ -11,6 +11,26 @@ class SignallingService:
     def __init__(self, railway: 'RailwaySystem'):
         self._railway = railway
         
+    def free_edge(self, edge: Edge) -> None:
+        self._railway.graph.set_edge_attr(edge, 'locked', False)
+        self._railway.graph.set_node_attr(edge.b, 'locked', False)
+        if self._railway.signals.has_signal_with_pose_at(Pose.from_positions(*edge)):
+            signal = self._railway.signals.get(edge.b)
+            signal.disconnect()
+        
+    def lock_path(self, edges: list[Edge]):
+        for edge in edges:
+            self._railway.graph.set_edge_attr(edge, 'locked', True)
+            self._railway.graph.set_node_attr(edge.a, 'locked', True)
+            self._railway.graph.set_node_attr(edge.b, 'locked', True)
+            
+    def free_path(self, edges: list[Edge]):
+        for edge in edges:
+            self._railway.graph.set_edge_attr(edge, 'locked', False)
+            self._railway.graph.set_node_attr(edge.a, 'locked', False)
+            self._railway.graph.set_node_attr(edge.b, 'locked', False)
+            
+        
     def is_edge_locked(self, edge: Edge) -> bool:
         return self._railway.graph.get_edge_attr(edge, 'locked') is True
     
@@ -21,7 +41,6 @@ class SignallingService:
         for edge in signal.path:
             self._railway.graph.remove_edge_attr(edge, 'locked')
             self._railway.graph.remove_node_attr(edge.b, 'locked') # the first node is never locked, so we can always use b
-            
             
         signal.disconnect()
 

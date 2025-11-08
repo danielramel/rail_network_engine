@@ -2,6 +2,9 @@ from core.models.geometry import Edge
 from core.config.settings import FPS, PLATFORM_LENGTH, TRAIN_LENGTH
 from core.models.geometry.direction import Direction
 from core.models.signal import Signal
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from core.models.railway.railway_system import RailwaySystem
 
 
 class Train:
@@ -11,14 +14,16 @@ class Train:
     acceleration : float = 2.0  # in km/s²
     max_speed : int  =  120  # in km/h
     deceleration : float = 5.0 # in km/s²
+    _railway: 'RailwaySystem'
 
-    def __init__(self, edges: tuple[Edge], path: tuple[Edge], signal: Signal | None = None):
+    def __init__(self, railway: 'RailwaySystem', edges: tuple[Edge], path: tuple[Edge], signal: Signal | None = None):
         if len(edges) != PLATFORM_LENGTH:
             raise ValueError("A train must occupy exactly PLATFORM_LENGTH edges.")
         
         self.path = list(edges) + path
         if signal is not None:
             signal.subscribe(self.signal_turned_green_ahead)
+        self._railway = railway
             
     def switch_direction(self, edges: tuple[Edge], path: tuple[Edge], signal: Signal | None = None, edge_progress: float = None) -> None:
         if len(edges) != PLATFORM_LENGTH:
@@ -49,7 +54,8 @@ class Train:
             return
         
         self.edge_progress = edge_progress - 1
-        self.path.pop(0)
+        edge = self.path.pop(0)
+        self._railway.signalling.free_edge(edge)
         
     def occupied_edges(self) -> tuple[Edge]:
         return tuple(self.path[:TRAIN_LENGTH+1])

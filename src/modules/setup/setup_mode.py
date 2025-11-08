@@ -1,5 +1,5 @@
 from core.graphics.graphics_context import GraphicsContext
-from modules.setup.controllers.setup_controller import SetupController
+from modules.setup.ui.setup_controller import SetupController
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.ui_component import UIComponent
 from shared.ui.models.ui_controller import UIController
