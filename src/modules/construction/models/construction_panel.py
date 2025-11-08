@@ -2,7 +2,7 @@ import pygame
 from shared.ui.models.panel import Panel
 from modules.construction.models.construction_state import ConstructionState
 
-class BaseConstructionPanel(Panel):
+class ConstructionToolPanel(Panel):
     """Base class for construction panels."""
     
     def __init__(self, surface: pygame.Surface, state: ConstructionState) -> None:

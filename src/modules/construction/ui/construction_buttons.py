@@ -2,7 +2,7 @@ import pygame
 from core.graphics.icon_loader import IconLoader
 from core.models.event import Event
 from core.models.geometry.position import Position
-from shared.ui.models.clickable_component import ClickableComponent
+from shared.ui.models.clickable_component import ClickComponent
 from core.config.colors import BLACK, WHITE, YELLOW, RED
 from modules.construction.models.construction_state import ConstructionTool, ConstructionState
 from core.config.paths import ICON_PATHS
@@ -10,7 +10,7 @@ from core.config.settings import BUTTON_SIZE
 from core.config.keyboard_shortcuts import CONSTRUCTION_MODE_SELECTION
 
 
-class ConstructionButtons(ClickableComponent):
+class ConstructionButtons(ClickComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
     def __init__(self, surface: pygame.Surface, construction_state: ConstructionState):
         self.icon_cache = {

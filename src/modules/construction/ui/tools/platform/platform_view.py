@@ -1,9 +1,9 @@
 from shared.ui.enums.edge_action import EdgeAction
-from modules.construction.views.construction_view import ConstructionView
+from modules.construction.models.construction_view import ConstructionView
 from core.models.geometry import Position
 from core.config.colors import PURPLE, LIGHTBLUE
 from shared.ui.utils import draw_node, draw_station, draw_dotted_line
-from modules.construction.services.platform_target import PlatformTargetType, find_platform_target
+from .platform_target import PlatformTargetType, find_platform_target
 
 class PlatformView(ConstructionView):
     def render(self, world_pos: Position | None):

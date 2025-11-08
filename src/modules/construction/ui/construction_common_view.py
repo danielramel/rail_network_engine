@@ -2,7 +2,7 @@ from shared.ui.enums.edge_action import EdgeAction
 from core.models.geometry.position import Position
 from shared.ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station, draw_dotted_line
 from core.config.colors import RED, PURPLE
-from modules.construction.views.construction_view import ConstructionView
+from modules.construction.models.construction_view import ConstructionView
 
 class ConstructionCommonView(ConstructionView):
     def render(self, world_pos: Position | None) -> None:

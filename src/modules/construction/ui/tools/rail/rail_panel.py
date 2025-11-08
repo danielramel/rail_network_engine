@@ -1,10 +1,10 @@
 import pygame
 from core.config.colors import BLACK, WHITE, YELLOW
 from modules.construction.models.construction_state import ConstructionState
-from modules.construction.ui.panels.base_construction_panel import BaseConstructionPanel
+from modules.construction.models.construction_panel import ConstructionToolPanel
 from core.models.event import Event
     
-class RailPanel(BaseConstructionPanel):
+class RailPanel(ConstructionToolPanel):
     """Rail construction panel with +/- controls for track speed and toggle for track length."""
     
     # Speed configuration constants

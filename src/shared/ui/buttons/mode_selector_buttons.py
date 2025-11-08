@@ -2,40 +2,40 @@ import pygame
 from core.graphics.icon_loader import IconLoader
 from core.models.geometry.position import Position
 from core.models.app_state import AppState, ViewMode
-from shared.ui.models.clickable_component import ClickableComponent
+from shared.ui.models.clickable_component import ClickComponent
 from core.config.colors import BLACK, GREEN, WHITE, YELLOW, RED
 from core.config.paths import ICON_PATHS
 from core.config.settings import BUTTON_SIZE
 from core.config.keyboard_shortcuts import MODE_SELECTION
 
 
-class ModeSelectorButtons(ClickableComponent):
+class ModeSelectorButtons(ClickComponent):
     def __init__(self, surface: pygame.Surface, app_state: AppState):
         self.icon_cache = {
             mode: IconLoader().get_icon(ICON_PATHS[mode.name], BUTTON_SIZE)
             for mode in ViewMode
         }
-        self.buttons = self._get_buttons(surface)
-        self.state = app_state
+        self._buttons = self._get_buttons(surface)
+        self._state = app_state
         self._surface = surface
         
         
     def process_event(self, event: pygame.event) -> bool:
         if event.type == pygame.KEYDOWN:
             if event.key in MODE_SELECTION:
-                self.state.mode = MODE_SELECTION[event.key]
+                self._state.mode = MODE_SELECTION[event.key]
                 return True
             return False
 
-        for mode, btn in self.buttons:
+        for mode, btn in self._buttons:
             if btn.collidepoint(*event.screen_pos):
                 if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                    self.state.mode = mode
+                    self._state.mode = mode
                 return True
         return False
 
     def render(self, screen_pos: Position) -> None:
-        for mode, btn_rect in self.buttons:
+        for mode, btn_rect in self._buttons:
         # Draw a solid background for the button (not transparent)
             pygame.draw.rect(self._surface, BLACK, btn_rect, border_radius=10)
 
@@ -43,13 +43,13 @@ class ModeSelectorButtons(ClickableComponent):
             icon_rect = icon.get_rect(center=btn_rect.center)
             self._surface.blit(icon, icon_rect)
 
-            if mode == self.state._mode:
+            if mode == self._state._mode:
                 pygame.draw.rect(self._surface, GREEN, btn_rect, 2, border_radius=10)
             else:
                 pygame.draw.rect(self._surface, WHITE, btn_rect, 2, border_radius=10)
 
     def contains(self, screen_pos: Position) -> bool:
-        return any(btn.collidepoint(*screen_pos) for _, btn in self.buttons)
+        return any(btn.collidepoint(*screen_pos) for _, btn in self._buttons)
 
     def _get_buttons(self, surface: pygame.Surface) -> list[tuple[ViewMode, pygame.Rect]]:
         button_margin = BUTTON_SIZE // 5

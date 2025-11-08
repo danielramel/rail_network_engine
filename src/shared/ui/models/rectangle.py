@@ -1,10 +1,10 @@
 import pygame
 
 from core.models.geometry.position import Position
-from shared.ui.models.clickable_component import ClickableComponent
+from shared.ui.models.clickable_component import ClickComponent
 
     
-class RectangleUIComponent(ClickableComponent):
+class RectangleUIComponent(ClickComponent):
     """A rectangular UI element defined by a pygame.Rect."""
     def __init__(self, rect: pygame.Rect, surface: pygame.Surface):
         self._rect = rect

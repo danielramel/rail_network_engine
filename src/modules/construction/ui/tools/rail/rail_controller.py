@@ -1,8 +1,8 @@
-from modules.construction.controllers.tools.construction_tool_controller import ConstructionToolController
+from modules.construction.models.construction_tool_controller import ConstructionToolController
 from core.models.geometry.direction import Direction
-from modules.construction.services.rail_target import find_rail_target, RailTargetType
+from .rail_target import find_rail_target, RailTargetType
 from core.models.geometry import Pose
-from modules.construction.views.rail_view import RailView
+from .rail_view import RailView
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from modules.construction.models.construction_state import ConstructionState

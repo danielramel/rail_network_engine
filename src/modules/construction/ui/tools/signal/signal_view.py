@@ -1,8 +1,8 @@
-from modules.construction.views.construction_view import ConstructionView
+from modules.construction.models.construction_view import ConstructionView
 from core.models.geometry import Position
 from core.config.colors import RED, YELLOW
 from shared.ui.utils import draw_signal
-from modules.construction.services.signal_target import find_signal_target, SignalTargetType
+from .signal_target import find_signal_target, SignalTargetType
 
 class SignalView(ConstructionView):
     def render(self, world_pos: Position | None):

@@ -2,12 +2,12 @@ from core.models.geometry import Position
 from core.models.railway.railway_system import RailwaySystem
 from modules.setup.models.setup_state import SetupState
 from modules.setup.view.setup_view import SetupView
-from shared.ui.models.clickable_component import ClickableComponent
+from shared.ui.models.clickable_component import ClickComponent
 from core.graphics.graphics_context import GraphicsContext
 import pygame
 
 
-class SetupController(ClickableComponent):
+class SetupController(ClickComponent):
     handled_events = [pygame.MOUSEBUTTONUP]
     def __init__(self, railway: RailwaySystem, setup_state: SetupState, graphics: GraphicsContext):
         self.view = SetupView(railway, setup_state, graphics)

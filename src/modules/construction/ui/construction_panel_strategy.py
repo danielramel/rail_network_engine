@@ -1,11 +1,11 @@
+import pygame
 from modules.construction.models.construction_state import ConstructionState, ConstructionTool
 from shared.ui.models.panel import Panel
-from modules.construction.ui.panels.rail_panel import RailPanel
-from modules.construction.ui.panels.signal_panel import SignalPanel
-from modules.construction.ui.panels.station_panel import StationPanel
-from modules.construction.ui.panels.platform_panel import PlatformPanel
-from modules.construction.ui.panels.bulldoze_panel import BulldozePanel
-import pygame
+from .tools.rail.rail_panel import RailPanel
+from .tools.signal.signal_panel import SignalPanel
+from .tools.station.station_panel import StationPanel
+from .tools.platform.platform_panel import PlatformPanel
+from .tools.bulldoze.bulldoze_panel import BulldozePanel
 
 
 class ConstructionPanelStrategy(Panel):

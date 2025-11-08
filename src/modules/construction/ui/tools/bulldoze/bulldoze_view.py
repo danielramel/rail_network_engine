@@ -1,6 +1,6 @@
 from shared.ui.enums.edge_action import EdgeAction
-from modules.construction.services.bulldoze_target import BulldozeTargetType, find_bulldoze_target
-from modules.construction.views.construction_view import ConstructionView
+from .bulldoze_target import BulldozeTargetType, find_bulldoze_target
+from modules.construction.models.construction_view import ConstructionView
 from core.models.geometry import Position
 from shared.ui.utils import draw_station, draw_node
 from core.config.colors import RED

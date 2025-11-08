@@ -1,8 +1,8 @@
-from modules.construction.controllers.tools.construction_tool_controller import ConstructionToolController
-from modules.construction.services.signal_target import find_signal_target, SignalTargetType
+from modules.construction.models.construction_tool_controller import ConstructionToolController
+from .signal_target import find_signal_target, SignalTargetType
 from modules.construction.models.construction_state import ConstructionState
 from core.models.railway.railway_system import RailwaySystem
-from modules.construction.views.signal_view import SignalView
+from .signal_view import SignalView
 from core.graphics.graphics_context import GraphicsContext
 from core.models.event import Event
 

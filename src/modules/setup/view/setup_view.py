@@ -1,5 +1,5 @@
 from core.config.colors import BLUE, GREEN, GREY, LIME, RED, WHITE, LIGHTBLUE, YELLOW
-from shared.ui.models.clickable_component import ClickableComponent
+from shared.ui.models.clickable_component import ClickComponent
 from shared.ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station, draw_occupied_edge
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
@@ -9,7 +9,7 @@ from shared.ui.utils.train import draw_train
 from modules.setup.models.setup_state import SetupState
 
 
-class SetupView(ClickableComponent):
+class SetupView(ClickComponent):
     def __init__(self, railway: RailwaySystem, setup_state: SetupState, graphics: GraphicsContext):
         self._railway = railway
         self._surface = graphics.screen

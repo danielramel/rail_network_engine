@@ -1,19 +1,19 @@
 from core.models.railway.railway_system import RailwaySystem
 from modules.construction.models.construction_state import ConstructionState
 from core.graphics.graphics_context import GraphicsContext
-from modules.construction.views.construction_common_view import ConstructionCommonView
-from shared.ui.models.clickable_component import ClickableComponent
+from modules.construction.ui.construction_common_view import ConstructionCommonView
+from shared.ui.models.clickable_component import ClickComponent
 from modules.construction.models.construction_state import ConstructionTool
 from core.models.geometry.position import Position
-from .rail_controller import RailController
-from .platform_controller import PlatformController
-from .signal_controller import SignalController
-from .station_controller import StationController
-from .bulldoze_controller import BulldozeController
-from .construction_tool_controller import ConstructionToolController
+from .tools.rail.rail_controller import RailController
+from .tools.platform.platform_controller import PlatformController
+from .tools.signal.signal_controller import SignalController
+from .tools.station.station_controller import StationController
+from .tools.bulldoze.bulldoze_controller import BulldozeController
+from modules.construction.models.construction_tool_controller import ConstructionToolController
 
 
-class ConstructionToolStrategy(ClickableComponent):
+class ConstructionToolStrategy(ClickComponent):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
         self.view = ConstructionCommonView(railway, state, graphics)
         self._railway = railway

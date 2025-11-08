@@ -1,10 +1,10 @@
-from modules.construction.controllers.tools.construction_tool_controller import ConstructionToolController
+from modules.construction.models.construction_tool_controller import ConstructionToolController
 from shared.ui.utils.popups import alert
-from modules.construction.services.platform_target import find_platform_target
+from .platform_target import find_platform_target
 from modules.construction.models.construction_state import ConstructionState
 from core.models.railway.railway_system import RailwaySystem
 from core.models.event import Event
-from modules.construction.views.platform_view import PlatformView, PlatformTargetType
+from .platform_view import PlatformView, PlatformTargetType
 from core.graphics.graphics_context import GraphicsContext
 from shared.ui.enums.edge_action import EdgeAction
 
