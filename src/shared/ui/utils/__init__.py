@@ -1,5 +1,5 @@
 from .lines import draw_dotted_line, draw_dashed_line
-from .tracks import draw_track, draw_platform, draw_occupied_edge
+from .tracks import draw_track, draw_platform
 from .nodes import draw_node
 from .signals import draw_signal
 from .stations import draw_station
@@ -11,7 +11,6 @@ __all__ = [
     "draw_dashed_line",
     "draw_track",
     "draw_platform",
-    "draw_occupied_edge",
     "draw_node",
     "draw_signal",
     "draw_station",

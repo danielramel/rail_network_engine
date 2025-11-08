@@ -1,13 +1,12 @@
 from core.config.colors import BLUE, GREEN, LIME, RED, WHITE, LIGHTBLUE, YELLOW
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
-from shared.ui.utils import draw_track, draw_node, draw_signal, draw_station, draw_occupied_edge
+from shared.ui.utils import draw_track, draw_node, draw_signal, draw_station, draw_train
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
 from shared.ui.enums.edge_action import EdgeAction
 from core.models.geometry.position import Position
-from shared.ui.utils.train import draw_train
 
 
 class SimulationView(ClickableUIComponent, FullScreenUIComponent):
@@ -60,7 +59,7 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
 
         for train in self._railway.trains.all():
             edges = train.occupied_edges()
-            draw_train(self._surface, edges, self._camera, color=YELLOW, edge_progress=train.edge_progress)
+            draw_train(self._surface, edges, self._camera, edge_progress=train.edge_progress)
 
         if self._state.preview.signal is None and world_pos is not None:
             draw_node(self._surface, world_pos, self._camera, color=WHITE)

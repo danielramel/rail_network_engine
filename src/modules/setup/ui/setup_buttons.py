@@ -12,7 +12,6 @@ from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 
 
 class SetupButtons(ShortcutUIComponent, ClickableUIComponent):
-    handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
     def __init__(self, surface: pygame.Surface, construction_state: ConstructionState):
         self.icon_cache = {
             mode: IconLoader().get_icon(ICON_PATHS[mode.name], BUTTON_SIZE)

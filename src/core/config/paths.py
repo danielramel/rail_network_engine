@@ -21,6 +21,10 @@ ICON_CATEGORIES = {
         "FAST_FORWARD": "3x.png",
         "SUPER_FAST_FORWARD": "10x.png",
     },
+    "setup/": {
+        "PLACE_TRAIN": "place_train.png",
+        "REMOVE_TRAIN": "remove_train.png",
+    }
 }
 
 ICON_PATHS = {

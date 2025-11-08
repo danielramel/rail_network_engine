@@ -1,11 +1,10 @@
 from core.config.colors import BLUE, GREEN, GREY, LIME, RED, WHITE, LIGHTBLUE, YELLOW
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
-from shared.ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station, draw_occupied_edge
+from shared.ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station, draw_train
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from shared.ui.enums.edge_action import EdgeAction
 from core.models.geometry.position import Position
-from shared.ui.utils.train import draw_train
 from modules.setup.models.setup_state import SetupState
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 
@@ -49,12 +48,12 @@ class SetupView(ClickableUIComponent, FullScreenUIComponent):
                 color = LIGHTBLUE
             else:
                 color = YELLOW
-            draw_train(self._surface, edges, self._camera, color=color, edge_progress=train.edge_progress)
+            draw_train(self._surface, edges, self._camera, edge_progress=train.edge_progress)
 
         if self._state.preview.edge is not None:
             platform = self._railway.stations.get_platform_from_edge(self._state.preview.edge)
             edges = [edge.ordered(self._state.preview.reversed) for edge in sorted(platform, reverse=self._state.preview.reversed)]
-            draw_train(self._surface, edges, self._camera, color=BLUE, edge_progress=1.0)
+            draw_train(self._surface, edges, self._camera, edge_progress=1.0)
         elif world_pos is not None:
             draw_node(self._surface, world_pos, self._camera, color=WHITE)
             
