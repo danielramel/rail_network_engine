@@ -42,7 +42,7 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
 
         for node in self._railway.graph_service.junctions:
             color = GREEN if self._railway.signalling.is_node_locked(node) else WHITE
-            draw_node(self._surface, node, self._camera, color=color)
+            draw_node(self._surface, node, self._camera, color=color, junction=True)
 
         for signal in self._railway.signals.all():
             color = RED

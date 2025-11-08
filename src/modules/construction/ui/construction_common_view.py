@@ -19,7 +19,7 @@ class ConstructionCommonView(ConstructionView):
                 draw_track(self._surface, edge, self._camera, EdgeAction.SPEED, speed=speed, length=length)
 
         for node in self._railway.graph_service.junctions:
-            draw_node(self._surface, node, self._camera)
+            draw_node(self._surface, node, self._camera, junction=True)
 
         for signal in self._railway.signals.all():
             if self._state.is_bulldoze_preview_node(signal.position):

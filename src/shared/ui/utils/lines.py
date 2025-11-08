@@ -13,14 +13,14 @@ def draw_dotted_line(surface: pygame.Surface, world_a: Position, world_b: Positi
     
     distance = a.distance_to(b)
     if num_dots is None:
-        num_dots = max(1, int(distance // 10))  # default: one dot every 10 pixels
+        num_dots = max(1, int(world_a.distance_to(world_b) // 10))  # default: one dot every 10 pixels
     dot_spacing = distance / num_dots
     for i in range(num_dots):
         dot_x = x1 + (dx * (i * dot_spacing) / distance)
         dot_y = y1 + (dy * (i * dot_spacing) / distance)
         pygame.draw.circle(surface, color, (int(dot_x), int(dot_y)), 1)
 
-def draw_dashed_line(surface: pygame.Surface, world_a: Position, world_b: Position, camera: Camera, color, num_dashes: int = 10, edge_progress: float = 0.0):
+def draw_dashed_line(surface: pygame.Surface, world_a: Position, world_b: Position, camera: Camera, color, num_dashes: int = 10):
     a = camera.world_to_screen(world_a)
     b = camera.world_to_screen(world_b)
     (a_x, a_y), (b_x, b_y) = a, b
@@ -35,4 +35,4 @@ def draw_dashed_line(surface: pygame.Surface, world_a: Position, world_b: Positi
         dash_start_y = a_y + (dy * ((i * 2 + 0.5) * dash_length) / distance)
         dash_end_x = a_x + (dx * ((i * 2 + 1.5) * dash_length) / distance)
         dash_end_y = a_y + (dy * ((i * 2 + 1.5) * dash_length) / distance)
-        pygame.draw.aaline(surface, color, (int(dash_start_x), int(dash_start_y)), (int(dash_end_x), int(dash_end_y)), max(1, 2*int(camera.scale)))
+        pygame.draw.aaline(surface, color, (int(dash_start_x), int(dash_start_y)), (int(dash_end_x), int(dash_end_y)), max(1, 2//int(camera.scale)))
