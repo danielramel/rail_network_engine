@@ -21,7 +21,7 @@ class TimeTableButton(RectangleUIComponent, ShortcutUIComponent, ClickableUIComp
         super().__init__(rect, surface)
         self.timetable_window = None  # Store window reference
         self._shortcuts = {
-            (pygame.K_t, True): self.open_timetable_window
+            (pygame.K_t, False): self.open_timetable_window
         }
 
     def _on_click(self, event: Event) -> bool:

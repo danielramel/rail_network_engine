@@ -1,4 +1,5 @@
 from core.graphics.graphics_context import GraphicsContext
+from modules.setup.ui.setup_buttons import SetupButtons
 from modules.setup.ui.setup_controller import SetupController
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.ui_component import UIComponent
@@ -12,6 +13,7 @@ class SetupMode(FullScreenUIComponent, UIController):
     def __init__(self, railway: RailwaySystem, graphics: GraphicsContext):
         self.state = SetupState()
         self.elements = (
+            SetupButtons(graphics.screen, self.state),
             CameraController(graphics.camera),
             SetupController(railway, self.state, graphics),
         )

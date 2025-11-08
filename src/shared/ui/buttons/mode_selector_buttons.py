@@ -46,9 +46,10 @@ class ModeSelectorButtons(ShortcutUIComponent, ClickableUIComponent):
             self._surface.blit(icon, icon_rect)
 
             if mode == self._state._mode:
-                pygame.draw.rect(self._surface, GREEN, btn_rect, 2, border_radius=10)
+                pygame.draw.rect(self._surface, GREEN, btn_rect.inflate(10, 10), 5, border_radius=10)
             else:
-                pygame.draw.rect(self._surface, WHITE, btn_rect, 2, border_radius=10)
+                pygame.draw.rect(self._surface, WHITE, btn_rect.inflate(-2, -2), 1, border_radius=10)
+                
 
     def contains(self, screen_pos: Position) -> bool:
         return any(btn.collidepoint(*screen_pos) for _, btn in self._buttons)
