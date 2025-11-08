@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Optional
 from core.models.geometry import Position, Edge, Pose
 from core.models.station import Station
-from core.models.edge_action import EdgeAction
+from shared.ui.enums.edge_action import EdgeAction
 
 class ConstructionTool(Enum):
     RAIL = 1

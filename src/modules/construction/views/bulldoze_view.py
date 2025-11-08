@@ -1,4 +1,4 @@
-from core.models.edge_action import EdgeAction
+from shared.ui.enums.edge_action import EdgeAction
 from modules.construction.services.bulldoze_target import BulldozeTargetType, find_bulldoze_target
 from shared.views.base_view import BaseView
 from core.models.geometry import Position

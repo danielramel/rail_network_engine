@@ -1,4 +1,4 @@
-from core.models.edge_action import EdgeAction
+from shared.ui.enums.edge_action import EdgeAction
 from shared.views.base_view import BaseView
 from core.models.geometry import Position
 from core.config.colors import PURPLE, LIGHTBLUE

@@ -3,7 +3,7 @@ from shared.ui.models.clickable_component import ClickableComponent
 from shared.ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station, draw_occupied_edge
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
-from core.models.edge_action import EdgeAction
+from shared.ui.enums.edge_action import EdgeAction
 from core.models.geometry.position import Position
 
 

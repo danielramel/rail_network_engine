@@ -4,32 +4,32 @@ from core.config.colors import GREEN, LIME, PURPLE, LIGHTBLUE, RED, WHITE, BLACK
 from core.graphics.camera import Camera
 from core.models.geometry import Position
 from core.models.geometry.edge import Edge
-from core.models.edge_action import EdgeAction
-from shared.ui.utils.draw_line import draw_dotted_line
+from shared.ui.enums.edge_action import EdgeAction
 from shared.ui.services.color_from_speed import color_from_speed
+from .lines import draw_dotted_line
 
         
-def draw_track(surface: pygame.Surface, edge: Edge, camera: Camera, edge_action: EdgeAction, length: int, speed: int = None, edge_progress = 0.0) -> None:   
+def draw_track(surface: pygame.Surface, edge: Edge, camera: Camera, edge_action: EdgeAction, length: int, speed: int = None) -> None:   
     if edge_action in (EdgeAction.BULLDOZE, EdgeAction.INVALID_PLATFORM):
-        draw_edge(surface, edge, camera, color=RED, length=length)
+        draw_rail(surface, edge, camera, color=RED, length=length)
     elif edge_action == EdgeAction.PLATFORM_SELECTED:
         draw_platform(surface, edge, camera, length=length, color=LIGHTBLUE)
     elif edge_action == EdgeAction.PLATFORM:
         draw_platform(surface, edge, camera, length=length, color=PURPLE)
     elif edge_action == EdgeAction.LOCKED_PLATFORM:
-        draw_edge(surface, edge, camera, color=PURPLE, length=length)
+        draw_rail(surface, edge, camera, color=PURPLE, length=length)
         draw_platform(surface, edge, camera, length=length, color=LIME)
     elif edge_action == EdgeAction.LOCKED_PREVIEW:
-        draw_edge(surface, edge, camera, color=GREEN, length=length)
+        draw_rail(surface, edge, camera, color=GREEN, length=length)
     elif edge_action == EdgeAction.LOCKED:
-        draw_edge(surface, edge, camera, color=LIME, length=length)
+        draw_rail(surface, edge, camera, color=LIME, length=length)
     elif edge_action == EdgeAction.NORMAL:
-        draw_edge(surface, edge, camera, color=WHITE, length=length)
+        draw_rail(surface, edge, camera, color=WHITE, length=length)
     elif edge_action == EdgeAction.SPEED:
         color = color_from_speed(speed)
-        draw_edge(surface, edge, camera, color=color, length=length)
+        draw_rail(surface, edge, camera, color=color, length=length)
 
-def draw_edge(surface: pygame.Surface, edge: Edge, camera: Camera, color: tuple[int, int, int], length: int) -> None:
+def draw_rail(surface: pygame.Surface, edge: Edge, camera: Camera, color: tuple[int, int, int], length: int) -> None:
     """Draw a track as a dotted line on the surface from edge.a to edge.b."""
     if length == 50:
         pygame.draw.aaline(surface, color, tuple(camera.world_to_screen(edge.a)), tuple(camera.world_to_screen(edge.b)), max(1, 2*int(camera.scale)))

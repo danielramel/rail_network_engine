@@ -1,12 +1,11 @@
 from core.config.colors import BLUE, GREEN, LIME, RED, WHITE, LIGHTBLUE, YELLOW
 from shared.ui.models.clickable_component import ClickableComponent
-from shared.ui.utils import draw_track, draw_node, draw_signal, draw_station
+from shared.ui.utils import draw_track, draw_node, draw_signal, draw_station, draw_occupied_edge
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
-from core.models.edge_action import EdgeAction
+from shared.ui.enums.edge_action import EdgeAction
 from core.models.geometry.position import Position
-from shared.ui.utils.draw_edge import draw_occupied_edge
 
 
 class SimulationView(ClickableComponent):

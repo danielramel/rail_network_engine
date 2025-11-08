@@ -6,7 +6,7 @@ from core.models.railway.railway_system import RailwaySystem
 from core.models.event import Event
 from modules.construction.views.platform_view import PlatformView, PlatformTargetType
 from core.graphics.graphics_context import GraphicsContext
-from core.models.edge_action import EdgeAction
+from shared.ui.enums.edge_action import EdgeAction
 
 class PlatformController(BaseConstructionToolController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):

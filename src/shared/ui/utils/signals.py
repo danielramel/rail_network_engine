@@ -4,7 +4,7 @@ from core.models.geometry.pose import Pose
 from core.graphics.camera import Camera
 from core.config.colors import WHITE, BLACK, YELLOW
 from core.config.settings import GRID_SIZE
-from shared.ui.utils.draw_node import draw_node
+from shared.ui.utils.nodes import draw_node
 
 
 def draw_triangle(surface: pygame.Surface, alignment: Pose, camera: Camera, color=WHITE, size_factor=1.0):

@@ -1,4 +1,4 @@
-from core.models.edge_action import EdgeAction
+from shared.ui.enums.edge_action import EdgeAction
 from core.models.geometry.position import Position
 from shared.views.base_view import BaseView
 from shared.ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station, draw_dotted_line
