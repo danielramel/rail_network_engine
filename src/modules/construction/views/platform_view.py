@@ -1,12 +1,13 @@
 from shared.ui.enums.edge_action import EdgeAction
-from shared.views.base_view import BaseView
+from modules.construction.views.construction_view import ConstructionView
 from core.models.geometry import Position
 from core.config.colors import PURPLE, LIGHTBLUE
 from shared.ui.utils import draw_node, draw_station, draw_dotted_line
 from modules.construction.services.platform_target import PlatformTargetType, find_platform_target
 
-class PlatformView(BaseView):
+class PlatformView(ConstructionView):
     def render(self, world_pos: Position | None):
+        super().render(world_pos)
         if world_pos is None:
             return
         

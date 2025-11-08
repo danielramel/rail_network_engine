@@ -3,22 +3,19 @@ from core.models.railway.railway_system import RailwaySystem
 from modules.construction.models.construction_state import ConstructionState
 from core.graphics.camera import Camera
 from shared.ui.models.clickable_component import ClickableComponent
-from shared.views.base_view import BaseView
+from modules.construction.views.construction_view import ConstructionView
 from core.models.geometry.position import Position
 
 
-class BaseConstructionToolController(ClickableComponent):
+class ConstructionToolController(ClickableComponent):
     handled_events = [pygame.MOUSEBUTTONUP]
     """Base class for controllers that manage construction modes."""
-    def __init__(self, view: BaseView, railway: RailwaySystem, state: ConstructionState, camera: Camera):
+    def __init__(self, view: ConstructionView, railway: RailwaySystem, state: ConstructionState, camera: Camera):
         self.view = view
         self._railway = railway
         self._construction_state = state
         self._camera = camera
 
     def render(self, screen_pos: Position):
-        if screen_pos is None:
-            self.view.render(None)
-            return
-        world_pos = self._camera.screen_to_world(screen_pos)
+        world_pos = self._camera.screen_to_world(screen_pos) if screen_pos is not None else None
         self.view.render(world_pos)

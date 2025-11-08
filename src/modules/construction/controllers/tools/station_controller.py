@@ -1,4 +1,4 @@
-from modules.construction.controllers.tools.base_construction_tool_controller import BaseConstructionToolController
+from modules.construction.controllers.tools.construction_tool_controller import ConstructionToolController
 from shared.ui.utils.popups import user_input
 from modules.construction.services.station_target import find_station_target
 from core.models.railway.railway_system import RailwaySystem
@@ -6,7 +6,7 @@ from modules.construction.models.construction_state import ConstructionState
 from modules.construction.views.station_view import StationView
 from core.graphics.graphics_context import GraphicsContext
 from core.models.event import Event
-class StationController(BaseConstructionToolController):
+class StationController(ConstructionToolController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
         view = StationView(railway, state, graphics)
         super().__init__(view, railway, state, graphics.camera)

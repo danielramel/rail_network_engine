@@ -1,4 +1,4 @@
-from modules.construction.controllers.tools.base_construction_tool_controller import BaseConstructionToolController
+from modules.construction.controllers.tools.construction_tool_controller import ConstructionToolController
 from shared.ui.utils.popups import alert
 from modules.construction.services.platform_target import find_platform_target
 from modules.construction.models.construction_state import ConstructionState
@@ -8,7 +8,7 @@ from modules.construction.views.platform_view import PlatformView, PlatformTarge
 from core.graphics.graphics_context import GraphicsContext
 from shared.ui.enums.edge_action import EdgeAction
 
-class PlatformController(BaseConstructionToolController):
+class PlatformController(ConstructionToolController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
         view = PlatformView(railway, state, graphics)
         super().__init__(view, railway, state, graphics.camera)

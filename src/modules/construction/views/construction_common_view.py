@@ -1,11 +1,11 @@
 from shared.ui.enums.edge_action import EdgeAction
 from core.models.geometry.position import Position
-from shared.views.base_view import BaseView
 from shared.ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station, draw_dotted_line
 from core.config.colors import RED, PURPLE
+from modules.construction.views.construction_view import ConstructionView
 
-class ConstructionCommonView(BaseView):
-    def render(self, screen_pos: Position | None) -> None:
+class ConstructionCommonView(ConstructionView):
+    def render(self, world_pos: Position | None) -> None:
         draw_grid(self._surface, self._camera)
 
         for edge, data in self._railway.graph.all_edges_with_data():

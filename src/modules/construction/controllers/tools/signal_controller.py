@@ -1,4 +1,4 @@
-from modules.construction.controllers.tools.base_construction_tool_controller import BaseConstructionToolController
+from modules.construction.controllers.tools.construction_tool_controller import ConstructionToolController
 from modules.construction.services.signal_target import find_signal_target, SignalTargetType
 from modules.construction.models.construction_state import ConstructionState
 from core.models.railway.railway_system import RailwaySystem
@@ -6,7 +6,7 @@ from modules.construction.views.signal_view import SignalView
 from core.graphics.graphics_context import GraphicsContext
 from core.models.event import Event
 
-class SignalController(BaseConstructionToolController):
+class SignalController(ConstructionToolController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
         view = SignalView(railway, state, graphics)
         super().__init__(view, railway, state, graphics.camera)
