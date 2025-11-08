@@ -7,8 +7,8 @@ from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from core.config.colors import BLACK, WHITE, YELLOW, RED
 from core.config.paths import ICON_PATHS
 from core.config.settings import BUTTON_SIZE
-from core.config.keyboard_shortcuts import CONSTRUCTION_MODE_SELECTION
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
+from core.config.keyboard_shortcuts import SETUP_MODE_SELECTION
 
 
 class SetupButtons(ShortcutUIComponent, ClickableUIComponent):
@@ -23,7 +23,7 @@ class SetupButtons(ShortcutUIComponent, ClickableUIComponent):
         
         self._shortcuts = {
             (key, False): lambda mode=mode: self._state.switch_mode(mode)
-            for key, mode in {}
+            for key, mode in SETUP_MODE_SELECTION.items()
         }
         
     def _on_click(self, event: Event) -> bool:
