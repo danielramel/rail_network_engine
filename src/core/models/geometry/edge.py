@@ -8,12 +8,6 @@ class Edge:
     a: Position
     b: Position
 
-    def __post_init__(self):
-        # Initialize ordered endpoints for a frozen dataclass
-        a, b = min(self.a, self.b), max(self.a, self.b)
-        object.__setattr__(self, "a", a)
-        object.__setattr__(self, "b", b)
-        
     def __iter__(self):
         return iter((self.a, self.b))
     
@@ -32,7 +26,10 @@ class Edge:
     def __eq__(self, other):
         if not isinstance(other, Edge):
             return NotImplemented
-        return frozenset((self.a, self.b)) == frozenset((other.a, other.b))
+        return {self.a, self.b} == {other.a, other.b}
+    
+    def equals_ordered(self, other: 'Edge') -> bool:
+        return self.a == other.a and self.b == other.b
     
     def midpoint(self) -> Position:
         return Position((self.a.x + self.b.x) / 2, (self.a.y + self.b.y) / 2)
@@ -48,6 +45,16 @@ class Edge:
             "b": self.b.to_dict(),
             "length": self.length
         }
+        
+    def ordered(self) -> 'Edge':
+        if self.a <= self.b:
+            return Edge(self.a, self.b)
+        else:
+            return Edge(self.b, self.a)
+
+    
+    def reversed(self) -> 'Edge':
+        return Edge(self.b, self.a)
         
     @classmethod
     def from_dict(cls, data: dict) -> 'Edge':

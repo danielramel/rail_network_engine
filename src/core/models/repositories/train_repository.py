@@ -1,6 +1,5 @@
 from core.models.geometry.edge import Edge
 from core.models.geometry.pose import Pose
-from core.models.geometry.position import Position
 from core.models.train import Train
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -16,23 +15,18 @@ class TrainRepository:
         self._trains.append(train)
         
     def add_to_platform(self, platform: frozenset[Edge]) -> None:
-        platform = sorted(platform)
-        locomotive_pose = Pose.from_positions(platform[-1].a, platform[-1].b)
+        platform = [edge.ordered() for edge in sorted(platform)]
+        locomotive_pose = Pose.from_positions(*platform[-1])
         path, signal = self._railway.signalling.get_initial_path(locomotive_pose)
         train = Train(platform, path, signal)
         self.add(train)
         
     def switch_direction(self, train: Train) -> None:
-        platform = train.occupied_edges()
-        if train.get_locomotive_edge() > train.get_last_carriage_edge():
-            # facing positive
-            locomotive_pose = Pose.from_positions(platform[0].b, platform[0].a)
-        else:
-            # facing negative
-            locomotive_pose = Pose.from_positions(platform[0].a, platform[0].b)
+        edges = [edge.reversed() for edge in reversed(train.occupied_edges())]
+        locomotive_pose = Pose.from_positions(edges[-1].a, edges[-1].b)
             
         path, signal = self._railway.signalling.get_initial_path(locomotive_pose)
-        train.switch_direction(tuple(reversed(platform)), path, signal, edge_progress=1.0)
+        train.switch_direction(edges, path, signal, edge_progress=0.0)
 
     def remove(self, id: int) -> None:
         self._trains = [train for train in self._trains if train.id != id]
@@ -42,12 +36,6 @@ class TrainRepository:
             if train.occupies_edge(edge):
                 return True
         return False
-    
-    def get_train_progress_on_edge(self, edge: Edge) -> float | None:
-        for train in self._trains:
-            if train.occupies_edge(edge):
-                return train.edge_progress
-        return None
     
     def get_train_on_edge(self, edge: Edge) -> Train | None:
         for train in self._trains:

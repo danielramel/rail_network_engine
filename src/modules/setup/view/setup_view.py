@@ -1,11 +1,10 @@
 from core.config.colors import BLUE, GREEN, LIME, RED, WHITE, LIGHTBLUE, YELLOW
 from shared.ui.models.clickable_component import ClickableComponent
-from shared.ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station
+from shared.ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station, draw_occupied_edge
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from core.models.edge_action import EdgeAction
 from core.models.geometry.position import Position
-from shared.ui.utils import draw_dashed_line
 
 
 class SetupView(ClickableComponent):
@@ -19,14 +18,14 @@ class SetupView(ClickableComponent):
         for edge, data in self._railway.graph.all_edges_with_data():
             speed = data.get('speed')
             length = data.get('length')
-            edge_action = EdgeAction.SPEED
-            if self._railway.trains.is_edge_occupied(edge) and self._railway.stations.is_edge_platform(edge):
-                edge_action = EdgeAction.OCCUPIED_PLATFORM
-            elif self._railway.trains.is_edge_occupied(edge):
-                edge_action = EdgeAction.OCCUPIED
-            elif self._railway.stations.is_edge_platform(edge):
-                edge_action = EdgeAction.PLATFORM
             
+            if self._railway.stations.is_edge_platform(edge):
+                edge_action = EdgeAction.PLATFORM
+            elif self._railway.trains.is_edge_occupied(edge):
+                continue #draw later
+            else:
+                edge_action = EdgeAction.SPEED
+
             draw_track(self._surface, edge, self._camera, edge_action, length=length, speed=speed)
 
         for node in self._railway.graph_service.junctions:
@@ -39,20 +38,18 @@ class SetupView(ClickableComponent):
             draw_station(self._surface, station, self._camera)
 
         for train in self._railway.trains.all():
-            locomotive_edge = train.get_locomotive_edge()
-            draw_dashed_line(self._surface, locomotive_edge.a, locomotive_edge.b, self._camera, color=WHITE, num_dashes=1)
-            
-            last_carriage_edge = train.get_last_carriage_edge()
-            draw_dashed_line(self._surface, last_carriage_edge.a, last_carriage_edge.b, self._camera, color=RED, num_dashes=1)
+            edges = train.occupied_edges()
+            for edge in edges:
+                draw_occupied_edge(self._surface, edge.a, edge.b, self._camera, color=YELLOW, edge_progress=train.edge_progress)
 
         if world_pos is None:
             return
-                
         
         closest_edge = world_pos.closest_edge(self._railway.graph.edges, self._camera.scale)
         if closest_edge and self._railway.stations.is_edge_platform(closest_edge):
             platform = self._railway.stations.get_platform_from_edge(closest_edge)
             for edge in platform:
-                draw_dashed_line(self._surface, edge.a, edge.b, self._camera, color=YELLOW, num_dashes=1)
+                a, b = edge.ordered()
+                draw_occupied_edge(self._surface, a, b, self._camera, color=LIGHTBLUE, edge_progress=1.0)
         else:
             draw_node(self._surface, world_pos, self._camera, color=WHITE)

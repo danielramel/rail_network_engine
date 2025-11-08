@@ -1,14 +1,12 @@
-from enum import Enum
+from enum import Enum, auto
 
 class EdgeAction(Enum):
-    NORMAL = 0
-    SPEED = 1
-    PLATFORM = 10
-    PLATFORM_SELECTED = 2
-    INVALID_PLATFORM = 3
-    BULLDOZE = 4
-    LOCKED = 5
-    LOCKED_PREVIEW = 6
-    LOCKED_PLATFORM = 7
-    OCCUPIED = 8
-    OCCUPIED_PLATFORM = 9
+    NORMAL = auto()
+    SPEED = auto()
+    PLATFORM = auto()
+    PLATFORM_SELECTED = auto()
+    INVALID_PLATFORM = auto()
+    BULLDOZE = auto()
+    LOCKED = auto()
+    LOCKED_PREVIEW = auto()
+    LOCKED_PLATFORM = auto()

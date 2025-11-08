@@ -1,4 +1,4 @@
-from core.config.colors import BLUE, GREEN, LIME, RED, WHITE, LIGHTBLUE
+from core.config.colors import BLUE, GREEN, LIME, RED, WHITE, LIGHTBLUE, YELLOW
 from shared.ui.models.clickable_component import ClickableComponent
 from shared.ui.utils import draw_track, draw_node, draw_signal, draw_station
 from core.graphics.graphics_context import GraphicsContext
@@ -6,6 +6,7 @@ from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
 from core.models.edge_action import EdgeAction
 from core.models.geometry.position import Position
+from shared.ui.utils.draw_edge import draw_occupied_edge
 
 
 class SimulationView(ClickableComponent):
@@ -21,24 +22,24 @@ class SimulationView(ClickableComponent):
 
         for edge, data in self._railway.graph.all_edges_with_data():
             edge_action = EdgeAction.NORMAL
-            is_edge_platform = self._railway.stations.is_edge_platform(edge)
-            train_edge_progress = self._railway.trains.get_train_progress_on_edge(edge)
-            is_edge_locked = self._railway.signalling.is_edge_locked(edge)
-            is_edge_in_preview = edge in self._state.preview.path
-            
-            if train_edge_progress and is_edge_platform:
-                edge_action = EdgeAction.OCCUPIED_PLATFORM
-            elif train_edge_progress:
-                edge_action = EdgeAction.OCCUPIED
-            elif is_edge_in_preview:
+            is_locked = self._railway.signalling.is_edge_locked(edge)
+            is_platform = self._railway.stations.is_edge_platform(edge)
+            is_in_preview = edge in self._state.preview.path
+            is_occupied = self._railway.trains.is_edge_occupied(edge)
+
+            if is_platform:
+                edge_action = EdgeAction.PLATFORM
+            elif is_occupied:
+                continue #draw later
+            elif is_in_preview:
                 edge_action = EdgeAction.LOCKED_PREVIEW
-            elif is_edge_platform and is_edge_locked:
+            elif is_platform and is_locked:
                 edge_action = EdgeAction.LOCKED_PLATFORM
-            elif is_edge_locked:
+            elif is_locked:
                 edge_action = EdgeAction.LOCKED
             elif self._railway.stations.is_edge_platform(edge):
                 edge_action = EdgeAction.PLATFORM
-            draw_track(self._surface, edge, self._camera, edge_action, data["length"], edge_progress=train_edge_progress)
+            draw_track(self._surface, edge, self._camera, edge_action, data["length"])
 
         for node in self._railway.graph_service.junctions:
             color = GREEN if self._railway.signalling.is_node_locked(node) else WHITE
@@ -57,8 +58,10 @@ class SimulationView(ClickableComponent):
         for station in self._railway.stations.all():
             draw_station(self._surface, station, self._camera)
 
-        # for train in self._railway.trains.all():
-        #     draw_train(self._surface, train, self._camera)
+        for train in self._railway.trains.all():
+            edges = train.occupied_edges()
+            for edge in edges:
+                draw_occupied_edge(self._surface, edge.a, edge.b, self._camera, color=YELLOW, edge_progress=train.edge_progress)
 
         if self._state.preview.signal is None and world_pos is not None:
             draw_node(self._surface, world_pos, self._camera, color=WHITE)

@@ -16,11 +16,6 @@ def draw_track(surface: pygame.Surface, edge: Edge, camera: Camera, edge_action:
         draw_platform(surface, edge, camera, length=length, color=LIGHTBLUE)
     elif edge_action == EdgeAction.PLATFORM:
         draw_platform(surface, edge, camera, length=length, color=PURPLE)
-    elif edge_action == EdgeAction.OCCUPIED_PLATFORM:
-        draw_platform(surface, edge, camera, length=length, color=PURPLE)
-        draw_occupied_edge(surface, edge.a, edge.b, camera, color=YELLOW, edge_progress=edge_progress)
-    elif edge_action == EdgeAction.OCCUPIED:
-        draw_occupied_edge(surface, edge.a, edge.b, camera, color=YELLOW, edge_progress=edge_progress)
     elif edge_action == EdgeAction.LOCKED_PLATFORM:
         draw_edge(surface, edge, camera, color=PURPLE, length=length)
         draw_platform(surface, edge, camera, length=length, color=LIME)
@@ -79,8 +74,8 @@ def draw_occupied_edge(surface: pygame.Surface, a: Position, b: Position, camera
     dx = b_x - a_x
     dy = b_y - a_y
     
-    dash_start_x = a_x + (dx * edge_progress)*0.5
-    dash_start_y = a_y + (dy * edge_progress)*0.5
-    dash_end_x = a_x + (dx * (edge_progress + 1)*0.5)
-    dash_end_y = a_y + (dy * (edge_progress + 1)*0.5)
+    dash_start_x = a_x + (dx * (edge_progress-0.5))
+    dash_start_y = a_y + (dy * (edge_progress-0.5))
+    dash_end_x = a_x + (dx * (edge_progress))
+    dash_end_y = a_y + (dy * (edge_progress))
     pygame.draw.aaline(surface, color, (int(dash_start_x), int(dash_start_y)), (int(dash_end_x), int(dash_end_y)), max(1, 2*int(camera.scale)))

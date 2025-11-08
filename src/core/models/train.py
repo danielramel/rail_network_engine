@@ -2,9 +2,6 @@ from core.models.geometry import Edge
 from core.config.settings import FPS, TRAIN_LENGTH
 from core.models.geometry.direction import Direction
 from core.models.signal import Signal
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from core.models.railway.railway_system import RailwaySystem
 
 
 class Train:
@@ -28,15 +25,8 @@ class Train:
             raise ValueError("A train must occupy exactly TRAIN_LENGTH edges.")
         
         self.path = list(edges) + list(path)
-        if edge_progress is not None:
-            self.edge_progress = edge_progress
-        else:
-            self.edge_progress = 1 - self.edge_progress
         if signal is not None:
             signal.subscribe(self.signal_turned_green_ahead)
-
-    def direction(self) -> Direction:
-        return self.path[TRAIN_LENGTH].direction
     
     def direction(self) -> Direction:
         return self.path[TRAIN_LENGTH].direction
@@ -67,8 +57,10 @@ class Train:
     def occupies_edge(self, edge: Edge) -> bool:
         return edge in self.occupied_edges()
     
+    
     def get_locomotive_edge(self) -> Edge:
         return self.path[TRAIN_LENGTH - 1]
+    
     def get_last_carriage_edge(self) -> Edge:
         return self.path[0]
     
