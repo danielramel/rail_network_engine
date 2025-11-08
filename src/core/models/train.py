@@ -1,5 +1,5 @@
 from core.models.geometry import Edge
-from core.config.settings import FPS, TRAIN_LENGTH
+from core.config.settings import FPS, PLATFORM_LENGTH, TRAIN_LENGTH
 from core.models.geometry.direction import Direction
 from core.models.signal import Signal
 
@@ -13,17 +13,17 @@ class Train:
     deceleration : float = 5.0 # in km/s²
 
     def __init__(self, edges: tuple[Edge], path: tuple[Edge], signal: Signal | None = None):
-        if len(edges) != TRAIN_LENGTH:
-            raise ValueError("A train must occupy exactly TRAIN_LENGTH edges.")
+        if len(edges) != PLATFORM_LENGTH:
+            raise ValueError("A train must occupy exactly PLATFORM_LENGTH edges.")
         
         self.path = list(edges) + path
         if signal is not None:
             signal.subscribe(self.signal_turned_green_ahead)
             
     def switch_direction(self, edges: tuple[Edge], path: tuple[Edge], signal: Signal | None = None, edge_progress: float = None) -> None:
-        if len(edges) != TRAIN_LENGTH:
-            raise ValueError("A train must occupy exactly TRAIN_LENGTH edges.")
-        
+        if len(edges) != PLATFORM_LENGTH:
+            raise ValueError("A train must occupy exactly PLATFORM_LENGTH edges.")
+
         self.path = list(edges) + list(path)
         if signal is not None:
             signal.subscribe(self.signal_turned_green_ahead)
@@ -52,27 +52,13 @@ class Train:
         self.path.pop(0)
         
     def occupied_edges(self) -> tuple[Edge]:
-        return tuple(self.path[:TRAIN_LENGTH])
+        return tuple(self.path[:TRAIN_LENGTH+1])
     
     def occupies_edge(self, edge: Edge) -> bool:
-        return edge in self.occupied_edges()
-    
-    
-    def get_locomotive_edge(self) -> Edge:
-        return self.path[TRAIN_LENGTH - 1]
-    
-    def get_last_carriage_edge(self) -> Edge:
-        return self.path[0]
-    
-    def get_locomotive_position(self) -> float:
-        if self.path[TRAIN_LENGTH - 1].a == self.path[TRAIN_LENGTH - 2].b:
-            return self.path[TRAIN_LENGTH - 1].b
-        else:
-            return self.path[TRAIN_LENGTH - 1].a
-    
+        return edge in self.occupied_edges()    
     
     def get_max_safe_speed(self) -> float:
-        distance = len(self.path) - TRAIN_LENGTH - self.edge_progress - 0.1
+        distance = len(self.path) - (TRAIN_LENGTH + 1) - self.edge_progress - 0.1
         if distance <= 0:
             return 0.0
         # v_max = sqrt(2 * a * s)

@@ -67,15 +67,23 @@ def draw_platform(surface: pygame.Surface, edge: Edge, camera: Camera, length: i
     pygame.draw.aaline(surface, color, tuple(camera.world_to_screen(edge2.a)), tuple(camera.world_to_screen(edge2.b)), max(1, 2*int(camera.scale)))  # Draw platform line
 
 
-def draw_occupied_edge(surface: pygame.Surface, a: Position, b: Position, camera: Camera, color: tuple[int, int, int], edge_progress: float = 0.0) -> None:
+def draw_occupied_edge(surface: pygame.Surface, a: Position, b: Position, camera: Camera, color: tuple[int, int, int], edge_progress: float = 0.0, is_first: bool = False, is_last: bool = False) -> None:
     a = camera.world_to_screen(a)
     b = camera.world_to_screen(b)
     (a_x, a_y), (b_x, b_y) = a, b
     dx = b_x - a_x
     dy = b_y - a_y
     
-    dash_start_x = a_x + (dx * (edge_progress-0.5))
-    dash_start_y = a_y + (dy * (edge_progress-0.5))
-    dash_end_x = a_x + (dx * (edge_progress))
-    dash_end_y = a_y + (dy * (edge_progress))
-    pygame.draw.aaline(surface, color, (int(dash_start_x), int(dash_start_y)), (int(dash_end_x), int(dash_end_y)), max(1, 2*int(camera.scale)))
+    if not is_last:
+        dash_start_x = a_x + (dx * max((edge_progress-0.5), 0))
+        dash_start_y = a_y + (dy * max((edge_progress-0.5), 0))
+        dash_end_x = a_x + (dx * (edge_progress))
+        dash_end_y = a_y + (dy * (edge_progress))
+        pygame.draw.aaline(surface, color, (int(dash_start_x), int(dash_start_y)), (int(dash_end_x), int(dash_end_y)), max(1, 2*int(camera.scale)))
+
+    if edge_progress < 0.5 and not is_first:
+        dash_start_x = a_x + (dx * min((edge_progress+0.5), 1))
+        dash_start_y = a_y + (dy * min((edge_progress+0.5), 1))
+        dash_end_x = a_x + dx
+        dash_end_y = a_y + dy        
+        pygame.draw.aaline(surface, color, (int(dash_start_x), int(dash_start_y)), (int(dash_end_x), int(dash_end_y)), max(1, 2*int(camera.scale)))

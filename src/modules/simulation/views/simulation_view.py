@@ -59,8 +59,10 @@ class SimulationView(ClickableComponent):
 
         for train in self._railway.trains.all():
             edges = train.occupied_edges()
-            for edge in edges:
+            draw_occupied_edge(self._surface, edges[0].a, edges[0].b, self._camera, color=YELLOW, edge_progress=train.edge_progress, is_last=True)
+            for edge in edges[1:-1]:
                 draw_occupied_edge(self._surface, edge.a, edge.b, self._camera, color=YELLOW, edge_progress=train.edge_progress)
+            draw_occupied_edge(self._surface, edges[-1].a, edges[-1].b, self._camera, color=YELLOW, edge_progress=train.edge_progress, is_first=True)
 
         if self._state.preview.signal is None and world_pos is not None:
             draw_node(self._surface, world_pos, self._camera, color=WHITE)
