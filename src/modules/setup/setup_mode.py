@@ -4,13 +4,13 @@ from shared.ui.models.clickable_component import ClickableComponent
 from shared.ui.models.ui_controller import UIController
 from shared.controllers.camera_controller import CameraController
 from core.models.railway.railway_system import RailwaySystem
-from modules.simulation.models.simulation_state import SimulationState
+from modules.setup.models.setup_state import SetupState
 
 class SetupMode(UIController):
     elements: tuple[ClickableComponent]
     def __init__(self, railway: RailwaySystem, graphics: GraphicsContext):
-        self.state = SimulationState()
+        self.state = SetupState()
         self.elements = (
             CameraController(graphics.camera),
-            SetupController(railway, graphics),
+            SetupController(railway, self.state, graphics),
         )

@@ -1,5 +1,6 @@
 from core.models.geometry import Position
 from core.models.railway.railway_system import RailwaySystem
+from modules.setup.models.setup_state import SetupState
 from modules.setup.view.setup_view import SetupView
 from shared.ui.models.clickable_component import ClickableComponent
 from core.graphics.graphics_context import GraphicsContext
@@ -8,10 +9,11 @@ import pygame
 
 class SetupController(ClickableComponent):
     handled_events = [pygame.MOUSEBUTTONUP]
-    def __init__(self, railway: RailwaySystem, graphics: GraphicsContext):
-        self.view = SetupView(railway, graphics)
+    def __init__(self, railway: RailwaySystem, setup_state: SetupState, graphics: GraphicsContext):
+        self.view = SetupView(railway, setup_state, graphics)
         self._railway = railway
         self._camera = graphics.camera
+        self._state = setup_state
         
         self._railway.signals.add_signals_to_dead_ends()
 

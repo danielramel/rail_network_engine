@@ -45,12 +45,9 @@ class Edge:
             "b": self.b.to_dict(),
             "length": self.length
         }
-        
-    def ordered(self) -> 'Edge':
-        if self.a <= self.b:
-            return Edge(self.a, self.b)
-        else:
-            return Edge(self.b, self.a)
+
+    def ordered(self, reversed: bool = False) -> 'Edge':
+        return Edge(*sorted((self.a, self.b), reverse=reversed))
 
     
     def reversed(self) -> 'Edge':

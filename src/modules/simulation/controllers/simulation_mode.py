@@ -2,7 +2,6 @@ from core.graphics.graphics_context import GraphicsContext
 from shared.ui.models.clickable_component import ClickableComponent
 from shared.ui.models.ui_controller import UIController
 from modules.simulation.ui.time_control_buttons import TimeControlButtons
-from modules.simulation_setup.train_placement_button import TrainPlacementButton
 from modules.simulation.ui.time_display import TimeDisplay
 from shared.controllers.camera_controller import CameraController
 from modules.simulation.controllers.simulation_controller import SimulationController
@@ -15,7 +14,6 @@ class SimulationMode(UIController):
         self.state = SimulationState()
         self.elements = (
             TimeControlButtons(self.state.time, graphics.screen),
-            TrainPlacementButton(railway, graphics.screen),
             TimeDisplay(self.state.time, graphics.screen),
             CameraController(graphics.camera),
             SimulationController(railway, self.state, graphics),

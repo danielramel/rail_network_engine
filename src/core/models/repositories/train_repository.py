@@ -30,12 +30,6 @@ class TrainRepository:
 
     def remove(self, id: int) -> None:
         self._trains = [train for train in self._trains if train.id != id]
-        
-    def is_edge_occupied(self, edge: Edge) -> bool:
-        for train in self._trains:
-            if train.occupies_edge(edge):
-                return True
-        return False
     
     def get_train_on_edge(self, edge: Edge) -> Train | None:
         for train in self._trains:

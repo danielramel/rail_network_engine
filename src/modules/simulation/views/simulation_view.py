@@ -6,6 +6,7 @@ from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
 from shared.ui.enums.edge_action import EdgeAction
 from core.models.geometry.position import Position
+from shared.ui.utils.train import draw_train
 
 
 class SimulationView(ClickableComponent):
@@ -16,7 +17,6 @@ class SimulationView(ClickableComponent):
         self._camera = graphics.camera
         
     def render(self, world_pos: Position | None) -> None:
-        # draw_grid(self._surface, self._camera)
         self.set_preview(world_pos)
 
         for edge, data in self._railway.graph.all_edges_with_data():
@@ -24,7 +24,7 @@ class SimulationView(ClickableComponent):
             is_locked = self._railway.signalling.is_edge_locked(edge)
             is_platform = self._railway.stations.is_edge_platform(edge)
             is_in_preview = edge in self._state.preview.path
-            is_occupied = self._railway.trains.is_edge_occupied(edge)
+            is_occupied = self._railway.trains.get_train_on_edge(edge) is not None
 
             if is_platform:
                 edge_action = EdgeAction.PLATFORM
@@ -59,10 +59,7 @@ class SimulationView(ClickableComponent):
 
         for train in self._railway.trains.all():
             edges = train.occupied_edges()
-            draw_occupied_edge(self._surface, edges[0].a, edges[0].b, self._camera, color=YELLOW, edge_progress=train.edge_progress, is_last=True)
-            for edge in edges[1:-1]:
-                draw_occupied_edge(self._surface, edge.a, edge.b, self._camera, color=YELLOW, edge_progress=train.edge_progress)
-            draw_occupied_edge(self._surface, edges[-1].a, edges[-1].b, self._camera, color=YELLOW, edge_progress=train.edge_progress, is_first=True)
+            draw_train(self._surface, edges, self._camera, color=YELLOW, edge_progress=train.edge_progress)
 
         if self._state.preview.signal is None and world_pos is not None:
             draw_node(self._surface, world_pos, self._camera, color=WHITE)

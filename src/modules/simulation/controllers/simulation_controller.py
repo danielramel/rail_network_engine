@@ -11,7 +11,7 @@ class SimulationController(ClickableComponent):
     handled_events = [pygame.MOUSEBUTTONUP]
     def __init__(self, railway: RailwaySystem, simulation_state: SimulationState, graphics: GraphicsContext):
         self.view = SimulationView(railway, simulation_state, graphics)
-        self._simulation_state = simulation_state
+        self._state = simulation_state
         self._railway = railway
         self._camera = graphics.camera
         
@@ -26,14 +26,14 @@ class SimulationController(ClickableComponent):
                 self._railway.signalling.disconnect_signal(signal)
                 return True
             
-            if self._simulation_state.selected_signal:
-                self._railway.signalling.connect_signals(self._simulation_state.selected_signal, signal)
-                self._simulation_state.selected_signal = None
+            if self._state.selected_signal:
+                self._railway.signalling.connect_signals(self._state.selected_signal, signal)
+                self._state.selected_signal = None
                 return True
-            self._simulation_state.selected_signal = signal
+            self._state.selected_signal = signal
             
         if event.button == 3:
-            self._simulation_state.selected_signal = None
+            self._state.selected_signal = None
         return True
             
             
@@ -43,7 +43,7 @@ class SimulationController(ClickableComponent):
 
     
     def tick(self):
-        if self._simulation_state.time.paused:
+        if self._state.time.paused:
             return
-        for _ in range(self._simulation_state.time.mode.value):
+        for _ in range(self._state.time.mode.value):
             self._railway.tick()

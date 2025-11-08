@@ -1,19 +1,24 @@
-from core.config.colors import BLUE, GREEN, LIME, RED, WHITE, LIGHTBLUE, YELLOW
+from core.config.colors import BLUE, GREEN, GREY, LIME, RED, WHITE, LIGHTBLUE, YELLOW
 from shared.ui.models.clickable_component import ClickableComponent
 from shared.ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station, draw_occupied_edge
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from shared.ui.enums.edge_action import EdgeAction
 from core.models.geometry.position import Position
+from shared.ui.utils.train import draw_train
+from modules.setup.models.setup_state import SetupState
 
 
 class SetupView(ClickableComponent):
-    def __init__(self, railway: RailwaySystem, graphics: GraphicsContext):
+    def __init__(self, railway: RailwaySystem, setup_state: SetupState, graphics: GraphicsContext):
         self._railway = railway
         self._surface = graphics.screen
         self._camera = graphics.camera
-        
+        self._state = setup_state
+
     def render(self, world_pos: Position | None) -> None:
+        self.set_preview(world_pos)
+        
         draw_grid(self._surface, self._camera)
         for edge, data in self._railway.graph.all_edges_with_data():
             speed = data.get('speed')
@@ -21,7 +26,7 @@ class SetupView(ClickableComponent):
             
             if self._railway.stations.is_edge_platform(edge):
                 edge_action = EdgeAction.PLATFORM
-            elif self._railway.trains.is_edge_occupied(edge):
+            elif self._railway.trains.get_train_on_edge(edge):
                 continue #draw later
             else:
                 edge_action = EdgeAction.SPEED
@@ -39,19 +44,27 @@ class SetupView(ClickableComponent):
 
         for train in self._railway.trains.all():
             edges = train.occupied_edges()
-            draw_occupied_edge(self._surface, edges[0].a, edges[0].b, self._camera, color=YELLOW, edge_progress=train.edge_progress, is_last=True)
-            for edge in edges[1:-1]:
-                draw_occupied_edge(self._surface, edge.a, edge.b, self._camera, color=YELLOW, edge_progress=train.edge_progress)
-            draw_occupied_edge(self._surface, edges[-1].a, edges[-1].b, self._camera, color=YELLOW, edge_progress=train.edge_progress, is_first=True)
+            if self._state.preview.edge in edges:
+                color = LIGHTBLUE
+            else:
+                color = YELLOW
+            draw_train(self._surface, edges, self._camera, color=color, edge_progress=train.edge_progress)
 
+        if self._state.preview.edge is not None:
+            platform = self._railway.stations.get_platform_from_edge(self._state.preview.edge)
+            edges = [edge.ordered(self._state.preview.reversed) for edge in sorted(platform, reverse=self._state.preview.reversed)]
+            draw_train(self._surface, edges, self._camera, color=BLUE, edge_progress=1.0)
+        elif world_pos is not None:
+            draw_node(self._surface, world_pos, self._camera, color=WHITE)
+            
+    def set_preview(self, world_pos: Position | None) -> None:
         if world_pos is None:
             return
-        
+        self._state.preview.clear()
         closest_edge = world_pos.closest_edge(self._railway.graph.edges, self._camera.scale)
         if closest_edge and self._railway.stations.is_edge_platform(closest_edge):
-            platform = self._railway.stations.get_platform_from_edge(closest_edge)
-            for edge in platform:
-                a, b = edge.ordered()
-                draw_occupied_edge(self._surface, a, b, self._camera, color=LIGHTBLUE, edge_progress=1.0)
-        else:
-            draw_node(self._surface, world_pos, self._camera, color=WHITE)
+            self._state.preview.edge = closest_edge
+            train = self._railway.trains.get_train_on_edge(closest_edge)
+            if train is not None:
+                locomotive_edge = train.occupied_edges()[0]
+                self._state.preview.reversed = locomotive_edge.a < locomotive_edge.b
