@@ -20,7 +20,7 @@ def draw_dotted_line(surface: pygame.Surface, world_a: Position, world_b: Positi
         dot_y = y1 + (dy * (i * dot_spacing) / distance)
         pygame.draw.circle(surface, color, (int(dot_x), int(dot_y)), 1)
 
-def draw_dashed_line(surface: pygame.Surface, world_a: Position, world_b: Position, camera: Camera, color, num_dashes: int = 10):
+def draw_dashed_line(surface: pygame.Surface, world_a: Position, world_b: Position, camera: Camera, color, num_dashes: int = 10, edge_progress: float = 0.0):
     a = camera.world_to_screen(world_a)
     b = camera.world_to_screen(world_b)
     (a_x, a_y), (b_x, b_y) = a, b

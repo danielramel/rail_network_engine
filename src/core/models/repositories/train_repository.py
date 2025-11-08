@@ -42,7 +42,12 @@ class TrainRepository:
             if train.occupies_edge(edge):
                 return True
         return False
-        
+    
+    def get_train_progress_on_edge(self, edge: Edge) -> float | None:
+        for train in self._trains:
+            if train.occupies_edge(edge):
+                return train.edge_progress
+        return None
     
     def get_train_on_edge(self, edge: Edge) -> Train | None:
         for train in self._trains:
