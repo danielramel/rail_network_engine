@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from enum import Enum, auto
 from core.models.geometry import Edge
 
-class SetupMode(Enum):
+class SetupTool(Enum):
     PLACE_TRAIN = auto()
     REMOVE_TRAIN = auto()
 
@@ -18,7 +18,11 @@ class SetupPreview:
 @dataclass
 class SetupState:
     preview: SetupPreview = field(default_factory=SetupPreview)
-    mode: SetupMode = SetupMode.PLACE_TRAIN
+    tool: SetupTool = SetupTool.PLACE_TRAIN
     
-    def switch_mode(self, new_mode: SetupMode) -> None:
-        self.mode = new_mode
+    def switch_tool(self, new_tool: SetupTool) -> None:
+        """Switch to a new setup tool, clearing previous state."""
+        if new_tool == self.tool:
+            return
+        self.tool = new_tool
+        self.preview.clear()

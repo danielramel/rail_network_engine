@@ -2,50 +2,50 @@ import pygame
 from core.graphics.icon_loader import IconLoader
 from core.models.event import Event
 from core.models.geometry.position import Position
-from modules.setup.models.setup_state import SetupMode, SetupState
+from modules.setup.models.setup_state import SetupTool, SetupState
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from core.config.colors import BLACK, WHITE, YELLOW, RED
 from core.config.paths import ICON_PATHS
 from core.config.settings import BUTTON_SIZE
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
-from core.config.keyboard_shortcuts import SETUP_MODE_SELECTION
+from core.config.keyboard_shortcuts import SETUP_TOOL_SELECTION
 
 
 class SetupButtons(ShortcutUIComponent, ClickableUIComponent):
     def __init__(self, surface: pygame.Surface, setup_state: SetupState):
         self.icon_cache = {
-            mode: IconLoader().get_icon(ICON_PATHS[mode.name], BUTTON_SIZE)
-            for mode in SetupMode
+            tool: IconLoader().get_icon(ICON_PATHS[tool.name], BUTTON_SIZE)
+            for tool in SetupTool
         }
         self.buttons = self._get_buttons(surface)
         self._state = setup_state
         self._surface = surface
         
         self._shortcuts = {
-            (key, False): lambda mode=mode: self._state.switch_mode(mode)
-            for key, mode in SETUP_MODE_SELECTION.items()
+            (key, False): lambda tool=tool: self._state.switch_tool(tool)
+            for key, tool in SETUP_TOOL_SELECTION.items()
         }
         
     def _on_click(self, event: Event) -> bool:
         if not event.is_left_click:
             return False
-        for mode, btn in self.buttons:
+        for tool, btn in self.buttons:
             if btn.collidepoint(*event.screen_pos):
-                self._state.switch_mode(mode)
+                self._state.switch_tool(tool)
                 return True
         return False
 
     def render(self, screen_pos: Position) -> None:
-        for mode, btn_rect in self.buttons:
+        for tool, btn_rect in self.buttons:
         # Draw a solid background for the button (not transparent)
             pygame.draw.rect(self._surface, BLACK, btn_rect, border_radius=10)
 
-            icon = self.icon_cache[mode]
+            icon = self.icon_cache[tool]
             icon_rect = icon.get_rect(center=btn_rect.center)
             self._surface.blit(icon, icon_rect)
 
-            if mode == self._state.mode:
-                color = YELLOW if not self._state.mode is SetupMode.REMOVE_TRAIN else RED
+            if tool == self._state.tool:
+                color = YELLOW if not self._state.tool is SetupTool.REMOVE_TRAIN else RED
                 pygame.draw.rect(self._surface, color, btn_rect.inflate(10, 10), 5, border_radius=10)
             else:
                 pygame.draw.rect(self._surface, WHITE, btn_rect.inflate(-2, -2), 1, border_radius=10)
@@ -54,16 +54,16 @@ class SetupButtons(ShortcutUIComponent, ClickableUIComponent):
         return any(btn.collidepoint(*screen_pos) for _, btn in self.buttons)
 
 
-    def _get_buttons(self, surface: pygame.Surface) -> list[tuple[SetupMode, pygame.Rect]]:
+    def _get_buttons(self, surface: pygame.Surface) -> list[tuple[SetupTool, pygame.Rect]]:
         button_margin = BUTTON_SIZE // 5
         _, h = surface.get_size()
         buttons = []
-        for i, mode in enumerate(SetupMode):
+        for i, tool in enumerate(SetupTool):
             rect = pygame.Rect(
                 button_margin + (BUTTON_SIZE + button_margin) * i,
                 h - BUTTON_SIZE - button_margin,
                 BUTTON_SIZE,
                 BUTTON_SIZE
             )
-            buttons.append((mode, rect))
+            buttons.append((tool, rect))
         return buttons

@@ -1,4 +1,3 @@
-import pygame
 from modules.construction.models.construction_view import ConstructionView
 from core.models.geometry import Position
 from core.models.station import Station
@@ -8,7 +7,6 @@ from .station_target import find_station_target
 
 class StationView(ConstructionView):
     def render(self, world_pos: Position | None):
-        super().render(world_pos)
         if world_pos is None:
             return
         moving_station = self._state.moving_station

@@ -13,7 +13,7 @@ class SignalController(ConstructionToolController):
 
     def _on_click(self, event: Event) -> None:
         if event.button == 3:
-            self._construction_state.switch_mode(None)
+            self._construction_state.switch_tool(None)
             return
 
         target = find_signal_target(self._railway, self._camera.screen_to_world(event.screen_pos))

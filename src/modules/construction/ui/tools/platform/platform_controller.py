@@ -19,7 +19,7 @@ class PlatformController(ConstructionToolController):
             if self._construction_state.platform_waiting_for_station:
                 self._construction_state.platform_waiting_for_station = False
             else:
-                self._construction_state.switch_mode(None)
+                self._construction_state.switch_tool(None)
             return
                 
         world_pos = self._camera.screen_to_world(event.screen_pos)
@@ -34,7 +34,7 @@ class PlatformController(ConstructionToolController):
 
         if len(self._railway.stations.all()) == 0:
             alert('Please build a station first.')
-            self._construction_state.switch_mode(None)
+            self._construction_state.switch_tool(None)
             return
 
         target = find_platform_target(self._railway, world_pos, self._camera.scale)

@@ -7,7 +7,6 @@ from core.config.colors import RED
 
 class BulldozeView(ConstructionView):
     def render(self, world_pos: Position | None):
-        super().render(world_pos)
         self._state.preview.clear()
         
         if world_pos is None:

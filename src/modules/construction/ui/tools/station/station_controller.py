@@ -16,7 +16,7 @@ class StationController(ConstructionToolController):
             if self._construction_state.moving_station is not None:
                 self._construction_state.moving_station = None
             else:
-                self._construction_state.switch_mode(None)
+                self._construction_state.switch_tool(None)
             return
 
         target = find_station_target(self._railway, self._camera.screen_to_world(event.screen_pos), self._construction_state.moving_station)

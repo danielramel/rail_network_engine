@@ -19,7 +19,7 @@ class RailController(ConstructionToolController):
             if self._construction_state.construction_anchor is not None:
                 self._construction_state.construction_anchor = None
             else:
-                self._construction_state.switch_mode(None)
+                self._construction_state.switch_tool(None)
             return
         
         target = find_rail_target(self._railway, self._camera.screen_to_world(event.screen_pos), self._construction_state.construction_anchor)

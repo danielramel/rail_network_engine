@@ -8,7 +8,6 @@ from .rail_target import find_rail_target, RailTargetType
 
 class RailView(ConstructionView):
     def render(self, world_pos: Position | None):
-        super().render(world_pos)
         if world_pos is None:
             if self._state.construction_anchor is not None:
                 draw_node(self._surface, self._state.construction_anchor.position, self._camera, color=color_from_speed(self._state.track_speed))

@@ -6,7 +6,6 @@ from .signal_target import find_signal_target, SignalTargetType
 
 class SignalView(ConstructionView):
     def render(self, world_pos: Position | None):
-        super().render(world_pos)
         if world_pos is None:
             return
         target = find_signal_target(self._railway, world_pos)

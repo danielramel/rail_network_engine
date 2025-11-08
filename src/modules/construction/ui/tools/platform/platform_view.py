@@ -7,7 +7,6 @@ from .platform_target import PlatformTargetType, find_platform_target
 
 class PlatformView(ConstructionView):
     def render(self, world_pos: Position | None):
-        super().render(world_pos)
         if world_pos is None:
             return
         

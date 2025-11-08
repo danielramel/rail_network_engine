@@ -35,7 +35,7 @@ class ConstructionState:
     preview: ConstructionPreview = field(default_factory=ConstructionPreview)
     platform_waiting_for_station: bool = False
     
-    def switch_mode(self, new_mode: ConstructionTool) -> None:
+    def switch_tool(self, new_mode: ConstructionTool) -> None:
         """Switch to a new construction mode, clearing previous state."""
         if new_mode == self.tool:
             return

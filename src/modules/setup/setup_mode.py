@@ -1,6 +1,6 @@
 from core.graphics.graphics_context import GraphicsContext
 from modules.setup.ui.setup_buttons import SetupButtons
-from modules.setup.ui.setup_controller import SetupController
+from modules.setup.ui.setup_tool_strategy import SetupToolStrategy
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.ui_component import UIComponent
 from shared.ui.models.ui_controller import UIController
@@ -15,5 +15,5 @@ class SetupMode(FullScreenUIComponent, UIController):
         self.elements = (
             SetupButtons(graphics.screen, self.state),
             CameraController(graphics.camera),
-            SetupController(railway, self.state, graphics),
+            SetupToolStrategy(railway, self.state, graphics),
         )

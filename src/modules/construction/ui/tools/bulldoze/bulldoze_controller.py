@@ -13,7 +13,7 @@ class BulldozeController(ConstructionToolController):
 
     def _on_click(self, event: Event) -> bool:
         if event.is_right_click:
-            self._construction_state.switch_mode(None)
+            self._construction_state.switch_tool(None)
             return True
         
         world_pos = self._camera.screen_to_world(event.screen_pos)
