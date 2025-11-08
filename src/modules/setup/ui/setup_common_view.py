@@ -5,7 +5,7 @@ from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from shared.ui.enums.edge_action import EdgeAction
 from core.models.geometry.position import Position
-from modules.setup.models.setup_state import SetupState
+from modules.setup.models.setup_state import SetupAction, SetupState
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 
 
@@ -44,15 +44,11 @@ class SetupCommonView(ClickableUIComponent, FullScreenUIComponent):
 
         for train in self._railway.trains.all():
             edges = train.occupied_edges()
-            if self._state.preview.edge in edges:
-                color = LIGHTBLUE
-            else:
-                color = YELLOW
+            if self._state.preview.edge in edges and self._state.preview.action is SetupAction.REMOVE:
+                continue
             draw_train(self._surface, edges, self._camera, edge_progress=train.edge_progress)
 
-        if self._state.preview.edge is not None:
+        if self._state.preview.edge is not None and self._state.preview.action is SetupAction.ADD:
             platform = self._railway.stations.get_platform_from_edge(self._state.preview.edge)
-            edges = [edge.ordered(self._state.preview.reversed) for edge in sorted(platform, reverse=self._state.preview.reversed)]
+            edges = [edge.ordered() for edge in sorted(platform)]
             draw_train(self._surface, edges, self._camera, edge_progress=1.0)
-        elif world_pos is not None:
-            draw_node(self._surface, world_pos, self._camera, color=WHITE)

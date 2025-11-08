@@ -12,7 +12,7 @@ class SignalController(ConstructionToolController):
         super().__init__(view, railway, state, graphics.camera)
 
     def _on_click(self, event: Event) -> None:
-        if event.button == 3:
+        if event.is_right_click:
             self._construction_state.switch_tool(None)
             return
 

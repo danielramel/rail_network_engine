@@ -5,6 +5,7 @@ from modules.setup.models.setup_state import SetupState
 from modules.setup.models.setup_tool_controller import SetupToolController
 from modules.setup.ui.setup_common_view import SetupCommonView
 from modules.setup.ui.tools.train_placement.train_placement_controller import TrainPlacementController
+from modules.setup.ui.tools.train_removal.train_removal_controller import TrainRemovalController
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from modules.setup.models.setup_state import SetupTool
@@ -19,6 +20,7 @@ class SetupToolStrategy(ClickableUIComponent, FullScreenUIComponent):
 
         self._controllers: dict[SetupTool, SetupToolController] = {
             SetupTool.PLACE_TRAIN: TrainPlacementController(railway, state, graphics),
+            SetupTool.REMOVE_TRAIN: TrainRemovalController(railway, state, graphics),
         }
         
     def _on_click(self, event) -> None:

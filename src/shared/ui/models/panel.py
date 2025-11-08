@@ -1,12 +1,18 @@
 from core.config.colors import BLACK, WHITE
 from core.models.geometry.position import Position
+from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.models.rectangle import RectangleUIComponent
 import pygame
 
-class Panel(RectangleUIComponent):
+class Panel(RectangleUIComponent, ClickableUIComponent):
     def __init__(self, surface: pygame.Surface):
         self._surface = surface
         self._rect = self._get_panel_rect()
+        
+                
+        self.padding: int = 15
+        self.title_font = pygame.font.SysFont(None, 28)
+        self.instruction_font = pygame.font.SysFont(None, 22)
         
         # cannot call super method because _surface needs to be set first
         

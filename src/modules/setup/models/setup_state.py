@@ -6,14 +6,18 @@ class SetupTool(Enum):
     PLACE_TRAIN = auto()
     REMOVE_TRAIN = auto()
 
+class SetupAction(Enum):
+    ADD = auto()
+    REMOVE = auto()
+
 @dataclass
 class SetupPreview:
     edge: Edge | None = None
-    reversed: bool = False
+    action: SetupAction | None = None
     
     def clear(self) -> None:
         self.edge = None
-        self.reversed = False
+        self.action = None
 
 @dataclass
 class SetupState:
