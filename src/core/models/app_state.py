@@ -20,6 +20,8 @@ class AppState:
     
     
     def switch_mode(self, new_mode: ViewMode) -> None:
+        if self._mode == new_mode:
+            return
         self._mode = new_mode
         if self.callback is not None:
             self.callback(new_mode)
