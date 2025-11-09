@@ -17,6 +17,9 @@ class Schedule:
         for stop in self.stops[:]:
             if stop['station'].id == station_id:
                 self.stops.remove(stop)
+                
+    def __repr__(self) -> str:
+        return f"<Schedule {self.code} {self.first_train//60:02d}:{self.first_train%60:02d} - {self.last_train//60:02d}:{self.last_train%60:02d} every {self.frequency}m>"
     
     def to_dict(self) -> dict:
         """Convert the Schedule object to a dictionary for serialization."""
