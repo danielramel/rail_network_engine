@@ -114,6 +114,7 @@ class StationRepository:
         
         stations = data["stations"]
         for id, station_data in stations.items():
+            id = int(id)
             station = Station(
                 name=station_data["name"],
                 position=Position.from_dict(station_data["position"]),

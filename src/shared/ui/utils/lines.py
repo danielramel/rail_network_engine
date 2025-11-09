@@ -5,6 +5,8 @@ from core.graphics.camera import Camera
 
 def draw_dotted_line(surface: pygame.Surface, world_a: Position, world_b: Position, camera: Camera, color, num_dots: int = None):
     """Draw a dotted line on the surface from start_pos to end_pos."""
+    if world_a == world_b:
+        return  
     a = camera.world_to_screen(world_a)
     b = camera.world_to_screen(world_b)
     (x1, y1), (x2, y2) = a, b

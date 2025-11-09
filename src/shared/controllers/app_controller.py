@@ -59,7 +59,7 @@ class AppController(UIController, FullScreenUIComponent):
             
     def _mock_load(self):
         import json
-        filename = "C:/Users/lemar/elte/szakdolgozat/simulator/maps/cegléd.json"
+        filename = "C:/Users/lemar/elte/szakdolgozat/simulator/maps/30.json"
         with open(filename, 'r', encoding='utf-8') as f:
             data = json.loads(f.read())
             self._railway.from_dict(data)
