@@ -5,6 +5,7 @@ from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from modules.simulation.ui.simulation_view import SimulationView
 from core.graphics.graphics_context import GraphicsContext
+from core.models.event import Event
 import pygame
 
 
@@ -18,24 +19,30 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
         
         self._railway.signals.add_signals_to_dead_ends()
 
-    def _on_click(self, event) -> bool:            
-        snapped: Position = self._camera.screen_to_world(event.screen_pos).snap_to_grid()
+    def _on_click(self, click: Event) -> None:
+        if click.is_right_click and self._state.selected_signal is not None:
+            self._state.selected_signal = None
+            return
+        
+        closest_edge = click.world_pos.closest_edge(self._railway.graph.edges, self._camera.scale)
+        train_id = closest_edge is not None and self._railway.trains.get_train_on_edge(closest_edge)
+        if train_id:
+            self._state.selected_train = self._railway.trains.get(train_id)
+            return
+        
+        snapped = self._camera.screen_to_world(click.screen_pos).snap_to_grid()
         if self._railway.graph.has_node_at(snapped) and self._railway.signals.has_signal_at(snapped):
             signal = self._railway.signals.get(snapped)
             
-            if event.button == 3 and signal.next_signal is not None:
+            if click.is_right_click and signal.next_signal is not None:
                 self._railway.signalling.disconnect_signal(signal)
-                return True
+                return
             
             if self._state.selected_signal:
                 self._railway.signalling.connect_signals(self._state.selected_signal, signal)
                 self._state.selected_signal = None
-                return True
+                return
             self._state.selected_signal = signal
-            
-        if event.button == 3:
-            self._state.selected_signal = None
-        return True
             
             
     def render(self, screen_pos: Position | None):

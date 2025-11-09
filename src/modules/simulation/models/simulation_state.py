@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from core.models.geometry.edge import Edge
 from core.models.geometry.position import Position
 from core.models.signal import Signal
-
+from core.models.train import Train
 from enum import Enum
 from core.config.settings import FPS
 from core.models.time import Time
@@ -35,17 +35,20 @@ class TimeControlState:
 class SimulationPreview:
     path: list[Edge] = field(default_factory=list)
     signal: Position = None
+    train_id: int = None
     
     def clear(self) -> None:
         self.path = []
         self.signal = None
-
+        self.train_id = None
+        
 @dataclass
 class SimulationState:
     time: Time
     selected_signal: Signal = None
     time_control: TimeControlState = TimeControlState()
     preview: SimulationPreview = field(default_factory=SimulationPreview)
+    selected_train: Train = None
     
     def tick(self) -> None:
         """Advance the current time by the specified number of seconds."""

@@ -60,7 +60,9 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
 
         for train in self._railway.trains.all():
             edges = train.occupied_edges()
-            draw_train(self._surface, edges, self._camera, edge_progress=train.edge_progress)
+            border_color = BLUE if self._state.preview.train_id == train.id else YELLOW if self._state.selected_train == train else None
+            
+            draw_train(self._surface, edges, self._camera, edge_progress=train.edge_progress, border_color=border_color)
 
         
         if self._state.preview.signal is None and world_pos is not None:
@@ -73,6 +75,12 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
     def set_preview(self, world_pos: Position | None):
         self._state.preview.clear() 
         if world_pos is None:
+            return
+        
+        closest_edge = world_pos.closest_edge(self._railway.graph.edges, self._camera.scale)
+        train_id = closest_edge is not None and self._railway.trains.get_train_on_edge(closest_edge)
+        if train_id and (self._state.selected_train is None or self._state.selected_train.id != train_id):
+            self._state.preview.train_id = train_id
             return
         
         snapped = world_pos.snap_to_grid()

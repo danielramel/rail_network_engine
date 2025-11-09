@@ -4,6 +4,7 @@ from core.models.signal import Signal
 
 
 class Train:
+    id : int
     path : list[Edge]
     edge_progress : float = 0.0
     speed : float = 0.0  # in m/s
@@ -11,9 +12,10 @@ class Train:
     max_speed : int  =  120  # in km/h
     deceleration : float = 5.0 # in km/s²
 
-    def __init__(self, edges: tuple[Edge]):
+    def __init__(self, id: int, edges: list[Edge]):
         if len(edges) != PLATFORM_LENGTH:
             raise ValueError("A train must occupy exactly PLATFORM_LENGTH edges.")
+        self.id = id
         self.path = edges
         
     def tick(self):

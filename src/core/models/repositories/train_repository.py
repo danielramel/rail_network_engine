@@ -19,10 +19,9 @@ class TrainRepository:
 
     def add_to_platform(self, platform: frozenset[Edge]) -> int:
         platform = [edge.ordered() for edge in sorted(platform)]
-        train = Train(platform)
-
-
         id = self._generate_id()
+        train = Train(id, platform)
+
         self._trains[id] = train
         self._railway.signalling.lock_path(platform)
         return id
