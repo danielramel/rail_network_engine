@@ -46,6 +46,6 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
     def tick(self):
         if self._state.time_control.paused:
             return
-        self._state.time_control.tick()
+        self._state.tick()
         for _ in range(self._state.time_control.mode.value):
             self._railway.tick()

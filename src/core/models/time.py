@@ -12,3 +12,13 @@ class Time:
     
     def add(self, seconds: float) -> None:
         self.current_time += seconds
+        
+    def set_time_from_string(self, time_str: str) -> None:
+        try:
+            parts = time_str.split(":")
+            if len(parts) != 3:
+                raise ValueError("Time must be in HH:MM:SS format")
+            hours, minutes, seconds = map(int, parts)
+            self.current_time = hours * 3600 + minutes * 60 + seconds
+        except Exception as e:
+            print(f"Invalid time format: {e}")

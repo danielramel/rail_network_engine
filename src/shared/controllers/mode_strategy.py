@@ -8,6 +8,7 @@ from core.models.geometry import Position
 
 from shared.ui.models.ui_controller import UIController
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
+from core.models.time import Time
 
 
 class ModeStrategy(FullScreenUIComponent):
@@ -18,8 +19,8 @@ class ModeStrategy(FullScreenUIComponent):
         
         self._modes: dict[ViewMode, lambda: UIController] = {
             ViewMode.CONSTRUCTION: lambda: ConstructionMode(railway, graphics),
-            ViewMode.SETUP: lambda: SetupMode(railway, graphics),
-            ViewMode.SIMULATION: lambda: SimulationMode(railway, graphics)
+            ViewMode.SETUP: lambda: SetupMode(railway, graphics, app_state.time),
+            ViewMode.SIMULATION: lambda: SimulationMode(railway, graphics, app_state.time)
         }
         
         self.switch_to(app_state.mode)

@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import Callable, Optional
 
+from core.models.time import Time
+
 class ViewMode(Enum):
     SETUP = 0
     CONSTRUCTION = 1
@@ -10,6 +12,7 @@ class AppState:
     def __init__(self) -> None:
         self._mode: ViewMode = ViewMode.CONSTRUCTION
         self.callback: Optional[Callable[[ViewMode], None]] = None
+        self.time = Time(0)
     
     def subscribe(self, callback: Callable[[ViewMode], None]) -> None:
         self.callback = callback

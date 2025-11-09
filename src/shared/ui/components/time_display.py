@@ -1,14 +1,17 @@
 import pygame
 from core.config.colors import BLACK, WHITE
 from core.models.geometry.position import Position
+from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.models.rectangle import RectangleUIComponent
 from core.models.time import Time
+from shared.ui.utils.popups import user_input
 
-class TimeDisplay(RectangleUIComponent):
-    def __init__(self, time: Time, surface: pygame.Surface):
+class TimeDisplay(RectangleUIComponent, ClickableUIComponent):
+    def __init__(self, time: Time, surface: pygame.Surface, modifiable: bool = False) -> None:
         self._rect = self._get_rect(surface)
         self._surface = surface
         self._time = time
+        self._modifiable = modifiable
 
     def render(self, screen_pos: Position) -> None:
         font = pygame.font.SysFont("Courier New", 24)
@@ -29,3 +32,10 @@ class TimeDisplay(RectangleUIComponent):
         x = (surface.get_width() - width) // 2
         y = 10
         return pygame.Rect(x, y, width, height)
+    
+    def _on_click(self, event) -> None:
+        if not self._modifiable:
+            return
+        new_time = user_input("Enter time (HH:MM:SS): ")
+        
+        self._time.set_time_from_string(new_time)

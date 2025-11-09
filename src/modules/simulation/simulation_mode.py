@@ -8,14 +8,15 @@ from shared.controllers.camera_controller import CameraController
 from modules.simulation.ui.simulation_controller import SimulationController
 from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
+from core.models.time import Time
 
 class SimulationMode(UIController, FullScreenUIComponent):
     elements: tuple[ClickableUIComponent]
-    def __init__(self, railway: RailwaySystem, graphics: GraphicsContext):
-        self.state = SimulationState()
+    def __init__(self, railway: RailwaySystem, graphics: GraphicsContext, time: Time):
+        self.state = SimulationState(time)
         self.elements = (
             TimeControlButtons(self.state.time_control, graphics.screen),
-            TimeDisplay(self.state.time_control.time, graphics.screen),
+            TimeDisplay(self.state.time, graphics.screen),
             CameraController(graphics.camera),
             SimulationController(railway, self.state, graphics),
         )

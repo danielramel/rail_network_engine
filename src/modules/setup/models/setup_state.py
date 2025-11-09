@@ -21,11 +21,15 @@ class SetupPreview:
         self.action = None
         
 
-@dataclass
 class SetupState:
-    preview: SetupPreview = field(default_factory=SetupPreview)
-    tool: SetupTool = SetupTool.PLACE_TRAIN
-    time: Time = Time(0)
+    preview: SetupPreview
+    tool: SetupTool
+    time: Time
+    
+    def __init__(self, time: Time) -> None:
+        self.preview = SetupPreview()
+        self.tool = SetupTool.PLACE_TRAIN
+        self.time = time
     
     def switch_tool(self, new_tool: SetupTool) -> None:
         """Switch to a new setup tool, clearing previous state."""

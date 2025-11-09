@@ -15,17 +15,11 @@ class TimeControlMode(Enum):
     
 
 class TimeControlState:
-    mode: TimeControlMode = TimeControlMode.PAUSE
-    time: Time = Time(0)
-    
+    mode: TimeControlMode = TimeControlMode.PAUSE    
     def reset(self) -> None:
         """Reset the time control state to its initial values."""
         self.mode = TimeControlMode.PAUSE
         self.time = Time(0)
-        
-    def tick(self) -> None:
-        """Advance the current time by the specified number of seconds."""
-        self.time.add(1 * self.mode.value / FPS)
         
     @property
     def paused(self) -> bool:
@@ -48,6 +42,11 @@ class SimulationPreview:
 
 @dataclass
 class SimulationState:
+    time: Time
     selected_signal: Signal = None
     time_control: TimeControlState = TimeControlState()
     preview: SimulationPreview = field(default_factory=SimulationPreview)
+    
+    def tick(self) -> None:
+        """Advance the current time by the specified number of seconds."""
+        self.time.add(1 * self.time_control.mode.value / FPS)
