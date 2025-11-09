@@ -37,4 +37,4 @@ def draw_occupied_edge(surface: pygame.Surface, a: Position, b: Position, camera
     dash_start_y = a_y + (dy * interval[0])
     dash_end_x = a_x + (dx * interval[1])
     dash_end_y = a_y + (dy * interval[1])
-    pygame.draw.aaline(surface, color, (int(dash_start_x), int(dash_start_y)), (int(dash_end_x), int(dash_end_y)), max(1, 10*int(camera.scale)))
+    pygame.draw.aaline(surface, color, (int(dash_start_x), int(dash_start_y)), (int(dash_end_x), int(dash_end_y)), max(3, 10*int(camera.scale)))
