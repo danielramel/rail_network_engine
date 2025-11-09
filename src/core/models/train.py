@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 class Train:
     path : list[Edge]
-    edge_progress : float = 1.0
+    edge_progress : float = 0.0
     speed : float = 0.0  # in m/s
     acceleration : float = 2.0  # in km/s²
     max_speed : int  =  120  # in km/h
@@ -25,7 +25,7 @@ class Train:
             signal.subscribe(self.signal_turned_green_ahead)
         self._railway = railway
             
-    def switch_direction(self, edges: tuple[Edge], path: tuple[Edge], signal: Signal | None = None, edge_progress: float = None) -> None:
+    def switch_direction(self, edges: tuple[Edge], path: tuple[Edge], signal: Signal | None = None) -> None:
         if len(edges) != PLATFORM_LENGTH:
             raise ValueError("A train must occupy exactly PLATFORM_LENGTH edges.")
 

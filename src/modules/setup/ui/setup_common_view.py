@@ -51,4 +51,4 @@ class SetupCommonView(ClickableUIComponent, FullScreenUIComponent):
         if self._state.preview.edge is not None and self._state.preview.action is SetupAction.ADD:
             platform = self._railway.stations.get_platform_from_edge(self._state.preview.edge)
             edges = [edge.ordered() for edge in sorted(platform)]
-            draw_train(self._surface, edges, self._camera, edge_progress=1.0)
+            draw_train(self._surface, edges, self._camera, edge_progress=0.0)
