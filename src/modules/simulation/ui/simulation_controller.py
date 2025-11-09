@@ -27,6 +27,9 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
         closest_edge = click.world_pos.closest_edge(self._railway.graph.edges, self._camera.scale)
         train_id = closest_edge is not None and self._railway.trains.get_train_on_edge(closest_edge)
         if train_id:
+            if self._state.selected_train is not None and self._state.selected_train.id == train_id:
+                self._state.selected_train = None
+                return
             self._state.selected_train = self._railway.trains.get(train_id)
             return
         

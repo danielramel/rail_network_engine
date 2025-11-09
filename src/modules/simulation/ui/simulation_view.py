@@ -60,7 +60,11 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
 
         for train in self._railway.trains.all():
             edges = train.occupied_edges()
-            border_color = BLUE if self._state.preview.train_id == train.id else YELLOW if self._state.selected_train == train else None
+            border_color = None
+            if self._state.preview.train_id == train.id:
+                border_color = BLUE
+            elif self._state.selected_train == train:
+                border_color = YELLOW
             
             draw_train(self._surface, edges, self._camera, edge_progress=train.edge_progress, border_color=border_color)
 
@@ -79,7 +83,7 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
         
         closest_edge = world_pos.closest_edge(self._railway.graph.edges, self._camera.scale)
         train_id = closest_edge is not None and self._railway.trains.get_train_on_edge(closest_edge)
-        if train_id and (self._state.selected_train is None or self._state.selected_train.id != train_id):
+        if train_id:
             self._state.preview.train_id = train_id
             return
         
