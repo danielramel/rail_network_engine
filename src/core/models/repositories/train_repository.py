@@ -19,16 +19,17 @@ class TrainRepository:
 
     def add_to_platform(self, platform: frozenset[Edge]) -> int:
         platform = [edge.ordered() for edge in sorted(platform)]
-        locomotive_pose = Pose.from_positions(*platform[-1])
-        path, signal = self._railway.signalling.get_initial_path(locomotive_pose)
+        train = Train(platform)
 
-        train = Train(self._railway, platform, path, signal)
+
         id = self._generate_id()
         self._trains[id] = train
-        self._railway.signalling.lock_path(platform + path)
+        self._railway.signalling.lock_path(platform)
         return id
 
     # def switch_direction(self, train_id: int) -> None:
+        #     locomotive_pose = Pose.from_positions(*platform[-1])
+        # path, signal = self._railway.signalling.get_initial_path(locomotive_pose)
     #     train = self._trains[train_id]
     #     self._railway.signalling.free_path(train.path)
     #     edges = [edge.reversed() for edge in reversed(train.occupied_edges())]

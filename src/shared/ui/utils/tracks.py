@@ -17,7 +17,6 @@ def draw_track(surface: pygame.Surface, edge: Edge, camera: Camera, edge_action:
     elif edge_action == EdgeAction.PLATFORM:
         draw_platform(surface, edge, camera, length=length, color=PURPLE)
     elif edge_action == EdgeAction.LOCKED_PLATFORM:
-        draw_rail(surface, edge, camera, color=PURPLE, length=length)
         draw_platform(surface, edge, camera, length=length, color=LIME)
     elif edge_action == EdgeAction.LOCKED_PREVIEW:
         draw_rail(surface, edge, camera, color=GREEN, length=length)
