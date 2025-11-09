@@ -13,7 +13,7 @@ class RailwaySystem:
         self._graph_adapter = GraphAdapter()
         self._graph_service = GraphService(self)
         self._signal_repository = SignalRepository(self._graph_adapter)
-        self._station_repository = StationRepository(self._graph_adapter)
+        self._station_repository = StationRepository(self)
         self._schedule_repository = ScheduleRepository()
         self._train_repository = TrainRepository(self)
         self._pathfinder = PathService(self)
@@ -64,6 +64,6 @@ class RailwaySystem:
         
     def from_dict(self, data: dict) -> None:
         self._graph_adapter = self._graph_adapter.from_dict(data['graph'])
-        self._station_repository = StationRepository.from_dict(self._graph_adapter, data["station_repository"])
+        self._station_repository = StationRepository.from_dict(self, data["station_repository"])
         self._signal_repository = SignalRepository.from_dict(self._graph_adapter, data["signal_repository"])
         self._schedule_repository = ScheduleRepository.from_dict(self, data['schedule_repository'])

@@ -4,7 +4,7 @@ import heapq
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from core.models.railway_system import RailwaySystem
+    from core.models.railway.railway_system import RailwaySystem
 
 
 class PathService:
@@ -57,31 +57,32 @@ class PathService:
 
                 return tuple(reversed(path))
 
-            for neighbor_state, cost in current_pose.get_neighbors_in_direction():
-                if self.is_blocked(neighbor_state.position):
+            for neighbor_pose, cost in current_pose.get_neighbors_in_direction():
+                if self.is_blocked(neighbor_pose.position):
                     continue
                 
-                if self.is_cutting_through_platform(current_pose, neighbor_state):
+                if self.is_cutting_through_platform(current_pose, neighbor_pose):
                     continue
                 
-                if self._railway.graph.has_node_at(neighbor_state.position) and self._railway.signals.has_signal_at(neighbor_state.position):
-                    signal = self._railway.signals.get(neighbor_state.position)
-                    if neighbor_state.direction not in (signal.direction , signal.direction.opposite()):
+                if self._railway.graph.has_node_at(neighbor_pose.position) and self._railway.signals.has_signal_at(neighbor_pose.position):
+                    signal = self._railway.signals.get(neighbor_pose.position)
+                    if neighbor_pose.direction not in (signal.direction , signal.direction.opposite()):
                         continue
-
-                if not self._railway.graph.has_edge(Edge(current_pose.position, neighbor_state.position)) and \
-                   ((self._railway.graph.has_node_at(current_pose.position) and self._railway.stations.is_platform_at(current_pose.position)) or \
-                    (self._railway.graph.has_node_at(neighbor_state.position) and self._railway.stations.is_platform_at(neighbor_state.position))):
-                    continue
+                
+                if not self._railway.graph.has_edge(Edge(current_pose.position, neighbor_pose.position)):
+                    platform1 = self._railway.graph.has_node_at(current_pose.position) and self._railway.stations.get_platform_at(current_pose.position)
+                    platform2 = self._railway.graph.has_node_at(neighbor_pose.position) and self._railway.stations.get_platform_at(neighbor_pose.position)
+                    if platform1 or platform2 and platform1 != platform2:
+                        continue
                     
 
                 tentative_g_score = g_score[current_pose] + cost
 
-                if neighbor_state not in g_score or tentative_g_score < g_score[neighbor_state]:
-                    came_from[neighbor_state] = current_pose
-                    g_score[neighbor_state] = tentative_g_score
-                    f_score[neighbor_state] = tentative_g_score + neighbor_state.position.heuristic_to(end)
+                if neighbor_pose not in g_score or tentative_g_score < g_score[neighbor_pose]:
+                    came_from[neighbor_pose] = current_pose
+                    g_score[neighbor_pose] = tentative_g_score
+                    f_score[neighbor_pose] = tentative_g_score + neighbor_pose.position.heuristic_to(end)
 
-                    heapq.heappush(priority_queue, (f_score[neighbor_state], g_score[neighbor_state], neighbor_state))
+                    heapq.heappush(priority_queue, (f_score[neighbor_pose], g_score[neighbor_pose], neighbor_pose))
 
         return ()  # No path found

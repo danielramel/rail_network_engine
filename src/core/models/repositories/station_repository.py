@@ -1,14 +1,17 @@
 from core.models.geometry import Position, Edge
 from core.models.station import Station
 from core.models.railway.graph_adapter import GraphAdapter
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from core.models.railway.railway_system import RailwaySystem
 
 class StationRepository:
     """In-memory repository for Station objects with platform management."""
     
-    def __init__(self, graph: GraphAdapter):
+    def __init__(self, railway: "RailwaySystem"):
         self._stations: dict[str, Station] = {}
         self._next_id: int = 1
-        self._graph = graph
+        self._railway = railway
     
     def add(self, pos: Position, name: str) -> Station:
         station = Station(name, pos, id=self._next_id)
@@ -16,7 +19,7 @@ class StationRepository:
         self._next_id += 1
         return station
     
-    def remove(self, station_id: str) -> Station:
+    def _remove(self, station_id: str) -> Station:
         return self._stations.pop(station_id)
     
     def move(self, station_id: str, new_pos: Position) -> None:
@@ -45,27 +48,33 @@ class StationRepository:
         return any(pos.is_within_station_rect(station.position) for station in self._stations.values())
     
     def add_platform(self, station_id: str, edges: frozenset[Edge]) -> None:
-        for edge in edges:
-            self._graph.set_edge_attr(edge, 'station', station_id)
-            self._graph.set_node_attr(edge.a, 'station', station_id)
-            self._graph.set_node_attr(edge.b, 'station', station_id)
-        self._stations[station_id].platforms.add(frozenset(edges))
+        platform = sorted(edges)
+        self._railway.graph.set_edge_attr(platform[0], 'station', station_id)
+        for edge in platform[1:-1]:
+            self._railway.graph.set_edge_attr(edge, 'station', station_id)
+            self._railway.graph.set_node_attr(edge.a, 'station', station_id)
+            self._railway.graph.set_node_attr(edge.b, 'station', station_id)
+        self._railway.graph.set_edge_attr(platform[-1], 'station', station_id)
+        
+        self._stations[station_id].platforms.add(edges)
     
-    def remove_platform(self, edges: frozenset[Edge]) -> None:
+    def _remove_platform(self, edges: frozenset[Edge]) -> None:
         for edge in edges:
-            self._graph.remove_edge_attr(edge, 'station')
+            self._railway.graph.remove_edge_attr(edge, 'station')
+            self._railway.graph.remove_node_attr(edge.a, 'station')
+            self._railway.graph.remove_node_attr(edge.b, 'station')
     
-    def remove_platform_from_station(self, station_id: str, edges: frozenset[Edge]) -> None:
+    def _remove_platform_from_station(self, station_id: str, edges: frozenset[Edge]) -> None:
         self._stations[station_id].platforms.remove(edges)
     
-    def is_platform_at(self, pos: Position) -> bool:
-        return self._graph.has_node_attr(pos, 'station')
+    def get_platform_at(self, pos: Position) -> bool:
+        return self._railway.graph.get_node_attr(pos, 'station')
     
     def is_edge_platform(self, edge: Edge) -> bool:
-        return self._graph.has_edge_attr(edge, 'station')
+        return self._railway.graph.has_edge_attr(edge, 'station')
     
     def get_platform_from_edge(self, edge: Edge) -> frozenset[Edge]:
-        station_id = self._graph.get_edge_attr(edge, 'station')
+        station_id = self._railway.graph.get_edge_attr(edge, 'station')
         for platform in self._stations[station_id].platforms:
             if edge in platform:
                 return platform
@@ -80,15 +89,17 @@ class StationRepository:
     
     def remove_station_at(self, pos: Position):
         station = self.get_by_position(pos)
-        self.remove(station.id)
+        self._remove(station.id)
         for platform in station.platforms:
-            self.remove_platform(platform)
+            self._remove_platform(platform)
+            
+        self._railway.schedules.remove_station_from_all(station.id)
 
     def remove_platform_at(self, edge: Edge):
         platform_edges = self.get_platform_from_edge(edge)
-        station_id = self._graph.get_edge_attr(edge, 'station')
-        self.remove_platform(platform_edges)
-        self.remove_platform_from_station(station_id, platform_edges)
+        station_id = self._railway.graph.get_edge_attr(edge, 'station')
+        self._remove_platform(platform_edges)
+        self._remove_platform_from_station(station_id, platform_edges)
 
     def to_dict(self) -> dict:
         return {

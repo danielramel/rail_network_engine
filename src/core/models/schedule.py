@@ -13,6 +13,11 @@ class Schedule:
     frequency: int  # e.g., 20 (in minutes)
     stops: list[dict[str, Station | int]] = field(default_factory=list)  # List of dicts with 'station', 'arrival_time', 'departure_time'
     
+    def remove_station_from_stops(self, station_id:int):
+        for stop in self.stops[:]:
+            if stop['station'].id == station_id:
+                self.stops.remove(stop)
+    
     def to_dict(self) -> dict:
         """Convert the Schedule object to a dictionary for serialization."""
         return {

@@ -34,7 +34,8 @@ class GraphAdapter:
         self._graph.nodes[pos][key] = value
         
     def remove_node_attr(self, pos: Position, key: str) -> None:
-        del self._graph.nodes[pos][key]
+        if pos in self._graph.nodes and key in self._graph.nodes[pos]:
+            del self._graph.nodes[pos][key]
     
     def all_nodes_with_attr(self, key: str) -> dict[Position, dict]:
         return {n: data[key] for n, data in self._graph.nodes(data=True) if key in data}

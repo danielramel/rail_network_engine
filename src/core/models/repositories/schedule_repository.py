@@ -19,6 +19,10 @@ class ScheduleRepository:
     def get(self, index: int) -> Schedule:
         return self._schedules[index]
     
+    def remove_station_from_all(self, station_id):
+        for schedule in self._schedules:
+            schedule.remove_station_from_stops(station_id)
+    
     def to_dict(self) -> list[dict]:
         return [schedule.to_dict() for schedule in self._schedules]
     

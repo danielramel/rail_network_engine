@@ -107,7 +107,7 @@ class GraphService:
                 
                 edges.add(edge)
 
-                if preferred_nr is not None and edge.length * len(edges) >= preferred_nr * GRID_SIZE:
+                if preferred_nr is not None and len(edges) >= preferred_nr:
                     return frozenset(nodes), frozenset(edges)
                 
                 if neighbor in nodes or neighbor in {s.position for s in stack}:
@@ -117,7 +117,7 @@ class GraphService:
                     continue
                 
                 stack.append(Pose(neighbor, direction))
-        
+                
         return frozenset(nodes), frozenset(edges)
     
     
@@ -127,5 +127,4 @@ class GraphService:
             # TODO check for platform corner cutting
             pass
 
-        edge = next(iter(edges))
-        return edge.length * len(edges) >= PLATFORM_LENGTH * GRID_SIZE, edges
+        return len(edges) >= PLATFORM_LENGTH, edges
