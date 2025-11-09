@@ -1,5 +1,5 @@
 import pygame
-from core.config.colors import BLACK, WHITE, YELLOW
+from core.config.color import Color
 from modules.construction.models.construction_state import ConstructionState
 from modules.construction.models.construction_panel import ConstructionToolPanel
 from core.models.event import Event
@@ -22,11 +22,11 @@ class RailPanel(ConstructionToolPanel):
         self.button_size: int = 32
         
         # Pre-render static text
-        self.title_surface = self.title_font.render("Rail Construction", True, YELLOW)
-        self.speed_label_surface = self.instruction_font.render("Track speed:", True, WHITE)
-        self.length_label_surface = self.instruction_font.render("Track length:", True, WHITE)
-        self.minus_text = self.instruction_font.render("-", True, WHITE)
-        self.plus_text = self.instruction_font.render("+", True, WHITE)
+        self.title_surface = self.title_font.render("Rail Construction", True, Color.YELLOW)
+        self.speed_label_surface = self.instruction_font.render("Track speed:", True, Color.WHITE)
+        self.length_label_surface = self.instruction_font.render("Track length:", True, Color.WHITE)
+        self.minus_text = self.instruction_font.render("-", True, Color.WHITE)
+        self.plus_text = self.instruction_font.render("+", True, Color.WHITE)
         
         # Calculate and store all layout rects
         self._init_layout()
@@ -89,19 +89,19 @@ class RailPanel(ConstructionToolPanel):
     def _render_button(self, rect: pygame.Rect, text_surface: pygame.Surface, enabled: bool) -> None:
         """Render a button with consistent styling."""
         if enabled:
-            pygame.draw.rect(self._surface, BLACK, rect, border_radius=6)
-            pygame.draw.rect(self._surface, WHITE, rect, width=2, border_radius=6)
+            pygame.draw.rect(self._surface, Color.BLACK, rect, border_radius=6)
+            pygame.draw.rect(self._surface, Color.WHITE, rect, width=2, border_radius=6)
             self._surface.blit(text_surface, text_surface.get_rect(center=rect.center))
     
     def _render_toggle_button(self, rect: pygame.Rect, text: str, is_selected: bool) -> None:
         """Render a toggle button with selected/unselected states."""
         if is_selected:
-            pygame.draw.rect(self._surface, WHITE, rect, border_radius=6)
-            text_surface = self.instruction_font.render(text, True, BLACK)
+            pygame.draw.rect(self._surface, Color.WHITE, rect, border_radius=6)
+            text_surface = self.instruction_font.render(text, True, Color.BLACK)
         else:
-            pygame.draw.rect(self._surface, BLACK, rect, border_radius=6)
-            pygame.draw.rect(self._surface, WHITE, rect, width=2, border_radius=6)
-            text_surface = self.instruction_font.render(text, True, WHITE)
+            pygame.draw.rect(self._surface, Color.BLACK, rect, border_radius=6)
+            pygame.draw.rect(self._surface, Color.WHITE, rect, width=2, border_radius=6)
+            text_surface = self.instruction_font.render(text, True, Color.WHITE)
         
         self._surface.blit(text_surface, text_surface.get_rect(center=rect.center))
     
@@ -129,7 +129,7 @@ class RailPanel(ConstructionToolPanel):
         
         # Speed value
         speed_val = f"{self._construction_state.track_speed} km/h"
-        speed_surface = self.instruction_font.render(speed_val, True, YELLOW)
+        speed_surface = self.instruction_font.render(speed_val, True, Color.YELLOW)
         self._surface.blit(speed_surface, speed_surface.get_rect(center=self.speed_center))
         
         # Length label

@@ -1,7 +1,7 @@
 from shared.ui.models.panel import Panel
 import pygame
 from modules.simulation.models.simulation_state import SimulationState
-from core.config.colors import WHITE, BLACK, GREY
+from core.config.color import Color
 from core.models.event import Event
 from modules.simulation.ui.select_schedule_window import SelectScheduleWindow
 from core.models.repositories.schedule_repository import ScheduleRepository
@@ -37,14 +37,14 @@ class SimulationPanel(Panel):
         speed_text = f"Speed: {train.speed:.1f} m/s"
         max_speed_text = f"Max Speed: {train.max_speed} km/h"
 
-        speed_surface = self.font.render(speed_text, True, WHITE)
-        max_speed_surface = self.font.render(max_speed_text, True, WHITE)
+        speed_surface = self.font.render(speed_text, True, Color.WHITE)
+        max_speed_surface = self.font.render(max_speed_text, True, Color.WHITE)
 
         self._surface.blit(speed_surface, (self._rect.x + self.padding, self._rect.y + self.padding))
         self._surface.blit(max_speed_surface, (self._rect.x + self.padding, self._rect.y + self.padding + 30))
 
-        pygame.draw.rect(self._surface, GREY, self.schedule_button, border_radius=5)
-        schedule_text = self.font.render("Set Schedule", True, BLACK)
+        pygame.draw.rect(self._surface, Color.GREY, self.schedule_button, border_radius=5)
+        schedule_text = self.font.render("Set Schedule", True, Color.BLACK)
         self._surface.blit(
             schedule_text,
             (self.schedule_button.centerx - schedule_text.get_width() // 2,

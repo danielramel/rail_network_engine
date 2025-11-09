@@ -2,26 +2,26 @@ import pygame
 
 from core.graphics.camera import Camera
 from core.models.geometry import Position, Edge
-from core.config.colors import BLUE, RED, WHITE, LIGHTBLUE
+from core.config.color import Color
 
 
 def draw_train(surface: pygame.Surface, edges: tuple[Edge], camera: Camera, edge_progress: float = 0.0, border_color: tuple[int, int, int] = None) -> None:
     if edge_progress < 0.5:
-        draw_occupied_edge(surface, edges[0].a, edges[0].b, camera, color=RED, start=edge_progress+0.5, end=1.0, border_color=border_color)
-        draw_occupied_edge(surface, edges[1].a, edges[1].b, camera, color=RED, start=0.0, end=edge_progress, border_color=border_color)
-        draw_occupied_edge(surface, edges[1].a, edges[1].b, camera, color=LIGHTBLUE, start=edge_progress+0.5, end=1.0, border_color=border_color)
+        draw_occupied_edge(surface, edges[0].a, edges[0].b, camera, color=Color.RED, start=edge_progress+0.5, end=1.0, border_color=border_color)
+        draw_occupied_edge(surface, edges[1].a, edges[1].b, camera, color=Color.RED, start=0.0, end=edge_progress, border_color=border_color)
+        draw_occupied_edge(surface, edges[1].a, edges[1].b, camera, color=Color.LIGHTBLUE, start=edge_progress+0.5, end=1.0, border_color=border_color)
         for edge in edges[2:-2]:
-            draw_occupied_edge(surface, edge.a, edge.b, camera, color=LIGHTBLUE, start=0.0, end=edge_progress, border_color=border_color)
-            draw_occupied_edge(surface, edge.a, edge.b, camera, color=LIGHTBLUE, start=edge_progress + 0.5, end=1.0, border_color=border_color)
-        draw_occupied_edge(surface, edges[-2].a, edges[-2].b, camera, color=LIGHTBLUE, start=0.0, end=edge_progress, border_color=border_color)
-        draw_occupied_edge(surface, edges[-2].a, edges[-2].b, camera, color=WHITE, start=edge_progress + 0.5, end=1.0, border_color=border_color)
-        draw_occupied_edge(surface, edges[-1].a, edges[-1].b, camera, color=WHITE, start=0.0, end=edge_progress, border_color=border_color)
+            draw_occupied_edge(surface, edge.a, edge.b, camera, color=Color.LIGHTBLUE, start=0.0, end=edge_progress, border_color=border_color)
+            draw_occupied_edge(surface, edge.a, edge.b, camera, color=Color.LIGHTBLUE, start=edge_progress + 0.5, end=1.0, border_color=border_color)
+        draw_occupied_edge(surface, edges[-2].a, edges[-2].b, camera, color=Color.LIGHTBLUE, start=0.0, end=edge_progress, border_color=border_color)
+        draw_occupied_edge(surface, edges[-2].a, edges[-2].b, camera, color=Color.WHITE, start=edge_progress + 0.5, end=1.0, border_color=border_color)
+        draw_occupied_edge(surface, edges[-1].a, edges[-1].b, camera, color=Color.WHITE, start=0.0, end=edge_progress, border_color=border_color)
         
     else:
-        draw_occupied_edge(surface, edges[1].a, edges[1].b, camera, color=RED, start=edge_progress-0.5, end=edge_progress, border_color=border_color)
+        draw_occupied_edge(surface, edges[1].a, edges[1].b, camera, color=Color.RED, start=edge_progress-0.5, end=edge_progress, border_color=border_color)
         for edge in edges[2:-1]:
-            draw_occupied_edge(surface, edge.a, edge.b, camera, color=LIGHTBLUE, start=edge_progress - 0.5, end=edge_progress, border_color=border_color)
-        draw_occupied_edge(surface, edges[-1].a, edges[-1].b, camera, color=WHITE, start=edge_progress-0.5, end=edge_progress, border_color=border_color)
+            draw_occupied_edge(surface, edge.a, edge.b, camera, color=Color.LIGHTBLUE, start=edge_progress - 0.5, end=edge_progress, border_color=border_color)
+        draw_occupied_edge(surface, edges[-1].a, edges[-1].b, camera, color=Color.WHITE, start=edge_progress-0.5, end=edge_progress, border_color=border_color)
     
 
 

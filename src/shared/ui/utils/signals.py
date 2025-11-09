@@ -2,12 +2,12 @@ import pygame
 from core.models.geometry.position import Position
 from core.models.geometry.pose import Pose
 from core.graphics.camera import Camera
-from core.config.colors import WHITE, BLACK, YELLOW
+from core.config.color import Color
 from core.config.settings import GRID_SIZE
 from shared.ui.utils.nodes import draw_node
 
 
-def draw_triangle(surface: pygame.Surface, alignment: Pose, camera: Camera, color=WHITE, size_factor=1.0):
+def draw_triangle(surface: pygame.Surface, alignment: Pose, camera: Camera, color=Color.WHITE, size_factor=1.0):
     def get_rotation_angle(direction_vector):
         angle_map = {
             (0, 1): 0,
@@ -32,7 +32,7 @@ def draw_triangle(surface: pygame.Surface, alignment: Pose, camera: Camera, colo
         (0, size - 1),    # Bottom left
         (2 * h, size - 1) # Bottom right
     ]
-    pygame.draw.polygon(surf, BLACK, points)
+    pygame.draw.polygon(surf, Color.BLACK, points)
     pygame.draw.polygon(surf, color, points, 2)
 
     rotated_surf = pygame.transform.rotate(surf, 180+get_rotation_angle(alignment.direction))
@@ -41,12 +41,12 @@ def draw_triangle(surface: pygame.Surface, alignment: Pose, camera: Camera, colo
     surface.blit(rotated_surf, rect)
 
 
-def draw_signal(surface: pygame.Surface, alignment: Pose, camera: Camera, color=WHITE, offset=False):
+def draw_signal(surface: pygame.Surface, alignment: Pose, camera: Camera, color=Color.WHITE, offset=False):
     """Draw a signal triangle at the given position and orientation."""
     screen_x, screen_y = camera.world_to_screen(alignment.position)
 
     if offset:
-        draw_node(surface, alignment.position, camera, color=YELLOW)
+        draw_node(surface, alignment.position, camera, color=Color.YELLOW)
         # Adjust the position for the offset
         offset_y = GRID_SIZE * camera.scale / 1.25
         offset_position = Position(alignment.position.x, alignment.position.y - offset_y / camera.scale)

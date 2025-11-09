@@ -1,4 +1,4 @@
-from core.config.colors import BLUE, GREEN, LIME, RED, WHITE, LIGHTBLUE, YELLOW
+from core.config.color import Color
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.utils import draw_track, draw_node, draw_signal, draw_station, draw_train, draw_dotted_line
@@ -41,17 +41,17 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             draw_track(self._surface, edge, self._camera, edge_action, data["length"])
 
         for node in self._railway.graph_service.junctions:
-            color = GREEN if self._railway.signalling.is_node_locked(node) else WHITE
+            color = Color.GREEN if self._railway.signalling.is_node_locked(node) else Color.WHITE
             draw_node(self._surface, node, self._camera, color=color, junction=True)
 
         for signal in self._railway.signals.all():
-            color = RED
+            color = Color.RED
             if signal.next_signal is not None:
-                color = GREEN
+                color = Color.GREEN
             if signal == self._state.selected_signal:
-                color = LIME
+                color = Color.LIME
             elif signal == self._state.preview.signal:
-                color = LIGHTBLUE
+                color = Color.LIGHTBLUE
             draw_signal(self._surface, signal, self._camera, color)
         
 
@@ -62,18 +62,18 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             edges = train.occupied_edges()
             border_color = None
             if self._state.preview.train_id == train.id:
-                border_color = BLUE
+                border_color = Color.BLUE
             elif self._state.selected_train == train:
-                border_color = YELLOW
+                border_color = Color.YELLOW
             
             draw_train(self._surface, edges, self._camera, edge_progress=train.edge_progress, border_color=border_color)
 
         
         if self._state.preview.signal is None and world_pos is not None:
-            draw_node(self._surface, world_pos, self._camera, color=LIME)
+            draw_node(self._surface, world_pos, self._camera, color=Color.LIME)
             
             if self._state.selected_signal is not None and len(self._state.preview.path) == 0:
-                draw_dotted_line(self._surface, self._state.selected_signal.position, world_pos, self._camera, color=LIME)
+                draw_dotted_line(self._surface, self._state.selected_signal.position, world_pos, self._camera, color=Color.LIME)
             
             
     def set_preview(self, world_pos: Position | None):

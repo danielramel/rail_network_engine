@@ -3,7 +3,6 @@ from PyQt6.QtWidgets import (QDialog, QFormLayout, QComboBox,
                               QVBoxLayout, QHBoxLayout, QPushButton, QWidget,
                               QTableWidget, QTableWidgetItem, QHeaderView)
 from PyQt6.QtCore import Qt, QTime
-from core.models.schedule import Schedule
 from PyQt6.QtWidgets import QLineEdit
 from PyQt6.QtGui import QIcon, QColor, QBrush
 from modules.timetable.views.schedule_editor_stylesheet import (
@@ -13,79 +12,43 @@ from modules.timetable.views.schedule_editor_stylesheet import (
 from core.models.railway.railway_system import RailwaySystem
 
 class ScheduleEditorDialog(QDialog):
-    def __init__(self, parent, railway):
+    def __init__(self, parent, railway: RailwaySystem):
         self.selected_row = None
         self._railway = railway
         super().__init__(parent)
-        self.setWindowTitle("Add Schedule")
-        self.setMinimumSize(600, 800)
+        self._init_layout()
         
-        layout = QFormLayout()
-        
-        # Code and Color on same row
-        self.code_edit = QLineEdit()
-        self.code_edit.setPlaceholderText("Enter Schedule code")
-        self.color_combo = self._create_combo_box(("RED", "BLUE", "GREEN", "YELLOW", "ORANGE", "PURPLE"))
-        
-        code_color_layout = QHBoxLayout()
-        code_color_layout.addWidget(self.code_edit)
-        code_color_layout.addWidget(self.color_combo)
-        layout.addRow("Code / Color:", code_color_layout)
-        
-        # First train, Last train, Frequency on same row with separate label for frequency
-        self.first_train_time_edit = self._create_time_edit()
-        self.last_train_time_edit = self._create_time_edit()
-        self.freq_combo = self._create_combo_box((5, 10, 15, 20, 30, 60, 90, 120))
-        
-        train_layout = QHBoxLayout()
-        train_layout.addWidget(QLabel("First Train:"))
-        train_layout.addWidget(self.first_train_time_edit)
-        train_layout.addWidget(QLabel("Last Train:"))
-        train_layout.addWidget(self.last_train_time_edit)
-        train_layout.addWidget(QLabel("Frequency:"))
-        train_layout.addWidget(self.freq_combo)
-        layout.addRow(train_layout)
-        
-        self.setLayout(layout)
-        
-        # Station selection section
-        stations_widget = QWidget()
-        stations_layout = QVBoxLayout()
-        
-        self.stations_table = self._create_stations_table()
-        stations_layout.addWidget(self.stations_table)
-        
-        # Control buttons layout (single row with icons)
-        control_layout = QHBoxLayout()
-        control_layout.addStretch()
-        
-        self.add_row_button = self._create_push_button("＋", "Add station row below", ADD_BUTTON_STYLE, self.add_row_clicked)
-        control_layout.addWidget(self.add_row_button)
-        
-        self.remove_button = self._create_push_button(QIcon.fromTheme("edit-delete"), "Remove selected station", REMOVE_BUTTON_STYLE, self.remove_selected_station)
-        control_layout.addWidget(self.remove_button)
-        
-        control_layout.addStretch()
-        stations_layout.addLayout(control_layout)
-        
-        stations_widget.setLayout(stations_layout)
-        layout.addRow(stations_widget)
-        
-        self.setLayout(layout)
-        
-        # Buttons
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | 
-            QDialogButtonBox.StandardButton.Cancel
-        )
+    def get_data(self) -> dict:
+        """Collect schedule data from the dialog, ignoring arrival and departure times."""
+        schedule_data = {
+            "code": self.code_edit.text(),
+            "color": self.color_combo.currentText(),
+            "first_train_time": self.first_train_time_edit.time().toString("HH:mm"),
+            "last_train_time": self.last_train_time_edit.time().toString("HH:mm"),
+            "frequency": int(self.freq_combo.currentText()),
+            "stops" : [{
+                    "id": self.stations_table.cellWidget(0, 1).currentData(),
+                    "travel_time": None,
+                    "dwell_time": None
+                    }
+                ] + [
+                    {
+                    "id": self.stations_table.cellWidget(row, 1).currentData(),
+                    "travel_time": (tw := self.stations_table.cellWidget(row, 2)) and tw.value() or 0,
+                    "dwell_time": (dw := self.stations_table.cellWidget(row, 3)) and dw.value() or 0
+                    }
+                    for row in range(1, self.stations_table.rowCount() - 1)
+                ] + [
+                    {
+                    "id": self.stations_table.cellWidget(self.stations_table.rowCount() - 1, 1).currentData(),
+                    "travel_time": self.stations_table.cellWidget(self.stations_table.rowCount() - 1, 2).value(),
+                    "dwell_time": None
+                    }
+                ] if self.stations_table.rowCount() > 1 else []
+                    }
 
-        buttons.accepted.connect(self.accept)
-        buttons.rejected.connect(self.reject)
-        
-        layout.addRow(buttons)
+        return schedule_data
 
-        self.add_empty_station_row(0)
-        self.refresh_table()
         
     def add_row_clicked(self):
         row = self.stations_table.rowCount() if self.selected_row is None else self.selected_row
@@ -106,7 +69,9 @@ class ScheduleEditorDialog(QDialog):
         
         # Station name combobox (column 1)
         station_combo = QComboBox()
-        station_combo.addItems(station.name for station in self._railway.stations.all())
+        for station in self._railway.stations.all():
+            station_combo.addItem(station.name, station.id)  # store ID as userData
+
         self.stations_table.setCellWidget(row, 1, station_combo)
         
         if row == 0:
@@ -192,7 +157,81 @@ class ScheduleEditorDialog(QDialog):
             self.stations_table.item(row, 0).setText(str(row + 1))
             
         self.refresh_table()
+        
+        
+        
+    # Layout and UI initialization
 
+    def _init_layout(self):
+        self.setWindowTitle("Add Schedule")
+        self.setMinimumSize(600, 800)
+        
+        layout = QFormLayout()
+        
+        # Code and Color on same row
+        self.code_edit = QLineEdit()
+        self.code_edit.setPlaceholderText("Enter Schedule code")
+        self.color_combo = self._create_combo_box(("RED", "BLUE", "GREEN", "YELLOW", "ORANGE", "PURPLE"))
+        
+        code_color_layout = QHBoxLayout()
+        code_color_layout.addWidget(self.code_edit)
+        code_color_layout.addWidget(self.color_combo)
+        layout.addRow("Code / Color:", code_color_layout)
+        
+        # First train, Last train, Frequency on same row with separate label for frequency
+        self.first_train_time_edit = self._create_time_edit()
+        self.last_train_time_edit = self._create_time_edit()
+        self.freq_combo = self._create_combo_box((5, 10, 15, 20, 30, 60, 90, 120))
+        
+        train_layout = QHBoxLayout()
+        train_layout.addWidget(QLabel("First Train:"))
+        train_layout.addWidget(self.first_train_time_edit)
+        train_layout.addWidget(QLabel("Last Train:"))
+        train_layout.addWidget(self.last_train_time_edit)
+        train_layout.addWidget(QLabel("Frequency:"))
+        train_layout.addWidget(self.freq_combo)
+        layout.addRow(train_layout)
+        
+        self.setLayout(layout)
+        
+        # Station selection section
+        stations_widget = QWidget()
+        stations_layout = QVBoxLayout()
+        
+        self.stations_table = self._create_stations_table()
+        stations_layout.addWidget(self.stations_table)
+        
+        # Control buttons layout (single row with icons)
+        control_layout = QHBoxLayout()
+        control_layout.addStretch()
+        
+        self.add_row_button = self._create_push_button("＋", "Add station row below", ADD_BUTTON_STYLE, self.add_row_clicked)
+        control_layout.addWidget(self.add_row_button)
+        
+        self.remove_button = self._create_push_button(QIcon.fromTheme("edit-delete"), "Remove selected station", REMOVE_BUTTON_STYLE, self.remove_selected_station)
+        control_layout.addWidget(self.remove_button)
+        
+        control_layout.addStretch()
+        stations_layout.addLayout(control_layout)
+        
+        stations_widget.setLayout(stations_layout)
+        layout.addRow(stations_widget)
+        
+        self.setLayout(layout)
+        
+        # Buttons
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | 
+            QDialogButtonBox.StandardButton.Cancel
+        )
+
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        
+        layout.addRow(buttons)
+
+        self.add_empty_station_row(0)
+        self.refresh_table()
 
     def _set_empty_item(self, row, col):
         # Create new because reusing the same QTableWidgetItem causes ownership issues

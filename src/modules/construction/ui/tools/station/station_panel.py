@@ -1,5 +1,5 @@
 import pygame
-from core.config.colors import WHITE, YELLOW
+from core.config.color import Color
 from modules.construction.models.construction_state import ConstructionState
 from modules.construction.models.construction_panel import ConstructionToolPanel
     
@@ -9,12 +9,12 @@ class StationPanel(ConstructionToolPanel):
     def __init__(self, surface: pygame.Surface, state: ConstructionState) -> None:
         super().__init__(surface, state)
         # Pre-render static text
-        self.title_surface = self.title_font.render("Station Placement", True, YELLOW)
+        self.title_surface = self.title_font.render("Station Placement", True, Color.YELLOW)
         self.instruction1_surface = self.instruction_font.render(
-            "Click to place station.", True, WHITE
+            "Click to place station.", True, Color.WHITE
         )
         self.instruction2_surface = self.instruction_font.render(
-            "Click on station to move it.", True, WHITE
+            "Click on station to move it.", True, Color.WHITE
         )
         
         # Calculate and store all layout rects

@@ -3,7 +3,7 @@ from core.models.railway.railway_system import RailwaySystem
 from core.graphics.icon_loader import IconLoader
 from core.models.geometry.position import Position
 from shared.ui.models.rectangle import RectangleUIComponent
-from core.config.colors import BLACK, GREEN, WHITE, YELLOW, RED
+from core.config.color import Color
 from core.config.paths import ICON_PATHS
 from core.config.settings import BUTTON_SIZE
 from modules.timetable.views.timetable_view import TimetableWindow
@@ -43,7 +43,7 @@ class TimeTableButton(RectangleUIComponent, ShortcutUIComponent, ClickableUIComp
             self.timetable_window = None
 
     def render(self, screen_pos: Position) -> None:
-        pygame.draw.rect(self._surface, BLACK, self._rect, border_radius=10)
+        pygame.draw.rect(self._surface, Color.BLACK, self._rect, border_radius=10)
         icon_rect = self._icon.get_rect(center=self._rect.center)
         self._surface.blit(self._icon, icon_rect)
-        pygame.draw.rect(self._surface, WHITE, self._rect, 2, border_radius=10)
+        pygame.draw.rect(self._surface, Color.WHITE, self._rect, 2, border_radius=10)

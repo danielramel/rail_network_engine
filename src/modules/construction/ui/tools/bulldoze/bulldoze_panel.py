@@ -1,6 +1,6 @@
 import pygame
 from modules.construction.models.construction_state import ConstructionState
-from core.config.colors import WHITE, YELLOW
+from core.config.color import Color
 from modules.construction.models.construction_panel import ConstructionToolPanel
     
 class BulldozePanel(ConstructionToolPanel):
@@ -10,9 +10,9 @@ class BulldozePanel(ConstructionToolPanel):
         super().__init__(surface, state)
         
         # Pre-render static text
-        self.title_surface = self.title_font.render("Bulldoze", True, YELLOW)
+        self.title_surface = self.title_font.render("Bulldoze", True, Color.YELLOW)
         self.instruction_surface = self.instruction_font.render(
-            "Click on element to remove it.", True, WHITE
+            "Click on element to remove it.", True, Color.WHITE
         )
         
         # Calculate and store all layout rects

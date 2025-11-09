@@ -6,49 +6,73 @@ if TYPE_CHECKING:
 
 @dataclass
 class Schedule:
-    """Represents a train with its type, route, schedule, and current state."""
-    code: str  # e.g., "S70", "S71", "Z72"
-    first_train: int  # e.g., 5 * 60 + 12
-    last_train: int  # e.g., 23 * 60 + 45
-    frequency: int  # e.g., 20 (in minutes)
-    stops: list[dict[str, Station | int]] = field(default_factory=list)  # List of dicts with 'station', 'arrival_time', 'departure_time'
-    
-    def remove_station_from_stops(self, station_id:int):
+    code: str
+    color: str
+    first_train: int
+    last_train: int
+    frequency: int
+    stops: list[dict[str, Station | int]] = field(default_factory=list)  # station, travel_time|None, dwell_time|None
+
+    def remove_station_from_stops(self, station_id: int):
         for stop in self.stops[:]:
             if stop['station'].id == station_id:
                 self.stops.remove(stop)
-                
-    def __repr__(self) -> str:
-        return f"<Schedule {self.code} {self.first_train//60:02d}:{self.first_train%60:02d} - {self.last_train//60:02d}:{self.last_train%60:02d} every {self.frequency}m>"
-    
+
     def to_dict(self) -> dict:
-        """Convert the Schedule object to a dictionary for serialization."""
+        """Convert to serialisable dict used by repository persistence."""
         return {
             'code': self.code,
+            'color': self.color,
             'first_train': self.first_train,
             'last_train': self.last_train,
             'frequency': self.frequency,
             'stops': [
                 {
                     'id': entry['station'].id,
-                    'arrival_time': entry['arrival_time'],
-                    'departure_time': entry['departure_time']
+                    'travel_time': entry.get('travel_time'),
+                    'dwell_time': entry.get('dwell_time')
                 } for entry in self.stops
             ]
         }
-        
+
     @classmethod
     def from_dict(cls, data: dict, railway: 'RailwaySystem') -> 'Schedule':
-        """Create a Schedule object from a dictionary."""
-        stops = []
-        for entry in data['stops']:
-            stops.append({
-                'station': railway.stations.get(entry['id']),
-                'arrival_time': entry['arrival_time'],
-                'departure_time': entry['departure_time']
-            })
+        raw_stops = data['stops']
+        stops: list[dict[str, Station | int]] = []
+
+        # If persisted data already contains travel/dwell, use directly
+        if raw_stops and ('travel_time' in raw_stops[0] or 'dwell_time' in raw_stops[0]):
+            for entry in raw_stops:
+                stops.append({
+                    'station': railway.stations.get(entry['id']),
+                    'travel_time': entry.get('travel_time'),
+                    'dwell_time': entry.get('dwell_time')
+                })
+        else:
+            # Backward compatibility: convert from arrival/departure fields
+            prev_dep: int | None = None
+            n = len(raw_stops)
+            for i, entry in enumerate(raw_stops):
+                station = railway.stations.get(entry['id'])
+                arr = entry.get('arrival_time')
+                dep = entry.get('departure_time')
+                if i == 0:
+                    stops.append({'station': station, 'travel_time': None, 'dwell_time': None})
+                    prev_dep = dep
+                    continue
+                travel = arr - prev_dep if (arr is not None and prev_dep is not None) else 0
+                if i == n - 1:
+                    dwell = None
+                else:
+                    dwell = (dep - arr) if (dep is not None and arr is not None) else 0
+                    prev_dep = dep
+                stops.append({'station': station, 'travel_time': travel, 'dwell_time': dwell})
+
+        # Backwards compatibility: default color if missing
+        color = data.get('color', 'RED')
         return cls(
             code=data['code'],
+            color=color,
             first_train=data['first_train'],
             last_train=data['last_train'],
             frequency=data['frequency'],

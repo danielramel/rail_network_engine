@@ -1,5 +1,5 @@
 import pygame
-from core.config.colors import BLACK
+from core.config.color import Color
 from shared.controllers.mode_strategy import ModeStrategy
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.camera import Camera
@@ -52,14 +52,14 @@ class AppController(UIController, FullScreenUIComponent):
         super().dispatch_event(event)
     
     def render(self):
-        self._graphics.screen.fill(BLACK)
+        self._graphics.screen.fill(Color.BLACK)
         screen_pos = Position(*pygame.mouse.get_pos())
         super().render(screen_pos)
             
             
     def _mock_load(self):
         import json
-        filename = "C:/Users/lemar/elte/szakdolgozat/simulator/maps/30.json"
+        filename = "C:/Users/lemar/elte/szakdolgozat/simulator/maps/30menetrenddel.json"
         with open(filename, 'r', encoding='utf-8') as f:
             data = json.loads(f.read())
             self._railway.from_dict(data)

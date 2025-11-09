@@ -3,7 +3,7 @@ from core.graphics.icon_loader import IconLoader
 from core.models.event import Event
 from core.models.geometry.position import Position
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
-from core.config.colors import BLACK, WHITE, YELLOW, RED
+from core.config.color import Color
 from modules.construction.models.construction_state import ConstructionTool, ConstructionState
 from core.config.paths import ICON_PATHS
 from core.config.settings import BUTTON_SIZE
@@ -39,17 +39,17 @@ class ConstructionButtons(ShortcutUIComponent, ClickableUIComponent):
     def render(self, screen_pos: Position) -> None:
         for tool, btn_rect in self.buttons:
         # Draw a solid background for the button (not transparent)
-            pygame.draw.rect(self._surface, BLACK, btn_rect, border_radius=10)
+            pygame.draw.rect(self._surface, Color.BLACK, btn_rect, border_radius=10)
 
             icon = self.icon_cache[tool]
             icon_rect = icon.get_rect(center=btn_rect.center)
             self._surface.blit(icon, icon_rect)
 
             if tool == self.construction_state.tool:
-                color = YELLOW if not self.construction_state.tool is ConstructionTool.BULLDOZE else RED
+                color = Color.YELLOW if not self.construction_state.tool is ConstructionTool.BULLDOZE else Color.RED
                 pygame.draw.rect(self._surface, color, btn_rect.inflate(10, 10), 5, border_radius=10)
             else:
-                pygame.draw.rect(self._surface, WHITE, btn_rect.inflate(-2, -2), 1, border_radius=10)
+                pygame.draw.rect(self._surface, Color.WHITE, btn_rect.inflate(-2, -2), 1, border_radius=10)
 
     def contains(self, screen_pos: Position) -> bool:
         return any(btn.collidepoint(*screen_pos) for _, btn in self.buttons)

@@ -1,5 +1,5 @@
 import pygame
-from core.config.colors import GREEN, LIME, PURPLE, LIGHTBLUE, RED, WHITE, BLACK, YELLOW
+from core.config.color import Color
 
 from core.graphics.camera import Camera
 from core.models.geometry import Position
@@ -11,19 +11,19 @@ from .lines import draw_dotted_line
         
 def draw_track(surface: pygame.Surface, edge: Edge, camera: Camera, edge_action: EdgeAction, length: int, speed: int = None) -> None:   
     if edge_action in (EdgeAction.BULLDOZE, EdgeAction.INVALID_PLATFORM):
-        draw_rail(surface, edge, camera, color=RED, length=length)
+        draw_rail(surface, edge, camera, color=Color.RED, length=length)
     elif edge_action == EdgeAction.PLATFORM_SELECTED:
-        draw_platform(surface, edge, camera, length=length, color=LIGHTBLUE)
+        draw_platform(surface, edge, camera, length=length, color=Color.LIGHTBLUE)
     elif edge_action == EdgeAction.PLATFORM:
-        draw_platform(surface, edge, camera, length=length, color=PURPLE)
+        draw_platform(surface, edge, camera, length=length, color=Color.PURPLE)
     elif edge_action == EdgeAction.LOCKED_PLATFORM:
-        draw_platform(surface, edge, camera, length=length, color=LIME)
+        draw_platform(surface, edge, camera, length=length, color=Color.LIME)
     elif edge_action == EdgeAction.LOCKED_PREVIEW:
-        draw_rail(surface, edge, camera, color=GREEN, length=length)
+        draw_rail(surface, edge, camera, color=Color.GREEN, length=length)
     elif edge_action == EdgeAction.LOCKED:
-        draw_rail(surface, edge, camera, color=LIME, length=length)
+        draw_rail(surface, edge, camera, color=Color.LIME, length=length)
     elif edge_action == EdgeAction.NORMAL:
-        draw_rail(surface, edge, camera, color=WHITE, length=length)
+        draw_rail(surface, edge, camera, color=Color.WHITE, length=length)
     elif edge_action == EdgeAction.SPEED:
         color = color_from_speed(speed)
         draw_rail(surface, edge, camera, color=color, length=length)
@@ -37,7 +37,7 @@ def draw_rail(surface: pygame.Surface, edge: Edge, camera: Camera, color: tuple[
     else:
         raise NotImplementedError("Edge length drawing not implemented for length:", length)
         
-def draw_platform(surface: pygame.Surface, edge: Edge, camera: Camera, length: int, color=PURPLE):
+def draw_platform(surface: pygame.Surface, edge: Edge, camera: Camera, length: int, color=Color.PURPLE):
     a, b = camera.world_to_screen(edge)
     offset = int(2 * camera.scale)  # pixels of separation
     # Calculate direction vector

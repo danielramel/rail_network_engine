@@ -4,7 +4,7 @@ from core.models.geometry.position import Position
 from core.models.app_state import AppState, ViewMode
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
-from core.config.colors import BLACK, GREEN, WHITE, YELLOW, RED
+from core.config.color import Color
 from core.config.paths import ICON_PATHS
 from core.config.settings import BUTTON_SIZE
 from core.models.event import Event
@@ -39,16 +39,16 @@ class ModeSelectorButtons(ShortcutUIComponent, ClickableUIComponent):
     def render(self, screen_pos: Position) -> None:
         for mode, btn_rect in self._buttons:
         # Draw a solid background for the button (not transparent)
-            pygame.draw.rect(self._surface, BLACK, btn_rect, border_radius=10)
+            pygame.draw.rect(self._surface, Color.BLACK, btn_rect, border_radius=10)
 
             icon = self.icon_cache[mode]
             icon_rect = icon.get_rect(center=btn_rect.center)
             self._surface.blit(icon, icon_rect)
 
             if mode == self._state._mode:
-                pygame.draw.rect(self._surface, GREEN, btn_rect.inflate(10, 10), 5, border_radius=10)
+                pygame.draw.rect(self._surface, Color.GREEN, btn_rect.inflate(10, 10), 5, border_radius=10)
             else:
-                pygame.draw.rect(self._surface, WHITE, btn_rect.inflate(-2, -2), 1, border_radius=10)
+                pygame.draw.rect(self._surface, Color.WHITE, btn_rect.inflate(-2, -2), 1, border_radius=10)
                 
 
     def contains(self, screen_pos: Position) -> bool:

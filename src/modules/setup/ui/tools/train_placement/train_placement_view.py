@@ -2,7 +2,7 @@ from core.models.geometry import Position
 from modules.setup.models.setup_state import SetupAction
 from modules.setup.models.setup_view import SetupView
 from shared.ui.utils.nodes import draw_node
-from core.config.colors import YELLOW
+from core.config.color import Color
 
 class TrainPlacementView(SetupView):
     def render(self, world_pos: Position | None) -> None:
@@ -15,4 +15,4 @@ class TrainPlacementView(SetupView):
             self._state.preview.action = SetupAction.ADD
             
         else:
-            draw_node(self._surface, world_pos, self._camera, color=YELLOW)
+            draw_node(self._surface, world_pos, self._camera, color=Color.YELLOW)

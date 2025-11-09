@@ -1,5 +1,5 @@
 import pygame
-from core.config.colors import WHITE
+from core.config.color import Color
 
 class IconLoader:
     _instance = None
@@ -26,7 +26,7 @@ class IconLoader:
         icon = pygame.transform.scale(icon, (int(size*0.8), int(size*0.8)))
 
         colored_icon = pygame.Surface(icon.get_size(), pygame.SRCALPHA)
-        colored_icon.fill(WHITE)
+        colored_icon.fill(Color.WHITE)
 
         alpha_mask = pygame.surfarray.pixels_alpha(icon)
         pygame.surfarray.pixels_alpha(colored_icon)[:] = alpha_mask

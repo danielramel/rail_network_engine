@@ -1,0 +1,17 @@
+from enum import Enum
+
+class Color(tuple, Enum):
+    WHITE = (255, 255, 255)
+    GREY = (180, 180, 180)
+    GREEN = (0, 200, 0)
+    BLACK = (0, 0, 0)
+    RED = (200, 0, 0)
+    YELLOW = (200, 200, 0)
+    PURPLE = (128, 0, 128)
+    CYAN = (0, 200, 200)
+    MAGENTA = (200, 0, 200)
+    ORANGE = (255, 165, 0)
+    BROWN = (165, 42, 42)
+    LIGHTBLUE = (173, 216, 230)
+    BLUE = (0, 0, 255)
+    LIME = (0, 255, 0)

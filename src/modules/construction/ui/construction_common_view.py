@@ -1,7 +1,7 @@
 from shared.ui.enums.edge_action import EdgeAction
 from core.models.geometry.position import Position
 from shared.ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station, draw_dotted_line
-from core.config.colors import RED, PURPLE
+from core.config.color import Color
 from modules.construction.models.construction_view import ConstructionView
 
 class ConstructionCommonView(ConstructionView):
@@ -23,7 +23,7 @@ class ConstructionCommonView(ConstructionView):
 
         for signal in self._railway.signals.all():
             if self._state.is_bulldoze_preview_node(signal.position):
-                draw_signal(self._surface, signal, self._camera, color=RED)
+                draw_signal(self._surface, signal, self._camera, color=Color.RED)
             else:
                 draw_signal(self._surface, signal, self._camera)
 
@@ -31,5 +31,5 @@ class ConstructionCommonView(ConstructionView):
             if self._state.is_station_being_moved(station):
                 continue
             for middle_point in self._railway.stations.platforms_middle_points(station):
-                draw_dotted_line(self._surface, middle_point, station.position, self._camera, color=PURPLE)
+                draw_dotted_line(self._surface, middle_point, station.position, self._camera, color=Color.PURPLE)
             draw_station(self._surface, station, self._camera)

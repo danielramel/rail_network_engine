@@ -4,7 +4,7 @@ from core.models.geometry.position import Position
 from shared.ui.models.rectangle import RectangleUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 
-from core.config.colors import BLACK, WHITE
+from core.config.color import Color
 from core.graphics.camera import Camera
 
 
@@ -19,10 +19,10 @@ class ZoomButton(RectangleUIComponent, ClickableUIComponent):
             return
         zoom_text = f"{int(self._camera.scale * 100)}%"
         zoom_font = pygame.font.SysFont(None, 24)
-        zoom_surface = zoom_font.render(zoom_text, True, WHITE)
+        zoom_surface = zoom_font.render(zoom_text, True, Color.WHITE)
         zoom_box = self._get_zoom_box(self._surface)
-        pygame.draw.rect(self._surface, BLACK, zoom_box, border_radius=4)
-        pygame.draw.rect(self._surface, WHITE, zoom_box, 2, border_radius=4)
+        pygame.draw.rect(self._surface, Color.BLACK, zoom_box, border_radius=4)
+        pygame.draw.rect(self._surface, Color.WHITE, zoom_box, 2, border_radius=4)
         self._surface.blit(zoom_surface, zoom_surface.get_rect(center=zoom_box.center))
         
 

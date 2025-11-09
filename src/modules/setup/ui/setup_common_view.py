@@ -1,4 +1,4 @@
-from core.config.colors import BLUE, GREEN, GREY, LIME, RED, WHITE, LIGHTBLUE, YELLOW
+from core.config.color import Color
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station, draw_train
 from core.graphics.graphics_context import GraphicsContext
@@ -34,10 +34,10 @@ class SetupCommonView(ClickableUIComponent, FullScreenUIComponent):
             draw_track(self._surface, edge, self._camera, edge_action, length=length, speed=speed)
 
         for node in self._railway.graph_service.junctions:
-            draw_node(self._surface, node, self._camera, color=WHITE, junction=True)
+            draw_node(self._surface, node, self._camera, color=Color.WHITE, junction=True)
 
         for signal in self._railway.signals.all():
-            draw_signal(self._surface, signal, self._camera, RED)
+            draw_signal(self._surface, signal, self._camera, Color.RED)
 
         for station in self._railway.stations.all():
             draw_station(self._surface, station, self._camera)

@@ -1,4 +1,4 @@
-from core.config.colors import BLACK, WHITE
+from core.config.color import Color
 from core.models.geometry.position import Position
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.models.rectangle import RectangleUIComponent
@@ -32,5 +32,5 @@ class Panel(RectangleUIComponent, ClickableUIComponent):
     
     def render(self, screen_pos: Position) -> None:
         """Draw a construction information panel in the middle bottom of the screen"""
-        pygame.draw.rect(self._surface, BLACK, self._rect, border_radius=8)
-        pygame.draw.rect(self._surface, WHITE, self._rect, 2, border_radius=8)
+        pygame.draw.rect(self._surface, Color.BLACK, self._rect, border_radius=8)
+        pygame.draw.rect(self._surface, Color.WHITE, self._rect, 2, border_radius=8)

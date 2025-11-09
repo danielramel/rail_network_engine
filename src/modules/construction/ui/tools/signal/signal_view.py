@@ -1,6 +1,6 @@
 from modules.construction.models.construction_view import ConstructionView
 from core.models.geometry import Position
-from core.config.colors import RED, YELLOW
+from core.config.color import Color
 from shared.ui.utils import draw_signal
 from .signal_target import find_signal_target, SignalTargetType
 
@@ -12,5 +12,5 @@ class SignalView(ConstructionView):
         if target.pose is None:
             return
 
-        color = RED if target.kind == SignalTargetType.INVALID else YELLOW
+        color = Color.RED if target.kind == SignalTargetType.INVALID else Color.YELLOW
         draw_signal(self._surface, target.pose, self._camera, color=color, offset=target.offset)

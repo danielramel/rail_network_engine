@@ -1,7 +1,7 @@
 import pygame
 from modules.construction.models.construction_view import ConstructionView
 from core.models.geometry import Position
-from core.config.colors import RED
+from core.config.color import Color
 from shared.ui.utils import draw_node
 from shared.ui.services.color_from_speed import color_from_speed
 from .rail_target import find_rail_target, RailTargetType
@@ -22,16 +22,16 @@ class RailView(ConstructionView):
             return
         
         if target.kind == RailTargetType.BLOCKED:
-            draw_node(self._surface, target.snapped, self._camera, color=RED)
+            draw_node(self._surface, target.snapped, self._camera, color=Color.RED)
             
             if self._state.construction_anchor is not None:
                 draw_node(self._surface, self._state.construction_anchor.position, self._camera, color=color)
             return
 
         if target.kind == RailTargetType.NO_PATH:
-            draw_node(self._surface, target.snapped, self._camera, color=RED)
+            draw_node(self._surface, target.snapped, self._camera, color=Color.RED)
             if self._state.construction_anchor is not None:
-                draw_node(self._surface, self._state.construction_anchor.position, self._camera, color=RED)
+                draw_node(self._surface, self._state.construction_anchor.position, self._camera, color=Color.RED)
             return
 
         # path preview

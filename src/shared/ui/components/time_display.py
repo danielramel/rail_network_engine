@@ -1,5 +1,5 @@
 import pygame
-from core.config.colors import BLACK, WHITE
+from core.config.color import Color
 from core.models.geometry.position import Position
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.models.rectangle import RectangleUIComponent
@@ -19,10 +19,10 @@ class TimeDisplay(RectangleUIComponent, ClickableUIComponent):
 
         # Draw black background with white border
         rect = self._get_rect(self._surface)
-        pygame.draw.rect(self._surface, BLACK, rect)
-        pygame.draw.rect(self._surface, WHITE, rect, 2, border_radius=5)
+        pygame.draw.rect(self._surface, Color.BLACK, rect)
+        pygame.draw.rect(self._surface, Color.WHITE, rect, 2, border_radius=5)
         time_text = f"{hours:02}:{minutes:02}:{secs:02}"
-        text_surface = font.render(time_text, True, WHITE)
+        text_surface = font.render(time_text, True, Color.WHITE)
         rect = self._get_rect(self._surface)
         text_rect = text_surface.get_rect(center=rect.center)
         self._surface.blit(text_surface, text_rect)

@@ -1,5 +1,5 @@
 import pygame
-from core.config.colors import WHITE, YELLOW
+from core.config.color import Color
 from shared.ui.models.panel import Panel
     
 class TrainRemovalPanel(Panel):
@@ -9,9 +9,9 @@ class TrainRemovalPanel(Panel):
         super().__init__(surface)
         
         # Pre-render static text
-        self.title_surface = self.title_font.render("Train Placement", True, YELLOW)
+        self.title_surface = self.title_font.render("Train Removal", True, Color.YELLOW)
         self.instruction1_surface = self.instruction_font.render(
-            "Click on rail to place train.", True, WHITE
+            "Click on rail to remove train.", True, Color.WHITE
         )
         
         # Calculate and store all layout rects
