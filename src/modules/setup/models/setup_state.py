@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from core.models.geometry import Edge
+from core.models.time import Time
 
 class SetupTool(Enum):
     PLACE_TRAIN = auto()
@@ -18,11 +19,13 @@ class SetupPreview:
     def clear(self) -> None:
         self.edge = None
         self.action = None
+        
 
 @dataclass
 class SetupState:
     preview: SetupPreview = field(default_factory=SetupPreview)
     tool: SetupTool = SetupTool.PLACE_TRAIN
+    time: Time = Time(0)
     
     def switch_tool(self, new_tool: SetupTool) -> None:
         """Switch to a new setup tool, clearing previous state."""

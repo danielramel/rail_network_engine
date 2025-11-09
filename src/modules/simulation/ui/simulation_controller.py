@@ -3,7 +3,7 @@ from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
-from modules.simulation.views.simulation_view import SimulationView
+from modules.simulation.ui.simulation_view import SimulationView
 from core.graphics.graphics_context import GraphicsContext
 import pygame
 
@@ -44,7 +44,8 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
 
     
     def tick(self):
-        if self._state.time.paused:
+        if self._state.time_control.paused:
             return
-        for _ in range(self._state.time.mode.value):
+        self._state.time_control.tick()
+        for _ in range(self._state.time_control.mode.value):
             self._railway.tick()

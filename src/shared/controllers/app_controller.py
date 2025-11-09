@@ -5,15 +5,15 @@ from core.models.railway.railway_system import RailwaySystem
 from core.graphics.camera import Camera
 from core.models.app_state import AppState
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
-from shared.ui.buttons.load_button import LoadButton
-from shared.ui.buttons.save_button import SaveButton
-from shared.ui.buttons.mode_selector_buttons import ModeSelectorButtons
+from shared.ui.components.load_button import LoadButton
+from shared.ui.components.save_button import SaveButton
+from shared.ui.components.mode_selector_buttons import ModeSelectorButtons
 from core.models.event import Event
-from shared.ui.buttons.zoom_button import ZoomButton
+from shared.ui.components.zoom_button import ZoomButton
 from core.models.geometry import Position
 from core.graphics.graphics_context import GraphicsContext
 from shared.ui.models.ui_controller import UIController
-from shared.ui.buttons.time_table_button import TimeTableButton
+from shared.ui.components.time_table_button import TimeTableButton
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 
 class AppController(UIController, FullScreenUIComponent):

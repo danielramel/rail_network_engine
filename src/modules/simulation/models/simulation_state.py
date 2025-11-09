@@ -5,6 +5,7 @@ from core.models.signal import Signal
 
 from enum import Enum
 from core.config.settings import FPS
+from core.models.time import Time
 
 class TimeControlMode(Enum):
     PAUSE = 0
@@ -12,19 +13,19 @@ class TimeControlMode(Enum):
     FAST_FORWARD = 3
     SUPER_FAST_FORWARD = 10
     
-    
+
 class TimeControlState:
     mode: TimeControlMode = TimeControlMode.PAUSE
-    current_time = 0  # in seconds
+    time: Time = Time(0)
     
     def reset(self) -> None:
         """Reset the time control state to its initial values."""
         self.mode = TimeControlMode.PAUSE
-        self.current_time = 0
+        self.time = Time(0)
         
     def tick(self) -> None:
         """Advance the current time by the specified number of seconds."""
-        self.current_time += 1 * self.mode.value / FPS
+        self.time.add(1 * self.mode.value / FPS)
         
     @property
     def paused(self) -> bool:
@@ -48,5 +49,5 @@ class SimulationPreview:
 @dataclass
 class SimulationState:
     selected_signal: Signal = None
-    time: TimeControlState = TimeControlState()
+    time_control: TimeControlState = TimeControlState()
     preview: SimulationPreview = field(default_factory=SimulationPreview)

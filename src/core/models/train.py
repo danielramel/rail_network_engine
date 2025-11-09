@@ -1,5 +1,5 @@
 from core.models.geometry import Edge
-from core.config.settings import FPS, PLATFORM_LENGTH, TRAIN_LENGTH
+from core.config.settings import FPS, PLATFORM_LENGTH
 from core.models.geometry.direction import Direction
 from core.models.signal import Signal
 from typing import TYPE_CHECKING
@@ -32,9 +32,6 @@ class Train:
         self.path = list(edges) + list(path)
         if signal is not None:
             signal.subscribe(self.signal_turned_green_ahead)
-    
-    def direction(self) -> Direction:
-        return self.path[TRAIN_LENGTH].direction
         
     def tick(self):
         max_safe_speed = self.get_max_safe_speed()
@@ -58,13 +55,13 @@ class Train:
         self._railway.signalling.free_edge(edge)
         
     def occupied_edges(self) -> tuple[Edge]:
-        return tuple(self.path[:TRAIN_LENGTH+1])
+        return tuple(self.path[:PLATFORM_LENGTH])
     
     def occupies_edge(self, edge: Edge) -> bool:
         return edge in self.occupied_edges()    
     
     def get_max_safe_speed(self) -> float:
-        distance = len(self.path) - (TRAIN_LENGTH + 1) - self.edge_progress - 0.1
+        distance = len(self.path) - (PLATFORM_LENGTH) - self.edge_progress - 0.1
         if distance <= 0:
             return 0.0
         # v_max = sqrt(2 * a * s)
