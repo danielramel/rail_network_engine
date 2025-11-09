@@ -18,30 +18,7 @@ TABLE_STYLE = """
 """
 
 
-MOVE_UP_BUTTON_STYLE = """
-    QPushButton {
-        font-size: 14pt;
-        min-width: 32px;
-        max-width: 32px;
-        min-height: 32px;
-        max-height: 32px;
-        background-color: #2196F3;
-        color: white;
-        border: 1px solid #1976D2;
-        border-radius: 4px;
-        padding: 0px;
-    }
-    QPushButton:hover {
-        background-color: #1E88E5;
-        border-color: #1565C0;
-    }
-    QPushButton:pressed {
-        background-color: #1565C0;
-    }
-"""
-
-
-MOVE_DOWN_BUTTON_STYLE = """
+MOVE_BUTTON_STYLE = """
     QPushButton {
         font-size: 14pt;
         min-width: 32px;

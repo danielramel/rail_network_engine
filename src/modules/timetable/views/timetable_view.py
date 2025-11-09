@@ -175,6 +175,7 @@ class TimetableWindow(QMainWindow):
         def _on_finished(res: int):
             if res == QDialog.DialogCode.Rejected:
                 return
+            return
             data = dialog.get_data()
             schedule = Schedule(
                 code=data['code'],
@@ -191,6 +192,7 @@ class TimetableWindow(QMainWindow):
         dialog.show()
 
     def edit_schedule(self, schedule_idx):
+        return
         schedule = self._railway.schedules.get(schedule_idx)
 
         dialog = ScheduleEditorDialog(self, self._railway, schedule)
