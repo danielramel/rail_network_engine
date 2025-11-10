@@ -8,8 +8,8 @@ from PyQt6.QtGui import QColor
 from core.config.color import Color
 from core.models.station import Station
 from core.models.schedule import Schedule
-from modules.timetable.views.schedule_editor_dialog import ScheduleEditorDialog
-from modules.timetable.views.timetable_stylesheet import TIMETABLE_STYLESHEET
+from modules.timetable.schedule_editor_dialog import ScheduleEditorDialog
+from modules.timetable.stylesheets.timetable_stylesheet import TIMETABLE_STYLESHEET
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QHeaderView
 from core.models.railway.railway_system import RailwaySystem

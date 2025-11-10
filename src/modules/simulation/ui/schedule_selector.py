@@ -15,11 +15,6 @@ from core.config.color import Color
 
 
 class ScheduleSelector(QWidget):
-    """
-    Displays a list of schedules (code, first→last station) with row colored by schedule color.
-    Lets the user pick a schedule and a start time.
-    Emits `schedule_chosen` with (schedule, start_time).
-    """
     schedule_chosen = pyqtSignal(Schedule, int)
 
     def __init__(self, schedules: list[Schedule], parent=None):
@@ -125,4 +120,7 @@ class ScheduleSelector(QWidget):
         schedule = sched_item.data(int(Qt.ItemDataRole.UserRole))
         start_time = time_item.data(int(Qt.ItemDataRole.UserRole))
         self.schedule_chosen.emit(schedule, start_time)
-        self.close()
+        super().close()
+        
+        
+    

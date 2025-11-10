@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import (QDialog, QFormLayout, QComboBox,
 from PyQt6.QtCore import Qt, QTime
 from PyQt6.QtWidgets import QLineEdit
 from PyQt6.QtGui import QIcon, QColor, QBrush
-from modules.timetable.views.schedule_editor_stylesheet import (
+from modules.timetable.stylesheets.schedule_editor_stylesheet import (
     TABLE_STYLE, MOVE_BUTTON_STYLE,
     ADD_BUTTON_STYLE, REMOVE_BUTTON_STYLE
 )

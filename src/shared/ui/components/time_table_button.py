@@ -6,7 +6,7 @@ from shared.ui.models.rectangle import RectangleUIComponent
 from core.config.color import Color
 from core.config.paths import ICON_PATHS
 from core.config.settings import BUTTON_SIZE
-from modules.timetable.views.timetable_view import TimetableWindow
+from modules.timetable.timetable_view import TimetableWindow
 from core.models.event import Event
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent

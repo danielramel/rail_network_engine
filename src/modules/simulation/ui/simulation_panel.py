@@ -1,3 +1,4 @@
+from core.models.schedule import Schedule
 from shared.ui.models.panel import Panel
 import pygame
 from modules.simulation.models.simulation_state import SimulationState
@@ -58,7 +59,7 @@ class SimulationPanel(Panel):
     def _on_set_schedule_clicked(self):
         if self._select_schedule_window is None:
             self._select_schedule_window = ScheduleSelector(self._schedule_repository.all())
-            self._select_schedule_window.schedule_chosen.connect(self._on_select_schedule_window_closed)
+            self._select_schedule_window.schedule_chosen.connect(self._on_schedule_chosen)
             self._select_schedule_window.show()
         else:
             if self._select_schedule_window.isMinimized():
@@ -66,5 +67,6 @@ class SimulationPanel(Panel):
             self._select_schedule_window.raise_()
             self._select_schedule_window.activateWindow()
             
-    def _on_select_schedule_window_closed(self, *args, **kwargs):
+    def _on_schedule_chosen(self, schedule: Schedule, start_time: int):
         self._select_schedule_window = None
+        print(f"Chosen schedule: {schedule.code} starting at {start_time} minutes")
