@@ -18,6 +18,9 @@ class Train:
         self.id = id
         self.path = edges
         
+    def set_timetable(self, timetable: list[dict[str, int]]):
+        self.timetable = timetable
+        
     def tick(self):
         max_safe_speed = self.get_max_safe_speed()
         if self.speed > max_safe_speed:

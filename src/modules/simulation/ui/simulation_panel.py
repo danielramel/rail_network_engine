@@ -69,4 +69,4 @@ class SimulationPanel(Panel):
             
     def _on_schedule_chosen(self, schedule: Schedule, start_time: int):
         self._select_schedule_window = None
-        print(f"Chosen schedule: {schedule.code} starting at {start_time} minutes")
+        self._state.selected_train.set_timetable(schedule.create_timetable(start_time))
