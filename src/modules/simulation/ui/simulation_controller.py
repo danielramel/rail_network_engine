@@ -20,18 +20,19 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
         self._railway.signals.add_signals_to_dead_ends()
 
     def _on_click(self, click: Event) -> None:
-        if click.is_right_click and self._state.selected_signal is not None:
-            self._state.selected_signal = None
+        snapped = self._camera.screen_to_world(click.screen_pos).snap_to_grid()
+        if click.is_right_click:
+            if self._state.selected_signal:
+                self._state.selected_signal = None
+            elif self._railway.signals.has_signal_at(snapped):
+                self._railway.signalling.disconnect_signal_at(snapped)
+            elif self._state.selected_train:
+                self._state.selected_train = None
             return
                 
-        snapped = self._camera.screen_to_world(click.screen_pos).snap_to_grid()
-        if self._railway.graph.has_node_at(snapped) and self._railway.signals.has_signal_at(snapped):
+        if self._railway.signals.has_signal_at(snapped):
             signal = self._railway.signals.get(snapped)
-            
-            if click.is_right_click and signal.next_signal is not None:
-                self._railway.signalling.disconnect_signal(signal)
-                return
-            
+                        
             if self._state.selected_signal:
                 self._railway.signalling.connect_signals(self._state.selected_signal, signal)
                 self._state.selected_signal = None

@@ -35,6 +35,12 @@ class SimulationPanel(Panel):
             30
         )
 
+        self.close_button = pygame.Rect(
+            self._rect.right - 35,
+            self._rect.top + 5,
+            30,
+            30
+        )
 
 
     def render(self, screen_pos):
@@ -44,8 +50,14 @@ class SimulationPanel(Panel):
 
         super().render(screen_pos)
 
+        x_surface = self.instruction_font.render("X", True, Color.WHITE)
+        self._surface.blit(
+            x_surface,
+            (self.close_button.centerx - x_surface.get_width() // 2,
+             self.close_button.centery - x_surface.get_height() // 2)
+        )
+
         if not train.is_live:
-            # Show only startup button in the middle when train is not live
             pygame.draw.rect(self._surface, Color.GREY, self.startup_button, border_radius=5)
             label_surface = self.instruction_font.render("Startup", True, Color.BLACK)
             self._surface.blit(
@@ -55,12 +67,10 @@ class SimulationPanel(Panel):
             )
             return
 
-        # Train is live - show speed
         speed_text = f"Speed: {train.speed:.1f} km/h"
         speed_surface = self.instruction_font.render(speed_text, True, Color.WHITE)
         self._surface.blit(speed_surface, (self._rect.x + self.padding, self._rect.y + self.padding))
 
-        # Show next station info if timetable exists
         if train.timetable:
             next_stop = train.timetable.get_next_stop(0)
             if next_stop is None:
@@ -96,7 +106,9 @@ class SimulationPanel(Panel):
         return super().contains(screen_pos)
 
     def _on_click(self, event: Event):
-        if self._state.selected_train.is_live and self.schedule_button.collidepoint(*event.screen_pos):
+        if self.close_button.collidepoint(*event.screen_pos):
+            self._state.selected_train = None
+        elif self._state.selected_train.is_live and self.schedule_button.collidepoint(*event.screen_pos):
             self._on_set_schedule_clicked()
         elif not self._state.selected_train.is_live and self.startup_button.collidepoint(*event.screen_pos):
             self._state.selected_train.start()

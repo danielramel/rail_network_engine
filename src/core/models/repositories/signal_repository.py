@@ -8,7 +8,7 @@ class SignalRepository:
         self._graph = graph
 
     def has_signal_at(self, pos: Position) -> bool:
-        return self._graph.has_node_attr(pos, 'signal')
+        return self._graph.has_node_at(pos) and self._graph.has_node_attr(pos, 'signal')
     
     def has_signal_with_pose_at(self, pose: Pose) -> bool:
         if not self.has_signal_at(pose.position):

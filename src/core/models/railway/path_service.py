@@ -64,7 +64,7 @@ class PathService:
                 if self.is_cutting_through_platform(current_pose, neighbor_pose):
                     continue
                 
-                if self._railway.graph.has_node_at(neighbor_pose.position) and self._railway.signals.has_signal_at(neighbor_pose.position):
+                if self._railway.signals.has_signal_at(neighbor_pose.position):
                     signal = self._railway.signals.get(neighbor_pose.position)
                     if neighbor_pose.direction not in (signal.direction , signal.direction.opposite()):
                         continue
