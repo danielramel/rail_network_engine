@@ -29,20 +29,20 @@ class ScheduleEditorDialog(QDialog):
             "stops" : [{
                     "id": self.stations_table.cellWidget(0, 1).currentData(),
                     "travel_time": None,
-                    "dwell_time": None
+                    "stop_time": None
                     }
                 ] + [
                     {
                     "id": self.stations_table.cellWidget(row, 1).currentData(),
                     "travel_time": (tw := self.stations_table.cellWidget(row, 2)) and tw.value() or 0,
-                    "dwell_time": (dw := self.stations_table.cellWidget(row, 3)) and dw.value() or 0
+                    "stop_time": (dw := self.stations_table.cellWidget(row, 3)) and dw.value() or 0
                     }
                     for row in range(1, self.stations_table.rowCount() - 1)
                 ] + [
                     {
                     "id": self.stations_table.cellWidget(self.stations_table.rowCount() - 1, 1).currentData(),
                     "travel_time": self.stations_table.cellWidget(self.stations_table.rowCount() - 1, 2).value(),
-                    "dwell_time": None
+                    "stop_time": None
                     }
                 ] if self.stations_table.rowCount() > 1 else []
                     }
@@ -58,7 +58,7 @@ class ScheduleEditorDialog(QDialog):
     def add_empty_station_row(self, row: int):
         """Add a new row to the stations table"""
         if row == self.stations_table.rowCount() and row > 1:
-            self._set_spin_box_item(row-1, 3, 1)  # Previous dwell time (column 3)
+            self._set_spin_box_item(row-1, 3, 1)  # Previous stop time (column 3)
         self.stations_table.insertRow(row)
         
         # Row number indicator (column 0)
@@ -88,16 +88,6 @@ class ScheduleEditorDialog(QDialog):
         
     def refresh_table(self):
         row_count = self.stations_table.rowCount()
-        if row_count == 0:
-            return
-        
-        if row_count == 1:
-            self._set_empty_item(0, 2)
-            self._set_empty_item(0, 3)
-            self._set_empty_item(0, 4)
-            self._set_empty_item(0, 5)
-            return
-
         def _set_time_item(row: int, col: int, qtime: QTime):
             self.stations_table.removeCellWidget(row, col)
             text = qtime.toString("HH:mm")
@@ -118,9 +108,9 @@ class ScheduleEditorDialog(QDialog):
             arrival = departure.addSecs(travel_min * 60)
             _set_time_item(row, 4, arrival)
                 
-            dwell_min = int(self.stations_table.cellWidget(row, 3).value())
+            stop_min = int(self.stations_table.cellWidget(row, 3).value())
 
-            departure = arrival.addSecs(dwell_min * 60)
+            departure = arrival.addSecs(stop_min * 60)
             _set_time_item(row, 5, departure)          
         
         
@@ -150,6 +140,9 @@ class ScheduleEditorDialog(QDialog):
         """Remove the selected station row from the table"""
         if self.selected_row is None:
             return
+        
+        if self.stations_table.rowCount() <= 2:
+            return  # Do not allow removing to less than 2 rows
         
         self.stations_table.removeRow(self.selected_row)
         self.selected_row = None
@@ -231,6 +224,7 @@ class ScheduleEditorDialog(QDialog):
         layout.addRow(buttons)
 
         self.add_empty_station_row(0)
+        self.add_empty_station_row(1)
         self.refresh_table()
 
     def _set_empty_item(self, row, col):
