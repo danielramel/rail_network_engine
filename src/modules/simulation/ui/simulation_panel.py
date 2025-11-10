@@ -3,7 +3,7 @@ import pygame
 from modules.simulation.models.simulation_state import SimulationState
 from core.config.color import Color
 from core.models.event import Event
-from modules.simulation.ui.select_schedule_window import SelectScheduleWindow
+from modules.simulation.ui.schedule_selector import ScheduleSelector
 from core.models.repositories.schedule_repository import ScheduleRepository
 
 class SimulationPanel(Panel):
@@ -57,8 +57,8 @@ class SimulationPanel(Panel):
 
     def _on_set_schedule_clicked(self):
         if self._select_schedule_window is None:
-            self._select_schedule_window = SelectScheduleWindow(self._schedule_repository.all())
-            self._select_schedule_window.selected_schedule.connect(self._on_select_schedule_window_closed)
+            self._select_schedule_window = ScheduleSelector(self._schedule_repository.all())
+            self._select_schedule_window.schedule_chosen.connect(self._on_select_schedule_window_closed)
             self._select_schedule_window.show()
         else:
             if self._select_schedule_window.isMinimized():
