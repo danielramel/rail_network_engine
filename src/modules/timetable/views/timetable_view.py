@@ -27,7 +27,7 @@ class TimetableWindow(QMainWindow):
     def _init_layout(self):
         self.setWindowTitle("Timetable")
         self.setStyleSheet(TIMETABLE_STYLESHEET)
-        self.setMinimumSize(1200, 400)
+        self.setMinimumSize(1150, 400)
 
 
         central = QWidget(self)
@@ -50,9 +50,10 @@ class TimetableWindow(QMainWindow):
         ])
 
         header = table.horizontalHeader()
-        header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
-        for c in (0, 2, 3, 4, 5, 6, 7, 8, 9, 10):
-            header.setSectionResizeMode(c, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        header.setMinimumSectionSize(100)
+
             
         table.verticalHeader().setVisible(False)
         table.setSelectionMode(QTableWidget.SelectionMode.NoSelection)
@@ -107,15 +108,14 @@ class TimetableWindow(QMainWindow):
             for col, item in enumerate(row_items):
                 self.table.setItem(current_row, col, item)
 
-            # Span route across arrival/departure columns for collapsed main row
             self.table.setSpan(current_row, 1, 1, 5)
 
             # Action buttons
-            edit_btn = QPushButton("Edit")
+            edit_btn = QPushButton()
             edit_btn.clicked.connect(lambda _=False, i=idx: self.edit_schedule(i))
             self.table.setCellWidget(current_row, 9, edit_btn)
 
-            delete_btn = QPushButton("Delete")
+            delete_btn = QPushButton()
             delete_btn.setStyleSheet("background-color:#802020;color:white;")
             delete_btn.clicked.connect(lambda _=False, i=idx: self.delete_schedule(i))
             self.table.setCellWidget(current_row, 10, delete_btn)
