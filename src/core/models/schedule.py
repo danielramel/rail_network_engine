@@ -1,5 +1,6 @@
 from core.models.station import Station
 from dataclasses import dataclass, field
+from core.models.timetable import TimeTable
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from core.models.railway.railway_system import RailwaySystem
@@ -18,34 +19,8 @@ class Schedule:
             if stop['station'].id == station_id:
                 self.stops.remove(stop)
                 
-    def create_timetable(self, start_time: int) -> list[dict[str, int]]:
-        timetable = []
-        current_time = start_time
-        timetable = [{
-                    'station': self.stops[0]['station'],
-                    'arrival_time': None,
-                    'departure_time': start_time
-                }]
-        
-        for stop in self.stops[1:-1]:
-            travel_time = stop['travel_time']
-            stop_time = stop['stop_time']
-            arrival_time = current_time + travel_time
-            departure_time = arrival_time + stop_time
-            timetable.append({
-                'station': stop['station'],
-                'arrival_time': arrival_time,
-                'departure_time': departure_time
-            })
-            current_time = departure_time
-            
-        timetable.append({
-            'station': self.stops[-1]['station'],
-            'arrival_time': current_time + self.stops[-1]['travel_time'],
-            'departure_time': None
-        })
-
-        return timetable
+    def create_timetable(self, start_time: int) -> TimeTable:
+        return TimeTable(self, start_time)
 
     def to_dict(self) -> dict:
         """Convert to serialisable dict used by repository persistence."""

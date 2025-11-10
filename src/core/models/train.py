@@ -1,6 +1,7 @@
 from core.models.geometry import Edge
 from core.config.settings import FPS, PLATFORM_LENGTH
 from core.models.signal import Signal
+from core.models.timetable import TimeTable
 
 
 class Train:
@@ -11,6 +12,8 @@ class Train:
     acceleration : float = 2.0  # in km/s²
     max_speed : int  =  120  # in km/h
     deceleration : float = 5.0 # in km/s²
+    timetable : TimeTable = None
+    is_live : bool = False
 
     def __init__(self, id: int, edges: list[Edge]):
         if len(edges) != PLATFORM_LENGTH:
@@ -18,7 +21,7 @@ class Train:
         self.id = id
         self.path = edges
         
-    def set_timetable(self, timetable: list[dict[str, int]]):
+    def set_timetable(self, timetable: TimeTable) -> None:
         self.timetable = timetable
         
     def tick(self):

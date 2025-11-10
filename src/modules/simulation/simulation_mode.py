@@ -9,7 +9,7 @@ from modules.simulation.ui.simulation_controller import SimulationController
 from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
 from core.models.time import Time
-from modules.simulation.ui.simulation_panel import SimulationPanel
+from modules.simulation.ui.panel.simulation_panel import SimulationPanel
 
 class SimulationMode(UIController, FullScreenUIComponent):
     elements: tuple[ClickableUIComponent]
