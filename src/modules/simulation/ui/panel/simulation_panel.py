@@ -72,7 +72,7 @@ class SimulationPanel(Panel):
                 self._surface.blit(next_station_surface, (self._rect.x + self.padding, self._rect.y + self.padding + 30))
 
         # Always show schedule button (Set Schedule or Change Schedule)
-        schedule_label = "Change Schedule" if train.timetable else "Set Schedule"
+        schedule_label = "Change Schedule" if train.timetable else "Add Schedule"
         pygame.draw.rect(self._surface, Color.GREY, self.schedule_button, border_radius=5)
         schedule_text = self.instruction_font.render(schedule_label, True, Color.BLACK)
         self._surface.blit(

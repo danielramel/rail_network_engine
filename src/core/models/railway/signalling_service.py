@@ -4,6 +4,8 @@ from core.models.geometry import Position, Edge
 from core.models.signal import Signal
 from core.models.geometry import Pose
 from typing import TYPE_CHECKING
+
+from core.models.train import Train
 if TYPE_CHECKING:
     from core.models.railway.railway_system import RailwaySystem
 
@@ -22,12 +24,12 @@ class SignallingService:
         for edge in edges:
             self._railway.graph.set_edge_attr(edge, 'locked', True)
             self._railway.graph.set_node_attr(edge.b, 'locked', True) #dont look the very first node
-            
-    # def free_path(self, edges: list[Edge]):
-    #     for edge in edges:
-    #         self._railway.graph.set_edge_attr(edge, 'locked', False)
-    #         self._railway.graph.set_node_attr(edge.a, 'locked', False)
-    #         self._railway.graph.set_node_attr(edge.b, 'locked', False)
+    
+    def free(self, edges: list[Edge]):
+        for edge in edges:
+            self._railway.graph.set_edge_attr(edge, 'locked', False)
+            self._railway.graph.remove_node_attr(edge.a, 'locked')
+            self._railway.graph.remove_node_attr(edge.b, 'locked')
             
         
     def is_edge_locked(self, edge: Edge) -> bool:
@@ -113,7 +115,8 @@ class SignallingService:
         for pose in poses[1:]:
             self._railway.graph.set_node_attr(pose.position, 'locked', True)
 
-    def get_initial_path(self, start_pose: Pose) -> tuple[list[Edge], Optional[Signal]]:
+    def set_inital_train_path(self, train: Train) -> tuple[list[Edge], Optional[Signal]]:
+        start_pose = train.get_locomotive_pose()
         visited = set[Position]()
         pose = start_pose
         path = []
@@ -122,20 +125,21 @@ class SignallingService:
             if self._railway.signals.has_signal_at(pose.position):
                 signal = self._railway.signals.get(pose.position)
                 if signal.next_signal is None:
+                    self.lock_path(path)
                     return path, signal
                 else:
                     raise NotImplementedError("The next signal is already set, cannot create initial path.")
 
             neighbors = self._railway.graph_service.get_connections_from_pose(pose)
             if len(neighbors) == 0:
-                return path, None
+                raise RuntimeError("No signal found.")
             
             if len(neighbors) > 1:
                 raise NotImplementedError("Branching paths are not supported in initial path generation.")
             
             connection = neighbors[0]
             if connection.position in visited:
-                return path, None
+                raise RuntimeError("No signal found.")
 
             path.append(Edge(pose.position, connection.position))
             pose = connection

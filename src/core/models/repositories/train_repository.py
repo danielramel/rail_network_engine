@@ -20,7 +20,7 @@ class TrainRepository:
     def add_to_platform(self, platform: frozenset[Edge]) -> int:
         platform = [edge.ordered() for edge in sorted(platform)]
         id = self._generate_id()
-        train = Train(id, platform)
+        train = Train(id, platform, self._railway)
 
         self._trains[id] = train
         self._railway.signalling.lock_path(platform)
@@ -29,7 +29,7 @@ class TrainRepository:
     def get_preview_train_on_platform(self, platform: frozenset[Edge]) -> Train:
         platform = [edge.ordered() for edge in sorted(platform)]
         id = -1  # Preview trains have negative IDs
-        train = Train(id, platform)
+        train = Train(id, platform, self._railway)
         return train
 
     # def switch_direction(self, train_id: int) -> None:
