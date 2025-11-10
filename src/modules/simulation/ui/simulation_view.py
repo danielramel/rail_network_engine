@@ -86,12 +86,6 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
         if world_pos is None:
             return
         
-        closest_edge = world_pos.closest_edge(self._railway.graph.edges, self._camera.scale)
-        train_id = closest_edge is not None and self._railway.trains.get_train_on_edge(closest_edge)
-        if train_id:
-            self._state.preview.train_id = train_id
-            return
-        
         snapped = world_pos.snap_to_grid()
         if self._railway.graph.has_node_at(snapped) and self._railway.signals.has_signal_at(snapped):
             signal = self._railway.signals.get(snapped)
@@ -100,3 +94,8 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
                 return
             path = self._railway.signalling.get_path_preview(self._state.selected_signal, signal)
             self._state.preview.path = path if path is not None else []
+            
+        closest_edge = world_pos.closest_edge(self._railway.graph.edges, self._camera.scale)
+        train_id = closest_edge is not None and self._railway.trains.get_train_on_edge(closest_edge)
+        if train_id:
+            self._state.preview.train_id = train_id
