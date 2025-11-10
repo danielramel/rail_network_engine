@@ -15,59 +15,79 @@ class SimulationPanel(Panel):
         super().__init__(surface)
 
         self.schedule_button = pygame.Rect(
-            self._rect.centerx - 60,
+            self._rect.centerx - 180,
+            self._rect.bottom - 45,
+            150,
+            30
+        )
+        
+        self.shutdown_button = pygame.Rect(
+            self._rect.centerx + 60,
             self._rect.bottom - 45,
             120,
             30
         )
 
-        self.train_button = pygame.Rect(
+        self.startup_button = pygame.Rect(
             self._rect.centerx - 60,
             self._rect.bottom - 85,
             120,
             30
         )
 
+
+
     def render(self, screen_pos):
-        if self._state.selected_train is None:
+        train = self._state.selected_train
+        if train is None:
             return
 
         super().render(screen_pos)
 
-        train = self._state.selected_train
-        speed_text = f"Speed: {train.speed:.1f} m/s"
-        max_speed_text = f"Max Speed: {train.max_speed} km/h"
+        if not train.is_live:
+            # Show only startup button in the middle when train is not live
+            pygame.draw.rect(self._surface, Color.GREY, self.startup_button, border_radius=5)
+            label_surface = self.instruction_font.render("Startup", True, Color.BLACK)
+            self._surface.blit(
+                label_surface,
+                (self.startup_button.centerx - label_surface.get_width() // 2,
+                 self.startup_button.centery - label_surface.get_height() // 2)
+            )
+            return
 
+        # Train is live - show speed
+        speed_text = f"Speed: {train.speed:.1f} km/h"
         speed_surface = self.instruction_font.render(speed_text, True, Color.WHITE)
-        max_speed_surface = self.instruction_font.render(max_speed_text, True, Color.WHITE)
-
         self._surface.blit(speed_surface, (self._rect.x + self.padding, self._rect.y + self.padding))
-        self._surface.blit(max_speed_surface, (self._rect.x + self.padding, self._rect.y + self.padding + 30))
 
-        # timetable or set schedule
+        # Show next station info if timetable exists
         if train.timetable:
             next_stop = train.timetable.get_next_stop(0)
-            if next_stop:
+            if next_stop is None:
+                next_station_surface = self.instruction_font.render("No more stops.", True, Color.WHITE)
+                self._surface.blit(next_station_surface, (self._rect.x + self.padding, self._rect.y + self.padding + 30))
+            else:
                 next_station_text = f"Next: {next_stop['station'].id}; {next_stop['arrival_time']} min"
                 next_station_surface = self.instruction_font.render(next_station_text, True, Color.WHITE)
-                self._surface.blit(next_station_surface, (self._rect.x + self.padding, self._rect.y + self.padding + 60))
-        else:
-            pygame.draw.rect(self._surface, Color.GREY, self.schedule_button, border_radius=5)
-            schedule_text = self.instruction_font.render("Set Schedule", True, Color.BLACK)
-            self._surface.blit(
-                schedule_text,
-                (self.schedule_button.centerx - schedule_text.get_width() // 2,
-                 self.schedule_button.centery - schedule_text.get_height() // 2)
-            )
+                self._surface.blit(next_station_surface, (self._rect.x + self.padding, self._rect.y + self.padding + 30))
 
-        # start/shutdown train button
-        button_label = "Start Train" if not train.is_live else "Shut Down Train"
-        pygame.draw.rect(self._surface, Color.GREY, self.train_button, border_radius=5)
-        label_surface = self.instruction_font.render(button_label, True, Color.BLACK)
+        # Always show schedule button (Set Schedule or Change Schedule)
+        schedule_label = "Change Schedule" if train.timetable else "Set Schedule"
+        pygame.draw.rect(self._surface, Color.GREY, self.schedule_button, border_radius=5)
+        schedule_text = self.instruction_font.render(schedule_label, True, Color.BLACK)
+        self._surface.blit(
+            schedule_text,
+            (self.schedule_button.centerx - schedule_text.get_width() // 2,
+             self.schedule_button.centery - schedule_text.get_height() // 2)
+        )
+
+        # Always show shutdown button at the bottom when train is live
+        pygame.draw.rect(self._surface, Color.GREY, self.shutdown_button, border_radius=5)
+        label_surface = self.instruction_font.render("Shut Down", True, Color.BLACK)
         self._surface.blit(
             label_surface,
-            (self.train_button.centerx - label_surface.get_width() // 2,
-             self.train_button.centery - label_surface.get_height() // 2)
+            (self.shutdown_button.centerx - label_surface.get_width() // 2,
+             self.shutdown_button.centery - label_surface.get_height() // 2)
         )
 
     def contains(self, screen_pos):
@@ -76,10 +96,12 @@ class SimulationPanel(Panel):
         return super().contains(screen_pos)
 
     def _on_click(self, event: Event):
-        if self.schedule_button.collidepoint(*event.screen_pos):
+        if self._state.selected_train.is_live and self.schedule_button.collidepoint(*event.screen_pos):
             self._on_set_schedule_clicked()
-        elif self.train_button.collidepoint(*event.screen_pos):
-            self._on_train_button_clicked()
+        elif not self._state.selected_train.is_live and self.startup_button.collidepoint(*event.screen_pos):
+            self._state.selected_train.start()
+        elif self._state.selected_train.is_live and self.shutdown_button.collidepoint(*event.screen_pos):
+            self._state.selected_train.shutdown()
 
     def _on_set_schedule_clicked(self):
         if self._select_schedule_window is None:
@@ -95,10 +117,3 @@ class SimulationPanel(Panel):
     def _on_schedule_chosen(self, schedule: Schedule, start_time: int):
         self._select_schedule_window = None
         self._state.selected_train.set_timetable(schedule.create_timetable(start_time))
-
-    def _on_train_button_clicked(self):
-        train = self._state.selected_train
-        if not train.is_live:
-            train.start()
-        else:
-            train.shutdown()

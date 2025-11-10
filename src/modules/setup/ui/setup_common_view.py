@@ -1,6 +1,6 @@
 from core.config.color import Color
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
-from shared.ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station, draw_train
+from shared.ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station, draw_train, TRAINDRAWACTION
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from shared.ui.enums.edge_action import EdgeAction
@@ -43,12 +43,12 @@ class SetupCommonView(ClickableUIComponent, FullScreenUIComponent):
             draw_station(self._surface, station, self._camera)
 
         for train in self._railway.trains.all():
-            edges = train.occupied_edges()
+            edges = train.get_occupied_edges()
             if self._state.preview.edge in edges and self._state.preview.action is SetupAction.REMOVE:
                 continue
-            draw_train(self._surface, edges, self._camera, edge_progress=train.edge_progress)
+            draw_train(self._surface, train, self._camera, TRAINDRAWACTION.SHUTDOWN)
 
         if self._state.preview.edge is not None and self._state.preview.action is SetupAction.ADD:
             platform = self._railway.stations.get_platform_from_edge(self._state.preview.edge)
-            edges = [edge.ordered() for edge in sorted(platform)]
-            draw_train(self._surface, edges, self._camera, edge_progress=0.0)
+            train = self._railway.trains.get_preview_train_on_platform(platform)
+            draw_train(self._surface, train, self._camera, TRAINDRAWACTION.SHUTDOWN)

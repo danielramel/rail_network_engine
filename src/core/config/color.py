@@ -15,3 +15,4 @@ class Color(tuple, Enum):
     LIGHTBLUE = (173, 216, 230)
     BLUE = (0, 0, 255)
     LIME = (0, 255, 0)
+    DARKGREY = (100, 100, 100)

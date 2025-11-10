@@ -13,7 +13,7 @@ class Train:
     max_speed : int  =  120  # in km/h
     deceleration : float = 5.0 # in km/s²
     timetable : TimeTable = None
-    is_live : bool = False
+    _is_live : bool = False
 
     def __init__(self, id: int, edges: list[Edge]):
         if len(edges) != PLATFORM_LENGTH:
@@ -45,11 +45,21 @@ class Train:
         edge = self.path.pop(0)
         self._railway.signalling.free_edge(edge)
         
-    def occupied_edges(self) -> tuple[Edge]:
+    def get_occupied_edges(self) -> tuple[Edge]:
         return tuple(self.path[:PLATFORM_LENGTH])
     
     def occupies_edge(self, edge: Edge) -> bool:
-        return edge in self.occupied_edges()    
+        return edge in self.get_occupied_edges()
+    
+    @property
+    def is_live(self) -> bool:
+        return self._is_live
+    
+    def start(self) -> None:
+        self._is_live = True
+        
+    def shutdown(self) -> None:
+        self._is_live = False
     
     def get_max_safe_speed(self) -> float:
         distance = len(self.path) - (PLATFORM_LENGTH) - self.edge_progress - 0.1

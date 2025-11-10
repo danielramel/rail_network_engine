@@ -1,16 +1,20 @@
 from typing import TYPE_CHECKING
+
+from core.config.color import Color
 if TYPE_CHECKING:
     from core.models.schedule import Schedule
 
-
+    
 
 class TimeTable:
+    color: Color
     schedule_code: str
     stops: list[dict[str, int]]
     
     
     def __init__(self, schedule: 'Schedule', start_time: int) -> 'TimeTable':
-        self.schedule_code = schedule.code        
+        self.schedule_code = schedule.code
+        self.color = schedule.color
         current_time = start_time
         self.stops = [{
                     'station': schedule.stops[0]['station'],

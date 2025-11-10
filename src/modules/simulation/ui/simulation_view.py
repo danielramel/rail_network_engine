@@ -7,6 +7,7 @@ from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
 from shared.ui.enums.edge_action import EdgeAction
 from core.models.geometry.position import Position
+from shared.ui.utils.train import TRAINDRAWACTION
 
 
 class SimulationView(ClickableUIComponent, FullScreenUIComponent):
@@ -59,14 +60,18 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             draw_station(self._surface, station, self._camera)
 
         for train in self._railway.trains.all():
-            edges = train.occupied_edges()
-            border_color = None
-            if self._state.preview.train_id == train.id:
-                border_color = Color.BLUE
+            if self._state.preview.train_id == train.id and self._state.selected_train != train:
+                action = TRAINDRAWACTION.PREVIEWED
             elif self._state.selected_train == train:
-                border_color = Color.YELLOW
+                action = TRAINDRAWACTION.SELECTED
+            elif train.timetable is not None:
+                action = TRAINDRAWACTION.SCHEDULED
+            elif train.is_live:
+                action = TRAINDRAWACTION.LIVE
+            else:
+                action = TRAINDRAWACTION.SHUTDOWN
             
-            draw_train(self._surface, edges, self._camera, edge_progress=train.edge_progress, border_color=border_color)
+            draw_train(self._surface, train, self._camera, action)
 
         
         if self._state.preview.signal is None and world_pos is not None:

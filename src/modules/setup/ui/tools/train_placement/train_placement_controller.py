@@ -16,5 +16,5 @@ class TrainPlacementController(SetupToolController):
         
         closest_edge = event.world_pos.closest_edge(self._railway.graph.edges, self._camera.scale)
         if closest_edge and self._railway.stations.is_edge_platform(closest_edge) and not self._railway.trains.get_train_on_edge(closest_edge):
-            platform = sorted(self._railway.stations.get_platform_from_edge(closest_edge))
+            platform = self._railway.stations.get_platform_from_edge(closest_edge)
             self._railway.trains.add_to_platform(platform)

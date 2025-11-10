@@ -1,31 +1,52 @@
 import pygame
 
 from core.graphics.camera import Camera
-from core.models.geometry import Position, Edge
 from core.config.color import Color
+from core.models.train import Train
+from enum import Enum, auto
+from core.models.geometry.position import Position
 
+class TRAINDRAWACTION(Enum):
+    SHUTDOWN = auto()
+    LIVE = auto()
+    SCHEDULED = auto()
+    SELECTED = auto()
+    PREVIEWED = auto()
 
-def draw_train(surface: pygame.Surface, edges: tuple[Edge], camera: Camera, edge_progress: float = 0.0, border_color: tuple[int, int, int] = None) -> None:
+def draw_train(surface: pygame.Surface, train: Train, camera: Camera, action: TRAINDRAWACTION) -> None:
+    edges = train.get_occupied_edges()
+    edge_progress = train.edge_progress
+    if action == TRAINDRAWACTION.SHUTDOWN:
+        color = Color.DARKGREY
+    elif action == TRAINDRAWACTION.LIVE:
+        color = Color.WHITE
+    elif action == TRAINDRAWACTION.SCHEDULED:
+        color = train.timetable.color
+    elif action == TRAINDRAWACTION.SELECTED:
+        color = Color.ORANGE
+    elif action == TRAINDRAWACTION.PREVIEWED:
+        color = Color.YELLOW
+        
+    
+    
     if edge_progress < 0.5:
-        draw_occupied_edge(surface, edges[0].a, edges[0].b, camera, color=Color.RED, start=edge_progress+0.5, end=1.0, border_color=border_color)
-        draw_occupied_edge(surface, edges[1].a, edges[1].b, camera, color=Color.RED, start=0.0, end=edge_progress, border_color=border_color)
-        draw_occupied_edge(surface, edges[1].a, edges[1].b, camera, color=Color.LIGHTBLUE, start=edge_progress+0.5, end=1.0, border_color=border_color)
+        draw_occupied_edge(surface, edges[0].a, edges[0].b, camera, color, edge_progress+0.5, 1.0)
+        draw_occupied_edge(surface, edges[1].a, edges[1].b, camera, color, 0.0, edge_progress)
+        draw_occupied_edge(surface, edges[1].a, edges[1].b, camera, color, edge_progress+0.5, 1.0)
         for edge in edges[2:-2]:
-            draw_occupied_edge(surface, edge.a, edge.b, camera, color=Color.LIGHTBLUE, start=0.0, end=edge_progress, border_color=border_color)
-            draw_occupied_edge(surface, edge.a, edge.b, camera, color=Color.LIGHTBLUE, start=edge_progress + 0.5, end=1.0, border_color=border_color)
-        draw_occupied_edge(surface, edges[-2].a, edges[-2].b, camera, color=Color.LIGHTBLUE, start=0.0, end=edge_progress, border_color=border_color)
-        draw_occupied_edge(surface, edges[-2].a, edges[-2].b, camera, color=Color.WHITE, start=edge_progress + 0.5, end=1.0, border_color=border_color)
-        draw_occupied_edge(surface, edges[-1].a, edges[-1].b, camera, color=Color.WHITE, start=0.0, end=edge_progress, border_color=border_color)
+            draw_occupied_edge(surface, edge.a, edge.b, camera, color, 0.0, edge_progress)
+            draw_occupied_edge(surface, edge.a, edge.b, camera, color, edge_progress + 0.5, 1.0)
+        draw_occupied_edge(surface, edges[-2].a, edges[-2].b, camera, color, 0.0, edge_progress)
+        draw_occupied_edge(surface, edges[-2].a, edges[-2].b, camera, color, edge_progress + 0.5, 1.0)
+        draw_occupied_edge(surface, edges[-1].a, edges[-1].b, camera, color, 0.0, edge_progress)
         
     else:
-        draw_occupied_edge(surface, edges[1].a, edges[1].b, camera, color=Color.RED, start=edge_progress-0.5, end=edge_progress, border_color=border_color)
+        draw_occupied_edge(surface, edges[1].a, edges[1].b, camera, color, edge_progress-0.5, edge_progress)
         for edge in edges[2:-1]:
-            draw_occupied_edge(surface, edge.a, edge.b, camera, color=Color.LIGHTBLUE, start=edge_progress - 0.5, end=edge_progress, border_color=border_color)
-        draw_occupied_edge(surface, edges[-1].a, edges[-1].b, camera, color=Color.WHITE, start=edge_progress-0.5, end=edge_progress, border_color=border_color)
+            draw_occupied_edge(surface, edge.a, edge.b, camera, color, edge_progress - 0.5, edge_progress)
+        draw_occupied_edge(surface, edges[-1].a, edges[-1].b, camera, color, edge_progress-0.5, edge_progress)
     
 
-
-import math
 
 def draw_occupied_edge(
     surface: pygame.Surface,
@@ -35,7 +56,6 @@ def draw_occupied_edge(
     color: tuple[int, int, int],
     start: float,
     end: float,
-    border_color: tuple[int, int, int] | None = None,
 ) -> None:
     if start == end:
         return
@@ -53,13 +73,4 @@ def draw_occupied_edge(
 
     width = max(3, int(10 * int(camera.scale)))
 
-    rect_length = ((dash_end_x - dash_start_x) ** 2 + (dash_end_y - dash_start_y) ** 2) ** 0.5
-    angle = math.atan2(dash_end_y - dash_start_y, dash_end_x - dash_start_x)
-
-    rect_surface = pygame.Surface((rect_length, width), pygame.SRCALPHA)
-    pygame.draw.rect(rect_surface, color, (0, 0, rect_length, width))
-    if border_color is not None:
-        pygame.draw.rect(rect_surface, border_color, (0, 0, rect_length, width), 2)
-
-    rotated = pygame.transform.rotate(rect_surface, -math.degrees(angle))
-    surface.blit(rotated, (dash_start_x - rotated.get_width() / 2, dash_start_y - rotated.get_height() / 2))
+    pygame.draw.aaline(surface, color, (dash_start_x, dash_start_y), (dash_end_x, dash_end_y), width)

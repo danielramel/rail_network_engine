@@ -4,7 +4,7 @@ from .nodes import draw_node
 from .signals import draw_signal
 from .stations import draw_station
 from .grid import draw_grid
-from .train import draw_train
+from .train import draw_train, TRAINDRAWACTION
 
 __all__ = [
     "draw_dotted_line",
@@ -16,4 +16,5 @@ __all__ = [
     "draw_station",
     "draw_grid",
     "draw_train",
+    "TRAINDRAWACTION",
 ]
