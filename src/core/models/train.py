@@ -40,8 +40,8 @@ class Train:
             speed_with_acc = self.speed + (self.acceleration * (1 - (self.speed / self.max_speed))/5.0)
             self.speed = min(max_safe_speed, speed_with_acc, self.max_speed)
 
-            
-        edge_progress = round(self.edge_progress + self.speed/1000, 4)
+        edge_length = self._railway.graph.get_edge_attr(self.path[PLATFORM_LENGTH-1], 'length')
+        edge_progress = round(self.edge_progress + self.speed/3.6/FPS/edge_length, 4)
         
         if edge_progress < 1:
             self.edge_progress = edge_progress
