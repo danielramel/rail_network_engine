@@ -57,7 +57,7 @@ def draw_occupied_edge(
     start: float,
     end: float,
 ) -> None:
-    if start == end:
+    if end - start <= 0.01:
         return
 
     a = camera.world_to_screen(a)

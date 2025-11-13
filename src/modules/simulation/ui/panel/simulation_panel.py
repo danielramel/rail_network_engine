@@ -67,7 +67,7 @@ class SimulationPanel(Panel):
             )
             return
 
-        speed_text = f"Speed: {train.speed:.1f} km/h"
+        speed_text = f"Speed: {train.speed*3.6:.1f} km/h"
         speed_surface = self.instruction_font.render(speed_text, True, Color.WHITE)
         self._surface.blit(speed_surface, (self._rect.x + self.padding, self._rect.y + self.padding))
 

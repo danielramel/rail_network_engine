@@ -13,9 +13,9 @@ class Train:
     path : list[Edge]
     edge_progress : float = 0.0
     speed : float = 0.0  # in m/s
-    acceleration : float = 2.0  # in km/s²
+    acceleration : float = 1.2  # in m/s²
     max_speed : int  =  120  # in km/h
-    deceleration : float = 5.0 # in km/s²
+    deceleration : float = 1.4 # in m/s²
     timetable : TimeTable = None
     _is_live : bool = False
     _railway: 'RailwaySystem'
@@ -31,23 +31,30 @@ class Train:
         self.timetable = timetable
         
     def tick(self):
+        if not self._is_live:
+            return
         max_safe_speed = self.get_max_safe_speed()
         if self.speed > max_safe_speed:
-            if self.speed - self.deceleration > max_safe_speed:
-                raise ValueError("The train is going too fast to stop!!")
-            self.speed = max_safe_speed
+            self.speed = max(max_safe_speed, 0.0)
         else:
-            speed_with_acc = self.speed + (self.acceleration * (1 - (self.speed / self.max_speed))/5.0)
-            self.speed = min(max_safe_speed, speed_with_acc, self.max_speed)
+            speed_with_acc = self.speed + (self.acceleration/FPS * (1 - (self.speed / (self.max_speed/3.6))))
+            self.speed = min(max_safe_speed, speed_with_acc, self.max_speed/3.6)
+            
+        if self.speed == 0.0:
+            return
 
-        edge_length = self._railway.graph.get_edge_attr(self.path[PLATFORM_LENGTH-1], 'length')
-        edge_progress = round(self.edge_progress + self.speed/3.6/FPS/edge_length, 4)
         
+        edge_length = self._railway.graph.get_edge_attr(self.path[PLATFORM_LENGTH-1], 'length')
+        travel_progress = self.speed/edge_length/FPS
+        edge_progress = round(self.edge_progress + travel_progress, 6)
         if edge_progress < 1:
             self.edge_progress = edge_progress
             return
         
-        self.edge_progress = edge_progress - 1
+        next_edge_length = self._railway.graph.get_edge_attr(self.path[PLATFORM_LENGTH], 'length')
+        edge_progress -= 1
+        edge_progress = edge_progress * edge_length / next_edge_length
+        self.edge_progress = edge_progress
         edge = self.path.pop(0)
         self._railway.signalling.free([edge])
         
@@ -79,11 +86,16 @@ class Train:
         return Pose.from_positions(edge.a, edge.b)
     
     def get_max_safe_speed(self) -> float:
-        distance = len(self.path) - (PLATFORM_LENGTH) - self.edge_progress - 0.1
-        if distance <= 0:
+        # sum physical lengths of remaining edges
+        remaining_edges = self.path[PLATFORM_LENGTH-1:]
+        if not remaining_edges:
             return 0.0
-        # v_max = sqrt(2 * a * s)
-        return (2 * self.deceleration * FPS * distance) ** 0.5
+        distance = (1 - self.edge_progress) * self._railway.graph.get_edge_attr(remaining_edges[0], 'length')
+        distance += sum(self._railway.graph.get_edge_attr(edge, 'length') for edge in remaining_edges[1:])
+        distance = max(0, distance - 50)
+        return (2 * distance * self.deceleration ) ** 0.5
+
+
     
     def signal_turned_green_ahead(self, path: list[Edge], signal: Signal) -> bool:
         self.path += path
