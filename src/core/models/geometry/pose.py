@@ -1,7 +1,9 @@
 from typing import NamedTuple
 
 from core.config.settings import GRID_SIZE
-from core.models.geometry import Edge, Direction, Position
+from core.models.geometry.edge import Edge
+from core.models.geometry.position import Position
+from core.models.geometry.direction import Direction
 
 class Pose(NamedTuple):
     position: Position
