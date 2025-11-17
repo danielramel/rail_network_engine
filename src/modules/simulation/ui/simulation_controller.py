@@ -1,4 +1,5 @@
 from core.models.geometry import Position
+from core.models.geometry.edge import Edge
 from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
@@ -39,7 +40,7 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
                 return
             self._state.selected_signal = signal
             
-        closest_edge = click.world_pos.closest_edge(self._railway.graph.edges, self._camera.scale)
+        closest_edge = self._railway.graph_service.get_closest_edge_on_grid(click.world_pos, self._camera.scale)
         train_id = closest_edge is not None and self._railway.trains.get_train_on_edge(closest_edge)
         if train_id:
             if self._state.selected_train is not None and self._state.selected_train.id == train_id:

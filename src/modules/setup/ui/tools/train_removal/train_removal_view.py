@@ -9,7 +9,7 @@ class TrainRemovalView(SetupView):
         if world_pos is None:
             return
         self._state.preview.clear()
-        closest_edge = world_pos.closest_edge(self._railway.graph.edges, self._camera.scale)
+        closest_edge = self._railway.graph_service.get_closest_edge_on_grid(world_pos, self._camera.scale)
         if closest_edge and self._railway.stations.is_edge_platform(closest_edge):
             self._state.preview.edge = closest_edge
             self._state.preview.action = SetupAction.REMOVE

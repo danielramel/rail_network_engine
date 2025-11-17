@@ -1,4 +1,5 @@
 from core.config.color import Color
+from core.models.geometry.edge import Edge
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.utils import draw_track, draw_node, draw_signal, draw_station, draw_train, draw_dotted_line
@@ -95,7 +96,7 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             path = self._railway.signalling.get_path_preview(self._state.selected_signal, signal)
             self._state.preview.path = path if path is not None else []
             
-        closest_edge = world_pos.closest_edge(self._railway.graph.edges, self._camera.scale)
+        closest_edge = self._railway.graph_service.get_closest_edge_on_grid(world_pos, self._camera.scale)
         train_id = closest_edge is not None and self._railway.trains.get_train_on_edge(closest_edge)
         if train_id:
             self._state.preview.train_id = train_id

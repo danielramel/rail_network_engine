@@ -5,6 +5,7 @@ from core.models.geometry.edge import Edge
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from core.models.railway.railway_system import RailwaySystem
+from math import floor
 
 class GraphService:
     def __init__(self, railway: 'RailwaySystem'):
@@ -53,38 +54,29 @@ class GraphService:
                 return True
             if not preferred_nr and self._railway.graph.has_node_attr(pos, 'signal') and self._railway.graph.degree_at(pos) > 1:
                 return True
-            
             return False
         
         def should_stop_at_edge(edge: Edge) -> bool:
             if is_initial_platform != self._railway.stations.is_edge_platform(edge):
                 return True
-            
             if preferred_nr:
                 return False
-            
             if self._railway.graph.get_edge_attr(edge, 'length') != initial_track_length:
                 return True
-            
             if self._railway.graph.get_edge_attr(edge, 'speed') != initial_track_speed:
                 return True
-            
             return False
-        
-        
-        edges: set[Edge] = set()
-        nodes: set[Position] = set()
-        stack: deque[Pose] = deque()
-
-        a, b = edge
-        
-        edges.add(edge)
-        
         
         initial_track_length = self._railway.graph.get_edge_attr(edge, 'length')
         initial_track_speed = self._railway.graph.get_edge_attr(edge, 'speed')
         is_initial_platform = self._railway.stations.is_edge_platform(edge)
-
+        
+        edges: set[Edge] = set()
+        nodes: set[Position] = set()
+        stack: deque[Pose] = deque()
+        edges.add(edge)
+        
+        a, b = edge
         pose_to_a = Pose.from_positions(b, a)
         pose_to_b = Pose.from_positions(a, b)
 
@@ -128,3 +120,17 @@ class GraphService:
             pass
 
         return len(edges) >= PLATFORM_LENGTH, edges
+    
+    
+    def get_closest_edge_on_grid(self, world_pos: Position, camera_scale) -> Edge | None:        
+        min_edge = None
+        min_distance = GRID_SIZE / 3 / camera_scale + 1
+        for edge in world_pos.get_grid_edges():
+            if not self._railway.graph.has_edge(edge):
+                continue
+            distance = world_pos.distance_to_edge(edge)
+            if distance <= min_distance:
+                min_distance = distance
+                min_edge = edge
+
+        return min_edge

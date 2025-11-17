@@ -1,6 +1,6 @@
 from dataclasses import dataclass, asdict
-from core.config.settings import BULLDOZE_SENSITIVITY, GRID_SIZE, STATION_RECT_SIZE
-from math import hypot
+from core.config.settings import GRID_SIZE, STATION_RECT_SIZE
+from math import hypot, floor
 
 from typing import TYPE_CHECKING
 
@@ -37,6 +37,7 @@ class Position:
         return Direction(signum(other.x - self.x), signum(other.y - self.y))
     
     def heuristic_to(self, other: 'Position') -> float:
+        #TODO improve
         """Calculate the heuristic cost to another position using Chebyshev distance."""
         return max(abs(self.x - other.x), abs(self.y - other.y))
 
@@ -45,16 +46,6 @@ class Position:
         snapped_x = round(self.x / GRID_SIZE) * GRID_SIZE
         snapped_y = round(self.y / GRID_SIZE) * GRID_SIZE
         return Position(snapped_x, snapped_y)
-    
-    def is_near_grid(self, camera_scale: float) -> bool:
-        """Check if this point is near a grid intersection."""
-        mod_x = self.x % GRID_SIZE
-        mod_y = self.y % GRID_SIZE
-        sensitivity = BULLDOZE_SENSITIVITY * 1.2 / camera_scale**0.7
-        return (
-            (mod_x < sensitivity or mod_x > GRID_SIZE - sensitivity) and 
-            (mod_y < sensitivity or mod_y > GRID_SIZE - sensitivity)
-        )
     
     def station_rect_overlaps(self, other: 'Position') -> bool:
         """Check if station rectangles at this point and another point overlap."""
@@ -73,47 +64,49 @@ class Position:
             abs(center.x - self.x) * 2 < w + 1 and
             abs(center.y - self.y) * 2 < h + 1
         )
-    def closest_point_to_edge(self, edge: 'Edge') -> 'Position':
-        """Get the closest point on the line segment defined by edge to this point."""
-        a, b = edge
-        # Line vector
-        dx, dy = b.x - a.x, b.y - a.y
-        length_squared = dx*dx + dy*dy
-
-        t = ((self.x - a.x) * dx + (self.y - a.y) * dy) / length_squared
-        t = max(0, min(1, t))  # clamp to segment
-        
-        # Closest point on the segment
-        cx, cy = a.x + t * dx, a.y + t * dy
-        return Position(cx, cy)
-
-    def intersects_line(self, edge: 'Edge', camera_scale: float) -> tuple[bool, float]:
-        """
-        Check if this point is within 'BULLDOZE_SENSITIVITY' pixels of line segment ab.
-        Returns (is_within_sensitivity, distance).
-        """
-        closest_point = self.closest_point_to_edge(edge)
-        dist = self.distance_to(closest_point)
-        
-        return dist <= BULLDOZE_SENSITIVITY / camera_scale, dist
-
-    def closest_edge(self, edges: list['Edge'], camera_scale: float) -> 'Edge | None':
-        """Get the closest edge from a list of edges to this point."""
-        closest_edge = None
-        closest_dist = float('inf')
-        
-        for edge in edges:
-            is_within, dist = self.intersects_line(edge, camera_scale)
-            if is_within and dist < closest_dist:
-                closest_dist = dist
-                closest_edge = edge
-        
-        return closest_edge
-    
     
     def distance_to(self, other: 'Position') -> float:
         """Calculate the Euclidean distance to another position."""
         return hypot(self.x - other.x, self.y - other.y)
+    
+    def get_grid_edges(self) -> tuple['Edge']:
+        from core.models.geometry.edge import Edge
+        """Get the edges of the grid cell containing this position."""
+        cell_x = floor(self.x / GRID_SIZE) * GRID_SIZE
+        cell_y = floor(self.y / GRID_SIZE) * GRID_SIZE
+
+        corners = (
+            Position(cell_x, cell_y),
+            Position(cell_x + GRID_SIZE, cell_y),
+            Position(cell_x + GRID_SIZE, cell_y + GRID_SIZE),
+            Position(cell_x, cell_y + GRID_SIZE),
+        )
+
+        return (
+            Edge(corners[0], corners[1]),
+            Edge(corners[1], corners[2]),
+            Edge(corners[2], corners[3]),
+            Edge(corners[3], corners[0]),
+            Edge(corners[0], corners[2]),
+            Edge(corners[1], corners[3]),
+        )
+    
+    def distance_to_edge(self, edge: 'Edge') -> float:
+        a, b = edge.a, edge.b
+        ax, ay = a.x, a.y
+        bx, by = b.x, b.y
+        px, py = self.x, self.y
+        vx, vy = bx - ax, by - ay
+        wx, wy = px - ax, py - ay
+        c1 = wx * vx + wy * vy
+        if c1 <= 0:
+            return ((px - ax)**2 + (py - ay)**2)**0.5
+        c2 = vx * vx + vy * vy
+        if c2 <= c1:
+            return ((px - bx)**2 + (py - by)**2)**0.5
+        t = c1 / c2
+        cx, cy = ax + t * vx, ay + t * vy
+        return ((px - cx)**2 + (py - cy)**2)**0.5
     
     def move(self, dx: int, dy: int) -> 'Position':
         """Return a new Position moved by dx and dy."""

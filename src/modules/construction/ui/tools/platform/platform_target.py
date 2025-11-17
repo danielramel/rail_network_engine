@@ -4,6 +4,7 @@ from enum import Enum
 from typing import Optional, Set, Any
 from core.config.settings import PLATFORM_LENGTH, GRID_SIZE
 from core.models.geometry import Position
+from core.models.geometry.edge import Edge
 from core.models.railway.railway_system import RailwaySystem
 class PlatformTargetType(Enum):
     NONE = 0
@@ -18,8 +19,8 @@ class PlatformTarget:
     is_valid: bool = False
 
 def find_platform_target(railway: RailwaySystem, world_pos: Position, camera_scale) -> PlatformTarget:
-    closest_edge = world_pos.closest_edge(railway.graph.edges, camera_scale)
-    if closest_edge is None:
+    closest_edge = railway.graph_service.get_closest_edge_on_grid(world_pos, camera_scale)
+    if closest_edge is None or not railway.graph.has_edge(closest_edge):
         return PlatformTarget(kind=PlatformTargetType.NONE, closest_edge=None)
 
     if railway.stations.is_edge_platform(closest_edge):

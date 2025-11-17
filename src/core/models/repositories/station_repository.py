@@ -71,6 +71,8 @@ class StationRepository:
         return self._railway.graph.get_node_attr(pos, 'station')
     
     def is_edge_platform(self, edge: Edge) -> bool:
+        if not self._railway.graph.has_edge(edge):
+            return False
         return self._railway.graph.has_edge_attr(edge, 'station')
     
     def get_platform_from_edge(self, edge: Edge) -> frozenset[Edge]:
