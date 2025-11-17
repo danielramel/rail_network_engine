@@ -9,7 +9,7 @@ from modules.simulation.ui.simulation_controller import SimulationController
 from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
 from core.models.time import Time
-from modules.simulation.ui.panel.simulation_panel import SimulationPanel
+from modules.simulation.ui.panel.simulation_panel import TrainPanel
 
 class SimulationMode(UIController, FullScreenUIComponent):
     elements: tuple[ClickableUIComponent]
@@ -18,7 +18,7 @@ class SimulationMode(UIController, FullScreenUIComponent):
         self.elements = (
             TimeControlButtons(self.state.time_control, graphics.screen),
             TimeDisplay(self.state.time, graphics.screen),
-            SimulationPanel(self.state, graphics.screen, railway.schedules),
+            TrainPanel(self.state, graphics.screen, railway.schedules),
             CameraController(graphics.camera),
             SimulationController(railway, self.state, graphics),
         )
