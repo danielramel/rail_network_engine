@@ -28,8 +28,12 @@ class SignallingService:
     def free(self, edges: list[Edge]):
         for edge in edges:
             self._railway.graph.set_edge_attr(edge, 'locked', False)
-            self._railway.graph.remove_node_attr(edge.a, 'locked')
+            self._railway.graph.remove_node_attr(edge.a, 'locked')                
             self._railway.graph.remove_node_attr(edge.b, 'locked')
+            
+            if self._railway.signals.has_signal_with_pose_at(Pose.from_positions(*edge)):
+                signal = self._railway.signals.get(edge.b)
+                signal.disconnect()
             
         
     def is_edge_locked(self, edge: Edge) -> bool:
@@ -123,7 +127,7 @@ class SignallingService:
         path = []
         while True:
             visited.add(pose.position)
-            if self._railway.signals.has_signal_at(pose.position):
+            if self._railway.signals.has_signal_with_pose_at(pose):
                 signal = self._railway.signals.get(pose.position)
                 if signal.next_signal is None:
                     self.lock_path(path)
