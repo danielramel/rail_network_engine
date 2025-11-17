@@ -30,6 +30,7 @@ class Train:
     def set_timetable(self, timetable: TimeTable) -> None:
         self.timetable = timetable
         
+        
     def tick(self):
         if not self._is_live:
             return
@@ -43,26 +44,27 @@ class Train:
         if self.speed == 0.0:
             return
 
-        
-        edge_length = self._railway.graph.get_edge_attr(self.path[PLATFORM_LENGTH-1], 'length')
+        edge_length = self._railway.graph.get_edge_attr(self.path[self.occupied_edge_count-1], 'length')
         travel_progress = self.speed/edge_length/FPS
         edge_progress = round(self.edge_progress + travel_progress, 6)
         if edge_progress < 1:
             if self.edge_progress < 0.5 <= edge_progress:
-                edge = self.path[0]
+                edge = self.path.pop(0)
                 self._railway.signalling.free([edge])
             self.edge_progress = edge_progress
             return
         
-        next_edge_length = self._railway.graph.get_edge_attr(self.path[PLATFORM_LENGTH], 'length')
+        next_edge_length = self._railway.graph.get_edge_attr(self.path[self.occupied_edge_count], 'length')
         edge_progress -= 1
         edge_progress = edge_progress * edge_length / next_edge_length
         self.edge_progress = edge_progress
-        self.path.pop(0)
 
+    @property
+    def occupied_edge_count(self) -> int:
+        return PLATFORM_LENGTH if self.edge_progress < 0.5 else PLATFORM_LENGTH - 1
         
     def get_occupied_edges(self) -> tuple[Edge]:
-        return tuple(self.path[:PLATFORM_LENGTH])
+        return tuple(self.path[:self.occupied_edge_count])
 
     
     def occupies_edge(self, edge: Edge) -> bool:
@@ -71,9 +73,6 @@ class Train:
     @property
     def is_live(self) -> bool:
         return self._is_live
-    
-    def set_start_callback(self, callback) -> None:
-        self._on_start = callback
     
     def start(self) -> None:
         self._is_live = True
@@ -86,12 +85,12 @@ class Train:
         self.timetable = None
         
     def get_locomotive_pose(self) -> Pose:
-        edge = self.path[PLATFORM_LENGTH - 1]
+        edge = self.path[self.occupied_edge_count - 1]
         return Pose.from_positions(edge.a, edge.b)
     
     def get_max_safe_speed(self) -> float:
         # sum physical lengths of remaining edges
-        remaining_edges = self.path[PLATFORM_LENGTH-1:]
+        remaining_edges = self.path[self.occupied_edge_count-1:]
         if not remaining_edges:
             return 0.0
         distance = (1 - self.edge_progress) * self._railway.graph.get_edge_attr(remaining_edges[0], 'length')

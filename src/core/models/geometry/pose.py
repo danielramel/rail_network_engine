@@ -13,6 +13,8 @@ class Pose(NamedTuple):
         """Create a Pose given two positions."""
         return cls(current, previous.direction_to(current))
     
+    #TODO from edge
+    
     def get_neighbors_in_direction(self) -> list[tuple['Pose', float]]:
         neighbors = []
         for dir in self.direction.get_valid_turns():

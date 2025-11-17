@@ -41,8 +41,8 @@ def draw_train(surface: pygame.Surface, train: Train, camera: Camera, action: TR
         draw_occupied_edge(surface, edges[-1].a, edges[-1].b, camera, color, 0.0, edge_progress)
         
     else:
-        draw_occupied_edge(surface, edges[1].a, edges[1].b, camera, color, edge_progress-0.5, edge_progress)
-        for edge in edges[2:-1]:
+        draw_occupied_edge(surface, edges[0].a, edges[0].b, camera, color, edge_progress-0.5, edge_progress)
+        for edge in edges[1:-1]:
             draw_occupied_edge(surface, edge.a, edge.b, camera, color, edge_progress - 0.5, edge_progress)
         draw_occupied_edge(surface, edges[-1].a, edges[-1].b, camera, color, edge_progress-0.5, edge_progress)
     

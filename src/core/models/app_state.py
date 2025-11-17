@@ -10,7 +10,7 @@ class ViewMode(Enum):
     
 class AppState:
     def __init__(self) -> None:
-        self._mode: ViewMode = ViewMode.CONSTRUCTION
+        self._mode: ViewMode = ViewMode.SETUP
         self.callback: Optional[Callable[[ViewMode], None]] = None
         self.time = Time(0)
     
