@@ -38,7 +38,7 @@ class Train:
         if self.speed > max_safe_speed:
             self.speed = max(max_safe_speed, 0.0)
         else:
-            speed_with_acc = self.speed + (self.acceleration/FPS * (1 - (self.speed / (self.max_speed/3.6))))
+            speed_with_acc = self.speed + (self.acceleration/FPS)
             self.speed = min(max_safe_speed, speed_with_acc, self.max_speed/3.6)
             
         if self.speed == 0.0:

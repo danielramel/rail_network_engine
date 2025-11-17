@@ -128,10 +128,12 @@ class SignallingService:
             visited.add(pose.position)
             if self._railway.signals.has_signal_with_pose_at(pose):
                 signal = self._railway.signals.get(pose.position)
-                if signal.next_signal is None:
-                    self.lock_path(path)
-                    return path, signal    
-                    
+                self.lock_path(path)
+                while signal.next_signal is not None:
+                    path.extend(signal.path)
+                    signal = signal.next_signal
+                return path, signal
+                
             neighbors = self._railway.graph_service.get_connections_from_pose(pose)
             if len(neighbors) == 0:
                 raise RuntimeError("No signal found.")
