@@ -13,13 +13,6 @@ class SignallingService:
     def __init__(self, railway: 'RailwaySystem'):
         self._railway = railway
         
-    # def free_edge(self, edge: Edge) -> None:
-    #     self._railway.graph.set_edge_attr(edge, 'locked', False)
-    #     self._railway.graph.set_node_attr(edge.b, 'locked', False)
-    #     if self._railway.signals.has_signal_with_pose_at(Pose.from_positions(*edge)):
-    #         signal = self._railway.signals.get(edge.b)
-    #         signal.disconnect()
-        
     def lock_path(self, edges: list[Edge]):
         for edge in edges:
             self._railway.graph.set_edge_attr(edge, 'locked', True)
@@ -28,7 +21,7 @@ class SignallingService:
     def free(self, edges: list[Edge]):
         for edge in edges:
             self._railway.graph.set_edge_attr(edge, 'locked', False)
-            self._railway.graph.remove_node_attr(edge.a, 'locked')                
+            self._railway.graph.remove_node_attr(edge.a, 'locked')     
             self._railway.graph.remove_node_attr(edge.b, 'locked')
             
             if self._railway.signals.has_signal_with_pose_at(Pose.from_edge(edge)):
@@ -120,7 +113,7 @@ class SignallingService:
         for pose in poses[1:]:
             self._railway.graph.set_node_attr(pose.position, 'locked', True)
 
-    def set_inital_train_path(self, start_pose: Pose) -> tuple[list[Edge], Optional[Signal]]:
+    def get_initial_path(self, start_pose: Pose) -> tuple[list[Edge], Optional[Signal]]:
         visited = set[Position]()
         pose = start_pose
         path = []
@@ -128,7 +121,6 @@ class SignallingService:
             visited.add(pose.position)
             if self._railway.signals.has_signal_with_pose_at(pose):
                 signal = self._railway.signals.get(pose.position)
-                self.lock_path(path)
                 while signal.next_signal is not None:
                     path.extend(signal.path)
                     signal = signal.next_signal

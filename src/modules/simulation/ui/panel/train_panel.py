@@ -47,6 +47,13 @@ class TrainPanel(Panel):
                 (self.startup_button.centerx - label_surface.get_width() // 2,
                  self.startup_button.centery - label_surface.get_height() // 2)
             )
+            pygame.draw.rect(self._surface, Color.GREY, self.reverse, border_radius=5)
+            direction_label = self.instruction_font.render("Reverse (R)", True, Color.BLACK)
+            self._surface.blit(
+                direction_label,
+                (self.reverse.centerx - direction_label.get_width() // 2,
+                    self.reverse.centery - direction_label.get_height() // 2)
+            )
             return
 
         speed_text = f"Speed: {train.speed*3.6:.1f} km/h"
@@ -73,22 +80,13 @@ class TrainPanel(Panel):
              self.schedule_button.centery - schedule_text.get_height() // 2)
         )
 
-
-        pygame.draw.rect(self._surface, Color.GREY, self.reverse, border_radius=5)
-        direction_label = self.instruction_font.render("Reverse (R)", True, Color.BLACK)
-        self._surface.blit(
-            direction_label,
-            (self.reverse.centerx - direction_label.get_width() // 2,
-                self.reverse.centery - direction_label.get_height() // 2)
-        )
-
         button_color = Color.DARKGREY if train.speed != 0.0 else Color.GREY
-        pygame.draw.rect(self._surface, button_color, self.shutdown_button, border_radius=5)
+        pygame.draw.rect(self._surface, button_color, self.stop_button, border_radius=5)
         label_surface = self.instruction_font.render("Shut Down", True, Color.BLACK)
         self._surface.blit(
             label_surface,
-            (self.shutdown_button.centerx - label_surface.get_width() // 2,
-             self.shutdown_button.centery - label_surface.get_height() // 2)
+            (self.stop_button.centerx - label_surface.get_width() // 2,
+             self.stop_button.centery - label_surface.get_height() // 2)
         )
         
     def _on_click(self, event: Event):
@@ -99,9 +97,9 @@ class TrainPanel(Panel):
             self._on_set_schedule_clicked()
         elif not train.is_live and self.startup_button.collidepoint(*event.screen_pos):
             train.start()
-        elif train.is_live and train.speed == 0.0 and self.reverse.collidepoint(*event.screen_pos):
-            pass  # TODO: Implement reverse direction logic
-        elif train.is_live and train.speed == 0.0 and self.shutdown_button.collidepoint(*event.screen_pos):
+        elif not train.is_live and self.reverse.collidepoint(*event.screen_pos):
+            train.reverse()
+        elif train.is_live and self.stop_button.collidepoint(*event.screen_pos):
             train.shutdown()
 
     def _on_set_schedule_clicked(self):
@@ -120,8 +118,8 @@ class TrainPanel(Panel):
         self._train.set_timetable(schedule.create_timetable(start_time))
         
     def _calculate_layout(self):
-        self.startup_button = pygame.Rect(self._rect.centerx - 60, self._rect.bottom - 85, 120, 30)
-        self.schedule_button = self.startup_button
-        self.shutdown_button = pygame.Rect(self._rect.centerx + 60, self._rect.bottom - 45, 120, 30)
+        self.schedule_button = pygame.Rect(self._rect.centerx - 60, self._rect.bottom - 85, 120, 30)
+        self.startup_button = pygame.Rect(self._rect.centerx + 60, self._rect.bottom - 45, 120, 30)
+        self.stop_button = self.startup_button
         self.reverse = pygame.Rect(self._rect.centerx - 180, self._rect.bottom - 45, 120, 30)
         self.close_button = pygame.Rect(self._rect.right - 30, self._rect.top + 10, 20, 20)

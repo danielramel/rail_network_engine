@@ -21,6 +21,7 @@ class Signal:
         self._subscribers = []
         
     def disconnect(self) -> None:
+        # TODO figure out if this shuold be possible
         self.next_signal = None
         self.path = []
             

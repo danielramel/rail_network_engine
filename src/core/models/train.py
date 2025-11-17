@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 class Train:
     id : int
     path : list[Edge]
-    edge_progress : float = 0.0
+    edge_progress : float = 0.25
     speed : float = 0.0  # in m/s
     acceleration : float = 1.2  # in m/s²
     max_speed : int  =  120  # in km/h
@@ -30,6 +30,16 @@ class Train:
     def set_timetable(self, timetable: TimeTable) -> None:
         self.timetable = timetable
         
+    def reverse(self) -> None:
+        if self.edge_progress < 0.5:
+            for edge in self.path[self.occupied_edge_count:]:
+                self._railway.signalling.free([edge])
+            
+            self.edge_progress = 0.5 - self.edge_progress
+            self.path = [edge.reversed() for edge in self.path[self.occupied_edge_count-1::-1]]
+        else:
+            raise NotImplementedError("Reversing a train that is past the halfway point of an edge is not implemented.")
+        
         
     def tick(self):
         if not self._is_live:
@@ -44,27 +54,27 @@ class Train:
         if self.speed == 0.0:
             return
 
-        edge_length = self._railway.graph.get_edge_attr(self.path[self.train_edge_count-1], 'length')
+        edge_length = self._railway.graph.get_edge_attr(self.path[self.occupied_edge_count-1], 'length')
         travel_progress = self.speed/edge_length/FPS
-        edge_progress = round(self.edge_progress + travel_progress, 6)
+        edge_progress = self.edge_progress + travel_progress
         if edge_progress < 1:
             if self.edge_progress < 0.5 <= edge_progress:
                 edge = self.path.pop(0)
                 self._railway.signalling.free([edge])
-            self.edge_progress = edge_progress
+            self.edge_progress = round(edge_progress, 6)
             return
         
-        next_edge_length = self._railway.graph.get_edge_attr(self.path[self.train_edge_count], 'length')
+        next_edge_length = self._railway.graph.get_edge_attr(self.path[self.occupied_edge_count], 'length')
         edge_progress -= 1
         edge_progress = edge_progress * edge_length / next_edge_length
-        self.edge_progress = edge_progress
+        self.edge_progress = round(edge_progress, 6)
 
     @property
-    def train_edge_count(self) -> int:
+    def occupied_edge_count(self) -> int:
         return PLATFORM_LENGTH if self.edge_progress < 0.5 else PLATFORM_LENGTH - 1
         
     def get_occupied_edges(self) -> tuple[Edge]:
-        return tuple(self.path[:self.train_edge_count])
+        return tuple(self.path[:self.occupied_edge_count])
 
     
     def occupies_edge(self, edge: Edge) -> bool:
@@ -76,7 +86,8 @@ class Train:
     
     def start(self) -> None:
         self._is_live = True
-        path, signal = self._railway.signalling.set_inital_train_path(self.get_locomotive_pose())
+        path, signal = self._railway.signalling.get_initial_path(self.get_locomotive_pose())
+        self._railway.signalling.lock_path(path)
         self.path += path
         signal.subscribe(self.signal_turned_green_ahead)
         
@@ -85,12 +96,12 @@ class Train:
         self.timetable = None
         
     def get_locomotive_pose(self) -> Pose:
-        edge = self.path[self.train_edge_count - 1]
+        edge = self.path[self.occupied_edge_count - 1]
         return Pose.from_edge(edge)
     
     def get_max_safe_speed(self) -> float:
         # sum physical lengths of remaining edges
-        remaining_edges = self.path[self.train_edge_count-1:]
+        remaining_edges = self.path[self.occupied_edge_count-1:]
         if not remaining_edges:
             return 0.0
         distance = (1 - self.edge_progress) * self._railway.graph.get_edge_attr(remaining_edges[0], 'length')
