@@ -25,7 +25,7 @@ class PathService:
         
     def find_grid_path(self, start: Pose, end: Position) -> tuple[Position, ...]:
         """
-        Find optimal path using A* algorithm with 45° turn constraint.
+        Find optimal path using A* algorithm with 45° turn constraint. #TODO a* is not good here because of the bad heuristic
         """
         if self.is_blocked(end) or self.is_blocked(start.position):
             return ()
@@ -65,8 +65,9 @@ class PathService:
                     continue
                 
                 if self._railway.signals.has_signal_at(neighbor_pose.position):
+                    #TODO: enforece this on start_pose as well
                     signal = self._railway.signals.get(neighbor_pose.position)
-                    if neighbor_pose.direction not in (signal.direction , signal.direction.opposite()):
+                    if neighbor_pose.direction not in (signal.direction, signal.direction.opposite()):
                         continue
                 
                 if not self._railway.graph.has_edge(Edge(current_pose.position, neighbor_pose.position)):
