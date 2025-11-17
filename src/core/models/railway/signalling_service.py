@@ -125,16 +125,16 @@ class SignallingService:
         visited = set[Position]()
         pose = start_pose
         path = []
+        signal_index = 0
+        last_signal = None
         while True:
             visited.add(pose.position)
             if self._railway.signals.has_signal_with_pose_at(pose):
                 signal = self._railway.signals.get(pose.position)
                 if signal.next_signal is None:
                     self.lock_path(path)
-                    return path, signal
-                else:
-                    raise NotImplementedError("The next signal is already set, cannot create initial path.")
-
+                    return path, signal                    
+                    
             neighbors = self._railway.graph_service.get_connections_from_pose(pose)
             if len(neighbors) == 0:
                 raise RuntimeError("No signal found.")
