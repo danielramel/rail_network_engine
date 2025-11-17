@@ -44,7 +44,7 @@ class Train:
         if self.speed == 0.0:
             return
 
-        edge_length = self._railway.graph.get_edge_attr(self.path[self.occupied_edge_count-1], 'length')
+        edge_length = self._railway.graph.get_edge_attr(self.path[self.train_edge_count-1], 'length')
         travel_progress = self.speed/edge_length/FPS
         edge_progress = round(self.edge_progress + travel_progress, 6)
         if edge_progress < 1:
@@ -54,17 +54,17 @@ class Train:
             self.edge_progress = edge_progress
             return
         
-        next_edge_length = self._railway.graph.get_edge_attr(self.path[self.occupied_edge_count], 'length')
+        next_edge_length = self._railway.graph.get_edge_attr(self.path[self.train_edge_count], 'length')
         edge_progress -= 1
         edge_progress = edge_progress * edge_length / next_edge_length
         self.edge_progress = edge_progress
 
     @property
-    def occupied_edge_count(self) -> int:
+    def train_edge_count(self) -> int:
         return PLATFORM_LENGTH if self.edge_progress < 0.5 else PLATFORM_LENGTH - 1
         
     def get_occupied_edges(self) -> tuple[Edge]:
-        return tuple(self.path[:self.occupied_edge_count])
+        return tuple(self.path[:self.train_edge_count])
 
     
     def occupies_edge(self, edge: Edge) -> bool:
@@ -85,12 +85,12 @@ class Train:
         self.timetable = None
         
     def get_locomotive_pose(self) -> Pose:
-        edge = self.path[self.occupied_edge_count - 1]
-        return Pose.from_positions(edge.a, edge.b)
+        edge = self.path[self.train_edge_count - 1]
+        return Pose.from_edge(edge)
     
     def get_max_safe_speed(self) -> float:
         # sum physical lengths of remaining edges
-        remaining_edges = self.path[self.occupied_edge_count-1:]
+        remaining_edges = self.path[self.train_edge_count-1:]
         if not remaining_edges:
             return 0.0
         distance = (1 - self.edge_progress) * self._railway.graph.get_edge_attr(remaining_edges[0], 'length')

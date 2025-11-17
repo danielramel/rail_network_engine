@@ -31,7 +31,7 @@ class SignallingService:
             self._railway.graph.remove_node_attr(edge.a, 'locked')                
             self._railway.graph.remove_node_attr(edge.b, 'locked')
             
-            if self._railway.signals.has_signal_with_pose_at(Pose.from_positions(*edge)):
+            if self._railway.signals.has_signal_with_pose_at(Pose.from_edge(edge)):
                 signal = self._railway.signals.get(edge.b)
                 signal.disconnect()
             

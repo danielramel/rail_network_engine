@@ -1,8 +1,7 @@
 from typing import NamedTuple
 
 from core.config.settings import GRID_SIZE
-from core.models.geometry.direction import Direction
-from .position import Position
+from core.models.geometry import Edge, Direction, Position
 
 class Pose(NamedTuple):
     position: Position
@@ -13,7 +12,9 @@ class Pose(NamedTuple):
         """Create a Pose given two positions."""
         return cls(current, previous.direction_to(current))
     
-    #TODO from edge
+    @classmethod
+    def from_edge(cls, edge: Edge) -> 'Pose':
+        return cls.from_positions(edge.a, edge.b)
     
     def get_neighbors_in_direction(self) -> list[tuple['Pose', float]]:
         neighbors = []
