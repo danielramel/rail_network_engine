@@ -28,3 +28,6 @@ class UIController(UIComponent):
     def tick(self):
         for element in self.elements:
             element.tick()
+            
+    def contains(self, screen_pos):
+        return any(element.contains(screen_pos) for element in self.elements)

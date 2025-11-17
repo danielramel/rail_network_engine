@@ -1,4 +1,5 @@
 from core.graphics.graphics_context import GraphicsContext
+from modules.simulation.ui.panel.train_panel_manager import TrainPanelManager
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.models.ui_controller import UIController
@@ -9,16 +10,16 @@ from modules.simulation.ui.simulation_controller import SimulationController
 from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
 from core.models.time import Time
-from modules.simulation.ui.panel.simulation_panel import TrainPanel
 
 class SimulationMode(UIController, FullScreenUIComponent):
     elements: tuple[ClickableUIComponent]
     def __init__(self, railway: RailwaySystem, graphics: GraphicsContext, time: Time):
-        self.state = SimulationState(time)
+        self._state = SimulationState(time)
+        
         self.elements = (
-            TimeControlButtons(self.state.time_control, graphics.screen),
-            TimeDisplay(self.state.time, graphics.screen),
-            TrainPanel(self.state, graphics.screen, railway.schedules),
+            TimeControlButtons(self._state.time_control, graphics.screen),
+            TimeDisplay(self._state.time, graphics.screen),
+            TrainPanelManager(railway, self._state, graphics.screen, railway.schedules),
             CameraController(graphics.camera),
-            SimulationController(railway, self.state, graphics),
+            SimulationController(railway, self._state, graphics),
         )

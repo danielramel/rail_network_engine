@@ -1,18 +1,26 @@
 from core.models.schedule import Schedule
 import pygame
-from modules.simulation.models.simulation_state import SimulationState
+from core.models.train import Train
 from core.models.event import Event
 from modules.simulation.ui.panel.schedule_selector import ScheduleSelector
 from core.models.repositories.schedule_repository import ScheduleRepository
-from shared.ui.models.panel import Panel
 from core.config.color import Color
+from shared.ui.models.panel import Panel
 
 class TrainPanel(Panel):
-    def __init__(self, simulation_state: SimulationState, surface: pygame.Surface, schedule_repository: ScheduleRepository):
-        self._state = simulation_state
+    def __init__(self, train: Train, surface: pygame.Surface, index: int, schedule_repository: ScheduleRepository):
+        self._train = train
         self._select_schedule_window = None
         self._schedule_repository = schedule_repository
-        super().__init__(surface)
+        self._index = index
+        #right side panel, stacked vertically
+        rect = pygame.Rect(
+            surface.get_width() - 420,
+            20 + index * 180,
+            400,
+            160
+        )
+        super().__init__(surface, rect)
 
         self.startup_button = pygame.Rect(
             self._rect.centerx - 60,
@@ -48,11 +56,8 @@ class TrainPanel(Panel):
 
 
     def render(self, screen_pos):
-        train = self._state.selected_train
-        if train is None:
-            return
-
         super().render(screen_pos)
+        train = self._train
 
         x_surface = self.instruction_font.render("X", True, Color.WHITE)
         self._surface.blit(
@@ -112,16 +117,11 @@ class TrainPanel(Panel):
             (self.shutdown_button.centerx - label_surface.get_width() // 2,
              self.shutdown_button.centery - label_surface.get_height() // 2)
         )
-
-    def contains(self, screen_pos):
-        if self._state.selected_train is None:
-            return False
-        return super().contains(screen_pos)
-
+        
     def _on_click(self, event: Event):
-        train = self._state.selected_train
+        train = self._train
         if self.close_button.collidepoint(*event.screen_pos):
-            self._state.selected_train = None
+            pass
         elif train.is_live and self.schedule_button.collidepoint(*event.screen_pos):
             self._on_set_schedule_clicked()
         elif not train.is_live and self.startup_button.collidepoint(*event.screen_pos):
@@ -144,4 +144,4 @@ class TrainPanel(Panel):
 
     def _on_schedule_chosen(self, schedule: Schedule, start_time: int):
         self._select_schedule_window = None
-        self._state.selected_train.set_timetable(schedule.create_timetable(start_time))
+        self._train.set_timetable(schedule.create_timetable(start_time))

@@ -48,8 +48,23 @@ class SimulationState:
     selected_signal: Signal = None
     time_control: TimeControlState = TimeControlState()
     preview: SimulationPreview = field(default_factory=SimulationPreview)
-    selected_train: Train = None
+    _selected_trains: list[int] = field(default_factory=list)
+    selected_trains_callback: callable = None
     
     def tick(self) -> None:
         """Advance the current time by the specified number of seconds."""
         self.time.add(1 * self.time_control.mode.value / FPS)
+        
+
+    
+    def select_train(self, train_id: int) -> None:
+        if train_id not in self._selected_trains:
+            self._selected_trains.append(train_id)
+        if self.selected_trains_callback:
+            self.selected_trains_callback(train_id, True)
+            
+    def deselect_train(self, train_id: int) -> None:
+        if train_id in self._selected_trains:
+            self._selected_trains.remove(train_id)
+        if self.selected_trains_callback:
+            self.selected_trains_callback(train_id, False)
