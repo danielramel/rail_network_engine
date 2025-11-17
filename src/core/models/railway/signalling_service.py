@@ -120,13 +120,10 @@ class SignallingService:
         for pose in poses[1:]:
             self._railway.graph.set_node_attr(pose.position, 'locked', True)
 
-    def set_inital_train_path(self, train: Train) -> tuple[list[Edge], Optional[Signal]]:
-        start_pose = train.get_locomotive_pose()
+    def set_inital_train_path(self, start_pose: Pose) -> tuple[list[Edge], Optional[Signal]]:
         visited = set[Position]()
         pose = start_pose
         path = []
-        signal_index = 0
-        last_signal = None
         while True:
             visited.add(pose.position)
             if self._railway.signals.has_signal_with_pose_at(pose):

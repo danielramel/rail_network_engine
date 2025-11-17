@@ -48,6 +48,9 @@ class Train:
         travel_progress = self.speed/edge_length/FPS
         edge_progress = round(self.edge_progress + travel_progress, 6)
         if edge_progress < 1:
+            if self.edge_progress < 0.5 <= edge_progress:
+                edge = self.path[0]
+                self._railway.signalling.free([edge])
             self.edge_progress = edge_progress
             return
         
@@ -55,11 +58,12 @@ class Train:
         edge_progress -= 1
         edge_progress = edge_progress * edge_length / next_edge_length
         self.edge_progress = edge_progress
-        edge = self.path.pop(0)
-        self._railway.signalling.free([edge])
+        self.path.pop(0)
+
         
     def get_occupied_edges(self) -> tuple[Edge]:
         return tuple(self.path[:PLATFORM_LENGTH])
+
     
     def occupies_edge(self, edge: Edge) -> bool:
         return edge in self.get_occupied_edges()
@@ -73,7 +77,7 @@ class Train:
     
     def start(self) -> None:
         self._is_live = True
-        path, signal = self._railway.signalling.set_inital_train_path(self)
+        path, signal = self._railway.signalling.set_inital_train_path(self.get_locomotive_pose())
         self.path += path
         signal.subscribe(self.signal_turned_green_ahead)
         
