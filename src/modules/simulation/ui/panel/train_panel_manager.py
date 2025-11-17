@@ -24,7 +24,13 @@ class TrainPanelManager(UIController):
             
         else:
             train = self._railway.trains.get(train_id)
-            self.panels[train_id] = TrainPanel(train, self._surface, len(self.panels), self._schedule_repository)
+            self.panels[train_id] = TrainPanel(train, self._surface, len(self.panels), self._schedule_repository, self.panel_closed)
+            
+        for index, panel in enumerate(self.panels.values()):
+            panel.change_index(index)
+            
+    def panel_closed(self, train_id: int) -> None:
+        self._state.deselect_train(train_id)
             
     @property
     def elements(self) -> tuple[TrainPanel]:

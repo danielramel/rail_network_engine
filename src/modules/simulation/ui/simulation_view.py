@@ -61,9 +61,9 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             draw_station(self._surface, station, self._camera)
 
         for train in self._railway.trains.all():
-            if self._state.preview.train_id == train.id and self._state._selected_trains != train:
+            if self._state.preview.train_id == train.id and train.id not in self._state.selected_trains:
                 action = TRAINDRAWACTION.PREVIEWED
-            elif self._state._selected_trains == train:
+            elif train.id in self._state.selected_trains:
                 action = TRAINDRAWACTION.SELECTED
             elif train.timetable is not None:
                 action = TRAINDRAWACTION.SCHEDULED
