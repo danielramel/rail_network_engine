@@ -63,6 +63,11 @@ class StationRepository:
             self._railway.graph.remove_edge_attr(edge, 'station')
             self._railway.graph.remove_node_attr(edge.a, 'station')
             self._railway.graph.remove_node_attr(edge.b, 'station')
+            
+    def is_platform_at(self, pos: Position) -> bool:
+        if not self._railway.graph.has_node_at(pos):
+            return False
+        return self._railway.graph.has_node_attr(pos, 'station')
     
     def _remove_platform_from_station(self, station_id: str, edges: frozenset[Edge]) -> None:
         self._stations[station_id].platforms.remove(edges)

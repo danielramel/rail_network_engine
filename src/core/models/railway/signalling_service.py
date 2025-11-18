@@ -16,7 +16,6 @@ class SignallingService:
         for edge in edges:
             self._railway.graph.set_edge_attr(edge, 'locked', True)
             self._railway.graph.set_node_attr(edge.b, 'locked', True)
-            self._railway.graph.set_node_attr(edge.a, 'locked', True) 
             
     def unlock_path(self, edges: list[Edge]):
         for edge in edges:
@@ -50,19 +49,20 @@ class SignallingService:
 
         while priority_queue:
             _, current_pose = heapq.heappop(priority_queue)
+            
+            if current_pose == end:
+                path = [current_pose]
+
+                while current_pose in came_from:
+                    current_pose = came_from[current_pose]
+                    path.append(current_pose)
+
+                return tuple(reversed(path))
 
             for neighbor_pose, cost in current_pose.get_neighbors_in_direction():
                 if not self._railway.graph.has_edge(Edge(current_pose.position, neighbor_pose.position)):
                     continue
                 
-                if neighbor_pose == end:
-                    path = [neighbor_pose, current_pose]
-
-                    while current_pose in came_from:
-                        current_pose = came_from[current_pose]
-                        path.append(current_pose)
-
-                    return tuple(reversed(path))
                 
                 if self.is_node_locked(neighbor_pose.position):
                     continue

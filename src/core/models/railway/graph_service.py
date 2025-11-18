@@ -49,14 +49,14 @@ class GraphService:
             self._railway.graph.add_edge(a, b, speed=speed, length=length)
 
     def get_segment(self, edge: Edge, preferred_nr: int = None) -> tuple[frozenset[Position], frozenset[Edge]]:
-        def should_stop_at_node(pos: Position) -> bool:
+        def is_node_blocked(pos: Position) -> bool:
             if self.is_junction(pos):
                 return True
             if not preferred_nr and self._railway.graph.has_node_attr(pos, 'signal') and self._railway.graph.degree_at(pos) > 1:
                 return True
             return False
         
-        def should_stop_at_edge(edge: Edge) -> bool:
+        def is_edge_blocked(edge: Edge) -> bool:
             if is_initial_platform != self._railway.stations.is_edge_platform(edge):
                 return True
             if preferred_nr:
@@ -80,10 +80,10 @@ class GraphService:
         pose_to_a = Pose.from_positions(b, a)
         pose_to_b = Pose.from_positions(a, b)
 
-        if not should_stop_at_node(a):
+        if not is_node_blocked(a):
             stack.append(pose_to_a)
 
-        if not should_stop_at_node(b):
+        if not is_node_blocked(b):
             stack.append(pose_to_b)
 
         while stack:
@@ -94,7 +94,7 @@ class GraphService:
 
             for neighbor, direction in connections:
                 edge = Edge(pose.position, neighbor)
-                if should_stop_at_edge(edge):
+                if is_edge_blocked(edge):
                     continue
                 
                 edges.add(edge)
@@ -105,7 +105,7 @@ class GraphService:
                 if neighbor in nodes or neighbor in {s.position for s in stack}:
                     continue
                 
-                if should_stop_at_node(neighbor):
+                if is_node_blocked(neighbor):
                     continue
                 
                 stack.append(Pose(neighbor, direction))

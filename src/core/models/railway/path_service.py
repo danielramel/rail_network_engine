@@ -3,6 +3,8 @@ from core.models.geometry import Position, Pose, Edge
 import heapq
 
 from typing import TYPE_CHECKING
+
+from core.models.geometry.direction import Direction
 if TYPE_CHECKING:
     from core.models.railway.railway_system import RailwaySystem
 
@@ -11,42 +13,56 @@ class PathService:
     def __init__(self, railway: 'RailwaySystem'):
         self._railway = railway
 
-    def is_blocked(self, pos: Position) -> bool:
-        return self._railway.stations.is_within_any(pos)
-
-    def is_cutting_through_platform(self, current_state: Pose, neighbor_state: Pose) -> bool:
-        if neighbor_state.direction not in [(1, 1), (1, -1), (-1, 1), (-1, -1)]:
-            return False
-        # Check for corner cutting
-        corner1 = Position(current_state.position.x + neighbor_state.direction[0] * GRID_SIZE, current_state.position.y)
-        corner2 = Position(current_state.position.x, current_state.position.y + neighbor_state.direction[1] * GRID_SIZE)
-        return self._railway.stations.is_edge_platform(Edge(corner1, corner2))
 
         
     def find_grid_path(self, start: Pose, end: Position) -> tuple[Position, ...]:
-        """
-        Find optimal path using A* algorithm with 45° turn constraint. #TODO a* is not good here because of the bad heuristic
-        """
-        if self.is_blocked(end) or self.is_blocked(start.position):
-            return ()
+        def is_pose_blocked(pose: Pose) -> bool:
+            if self._railway.stations.is_within_any(pose.position):
+                return True
+            
+            if pose.direction == Direction(0,0):
+                return False
+            if self._railway.signals.has_signal_at(pose.position):
+                signal = self._railway.signals.get(pose.position)
+                if pose not in (signal.pose, signal.pose.opposite()):
+                    return True
+            return False
+        
+        def is_edge_blocked(edge: Edge) -> bool:
+            if self._railway.stations.is_platform_at(edge.a):
+                neighbors = self._railway.graph.neighbors(edge.a)
+                if len(neighbors) == 2 and edge.b not in neighbors:
+                    return True
+                
+            if self._railway.stations.is_platform_at(edge.b):
+                neighbors = self._railway.graph.neighbors(edge.b)
+                if len(neighbors) == 2 and edge.a not in neighbors:
+                    return True
+            
+            # check for diagonal platform cutting
+            if not edge.direction.is_diagonal():
+                return False
+
+            return self._railway.stations.is_edge_platform(Edge(Position(edge.a.x, edge.b.y), Position(edge.b.x, edge.a.y)))
+    
+            
+        if is_pose_blocked(start) or is_pose_blocked(Pose(end, Direction(0,0))):
+            raise ValueError("Start or end position is blocked")
 
         if start.position == end:
             return (start.position,)
 
-        priority_queue: list[tuple[float, float, Pose]] = []
+        priority_queue: list[tuple[float, Pose]] = []
         came_from: dict[Pose, Pose] = {}
         g_score: dict[Pose, float] = {}
         f_score: dict[Pose, float] = {}
 
         g_score[start] = 0
         f_score[start] = start.position.heuristic_to(end)
-        heapq.heappush(priority_queue, (f_score[start], g_score[start], start))
+        heapq.heappush(priority_queue, (f_score[start], start))
 
         while priority_queue:
-            current_f, current_g, current_pose = heapq.heappop(priority_queue)
-
-            if current_pose in g_score and current_g > g_score[current_pose]:
-                continue
+            _, current_pose = heapq.heappop(priority_queue)
 
             if current_pose.position == end:
                 path = [current_pose.position]
@@ -58,24 +74,11 @@ class PathService:
                 return tuple(reversed(path))
 
             for neighbor_pose, cost in current_pose.get_neighbors_in_direction():
-                if self.is_blocked(neighbor_pose.position):
+                if is_pose_blocked(neighbor_pose):
                     continue
                 
-                if self.is_cutting_through_platform(current_pose, neighbor_pose):
-                    continue
-                
-                if self._railway.signals.has_signal_at(neighbor_pose.position):
-                    #TODO: enforece this on start_pose as well
-                    signal = self._railway.signals.get(neighbor_pose.position)
-                    if neighbor_pose.direction not in (signal.direction, signal.direction.opposite()):
-                        continue
-                
-                if not self._railway.graph.has_edge(Edge(current_pose.position, neighbor_pose.position)):
-                    platform1 = self._railway.graph.has_node_at(current_pose.position) and self._railway.stations.get_platform_at(current_pose.position)
-                    platform2 = self._railway.graph.has_node_at(neighbor_pose.position) and self._railway.stations.get_platform_at(neighbor_pose.position)
-                    if platform1 or platform2 and platform1 != platform2:
-                        continue
-                    
+                if is_edge_blocked(Edge(current_pose.position, neighbor_pose.position)):
+                    continue                    
 
                 tentative_g_score = g_score[current_pose] + cost
 
@@ -84,6 +87,6 @@ class PathService:
                     g_score[neighbor_pose] = tentative_g_score
                     f_score[neighbor_pose] = tentative_g_score + neighbor_pose.position.heuristic_to(end)
 
-                    heapq.heappush(priority_queue, (f_score[neighbor_pose], g_score[neighbor_pose], neighbor_pose))
+                    heapq.heappush(priority_queue, (f_score[neighbor_pose], neighbor_pose))
 
         return ()  # No path found

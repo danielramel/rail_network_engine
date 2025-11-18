@@ -34,6 +34,9 @@ class Pose(NamedTuple):
             "direction": self.direction.to_dict()
         }
         
+    def opposite(self) -> 'Pose':
+        return Pose(self.position, self.direction.opposite())
+        
     @classmethod
     def from_dict(cls, data: dict) -> 'Pose':
         return cls(
