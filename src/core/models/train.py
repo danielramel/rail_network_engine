@@ -71,6 +71,7 @@ class Train:
 
     @property
     def occupied_edge_count(self) -> int:
+        #TODO: in case of different track length this needs to be updated
         return PLATFORM_LENGTH if self.edge_progress < 0.5 else PLATFORM_LENGTH - 1
         
     def get_occupied_edges(self) -> tuple[Edge]:

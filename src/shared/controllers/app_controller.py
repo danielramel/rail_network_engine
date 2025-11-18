@@ -18,18 +18,19 @@ from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 
 class AppController(UIController, FullScreenUIComponent):
     def __init__(self, screen: pygame.Surface):
-        self._graphics = GraphicsContext(screen, Camera())
         self._railway = RailwaySystem()
-        self._app_state = AppState()
+        filename = self._mock_load()
+        self._app_state = AppState(filename)
+        
+        self._graphics = GraphicsContext(screen, Camera())
         self._last_mouse_down_pos: Position | None = None
         
-        self._mock_load()
         
         self.elements: list[ClickableUIComponent] = [
             TimeTableButton(screen, self._railway),
             ZoomButton(screen, self._graphics.camera),
-            LoadButton(screen, self._railway),
-            SaveButton(screen, self._railway),
+            LoadButton(screen, self._railway, self._app_state),
+            SaveButton(screen, self._railway, self._app_state),
             ModeSelectorButtons(screen, self._app_state),
             ModeStrategy(self._app_state, self._railway, self._graphics)
         ]
@@ -58,8 +59,13 @@ class AppController(UIController, FullScreenUIComponent):
             
             
     def _mock_load(self):
+        import sys
         import json
-        filename = "C:/Users/lemar/elte/szakdolgozat/simulator/maps/30jolampak.json"
+        if len(sys.argv) < 2:
+            return None
+        filename = sys.argv[1]
         with open(filename, 'r', encoding='utf-8') as f:
             data = json.loads(f.read())
             self._railway.from_dict(data)
+            
+        return filename

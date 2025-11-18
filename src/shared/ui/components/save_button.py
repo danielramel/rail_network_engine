@@ -9,21 +9,24 @@ from shared.ui.models.rectangle import RectangleUIComponent
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 from core.models.event import Event
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
+from core.models.app_state import AppState
+from shared.ui.utils.popups import alert
 
 
 class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent):
-    def __init__(self, surface: pygame.Surface, railway: RailwaySystem):
+    def __init__(self, surface: pygame.Surface, railway: RailwaySystem, app_state: AppState) -> None:
         self._icon = IconLoader().get_icon(ICON_PATHS["SAVE"], BUTTON_SIZE)
         rect = pygame.Rect(200, BUTTON_SIZE//5, BUTTON_SIZE, BUTTON_SIZE)
         super().__init__(rect, surface)
         self._railway = railway
+        self._app_state = app_state
         self._shortcuts = {
             (pygame.K_s, True): self.save_game
         }
-
+        
     def _on_click(self, event: Event) -> bool:        
         if event.is_left_click:
-            self.save_game()
+            self.save_game_dialog()
 
     def render(self, screen_pos: Position) -> None:
         pygame.draw.rect(self._surface, Color.BLACK, self._rect, border_radius=10)
@@ -33,6 +36,16 @@ class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
         pygame.draw.rect(self._surface, Color.WHITE, self._rect, 2, border_radius=10)
         
     def save_game(self):
+        if self._app_state.filename is not None:
+            data = self._railway.to_dict()
+            import json
+            with open(self._app_state.filename, 'w') as f:
+                json.dump(data, f, indent=4)
+            alert(f"Game saved to {self._app_state.filename}.")
+        else:
+            self.save_game_dialog()
+        
+    def save_game_dialog(self):
         data = self._railway.to_dict()
         
         import tkinter as tk
@@ -54,3 +67,5 @@ class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
 
         finally:
             root.destroy()
+            self._app_state.filename = filename
+            alert(f"Game saved to {self._app_state.filename}.")

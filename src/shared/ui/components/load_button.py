@@ -1,5 +1,6 @@
 import pygame
 from core.config.paths import ICON_PATHS
+from core.models.app_state import AppState
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.icon_loader import IconLoader
 from core.models.geometry.position import Position
@@ -12,12 +13,12 @@ from core.models.event import Event
 
 
 class LoadButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent):
-    def __init__(self, surface: pygame.Surface, railway: RailwaySystem):
+    def __init__(self, surface: pygame.Surface, railway: RailwaySystem, app_state: AppState):
         rect = pygame.Rect(200+BUTTON_SIZE + BUTTON_SIZE//5, BUTTON_SIZE//5, BUTTON_SIZE, BUTTON_SIZE)
         self._icon = IconLoader().get_icon(ICON_PATHS["LOAD"], BUTTON_SIZE)
         super().__init__(rect, surface)
         self._railway = railway
-
+        self._app_state = app_state
         # define shortcut here after method exists
         self._shortcuts = {
             (pygame.K_l, True): self.load_game_ui
@@ -57,3 +58,4 @@ class LoadButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
             messagebox.showerror("Load error", str(e))
         finally:
             root.destroy()
+            self._app_state.filename = filename
