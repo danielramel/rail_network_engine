@@ -37,10 +37,8 @@ class Position:
         return Direction(signum(other.x - self.x), signum(other.y - self.y))
     
     def heuristic_to(self, other: 'Position') -> float:
-        """Use octile distance as heuristic for A* pathfinding."""
-        dx = abs(self.x - other.x) / GRID_SIZE
-        dy = abs(self.y - other.y) / GRID_SIZE
-        return (2**0.5 - 1) * min(dx, dy) + max(dx, dy)
+        """Use chebysev distance as heuristic for A* pathfinding."""
+        return max(abs(self.x - other.x), abs(self.y - other.y)) / GRID_SIZE
 
 
     def snap_to_grid(self) -> 'Position':
