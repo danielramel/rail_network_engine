@@ -18,14 +18,14 @@ class Pose(NamedTuple):
     def from_edge(cls, edge: Edge) -> 'Pose':
         return cls.from_positions(edge.a, edge.b)
     
-    def get_neighbors_in_direction(self) -> list[tuple['Pose', float]]:
+    def get_neighbors_in_direction(self) -> list['Pose']:
         neighbors = []
         for dir in self.direction.get_valid_turns():
             nx = self.position.x + dir.x * GRID_SIZE
             ny = self.position.y + dir.y * GRID_SIZE
             new_state = Pose(Position(nx, ny), dir)
 
-            neighbors.append((new_state, dir.get_cost()))
+            neighbors.append(new_state)
         return neighbors
     
     def opposite(self) -> 'Pose':

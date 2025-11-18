@@ -107,7 +107,6 @@ class GraphService:
     
     
     def calculate_platform_preview(self, edge: Edge) -> tuple[bool, frozenset[Edge]]:    
-        # TODO check for platform corner cutting
         if self._railway.graph.get_edge_attr(edge, 'length') != 50:
             raise ValueError("Platform can only start on 50 length track segments")
         
@@ -133,6 +132,9 @@ class GraphService:
 
             if not self._railway.graph.has_edge(edge) or self._railway.stations.is_edge_platform(edge):
                 continue
+            
+            # corner cutting
+            
             
             edges.add(edge)
 

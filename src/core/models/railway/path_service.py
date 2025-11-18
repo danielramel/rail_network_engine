@@ -72,13 +72,14 @@ class PathService:
 
                 return tuple(reversed(path))
 
-            for neighbor_pose, cost in current_pose.get_neighbors_in_direction():
+            for neighbor_pose in current_pose.get_neighbors_in_direction():
                 if is_pose_blocked(neighbor_pose):
                     continue
                 
                 if is_edge_blocked(Edge(current_pose.position, neighbor_pose.position)):
                     continue                    
-
+                
+                cost = 1.0 if current_pose.direction == neighbor_pose.direction else 1.01 # slight penalty for turning
                 tentative_g_score = g_score[current_pose] + cost
 
                 if neighbor_pose not in g_score or tentative_g_score < g_score[neighbor_pose]:
