@@ -10,13 +10,19 @@ from modules.timetable.stylesheets.schedule_editor_stylesheet import (
     ADD_BUTTON_STYLE, REMOVE_BUTTON_STYLE
 )
 from core.models.railway.railway_system import RailwaySystem
+from core.models.schedule import Schedule
 
 class ScheduleEditorDialog(QDialog):
-    def __init__(self, parent, railway: RailwaySystem):
+    def __init__(self, parent, railway: RailwaySystem, schedule: Schedule = None):
         self.selected_row = None
         self._railway = railway
+        self._editing_schedule = schedule
         super().__init__(parent)
         self._init_layout()
+        
+        # If editing an existing schedule, populate the fields
+        if schedule is not None:
+            self.set_data(schedule)
         
     def get_data(self) -> dict:
         """Collect schedule data from the dialog, ignoring arrival and departure times."""
@@ -49,6 +55,55 @@ class ScheduleEditorDialog(QDialog):
 
         return schedule_data
 
+    def set_data(self, schedule: Schedule):
+        """Populate the dialog fields from an existing schedule."""
+        # Set basic fields
+        self.code_edit.setText(schedule.code)
+        color_index = self.color_combo.findText(schedule.color)
+        if color_index >= 0:
+            self.color_combo.setCurrentIndex(color_index)
+        
+        # Set time fields
+        first_hours = schedule.first_train // 60
+        first_mins = schedule.first_train % 60
+        self.first_train_time_edit.setTime(QTime(first_hours, first_mins))
+        
+        last_hours = schedule.last_train // 60
+        last_mins = schedule.last_train % 60
+        self.last_train_time_edit.setTime(QTime(last_hours, last_mins))
+        
+        # Set frequency
+        freq_index = self.freq_combo.findText(str(schedule.frequency))
+        if freq_index >= 0:
+            self.freq_combo.setCurrentIndex(freq_index)
+        
+        # Clear existing rows (the 2 default rows)
+        while self.stations_table.rowCount() > 0:
+            self.stations_table.removeRow(0)
+        
+        # Add rows for each stop in the schedule
+        for i, stop in enumerate(schedule.stops):
+            self.add_empty_station_row(i)
+            
+            # Set the station
+            station_combo = self.stations_table.cellWidget(i, 1)
+            station_index = station_combo.findData(stop['station'].id)
+            if station_index >= 0:
+                station_combo.setCurrentIndex(station_index)
+            
+            # Set travel time (skip first station)
+            if i > 0 and stop.get('travel_time') is not None:
+                travel_spinbox = self.stations_table.cellWidget(i, 2)
+                if travel_spinbox:
+                    travel_spinbox.setValue(stop['travel_time'])
+            
+            # Set stop time (skip last station)
+            if i < len(schedule.stops) - 1 and stop.get('stop_time') is not None:
+                stop_spinbox = self.stations_table.cellWidget(i, 3)
+                if stop_spinbox:
+                    stop_spinbox.setValue(stop['stop_time'])
+        
+        self.refresh_table()
         
     def add_row_clicked(self):
         row = self.stations_table.rowCount() if self.selected_row is None else self.selected_row
@@ -156,7 +211,8 @@ class ScheduleEditorDialog(QDialog):
     # Layout and UI initialization
 
     def _init_layout(self):
-        self.setWindowTitle("Add Schedule")
+        title = "Edit Schedule" if self._editing_schedule else "Add Schedule"
+        self.setWindowTitle(title)
         self.setMinimumSize(600, 800)
         
         layout = QFormLayout()

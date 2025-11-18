@@ -181,10 +181,7 @@ class TimetableWindow(QMainWindow):
 
     def edit_schedule(self, schedule_idx):
         schedule = self._railway.schedules.get(schedule_idx)
-        dialog = ScheduleEditorDialog(self, self._railway)
-
-        # Pre-population is TODO: current dialog supports only blank creation.
-        # Could be extended later to set existing values.
+        dialog = ScheduleEditorDialog(self, self._railway, schedule)
 
         def _on_finished(res: int):
             if res == QDialog.DialogCode.Rejected:
@@ -228,18 +225,6 @@ class TimetableWindow(QMainWindow):
 
     # ------------------------ Dialog data conversion ---------------------
     def _build_schedule_from_dialog(self, data: dict) -> Schedule:
-        """Convert raw dialog data (with travel/stop times) into a Schedule.
-
-        Dialog provides:
-          code, color (string)
-          first_train_time, last_train_time (HH:MM strings)
-          frequency (int minutes)
-          stops: list of dicts with id, travel_time, stop_time
-            - First stop: travel_time=None, stop_time=None
-            - Intermediate: both numbers
-            - Last: stop_time=None
-        We compute absolute arrival/departure for a reference first train.
-        """
         first_dep = self._hhmm_to_minutes(data['first_train_time'])
         last_dep = self._hhmm_to_minutes(data['last_train_time'])
 
@@ -263,10 +248,6 @@ class TimetableWindow(QMainWindow):
         )
         return schedule
     def _compute_times(self, schedule: Schedule) -> tuple[list[int | None], list[int | None]]:
-        """Derive arrival and departure times from travel/stop chain.
-        Returns (arrivals, departures) lists aligned with schedule.stops.
-        First arrival None, final departure None.
-        """
         arrivals: list[int | None] = []
         departures: list[int | None] = []
         current_dep = schedule.first_train
