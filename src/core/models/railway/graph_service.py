@@ -106,9 +106,22 @@ class GraphService:
         return frozenset(nodes), frozenset(edges)
     
     
-    def calculate_platform_preview(self, edge: Edge) -> tuple[bool, frozenset[Edge]]:    
+    def calculate_platform_preview(self, edge: Edge) -> tuple[bool, frozenset[Edge]]:
+        def is_edge_blocked(edge: Edge) -> bool:
+            if not self._railway.graph.has_edge(edge):
+                return True
+            if self._railway.stations.is_edge_platform(edge):
+                return True
+            if edge.is_diagonal() and self._railway.graph.has_edge(Edge(Position(edge.a.x, edge.b.y), Position(edge.b.x, edge.a.y))):
+                return True
+            return False
+            
+
         if self._railway.graph.get_edge_attr(edge, 'length') != 50:
             raise ValueError("Platform can only start on 50 length track segments")
+        
+        if is_edge_blocked(edge):
+            return False, frozenset([edge])
         
         edges: set[Edge] = set()
         stack: deque[Pose] = deque()
@@ -130,11 +143,8 @@ class GraphService:
             next_pose = pose.next_in_direction()
             edge = Edge(pose.position, next_pose.position)
 
-            if not self._railway.graph.has_edge(edge) or self._railway.stations.is_edge_platform(edge):
+            if is_edge_blocked(edge):
                 continue
-            
-            # corner cutting
-            
             
             edges.add(edge)
 

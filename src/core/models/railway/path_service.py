@@ -39,10 +39,10 @@ class PathService:
                     return True
             
             # check for diagonal platform cutting
-            if not edge.direction.is_diagonal():
-                return False
 
-            return self._railway.stations.is_edge_platform(Edge(Position(edge.a.x, edge.b.y), Position(edge.b.x, edge.a.y)))
+            if edge.is_diagonal() and self._railway.stations.is_edge_platform(Edge(Position(edge.a.x, edge.b.y), Position(edge.b.x, edge.a.y))):
+                return True
+            return False
     
             
         if is_pose_blocked(start) or is_pose_blocked(Pose(end, Direction(0,0))):

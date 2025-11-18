@@ -29,9 +29,6 @@ class Direction:
         }
         return VALID_TURNS[self]
     
-    def is_diagonal(self) -> bool:
-        return self.x != 0 and self.y != 0
-    
     def to_dict(self) -> dict:
         return {
             "x": self.x,

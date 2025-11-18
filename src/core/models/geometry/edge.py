@@ -41,6 +41,9 @@ class Edge:
         new_b = Position(self.b.x + direction.x * distance, self.b.y + direction.y * distance)
         return Edge(new_a, new_b)
     
+    def is_diagonal(self) -> bool:
+        return self.a.x != self.b.x and self.a.y != self.b.y
+    
     def to_dict(self) -> dict:
         return {
             "a": self.a.to_dict(),
