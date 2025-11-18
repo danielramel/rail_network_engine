@@ -16,8 +16,7 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
         self._state = simulation_state
         self._railway = railway
         self._camera = graphics.camera
-        
-        self._railway.signals.add_signals_to_dead_ends()
+
 
     def _on_click(self, click: Event) -> None:
         snapped = self._camera.screen_to_world(click.screen_pos).snap_to_grid()

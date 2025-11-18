@@ -5,7 +5,6 @@ from core.models.signal import Signal
 from core.models.geometry import Pose
 from typing import TYPE_CHECKING
 
-from core.models.train import Train
 if TYPE_CHECKING:
     from core.models.railway.railway_system import RailwaySystem
 
@@ -13,66 +12,59 @@ class SignallingService:
     def __init__(self, railway: 'RailwaySystem'):
         self._railway = railway
         
-    def lock_path(self, edges: list[Edge]):
+    def lock_path(self, edges: list[Edge]) -> None:
         for edge in edges:
             self._railway.graph.set_edge_attr(edge, 'locked', True)
-            self._railway.graph.set_node_attr(edge.b, 'locked', True) #dont look the very first node
-    
-    def free(self, edges: list[Edge]):
+            self._railway.graph.set_node_attr(edge.b, 'locked', True)
+            self._railway.graph.set_node_attr(edge.a, 'locked', True) 
+            
+    def unlock_path(self, edges: list[Edge]):
         for edge in edges:
             self._railway.graph.set_edge_attr(edge, 'locked', False)
-            self._railway.graph.remove_node_attr(edge.a, 'locked')     
-            self._railway.graph.remove_node_attr(edge.b, 'locked')
-            
-            if self._railway.signals.has_signal_with_pose_at(Pose.from_edge(edge)):
-                signal = self._railway.signals.get(edge.b)
-                signal.disconnect()
-            
+            self._railway.graph.set_node_attr(edge.b, 'locked', False)
+            self._railway.graph.set_node_attr(edge.a, 'locked', False)
+    
+    def passed(self, edge: Edge):
+        if self._railway.signals.has_signal_with_pose_at(Pose.from_edge(edge)):
+            signal = self._railway.signals.get(edge.b)
+            signal.passed()
+        
         
     def is_edge_locked(self, edge: Edge) -> bool:
         return self._railway.graph.get_edge_attr(edge, 'locked') is True
     
     def is_node_locked(self, node: Position) -> bool:
         return self._railway.graph.get_node_attr(node, 'locked') is True
-    
-    def disconnect_signal_at(self, position: Position) -> None:
-        signal = self._railway.signals.get(position)
-        for edge in signal.path:
-            self._railway.graph.set_edge_attr(edge, 'locked', False)
-            self._railway.graph.remove_node_attr(edge.b, 'locked') # the first node is never locked, so we can always use b
-            
-        signal.disconnect()
 
     def find_path(self, start: Pose, end: Pose) -> list[Pose] | None:
-        priority_queue: list[tuple[float, float, Pose]] = []
+        if start.position == end.position:
+            return None
+        
+        priority_queue: list[tuple[float, Pose]] = []
         came_from: dict[Pose, Pose] = {}
         g_score: dict[Pose, float] = {}
-        f_score: dict[Pose, float] = {}
 
         g_score[start] = 0
-        f_score[start] = start.position.heuristic_to(end.position)
-        heapq.heappush(priority_queue, (f_score[start], g_score[start], start))
+        f_score = start.position.heuristic_to(end.position)
+        heapq.heappush(priority_queue, (f_score, start))
 
         while priority_queue:
-            current_f, current_g, current_pose = heapq.heappop(priority_queue)
-
-            if current_pose in g_score and current_g > g_score[current_pose]:
-                continue
-
-            if current_pose == end:
-                path = [current_pose]
-
-                while current_pose in came_from:
-                    current_pose = came_from[current_pose]
-                    path.append(current_pose)
-
-                return tuple(reversed(path))
+            _, current_pose = heapq.heappop(priority_queue)
 
             for neighbor_pose, cost in current_pose.get_neighbors_in_direction():
                 if not self._railway.graph.has_edge(Edge(current_pose.position, neighbor_pose.position)):
                     continue
                 
-                if self._railway.graph.get_node_attr(neighbor_pose.position, 'locked'):
+                if neighbor_pose == end:
+                    path = [neighbor_pose, current_pose]
+
+                    while current_pose in came_from:
+                        current_pose = came_from[current_pose]
+                        path.append(current_pose)
+
+                    return tuple(reversed(path))
+                
+                if self.is_node_locked(neighbor_pose.position):
                     continue
                 
                 tentative_g_score = g_score[current_pose] + cost
@@ -80,9 +72,9 @@ class SignallingService:
                 if neighbor_pose not in g_score or tentative_g_score < g_score[neighbor_pose]:
                     came_from[neighbor_pose] = current_pose
                     g_score[neighbor_pose] = tentative_g_score
-                    f_score[neighbor_pose] = tentative_g_score + neighbor_pose.position.heuristic_to(end.position)
+                    f_score = tentative_g_score + neighbor_pose.position.heuristic_to(end.position)
 
-                    heapq.heappush(priority_queue, (f_score[neighbor_pose], g_score[neighbor_pose], neighbor_pose))
+                    heapq.heappush(priority_queue, (f_score, neighbor_pose))
 
         return None
 
@@ -105,13 +97,11 @@ class SignallingService:
             if self._railway.signals.has_signal_with_pose_at(pose):
                 signal = self._railway.signals.get(pose.position)
                 current_signal.connect(edges[current_signal_index:i], signal)
+                signal.subscribe_to_passage(lambda idx=current_signal_index, end=i: self.unlock_path(edges[idx:end]))
                 current_signal = signal
                 current_signal_index = i
                 
-        for edge in edges:
-            self._railway.graph.set_edge_attr(edge, 'locked', True)
-        for pose in poses[1:]:
-            self._railway.graph.set_node_attr(pose.position, 'locked', True)
+        self.lock_path(edges)
 
     def get_initial_path(self, start_pose: Pose) -> tuple[list[Edge], Optional[Signal]]:
         visited = set[Position]()
@@ -120,22 +110,22 @@ class SignallingService:
         while True:
             visited.add(pose.position)
             if self._railway.signals.has_signal_with_pose_at(pose):
-                signal = self._railway.signals.get(pose.position)
-                while signal.next_signal is not None:
-                    path.extend(signal.path)
-                    signal = signal.next_signal
-                return path, signal
+                return path, self._railway.signals.get(pose.position)
                 
             neighbors = self._railway.graph_service.get_connections_from_pose(pose)
-            if len(neighbors) == 0:
-                raise RuntimeError("No signal found.")
-            
-            if len(neighbors) > 1:
-                raise NotImplementedError("Branching paths are not supported in initial path generation.")
+            if len(neighbors) != 1:
+                raise ValueError("Branching or dead-end encountered. Cannot determine initial path.")
             
             connection = neighbors[0]
-            if connection.position in visited:
-                raise RuntimeError("No signal found.")
 
             path.append(Edge(pose.position, connection.position))
             pose = connection
+            
+    def occupy_segment(self, edge: Edge) -> None:
+        path1, signal1 = self.get_initial_path(Pose.from_edge(edge))
+        path2, signal2 = self.get_initial_path(Pose.from_edge(edge.reversed()))
+        
+        full_path = path1 + [edge] + path2
+        self.lock_path(full_path)
+        signal1.subscribe_to_passage(lambda: self.unlock_path(full_path))
+        signal2.subscribe_to_passage(lambda: self.unlock_path(full_path))

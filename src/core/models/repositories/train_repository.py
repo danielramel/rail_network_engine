@@ -23,7 +23,7 @@ class TrainRepository:
         train = Train(id, platform, self._railway)
 
         self._trains[id] = train
-        self._railway.signalling.lock_path(platform)
+        self._railway.signalling.occupy_segment(platform[0])
         return id
     
     def get_preview_train_on_platform(self, platform: frozenset[Edge]) -> Train:

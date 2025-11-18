@@ -33,7 +33,7 @@ class Train:
     def reverse(self) -> None:
         if self.edge_progress < 0.5:
             for edge in self.path[self.occupied_edge_count:]:
-                self._railway.signalling.free([edge])
+                self._railway.signalling.passed([edge])
             
             self.edge_progress = 0.5 - self.edge_progress
             self.path = [edge.reversed() for edge in self.path[self.occupied_edge_count-1::-1]]
@@ -60,7 +60,7 @@ class Train:
         if edge_progress < 1:
             if self.edge_progress < 0.5 <= edge_progress:
                 edge = self.path.pop(0)
-                self._railway.signalling.free([edge])
+                self._railway.signalling.passed(edge)
             self.edge_progress = round(edge_progress, 6)
             return
         
@@ -87,9 +87,8 @@ class Train:
     def start(self) -> None:
         self._is_live = True
         path, signal = self._railway.signalling.get_initial_path(self.get_locomotive_pose())
-        self._railway.signalling.lock_path(path)
         self.path += path
-        signal.subscribe(self.signal_turned_green_ahead)
+        signal.subscribe_to_connection(self.signal_turned_green_ahead)
         
     def shutdown(self) -> None:
         self._is_live = False
@@ -108,9 +107,7 @@ class Train:
         distance += sum(self._railway.graph.get_edge_attr(edge, 'length') for edge in remaining_edges[1:])
         distance = max(0, distance - 50)
         return (2 * distance * self.deceleration ) ** 0.5
-
-
     
     def signal_turned_green_ahead(self, path: list[Edge], signal: Signal) -> bool:
         self.path += path
-        signal.subscribe(self.signal_turned_green_ahead)
+        signal.subscribe_to_connection(self.signal_turned_green_ahead)

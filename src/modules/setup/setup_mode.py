@@ -14,6 +14,8 @@ from core.models.time import Time
 class SetupMode(FullScreenUIComponent, UIController):
     elements: tuple[UIComponent]
     def __init__(self, railway: RailwaySystem, graphics: GraphicsContext, time: Time):
+        railway.signals.add_signals_to_dead_ends()
+        
         self.state = SetupState(time)
         self.elements = (
             TimeDisplay(self.state.time, graphics.screen, modifiable=True),

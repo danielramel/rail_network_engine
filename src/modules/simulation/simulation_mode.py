@@ -14,6 +14,9 @@ from core.models.time import Time
 class SimulationMode(UIController, FullScreenUIComponent):
     elements: tuple[ClickableUIComponent]
     def __init__(self, railway: RailwaySystem, graphics: GraphicsContext, time: Time):
+        railway.signals.add_signals_to_dead_ends()
+        
+                
         self._state = SimulationState(time)
         
         self.elements = (
