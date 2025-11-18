@@ -14,7 +14,7 @@ from shared.ui.models.clickable_ui_component import ClickableUIComponent
 class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent):
     def __init__(self, surface: pygame.Surface, railway: RailwaySystem):
         self._icon = IconLoader().get_icon(ICON_PATHS["SAVE"], BUTTON_SIZE)
-        rect = pygame.Rect(BUTTON_SIZE//5, 700, BUTTON_SIZE, BUTTON_SIZE)
+        rect = pygame.Rect(200, BUTTON_SIZE//5, BUTTON_SIZE, BUTTON_SIZE)
         super().__init__(rect, surface)
         self._railway = railway
         self._shortcuts = {

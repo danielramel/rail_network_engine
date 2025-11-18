@@ -62,12 +62,12 @@ class TimeControlButtons(ClickableUIComponent, ShortcutUIComponent):
 
     def _get_buttons(self, surface: pygame.Surface) -> list[tuple[TimeControlMode, pygame.Rect]]:
         button_margin = BUTTON_SIZE // 5
-        _, h = surface.get_size()
+        w, h = surface.get_size()
         buttons = []
         for i, mode in enumerate(TimeControlMode):
             offset = (BUTTON_SIZE + button_margin) * i
             rect = pygame.Rect(
-                button_margin + offset,
+                (w - (4*BUTTON_SIZE+3*button_margin))//2 + offset,
                 h - BUTTON_SIZE - button_margin,
                 BUTTON_SIZE,
                 BUTTON_SIZE

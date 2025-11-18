@@ -13,7 +13,7 @@ from core.models.event import Event
 
 class LoadButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent):
     def __init__(self, surface: pygame.Surface, railway: RailwaySystem):
-        rect = pygame.Rect(BUTTON_SIZE // 5, 800, BUTTON_SIZE, BUTTON_SIZE)
+        rect = pygame.Rect(200+BUTTON_SIZE + BUTTON_SIZE//5, BUTTON_SIZE//5, BUTTON_SIZE, BUTTON_SIZE)
         self._icon = IconLoader().get_icon(ICON_PATHS["LOAD"], BUTTON_SIZE)
         super().__init__(rect, surface)
         self._railway = railway
