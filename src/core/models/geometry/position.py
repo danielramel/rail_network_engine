@@ -37,9 +37,7 @@ class Position:
         return Direction(signum(other.x - self.x), signum(other.y - self.y))
     
     def heuristic_to(self, other: 'Position') -> float:
-        """Calculate the heuristic cost to another position using Octile distance.
-        Formula: sqrt(2) * min(dx, dy) + abs(dx - dy) (simplified)
-        """
+        """Use octile distance as heuristic for A* pathfinding."""
         dx = abs(self.x - other.x) / GRID_SIZE
         dy = abs(self.y - other.y) / GRID_SIZE
         return (2**0.5 - 1) * min(dx, dy) + max(dx, dy)

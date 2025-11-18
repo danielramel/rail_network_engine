@@ -1,4 +1,3 @@
-from core.config.settings import GRID_SIZE
 from core.models.geometry import Position, Pose, Edge
 import heapq
 

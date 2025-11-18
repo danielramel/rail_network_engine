@@ -5,7 +5,6 @@ from core.models.geometry.edge import Edge
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from core.models.railway.railway_system import RailwaySystem
-from math import floor
 
 class GraphService:
     def __init__(self, railway: 'RailwaySystem'):
@@ -24,12 +23,11 @@ class GraphService:
     def junctions(self) -> list[Position]:
         return [n for n in self._railway.graph.nodes if self.is_junction(n)]
     
-    def get_connections_from_pose(self, pose: Pose, only_straight: bool = False) -> tuple[Pose]:
+    def get_connections_from_pose(self, pose: Pose) -> tuple[Pose]:
         connections = []
         for neighbor in self._railway.graph.neighbors(pose.position):
             direction = pose.position.direction_to(neighbor)
-            if only_straight and direction != pose.direction:
-                continue
+            
             if direction in pose.direction.get_valid_turns():
                 connections.append(Pose(neighbor, direction))
         return tuple(connections)
@@ -48,19 +46,17 @@ class GraphService:
         for a, b in zip(points[:-1], points[1:]):
             self._railway.graph.add_edge(a, b, speed=speed, length=length)
 
-    def get_segment(self, edge: Edge, preferred_nr: int = None) -> tuple[frozenset[Position], frozenset[Edge]]:
+    def get_segment(self, edge: Edge) -> tuple[frozenset[Position], frozenset[Edge]]:
         def is_node_blocked(pos: Position) -> bool:
             if self.is_junction(pos):
                 return True
-            if not preferred_nr and self._railway.graph.has_node_attr(pos, 'signal') and self._railway.graph.degree_at(pos) > 1:
+            if self._railway.graph.has_node_attr(pos, 'signal') and self._railway.graph.degree_at(pos) > 1:
                 return True
             return False
         
         def is_edge_blocked(edge: Edge) -> bool:
             if is_initial_platform != self._railway.stations.is_edge_platform(edge):
                 return True
-            if preferred_nr:
-                return False
             if self._railway.graph.get_edge_attr(edge, 'length') != initial_track_length:
                 return True
             if self._railway.graph.get_edge_attr(edge, 'speed') != initial_track_speed:
@@ -88,7 +84,7 @@ class GraphService:
 
         while stack:
             pose = stack.popleft()
-            connections = self.get_connections_from_pose(pose, only_straight=preferred_nr is not None)
+            connections = self.get_connections_from_pose(pose)
             
             nodes.add(pose.position)
 
@@ -98,9 +94,6 @@ class GraphService:
                     continue
                 
                 edges.add(edge)
-
-                if preferred_nr is not None and len(edges) >= preferred_nr:
-                    return frozenset(nodes), frozenset(edges)
                 
                 if neighbor in nodes or neighbor in {s.position for s in stack}:
                     continue
@@ -113,14 +106,45 @@ class GraphService:
         return frozenset(nodes), frozenset(edges)
     
     
-    def calculate_platform_preview(self, edge: Edge) -> tuple[bool, frozenset[Edge]]:
-        _, edges = self.get_segment(edge, preferred_nr=PLATFORM_LENGTH)
-        for edge in edges:
-            # TODO check for platform corner cutting
-            pass
+    def calculate_platform_preview(self, edge: Edge) -> tuple[bool, frozenset[Edge]]:    
+        # TODO check for platform corner cutting
+        if self._railway.graph.get_edge_attr(edge, 'length') != 50:
+            raise ValueError("Platform can only start on 50 length track segments")
+        
+        edges: set[Edge] = set()
+        stack: deque[Pose] = deque()
+        edges.add(edge)
+        
+        a, b = edge
+        pose_to_a = Pose.from_positions(b, a)
+        pose_to_b = Pose.from_positions(a, b)
 
-        return len(edges) >= PLATFORM_LENGTH, edges
-    
+        if not self.is_junction(a):
+            stack.append(pose_to_a)
+
+        if not self.is_junction(b):
+            stack.append(pose_to_b)
+
+        while stack:
+            pose = stack.popleft()
+            
+            next_pose = pose.next_in_direction()
+            edge = Edge(pose.position, next_pose.position)
+
+            if not self._railway.graph.has_edge(edge) or self._railway.stations.is_edge_platform(edge):
+                continue
+            
+            edges.add(edge)
+
+            if len(edges) >= PLATFORM_LENGTH:
+                return True, frozenset(edges)
+            
+            if self.is_junction(next_pose.position):
+                continue
+            
+            stack.append(next_pose)
+                
+        return False, frozenset(edges)    
     
     def get_closest_edge_on_grid(self, world_pos: Position, camera_scale) -> Edge | None:        
         min_edge = None

@@ -28,14 +28,25 @@ class Pose(NamedTuple):
             neighbors.append((new_state, dir.get_cost()))
         return neighbors
     
+    def opposite(self) -> 'Pose':
+        return Pose(self.position, self.direction.opposite())
+    
+    def next_in_direction(self) -> 'Pose':
+        return Pose(
+            Position(
+                self.position.x + self.direction.x * GRID_SIZE,
+                self.position.y + self.direction.y * GRID_SIZE
+            ),
+            self.direction
+        )
+    
+    
     def to_dict(self) -> dict:
         return {
             "position": self.position.to_dict(),
             "direction": self.direction.to_dict()
         }
         
-    def opposite(self) -> 'Pose':
-        return Pose(self.position, self.direction.opposite())
         
     @classmethod
     def from_dict(cls, data: dict) -> 'Pose':
