@@ -21,15 +21,11 @@ class SignalRepository:
             return None
         return self._graph.get_node_attr(pos, 'signal')
 
-    def add(self, pose: Pose) -> None:
+    def set(self, pose: Pose) -> None:
         self._graph.set_node_attr(pose.position, 'signal', Signal(pose))
 
     def remove(self, pos: Position) -> None:
         self._graph.remove_node_attr(pos, 'signal')
-
-    def toggle(self, pose: Pose) -> None:
-        self.remove(pose.position)
-        self.add(pose)
 
     def all(self) -> tuple[Signal]:
         return tuple(self._graph.all_nodes_with_attr('signal').values())
@@ -38,7 +34,7 @@ class SignalRepository:
         poses = self._graph.get_dead_end_poses()
         for pose in poses:
             if not self.has_signal_with_pose_at(pose):
-                self.add(pose)
+                self.set(pose) # overwrites existing signal if any
         
     
     def to_dict(self):
@@ -48,6 +44,6 @@ class SignalRepository:
     def from_dict(cls, graph: GraphAdapter, data: list[dict]) -> 'SignalRepository':
         instance = cls(graph)
         for pose in data:
-            instance.add(Pose.from_dict(pose))
+            instance.set(Pose.from_dict(pose))
             
         return instance

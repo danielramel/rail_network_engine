@@ -47,6 +47,9 @@ class GraphService:
         for node in list(self._railway.graph.nodes):
             if self._railway.graph.degree_at(node) == 0:
                 self._railway.graph.remove_node(node)
+            if self._railway.graph.degree_at(node) == 1 and self._railway.signals.has_signal_at(node):
+                self._railway.signals.remove(node)
+                self._railway.signals.set(Pose(node, (self._railway.graph.neighbors(node)[0]).direction_to(node)))
 
     def add_segment(self, points: list[Position], speed: int, length: int) -> None:
         for p in points:

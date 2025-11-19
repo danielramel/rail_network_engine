@@ -17,9 +17,8 @@ class SignalController(ConstructionToolController):
             return
 
         target = find_signal_target(self._railway, event.world_pos)
+        
+        if target.kind is SignalTargetType.INVALID:
+            return
 
-        if target.kind == SignalTargetType.TOGGLE:
-            self._railway.signals.toggle(target.pose)
-
-        elif target.kind == SignalTargetType.ADD:
-            self._railway.signals.add(target.pose)
+        self._railway.signals.set(target.pose)

@@ -12,7 +12,7 @@ class StationController(ConstructionToolController):
         super().__init__(view, railway, state, graphics.camera)
 
     def _on_click(self, event: Event) -> None:
-        if event.button == 3:
+        if event.is_right_click:
             if self._construction_state.moving_station is not None:
                 self._construction_state.moving_station = None
             else:
