@@ -2,6 +2,7 @@ from enum import Enum
 from typing import Callable, Optional
 
 from core.models.time import Time
+from shared.ui.utils.popups import alert
 
 class ViewMode(Enum):
     SETUP = 0
@@ -13,7 +14,7 @@ class AppState:
         self._mode: ViewMode = ViewMode.CONSTRUCTION
         self.filename: Optional[str] = filename
         self.callback: Optional[Callable[[ViewMode], None]] = None
-        self.time = Time(0)
+        self.time = Time()
     
     def subscribe(self, callback: Callable[[ViewMode], None]) -> None:
         self.callback = callback
@@ -25,6 +26,9 @@ class AppState:
     
     def switch_mode(self, new_mode: ViewMode) -> None:
         if self._mode == new_mode:
+            return
+        if new_mode == ViewMode.SIMULATION and self.time.current_time is None:
+            alert("Cannot switch to SIMULATION mode: Time is not set.")
             return
         self._mode = new_mode
         if self.callback is not None:
