@@ -9,15 +9,16 @@ from shared.ui.services.color_from_speed import color_from_speed
 from .lines import draw_dotted_line
 
         
-def draw_track(surface: pygame.Surface, edge: Edge, camera: Camera, edge_action: EdgeAction, length: int, speed: int = None) -> None:   
+def draw_track(surface: pygame.Surface, edge: Edge, camera: Camera, edge_action: EdgeAction, length: int, speed: int = None) -> None:
+    
     if edge_action in (EdgeAction.BULLDOZE, EdgeAction.INVALID_PLATFORM):
         draw_rail(surface, edge, camera, color=Color.RED, length=length)
     elif edge_action == EdgeAction.PLATFORM_SELECTED:
-        draw_platform(surface, edge, camera, length=length, color=Color.LIGHTBLUE)
+        draw_platform(surface, edge, camera, color=Color.LIGHTBLUE)
     elif edge_action == EdgeAction.PLATFORM:
-        draw_platform(surface, edge, camera, length=length, color=Color.PURPLE)
+        draw_platform(surface, edge, camera, color=Color.PURPLE)
     elif edge_action == EdgeAction.LOCKED_PLATFORM:
-        draw_platform(surface, edge, camera, length=length, color=Color.LIME)
+        draw_platform(surface, edge, camera, color=Color.LIME)
     elif edge_action == EdgeAction.LOCKED_PREVIEW:
         draw_rail(surface, edge, camera, color=Color.GREEN, length=length)
     elif edge_action == EdgeAction.LOCKED:
@@ -37,7 +38,7 @@ def draw_rail(surface: pygame.Surface, edge: Edge, camera: Camera, color: tuple[
     else:
         raise NotImplementedError("Edge length drawing not implemented for length:", length)
         
-def draw_platform(surface: pygame.Surface, edge: Edge, camera: Camera, length: int, color=Color.PURPLE):
+def draw_platform(surface: pygame.Surface, edge: Edge, camera: Camera, color=Color.PURPLE):
     a, b = camera.world_to_screen(edge)
     offset = int(2 * camera.scale)  # pixels of separation
     # Calculate direction vector

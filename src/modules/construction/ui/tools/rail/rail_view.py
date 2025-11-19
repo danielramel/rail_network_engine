@@ -1,9 +1,12 @@
 import pygame
+from core.models.geometry.edge import Edge
 from modules.construction.models.construction_view import ConstructionView
 from core.models.geometry import Position
 from core.config.color import Color
+from shared.ui.enums.edge_action import EdgeAction
 from shared.ui.utils import draw_node
 from shared.ui.services.color_from_speed import color_from_speed
+from shared.ui.utils.tracks import draw_rail, draw_track
 from .rail_target import find_rail_target, RailTargetType
 
 class RailView(ConstructionView):
@@ -35,7 +38,8 @@ class RailView(ConstructionView):
             return
 
         # path preview
-        screen_points = [tuple(self._camera.world_to_screen(Position(*pt))) for pt in target.found_path]
-        pygame.draw.aalines(self._surface, color, False, screen_points)
+        screen_points = [Position(*pt) for pt in target.found_path]
+        for line in zip(screen_points[:-1], screen_points[1:]):
+            draw_track(self._surface, Edge(*line), camera=self._camera, edge_action=EdgeAction.SPEED, length=self._state.track_length, speed=self._state.track_speed)
         draw_node(self._surface, target.snapped, self._camera, color=color)
         draw_node(self._surface, self._state.construction_anchor.position, self._camera, color=color)
