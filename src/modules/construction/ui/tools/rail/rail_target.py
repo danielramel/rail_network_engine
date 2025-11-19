@@ -1,16 +1,15 @@
 from dataclasses import dataclass
-from enum import Enum
+from enum import Enum, auto
 from typing import Optional, List
 from core.models.geometry import Position, Pose
 from core.models.railway.railway_system import RailwaySystem
 
 class RailTargetType(Enum):
-    NODE = 1
-    ANCHOR_SAME = 2
-    NO_PATH = 3
-    PATH = 4
-    BLOCKED = 5
-
+    NODE = auto()
+    ANCHOR_SAME = auto()
+    NO_PATH = auto()
+    PATH = auto()
+    BLOCKED = auto()
 @dataclass
 class RailTarget:
     kind: RailTargetType

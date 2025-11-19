@@ -19,6 +19,14 @@ class GraphService:
         outbound = pos.direction_to(neighbors[1])
         return outbound not in inbound.get_valid_turns()
     
+    def is_curve(self, pos: Position) -> bool:
+        if self._railway.graph.degree_at(pos) != 2:
+            return False
+        
+        neighbors = self._railway.graph.neighbors(pos)
+        return neighbors[0].direction_to(pos) != pos.direction_to(neighbors[1])
+        
+    
     @property
     def junctions(self) -> list[Position]:
         return [n for n in self._railway.graph.nodes if self.is_junction(n)]
@@ -140,7 +148,7 @@ class GraphService:
         while stack:
             pose = stack.popleft()
             
-            next_pose = pose.next_in_direction()
+            next_pose = pose.get_next_in_direction()
             edge = Edge(pose.position, next_pose.position)
 
             if is_edge_blocked(edge):

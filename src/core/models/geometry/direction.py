@@ -11,6 +11,9 @@ class Direction:
     def __iter__(self):
         return iter((self.x, self.y))
     
+    def is_zero(self) -> bool:
+        return self.x == 0 and self.y == 0
+    
     def get_valid_turns(self) -> list['Direction']:
         VALID_TURNS = {
             Direction(-1, -1): [Direction(-1, -1), Direction(-1, 0), Direction(0, -1)],

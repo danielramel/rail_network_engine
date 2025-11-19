@@ -31,7 +31,7 @@ class Pose(NamedTuple):
     def opposite(self) -> 'Pose':
         return Pose(self.position, self.direction.opposite())
     
-    def next_in_direction(self) -> 'Pose':
+    def get_next_in_direction(self) -> 'Pose':
         return Pose(
             Position(
                 self.position.x + self.direction.x * GRID_SIZE,

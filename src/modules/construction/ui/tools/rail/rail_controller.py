@@ -25,6 +25,10 @@ class RailController(ConstructionToolController):
         target = find_rail_target(self._railway, self._camera.screen_to_world(event.screen_pos), self._construction_state.construction_anchor)
 
         if target.kind == RailTargetType.NODE:
+            if self._railway.signals.has_signal_at(target.snapped):
+                signal = self._railway.signals.get(target.snapped)
+                self._construction_state.construction_anchor = signal.pose
+                return
             self._construction_state.construction_anchor = Pose(target.snapped, Direction(0, 0))
 
         elif target.kind == RailTargetType.ANCHOR_SAME:

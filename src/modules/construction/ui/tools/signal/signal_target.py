@@ -1,13 +1,12 @@
 from dataclasses import dataclass
-from enum import Enum
-from typing import Optional
+from enum import Enum, auto
 from core.models.geometry import Position, Pose
 from core.models.railway.railway_system import RailwaySystem
 
 class SignalTargetType(Enum):
-    INVALID = 0
-    TOGGLE = 2
-    ADD = 3
+    INVALID = auto()
+    TOGGLE = auto()
+    ADD = auto()
 
 @dataclass
 class SignalTarget:
@@ -18,7 +17,7 @@ class SignalTarget:
 def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
     snapped = pos.snap_to_grid()
 
-    if not railway.graph.has_node_at(snapped) or railway.graph_service.is_junction(snapped):
+    if not railway.graph.has_node_at(snapped) or railway.graph_service.is_junction(snapped) or railway.graph_service.is_curve(snapped):
         return SignalTarget(
             kind=SignalTargetType.INVALID,
             pose=Pose(position=snapped, direction=(1, 0)),
@@ -27,8 +26,6 @@ def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
 
     if railway.signals.has_signal_at(snapped):
         signal = railway.signals.get(snapped)
-        if railway.graph.degree_at(snapped) == 1:
-            pose = Pose(position=snapped, direction=signal.direction)
 
         current_direction = signal.direction
         neighbors = railway.graph.neighbors(snapped)

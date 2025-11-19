@@ -11,16 +11,12 @@ if TYPE_CHECKING:
 class PathService:
     def __init__(self, railway: 'RailwaySystem'):
         self._railway = railway
-
-
         
-    def find_grid_path(self, start: Pose, end: Position) -> tuple[Position, ...]:
+    def find_grid_path(self, start: Pose, end: Position) -> tuple[Position]:
         def is_pose_blocked(pose: Pose) -> bool:
             if self._railway.stations.is_within_any(pose.position):
                 return True
             
-            if pose.direction == Direction(0,0):
-                return False
             if self._railway.signals.has_signal_at(pose.position):
                 signal = self._railway.signals.get(pose.position)
                 if pose not in (signal.pose, signal.pose.opposite()):
@@ -43,9 +39,8 @@ class PathService:
             if edge.is_diagonal() and self._railway.stations.is_edge_platform(Edge(Position(edge.a.x, edge.b.y), Position(edge.b.x, edge.a.y))):
                 return True
             return False
-    
-            
-        if is_pose_blocked(start) or is_pose_blocked(Pose(end, Direction(0,0))):
+        
+        if is_pose_blocked(start) or self._railway.stations.is_within_any(end):
             raise ValueError("Start or end position is blocked")
 
         if start.position == end:
@@ -71,8 +66,14 @@ class PathService:
                     path.append(current_pose.position)
 
                 return tuple(reversed(path))
+            
+            if self._railway.signals.has_signal_at(current_pose.position):
+                neighbors = [current_pose.get_next_in_direction()]
+            else:
+                neighbors = current_pose.get_neighbors_in_direction()
+                
 
-            for neighbor_pose in current_pose.get_neighbors_in_direction():
+            for neighbor_pose in neighbors:
                 if is_pose_blocked(neighbor_pose):
                     continue
                 
