@@ -3,40 +3,27 @@ from core.models.geometry.direction import Direction
 from core.models.geometry.edge import Edge
 from core.models.geometry.pose import Pose
 from core.models.geometry.position import Position
-from typing import Optional
 
 @dataclass
 class Signal:
     pose: Pose
-    next_signal: Optional['Signal'] = None
+    next_signal: 'Signal' = None
     path: list[Edge] = field(default_factory=list)
-    _connected_subscribers: list[callable] = field(default_factory=list)
-    _passed_subscribers: list[callable] = field(default_factory=list)
+    _subscriber: callable = None
 
     def connect(self, path: list[Edge], signal: 'Signal') -> None:
         self.next_signal = signal
         self.path = path
-        for callback in self._connected_subscribers:
-            callback(path, signal)
-            
-        self._connected_subscribers = []
+        if self._subscriber is not None:
+            self._subscriber(path, signal)
+        self._subscriber = None
         
-    def subscribe_to_passage(self, callback: callable) -> None:
-        self._passed_subscribers.append(callback)
-        #TODO ask Zofia about naming
+    def subscribe(self, func: callable) -> None:
+        self._subscriber = func
         
-    def passed(self) -> None:
-        for callback in self._passed_subscribers:
-            callback()
-            
-        self._passed_subscribers = []
+    def train_passed(self) -> None:
         self.next_signal = None
         self.path = []
-            
-    def subscribe_to_connection(self, callback: callable) -> None:
-        self._connected_subscribers.append(callback)
-        if self.next_signal is not None:
-            callback(self.path, self.next_signal)
         
     @property
     def direction(self) -> Direction:

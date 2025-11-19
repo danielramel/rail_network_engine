@@ -16,9 +16,7 @@ class SetupCommonView(ClickableUIComponent, FullScreenUIComponent):
         self._camera = graphics.camera
         self._state = setup_state
 
-    def render(self, screen_pos: Position | None) -> None:
-        world_pos = None if screen_pos is None else self._camera.screen_to_world(screen_pos)
-        
+    def render(self, screen_pos: Position | None) -> None:        
         draw_grid(self._surface, self._camera)
         for edge, data in self._railway.graph.all_edges_with_data():
             speed = data.get('speed')
@@ -49,6 +47,5 @@ class SetupCommonView(ClickableUIComponent, FullScreenUIComponent):
             draw_train(self._surface, train, self._camera, TRAINDRAWACTION.SHUTDOWN)
 
         if self._state.preview.edge is not None and self._state.preview.action is SetupAction.ADD:
-            platform = self._railway.stations.get_platform_from_edge(self._state.preview.edge)
-            train = self._railway.trains.get_preview_train_on_platform(platform)
+            train = self._railway.trains.get_preview_train_on_platform_edge(self._state.preview.edge)
             draw_train(self._surface, train, self._camera, TRAINDRAWACTION.SHUTDOWN)

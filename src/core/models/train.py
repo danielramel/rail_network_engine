@@ -76,7 +76,6 @@ class Train:
         
     def get_occupied_edges(self) -> tuple[Edge]:
         return tuple(self.path[:self.occupied_edge_count])
-
     
     def occupies_edge(self, edge: Edge) -> bool:
         return edge in self.get_occupied_edges()
@@ -89,7 +88,7 @@ class Train:
         self._is_live = True
         path, signal = self._railway.signalling.get_initial_path(self.get_locomotive_pose())
         self.path += path
-        signal.subscribe_to_connection(self.signal_turned_green_ahead)
+        signal.subscribe(self.signal_turned_green_ahead)
         
     def shutdown(self) -> None:
         self._is_live = False
@@ -111,4 +110,4 @@ class Train:
     
     def signal_turned_green_ahead(self, path: list[Edge], signal: Signal) -> bool:
         self.path += path
-        signal.subscribe_to_connection(self.signal_turned_green_ahead)
+        signal.subscribe(self.signal_turned_green_ahead)

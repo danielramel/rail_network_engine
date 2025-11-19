@@ -24,10 +24,12 @@ class SignallingService:
             self._railway.graph.set_node_attr(edge.a, 'locked', False)
     
     def passed(self, edge: Edge):
-        if self._railway.signals.has_signal_with_pose_at(Pose.from_edge(edge)):
-            signal = self._railway.signals.get(edge.b)
-            signal.passed()
+        self._railway.graph.set_edge_attr(edge, 'locked', False)
+        self._railway.graph.set_node_attr(edge.a, 'locked', False)
         
+        if self._railway.signals.has_signal_with_pose_at(Pose.from_edge(edge)):
+            self._railway.signals.get(edge.b).train_passed()
+
         
     def is_edge_locked(self, edge: Edge) -> bool:
         return self._railway.graph.get_edge_attr(edge, 'locked') is True
@@ -98,7 +100,6 @@ class SignallingService:
             if self._railway.signals.has_signal_with_pose_at(pose):
                 signal = self._railway.signals.get(pose.position)
                 current_signal.connect(edges[current_signal_index:i], signal)
-                signal.subscribe_to_passage(lambda idx=current_signal_index, end=i: self.unlock_path(edges[idx:end]))
                 current_signal = signal
                 current_signal_index = i
                 
@@ -121,12 +122,3 @@ class SignallingService:
 
             path.append(Edge(pose.position, connection.position))
             pose = connection
-            
-    def occupy_segment(self, edge: Edge) -> None:
-        path1, signal1 = self.get_initial_path(Pose.from_edge(edge))
-        path2, signal2 = self.get_initial_path(Pose.from_edge(edge.reversed()))
-        
-        full_path = path1 + [edge] + path2
-        self.lock_path(full_path)
-        signal1.subscribe_to_passage(lambda: self.unlock_path(full_path))
-        signal2.subscribe_to_passage(lambda: self.unlock_path(full_path))

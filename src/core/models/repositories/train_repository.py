@@ -1,11 +1,9 @@
 from core.models.geometry.edge import Edge
-from core.models.geometry.pose import Pose
 from core.models.train import Train
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from core.models.railway.railway_system import RailwaySystem
-
 
 class TrainRepository:
     def __init__(self, railway: 'RailwaySystem') -> None:
@@ -17,24 +15,8 @@ class TrainRepository:
         self._next_id += 1
         return self._next_id
 
-    def add_to_platform(self, platform: frozenset[Edge]) -> int:
-        platform = [edge.ordered() for edge in sorted(platform)]
-        id = self._generate_id()
-        train = Train(id, platform, self._railway)
-
-        self._trains[id] = train
-        self._railway.signalling.occupy_segment(platform[0])
-        return id
-    
-    def get_preview_train_on_platform(self, platform: frozenset[Edge]) -> Train:
-        platform = [edge.ordered() for edge in sorted(platform)]
-        id = -1  # Preview trains have negative IDs
-        train = Train(id, platform, self._railway)
-        return train
-
     def remove(self, train_id: int) -> None:
-        if train_id in self._trains:
-            del self._trains[train_id]
+        del self._trains[train_id]
 
     def get_train_on_edge(self, edge: Edge) -> int | None:
         for train_id, train in self._trains.items():
@@ -47,3 +29,18 @@ class TrainRepository:
 
     def get(self, train_id: int) -> Train:
         return self._trains[train_id]
+    
+    def add_to_platform_edge(self, edge: Edge) -> int:
+        platform = [edge.ordered() for edge in sorted(self._railway.stations.get_platform_from_edge(edge))]
+        id = self._generate_id()
+        train = Train(id, platform, self._railway)
+
+        self._trains[id] = train
+        self._railway.signalling.lock_path(platform)
+        return id
+    
+    def get_preview_train_on_platform_edge(self, edge: Edge) -> Train:
+        platform = [edge.ordered() for edge in sorted(self._railway.stations.get_platform_from_edge(edge))]
+        id = -1  # Preview trains have negative IDs
+        train = Train(id, platform, self._railway)
+        return train
