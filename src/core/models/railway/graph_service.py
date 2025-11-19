@@ -40,7 +40,7 @@ class GraphService:
                 connections.append(Pose(neighbor, direction))
         return tuple(connections)
 
-    def remove_segment(self, nodes: list[Position], edges: list[Edge]) -> None:      
+    def remove_segment(self, edges: list[Edge]) -> None:      
         for edge in edges:
             self._railway.graph.remove_edge(edge)
 

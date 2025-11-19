@@ -28,6 +28,6 @@ class BulldozeController(ConstructionToolController):
             self._railway.stations.remove_platform_at(target.edge)
             return True
         elif target.kind == BulldozeTargetType.SEGMENT:
-            self._railway.graph_service.remove_segment(target.nodes, target.edges)
+            self._railway.graph_service.remove_segment(target.edges)
             return True
         return False
