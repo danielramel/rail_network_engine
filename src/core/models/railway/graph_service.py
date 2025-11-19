@@ -118,15 +118,14 @@ class GraphService:
         def is_edge_blocked(edge: Edge) -> bool:
             if not self._railway.graph.has_edge(edge):
                 return True
+            if self._railway.graph.get_edge_attr(edge, 'length') != 50:
+                return True
             if self._railway.stations.is_edge_platform(edge):
                 return True
             if edge.is_diagonal() and self._railway.graph.has_edge(Edge(Position(edge.a.x, edge.b.y), Position(edge.b.x, edge.a.y))):
                 return True
             return False
             
-
-        if self._railway.graph.get_edge_attr(edge, 'length') != 50:
-            raise ValueError("Platform can only start on 50 length track segments")
         
         if is_edge_blocked(edge):
             return False, frozenset([edge])

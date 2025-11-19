@@ -39,7 +39,7 @@ class PlatformController(ConstructionToolController):
 
         target = find_platform_target(self._railway, world_pos, self._camera.scale)
 
-        if target.kind in (PlatformTargetType.NONE, PlatformTargetType.EXISTING_PLATFORM):
+        if target.kind is PlatformTargetType.INVALID:
             return
 
         if not target.is_valid:
