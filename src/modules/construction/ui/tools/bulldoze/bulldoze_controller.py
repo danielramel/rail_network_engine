@@ -16,8 +16,7 @@ class BulldozeController(ConstructionToolController):
             self._construction_state.switch_tool(None)
             return True
         
-        world_pos = self._camera.screen_to_world(event.screen_pos)
-        target = find_bulldoze_target(self._railway, world_pos, self._camera.scale)
+        target = find_bulldoze_target(self._railway, event.world_pos, self._camera.scale)
         if target.kind == BulldozeTargetType.SIGNAL:
             self._railway.signals.remove(target.position)
             return True

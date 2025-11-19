@@ -19,7 +19,7 @@ class StationController(ConstructionToolController):
                 self._construction_state.switch_tool(None)
             return
 
-        target = find_station_target(self._railway, self._camera.screen_to_world(event.screen_pos), self._construction_state.moving_station)
+        target = find_station_target(self._railway, event.world_pos, self._construction_state.moving_station)
 
         # pick up a station if moving_station is None and mouse is over a station
         if not self._construction_state.moving_station and target.hovered_station_pos is not None:

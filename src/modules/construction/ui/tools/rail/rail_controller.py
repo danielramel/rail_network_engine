@@ -22,7 +22,7 @@ class RailController(ConstructionToolController):
                 self._construction_state.switch_tool(None)
             return
         
-        target = find_rail_target(self._railway, self._camera.screen_to_world(event.screen_pos), self._construction_state.construction_anchor)
+        target = find_rail_target(self._railway, event.world_pos, self._construction_state.construction_anchor)
 
         if target.kind == RailTargetType.NODE:
             if self._railway.signals.has_signal_at(target.snapped):

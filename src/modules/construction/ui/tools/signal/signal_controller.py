@@ -16,7 +16,7 @@ class SignalController(ConstructionToolController):
             self._construction_state.switch_tool(None)
             return
 
-        target = find_signal_target(self._railway, self._camera.screen_to_world(event.screen_pos))
+        target = find_signal_target(self._railway, event.world_pos)
 
         if target.kind == SignalTargetType.TOGGLE:
             self._railway.signals.toggle(target.pose)

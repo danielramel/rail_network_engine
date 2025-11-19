@@ -22,11 +22,10 @@ class PlatformController(ConstructionToolController):
                 self._construction_state.switch_tool(None)
             return
                 
-        world_pos = self._camera.screen_to_world(event.screen_pos)
         # if user is currently selecting a station for the platform
         if self._construction_state.platform_waiting_for_station:
             for station in self._railway.stations.all():
-                if world_pos.is_within_station_rect(station.position):
+                if event.world_pos.is_within_station_rect(station.position):
                     self._railway.stations.add_platform(station.id, self._construction_state.preview.edges)
                     break
             self._construction_state.platform_waiting_for_station = False
@@ -37,7 +36,7 @@ class PlatformController(ConstructionToolController):
             self._construction_state.switch_tool(None)
             return
 
-        target = find_platform_target(self._railway, world_pos, self._camera.scale)
+        target = find_platform_target(self._railway, event.world_pos, self._camera.scale)
 
         if target.kind is PlatformTargetType.INVALID:
             return
