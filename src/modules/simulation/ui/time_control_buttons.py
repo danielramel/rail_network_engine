@@ -37,7 +37,7 @@ class TimeControlButtons(ClickableUIComponent, ShortcutUIComponent):
     def _on_click(self, event: Event) -> bool:          
         for mode, btn in self.buttons:
             if btn.collidepoint(*event.screen_pos):
-                if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                if event.is_left_click:
                     self.time_control_state.mode = mode
                 return True
         return False

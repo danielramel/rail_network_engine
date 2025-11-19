@@ -15,7 +15,7 @@ class PlatformController(ConstructionToolController):
 
 
     def _on_click(self, event: Event) -> None:
-        if event.button == 3:
+        if event.is_right_click:
             if self._construction_state.platform_waiting_for_station:
                 self._construction_state.platform_waiting_for_station = False
             else:
