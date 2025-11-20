@@ -17,7 +17,7 @@ class TrainPanel(Panel):
         self._on_close_callback = on_close_callback
         
         self._param_ranges = {
-            'accel': (0.1, 2.0, 0.1),
+            'accel': (0.1, 2.0, 0.1), #TODO set everything to zero
             'speed': (50, 200, 10),
             'decel': (0.5, 3.0, 0.1)
         }

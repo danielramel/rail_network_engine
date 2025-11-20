@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
+from core.config.settings import Settings
 from core.models.geometry import Position, Edge, Pose
 from core.models.station import Station
 from shared.ui.enums.edge_action import EdgeAction
@@ -30,7 +31,7 @@ class ConstructionState:
     tool: ConstructionTool = ConstructionTool.RAIL
     construction_anchor: Pose | None = None
     track_speed: int = 120
-    track_length: int = 50
+    track_length: int = Settings.SHORT_SEGMENT_LENGTH
     moving_station: Optional[Station] = None
     preview: ConstructionPreview = field(default_factory=ConstructionPreview)
     platform_waiting_for_station: bool = False

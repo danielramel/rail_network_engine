@@ -4,7 +4,7 @@ from core.models.geometry.position import Position
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from core.config.color import Color
 from core.config.paths import ICON_PATHS
-from core.config.settings import BUTTON_SIZE
+from core.config.settings import Settings
 from core.config.keyboard_shortcuts import TIME_CONTROL_KEYS
 from modules.simulation.models.simulation_state import TimeControlMode, TimeControlState
 from core.models.event import Event
@@ -15,7 +15,7 @@ class TimeControlButtons(ClickableUIComponent, ShortcutUIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
     def __init__(self, time_control: TimeControlState, surface: pygame.Surface):
         self.icon_cache = {
-            mode: IconLoader().get_icon(ICON_PATHS[mode.name], BUTTON_SIZE)
+            mode: IconLoader().get_icon(ICON_PATHS[mode.name], Settings.BUTTON_SIZE)
             for mode in TimeControlMode
         }
         self.buttons = self._get_buttons(surface)
@@ -61,16 +61,16 @@ class TimeControlButtons(ClickableUIComponent, ShortcutUIComponent):
 
 
     def _get_buttons(self, surface: pygame.Surface) -> list[tuple[TimeControlMode, pygame.Rect]]:
-        button_margin = BUTTON_SIZE // 5
+        button_margin = Settings.BUTTON_SIZE // 5
         w, h = surface.get_size()
         buttons = []
         for i, mode in enumerate(TimeControlMode):
-            offset = (BUTTON_SIZE + button_margin) * i
+            offset = (Settings.BUTTON_SIZE + button_margin) * i
             rect = pygame.Rect(
-                (w - (4*BUTTON_SIZE+3*button_margin))//2 + offset,
-                h - BUTTON_SIZE - button_margin,
-                BUTTON_SIZE,
-                BUTTON_SIZE
+                (w - (4*Settings.BUTTON_SIZE+3*button_margin))//2 + offset,
+                h - Settings.BUTTON_SIZE - button_margin,
+                Settings.BUTTON_SIZE,
+                Settings.BUTTON_SIZE
             )
             buttons.append((mode, rect))
         return buttons

@@ -1,5 +1,5 @@
 from core.models.geometry import Edge
-from core.config.settings import FPS, PLATFORM_LENGTH
+from core.config.settings import Settings
 from core.models.geometry.pose import Pose
 from core.models.signal import Signal
 from core.models.timetable import TimeTable
@@ -11,26 +11,26 @@ if TYPE_CHECKING:
 class Train:
     id : int
     path : list[Edge]
+    _railway: 'RailwaySystem'
+    
+    _edge_distance : float = 0.0
     edge_progress : float = 0.25
     speed : float = 0.0  # in m/s
     max_speed : int  =  120  # in km/h
     acceleration : float = 1.2  # in m/s²
     deceleration : float = 1.4 # in m/s²
     timetable : TimeTable = None
-    _railway: 'RailwaySystem'
     _is_live : bool = False
     _is_shutting_down : bool = False
-    _target_speed: int
-    _target_distance: float
+    _target_speed: int = 0
+    _target_distance: float = 0.0
 
     def __init__(self, id: int, edges: list[Edge], railway: 'RailwaySystem'):
-        if len(edges) != PLATFORM_LENGTH:
+        if len(edges) != Settings.PLATFORM_LENGTH:
             raise ValueError("A train must occupy exactly PLATFORM_LENGTH edges.")
         self.id = id
         self.path = edges
         self._railway = railway
-        self._target_speed = 0
-        self._target_distance = 0.0
         
     def set_timetable(self, timetable: TimeTable) -> None:
         self.timetable = timetable
@@ -51,25 +51,22 @@ class Train:
             return
         
         if self._is_shutting_down:
-            self.speed = max(0.0, self.speed - self.deceleration/FPS)
+            self.speed = max(0.0, self.speed - self.deceleration/Settings.FPS)
             if self.speed == 0.0:
                 self._shutdown()
                 return
                 
         else:
             max_safe_speed = self.get_max_safe_speed()
-            if self.speed > max_safe_speed:
-                self.speed = max(max_safe_speed, 0.0)
-            else:
-                speed_with_acc = self.speed + (self.acceleration/FPS)
-                self.speed = min(max_safe_speed, speed_with_acc, self.max_speed/3.6)
+            speed_with_acc = self.speed + (self.acceleration/Settings.FPS)
+            self.speed = min(max_safe_speed, speed_with_acc, self.max_speed/3.6)
                 
             if self.speed == 0.0:
                 return
 
         edge_length = self._railway.graph.get_edge_attr(self.path[self.occupied_edge_count-1], 'length')
-        self._target_distance = max(0.0, self._target_distance - self.speed/FPS)
-        travel_progress = self.speed/edge_length/FPS
+        self._target_distance = max(0.0, self._target_distance - self.speed/Settings.FPS)
+        travel_progress = self.speed/edge_length/Settings.FPS
         edge_progress = self.edge_progress + travel_progress
         if edge_progress < 1:
             if self.edge_progress < 0.5 <= edge_progress:
@@ -86,7 +83,11 @@ class Train:
     @property
     def occupied_edge_count(self) -> int:
         #TODO: in case of different track length this needs to be updated
-        return PLATFORM_LENGTH if self.edge_progress < 0.5 else PLATFORM_LENGTH - 1
+        return Settings.PLATFORM_LENGTH if self.edge_progress < 0.5 else Settings.PLATFORM_LENGTH - 1
+    
+    def get_occupied_edges_with_progress(self) -> list[tuple[Edge, float]]:
+        distance = self._edge_distance
+        edges_with_progress = []
         
     def get_occupied_edges(self) -> tuple[Edge]:
         return tuple(self.path[:self.occupied_edge_count])

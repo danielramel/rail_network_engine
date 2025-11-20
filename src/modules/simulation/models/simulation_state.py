@@ -4,7 +4,7 @@ from core.models.geometry.position import Position
 from core.models.signal import Signal
 from typing import Callable
 from enum import Enum
-from core.config.settings import FPS
+from core.config.settings import Settings
 from core.models.time import Time
 
 class TimeControlMode(Enum):
@@ -53,7 +53,7 @@ class SimulationState:
     
     def tick(self) -> None:
         """Advance the current time by the specified number of seconds."""
-        self.time.add(1 * self.time_control.mode.value / FPS)
+        self.time.add(1 * self.time_control.mode.value / Settings.FPS)
         
 
     

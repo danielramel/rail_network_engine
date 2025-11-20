@@ -1,10 +1,7 @@
-# services/platform_tool.py
 from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Optional, Set, Any
-from core.config.settings import PLATFORM_LENGTH, GRID_SIZE
 from core.models.geometry import Position
-from core.models.geometry.edge import Edge
 from core.models.railway.railway_system import RailwaySystem
 class PlatformTargetType(Enum):
     INVALID = auto()

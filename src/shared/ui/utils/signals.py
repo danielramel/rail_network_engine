@@ -3,7 +3,7 @@ from core.models.geometry.position import Position
 from core.models.geometry.pose import Pose
 from core.graphics.camera import Camera
 from core.config.color import Color
-from core.config.settings import GRID_SIZE
+from core.config.settings import Settings
 from shared.ui.utils.nodes import draw_node
 
 
@@ -43,12 +43,10 @@ def draw_triangle(surface: pygame.Surface, alignment: Pose, camera: Camera, colo
 
 def draw_signal(surface: pygame.Surface, alignment: Pose, camera: Camera, color=Color.WHITE, offset=False):
     """Draw a signal triangle at the given position and orientation."""
-    screen_x, screen_y = camera.world_to_screen(alignment.position)
-
     if offset:
         draw_node(surface, alignment.position, camera, color=Color.YELLOW)
         # Adjust the position for the offset
-        offset_y = GRID_SIZE * camera.scale / 1.25
+        offset_y = Settings.GRID_SIZE * camera.scale / 1.25
         offset_position = Position(alignment.position.x, alignment.position.y - offset_y / camera.scale)
         offset_alignment = Pose(offset_position, alignment.direction)
         draw_triangle(surface, offset_alignment, camera, color=color, size_factor=1.0)

@@ -5,7 +5,7 @@ from core.models.railway.railway_system import RailwaySystem
 from core.graphics.icon_loader import IconLoader
 from core.models.geometry.position import Position
 from core.config.color import Color
-from core.config.settings import BUTTON_SIZE
+from core.config.settings import Settings
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.models.rectangle import RectangleUIComponent
@@ -14,8 +14,8 @@ from core.models.event import Event
 
 class LoadButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent):
     def __init__(self, surface: pygame.Surface, railway: RailwaySystem, app_state: AppState):
-        rect = pygame.Rect(200+BUTTON_SIZE + BUTTON_SIZE//5, BUTTON_SIZE//5, BUTTON_SIZE, BUTTON_SIZE)
-        self._icon = IconLoader().get_icon(ICON_PATHS["LOAD"], BUTTON_SIZE)
+        rect = pygame.Rect(200+Settings.BUTTON_SIZE + Settings.BUTTON_SIZE//5, Settings.BUTTON_SIZE//5, Settings.BUTTON_SIZE, Settings.BUTTON_SIZE)
+        self._icon = IconLoader().get_icon(ICON_PATHS["LOAD"], Settings.BUTTON_SIZE)
         super().__init__(rect, surface)
         self._railway = railway
         self._app_state = app_state

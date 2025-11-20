@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from core.models.geometry.direction import Direction
 from core.models.geometry.position import Position
-from math import floor
-from core.config.settings import GRID_SIZE
 
 
 @dataclass(frozen=True, order=True)

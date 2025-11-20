@@ -6,7 +6,7 @@ from modules.setup.models.setup_state import SetupTool, SetupState
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from core.config.color import Color
 from core.config.paths import ICON_PATHS
-from core.config.settings import BUTTON_SIZE
+from core.config.settings import Settings
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 from core.config.keyboard_shortcuts import SETUP_TOOL_SELECTION
 
@@ -14,7 +14,7 @@ from core.config.keyboard_shortcuts import SETUP_TOOL_SELECTION
 class SetupButtons(ShortcutUIComponent, ClickableUIComponent):
     def __init__(self, surface: pygame.Surface, setup_state: SetupState):
         self.icon_cache = {
-            tool: IconLoader().get_icon(ICON_PATHS[tool.name], BUTTON_SIZE)
+            tool: IconLoader().get_icon(ICON_PATHS[tool.name], Settings.BUTTON_SIZE)
             for tool in SetupTool
         }
         self.buttons = self._get_buttons(surface)
@@ -55,15 +55,15 @@ class SetupButtons(ShortcutUIComponent, ClickableUIComponent):
 
 
     def _get_buttons(self, surface: pygame.Surface) -> list[tuple[SetupTool, pygame.Rect]]:
-        button_margin = BUTTON_SIZE // 5
+        button_margin = Settings.BUTTON_SIZE // 5
         _, h = surface.get_size()
         buttons = []
         for i, tool in enumerate(SetupTool):
             rect = pygame.Rect(
-                button_margin + (BUTTON_SIZE + button_margin) * i,
-                h - BUTTON_SIZE - button_margin,
-                BUTTON_SIZE,
-                BUTTON_SIZE
+                button_margin + (Settings.BUTTON_SIZE + button_margin) * i,
+                h - Settings.BUTTON_SIZE - button_margin,
+                Settings.BUTTON_SIZE,
+                Settings.BUTTON_SIZE
             )
             buttons.append((tool, rect))
         return buttons

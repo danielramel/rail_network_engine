@@ -1,6 +1,6 @@
 from typing import NamedTuple
 
-from core.config.settings import GRID_SIZE
+from core.config.settings import Settings
 from core.models.geometry.edge import Edge
 from core.models.geometry.position import Position
 from core.models.geometry.direction import Direction
@@ -21,8 +21,8 @@ class Pose(NamedTuple):
     def get_valid_turns(self) -> list['Pose']:
         neighbors = []
         for dir in self.direction.get_valid_turns():
-            nx = self.position.x + dir.x * GRID_SIZE
-            ny = self.position.y + dir.y * GRID_SIZE
+            nx = self.position.x + dir.x * Settings.GRID_SIZE
+            ny = self.position.y + dir.y * Settings.GRID_SIZE
             new_state = Pose(Position(nx, ny), dir)
 
             neighbors.append(new_state)
@@ -34,8 +34,8 @@ class Pose(NamedTuple):
     def get_next_in_direction(self) -> 'Pose':
         return Pose(
             Position(
-                self.position.x + self.direction.x * GRID_SIZE,
-                self.position.y + self.direction.y * GRID_SIZE
+                self.position.x + self.direction.x * Settings.GRID_SIZE,
+                self.position.y + self.direction.y * Settings.GRID_SIZE
             ),
             self.direction
         )
