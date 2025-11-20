@@ -38,7 +38,7 @@ class Position:
     
     def heuristic_to(self, other: 'Position') -> float:
         """Use chebysev distance as heuristic for A* pathfinding."""
-        return max(abs(self.x - other.x), abs(self.y - other.y)) / GRID_SIZE
+        return max(abs(self.x - other.x), abs(self.y - other.y)) / Settings.GRID_SIZE
 
 
     def snap_to_grid(self) -> 'Position':
