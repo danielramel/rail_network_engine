@@ -1,4 +1,4 @@
-import pygame
+from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from modules.construction.models.construction_state import ConstructionState
 from core.graphics.camera import Camera
@@ -10,12 +10,13 @@ from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 
 class ConstructionToolController(ClickableUIComponent, FullScreenUIComponent):
     """Base class for controllers that manage construction modes."""
-    def __init__(self, view: ConstructionView, railway: RailwaySystem, state: ConstructionState, camera: Camera):
+    def __init__(self, view: ConstructionView, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
         self.view = view
         self._railway = railway
         self._construction_state = state
-        self._camera = camera
-
+        self._camera = graphics.camera
+        self._alert_component = graphics.alert_component
+        
     def render(self, screen_pos: Position):
         world_pos = self._camera.screen_to_world(screen_pos) if screen_pos is not None else None
         self.view.render(world_pos)

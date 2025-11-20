@@ -2,7 +2,6 @@ from enum import Enum, auto
 from typing import Callable, Optional
 
 from core.models.time import Time
-from shared.ui.utils.popups import alert
 
 class ViewMode(Enum):
     SETUP = auto()
@@ -26,9 +25,6 @@ class AppState:
     
     def switch_mode(self, new_mode: ViewMode) -> None:
         if self._mode == new_mode:
-            return
-        if new_mode == ViewMode.SIMULATION and self.time.current_time is None:
-            alert("Cannot switch to SIMULATION mode: Time is not set.")
             return
         self._mode = new_mode
         if self.callback is not None:

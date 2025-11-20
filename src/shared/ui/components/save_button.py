@@ -10,7 +10,6 @@ from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 from core.models.event import Event
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from core.models.app_state import AppState
-from shared.ui.utils.popups import alert
 
 
 class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent):
@@ -41,9 +40,10 @@ class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
             import json
             with open(self._app_state.filename, 'w') as f:
                 json.dump(data, f, indent=4)
-            alert(f"Game saved to {self._app_state.filename}.")
+            #TODO this should be visible on the save button
         else:
             self.save_game_dialog()
+        alert(f"Game saved to {self._app_state.filename}.")
         
     def save_game_dialog(self):
         data = self._railway.to_dict()
@@ -61,6 +61,7 @@ class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
             )
             if not filename:
                 return None
+                #TODO handle this
 
             with open(filename, 'w') as f:
                 json.dump(data, f, indent=4)
@@ -68,4 +69,16 @@ class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
         finally:
             root.destroy()
             self._app_state.filename = filename
-            alert(f"Game saved to {self._app_state.filename}.")
+            
+            
+            
+            
+            
+            
+            
+import tkinter as tk
+def alert(text="This is an alert"):
+    root = tk.Tk()
+    root.withdraw()  # Hide the main window
+    tk.messagebox.showinfo("Alert!", text)
+    root.destroy()

@@ -11,7 +11,7 @@ from core.models.event import Event
 class RailController(ConstructionToolController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
         view = RailView(railway, state, graphics)
-        super().__init__(view, railway, state, graphics.camera)
+        super().__init__(view, railway, state, graphics)
         
         
     def _on_click(self, event: Event) -> None:

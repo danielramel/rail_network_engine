@@ -1,5 +1,4 @@
 from modules.construction.models.construction_tool_controller import ConstructionToolController
-from shared.ui.utils.popups import alert
 from .platform_target import find_platform_target
 from modules.construction.models.construction_state import ConstructionState
 from core.models.railway.railway_system import RailwaySystem
@@ -11,7 +10,7 @@ from shared.ui.enums.edge_action import EdgeAction
 class PlatformController(ConstructionToolController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
         view = PlatformView(railway, state, graphics)
-        super().__init__(view, railway, state, graphics.camera)
+        super().__init__(view, railway, state, graphics)
 
 
     def _on_click(self, event: Event) -> None:
@@ -32,8 +31,7 @@ class PlatformController(ConstructionToolController):
             return
 
         if len(self._railway.stations.all()) == 0:
-            alert('Please build a station first.')
-            self._construction_state.switch_tool(None)
+            self._alert_component.alert('Please build a station first.')
             return
 
         target = find_platform_target(self._railway, event.world_pos, self._camera.scale)
@@ -42,7 +40,7 @@ class PlatformController(ConstructionToolController):
             return
 
         if not target.is_valid:
-            alert(f'Platform too short!')
+            self._alert_component.alert(f'Platform too short!')
             return
 
         # prepare to select station

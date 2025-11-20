@@ -1,4 +1,5 @@
 import pygame
+from core.graphics.graphics_context import GraphicsContext
 from core.graphics.icon_loader import IconLoader
 from core.models.geometry.position import Position
 from core.models.app_state import AppState, ViewMode
@@ -12,17 +13,18 @@ from core.config.keyboard_shortcuts import MODE_SELECTION
 
 
 class ModeSelectorButtons(ShortcutUIComponent, ClickableUIComponent):
-    def __init__(self, surface: pygame.Surface, app_state: AppState):
+    def __init__(self, graphics: GraphicsContext, app_state: AppState):
         self.icon_cache = {
             mode: IconLoader().get_icon(ICON_PATHS[mode.name], BUTTON_SIZE)
             for mode in ViewMode
         }
-        self._buttons = self._get_buttons(surface)
+        self._buttons = self._get_buttons(graphics.screen)
         self._state = app_state
-        self._surface = surface
+        self._screen = graphics.screen
+        self._alert_component = graphics.alert_component
         
         self._shortcuts = {
-            (key, False): lambda mode=mode: self._state.switch_mode(mode)
+            (key, False): lambda mode=mode: self._try_switch_mode(mode)
             for key, mode in MODE_SELECTION.items()
         }
         
@@ -32,23 +34,31 @@ class ModeSelectorButtons(ShortcutUIComponent, ClickableUIComponent):
             return False
         for mode, btn in self._buttons:
             if btn.collidepoint(*event.screen_pos):
-                self._state.switch_mode(mode)
+                self._try_switch_mode(mode)
                 return True
         return False
+    
+    def _try_switch_mode(self, new_mode: ViewMode):
+        if new_mode == ViewMode.SIMULATION and self._state.time.current_time is None:
+            self._alert_component.alert("Please set time first!")
+            return
+        
+        self._state.switch_mode(new_mode)
+        
 
     def render(self, screen_pos: Position) -> None:
         for mode, btn_rect in self._buttons:
         # Draw a solid background for the button (not transparent)
-            pygame.draw.rect(self._surface, Color.BLACK, btn_rect, border_radius=10)
+            pygame.draw.rect(self._screen, Color.BLACK, btn_rect, border_radius=10)
 
             icon = self.icon_cache[mode]
             icon_rect = icon.get_rect(center=btn_rect.center)
-            self._surface.blit(icon, icon_rect)
+            self._screen.blit(icon, icon_rect)
 
             if mode == self._state._mode:
-                pygame.draw.rect(self._surface, Color.GREEN, btn_rect.inflate(10, 10), 5, border_radius=10)
+                pygame.draw.rect(self._screen, Color.GREEN, btn_rect.inflate(10, 10), 5, border_radius=10)
             else:
-                pygame.draw.rect(self._surface, Color.WHITE, btn_rect.inflate(-2, -2), 1, border_radius=10)
+                pygame.draw.rect(self._screen, Color.WHITE, btn_rect.inflate(-2, -2), 1, border_radius=10)
                 
 
     def contains(self, screen_pos: Position) -> bool:
