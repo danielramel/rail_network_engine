@@ -39,7 +39,7 @@ class InputComponent(UIComponent):
                 return True
         return True
 
-    def prompt(self, hint: str, callback: Callable):
+    def request_input(self, hint: str, callback: Callable):
         self._visible = True
         self._hint = hint
         self._input_text = ""

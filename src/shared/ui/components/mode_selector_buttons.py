@@ -40,7 +40,7 @@ class ModeSelectorButtons(ShortcutUIComponent, ClickableUIComponent):
     
     def _try_switch_mode(self, new_mode: ViewMode):
         if new_mode == ViewMode.SIMULATION and self._state.time.current_time is None:
-            self._alert_component.alert("Please set time first!")
+            self._alert_component.show_alert("Please set time first!")
             return
         
         self._state.switch_mode(new_mode)

@@ -16,13 +16,5 @@ class Time:
         self.current_time %= 24 * 3600  # wrap around after 24 hours
         
     def set_time_from_string(self, time_str: str) -> None:
-        try:
-            parts = time_str.split(":")
-            if len(parts) != 3:
-                raise ValueError("Time must be in HH:MM:SS format")
-            hours, minutes, seconds = map(int, parts)
-            self.current_time = hours * 3600 + minutes * 60 + seconds
-        except ValueError as e:
-            pass
-            #TODO it bugs out
-            #TODO handle this differently
+        hours, minutes, seconds = map(int, time_str.split(":"))
+        self.current_time = hours * 3600 + minutes * 60 + seconds

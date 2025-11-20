@@ -37,7 +37,7 @@ class StationController(ConstructionToolController):
             return
 
         # otherwise, create a new station
-        self._input_component.prompt("Enter station name:", lambda name, pos=target.snapped: self._on_station_name_entered(name, pos))
+        self._input_component.request_input("Enter station name:", lambda name, pos=target.snapped: self._on_station_name_entered(name, pos))
         
     def _on_station_name_entered(self, name: str | None, pos: Position) -> None:
         if name is None or name.strip() == "":

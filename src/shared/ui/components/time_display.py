@@ -11,6 +11,7 @@ class TimeDisplay(RectangleUIComponent, ClickableUIComponent):
         self._rect = self._get_rect(graphics.screen)
         self._screen = graphics.screen
         self._input_component = graphics.input_component
+        self._alert_component = graphics.alert_component
         self._time = time
         self._modifiable = modifiable
 
@@ -48,9 +49,18 @@ class TimeDisplay(RectangleUIComponent, ClickableUIComponent):
         if not self._modifiable:
             return
         
-        self._input_component.prompt("Enter time (HH:MM:SS): ", self._set_time)
+        self._input_component.request_input("Enter time (HH:MM:SS): ", self._set_time)
         
     def _set_time(self, new_time: str):
         if new_time is None:
             return
-        self._time.set_time_from_string(new_time)
+        
+        if new_time.count(":") != 2:
+            self._alert_component.show_alert("Invalid time format. Use HH:MM:SS.")
+            return
+        
+        try:
+            self._time.set_time_from_string(new_time)
+        except ValueError:
+            self._alert_component.show_alert("Invalid time format. Use HH:MM:SS.")
+            return

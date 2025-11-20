@@ -31,7 +31,7 @@ class PlatformController(ConstructionToolController):
             return
 
         if len(self._railway.stations.all()) == 0:
-            self._alert_component.alert('Please build a station first.')
+            self._alert_component.show_alert('Please build a station first.')
             return
 
         target = find_platform_target(self._railway, event.world_pos, self._camera.scale)
@@ -40,7 +40,7 @@ class PlatformController(ConstructionToolController):
             return
 
         if not target.is_valid:
-            self._alert_component.alert(f'Platform too short!')
+            self._alert_component.show_alert(f'Platform too short!')
             return
 
         # prepare to select station

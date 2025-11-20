@@ -10,11 +10,14 @@ from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 from core.models.event import Event
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from core.models.app_state import AppState
+import json
 
 
 class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent):
+    _save_timestamp: int = -5000
     def __init__(self, surface: pygame.Surface, railway: RailwaySystem, app_state: AppState) -> None:
         self._icon = IconLoader().get_icon(ICON_PATHS["SAVE"], BUTTON_SIZE)
+        self._saved_icon = IconLoader().get_icon(ICON_PATHS["SAVED"], BUTTON_SIZE)
         rect = pygame.Rect(200, BUTTON_SIZE//5, BUTTON_SIZE, BUTTON_SIZE)
         super().__init__(rect, surface)
         self._railway = railway
@@ -29,56 +32,46 @@ class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
 
     def render(self, screen_pos: Position) -> None:
         pygame.draw.rect(self._surface, Color.BLACK, self._rect, border_radius=10)
-
-        icon_rect = self._icon.get_rect(center=self._rect.center)
-        self._surface.blit(self._icon, icon_rect)
+        current_time = pygame.time.get_ticks()
+        if current_time - self._save_timestamp < 3000:  # 3 seconds
+            icon = self._saved_icon
+        else:
+            icon = self._icon
+        
+        icon_rect = icon.get_rect(center=self._rect.center)
+        self._surface.blit(icon, icon_rect)
         pygame.draw.rect(self._surface, Color.WHITE, self._rect, 2, border_radius=10)
         
     def save_game(self):
         if self._app_state.filename is not None:
             data = self._railway.to_dict()
-            import json
             with open(self._app_state.filename, 'w') as f:
                 json.dump(data, f, indent=4)
-            #TODO this should be visible on the save button
+            self._save_timestamp = pygame.time.get_ticks()
         else:
             self.save_game_dialog()
-        alert(f"Game saved to {self._app_state.filename}.")
         
     def save_game_dialog(self):
         data = self._railway.to_dict()
         
         import tkinter as tk
         from tkinter import filedialog
-        import json
         root = tk.Tk()
         root.withdraw()
+        filename = filedialog.asksaveasfilename(
+            defaultextension=".json",
+            filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
+            title="Save simulation as..."
+        )
+        if not filename:
+            return None
+            
         try:
-            filename = filedialog.asksaveasfilename(
-                defaultextension=".json",
-                filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
-                title="Save simulation as..."
-            )
-            if not filename:
-                return None
-                #TODO handle this
-
             with open(filename, 'w') as f:
                 json.dump(data, f, indent=4)
+                
+            self._app_state.filename = filename
+            self._save_timestamp = pygame.time.get_ticks()
 
         finally:
             root.destroy()
-            self._app_state.filename = filename
-            
-            
-            
-            
-            
-            
-            
-import tkinter as tk
-def alert(text="This is an alert"):
-    root = tk.Tk()
-    root.withdraw()  # Hide the main window
-    tk.messagebox.showinfo("Alert!", text)
-    root.destroy()

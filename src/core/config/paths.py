@@ -5,6 +5,7 @@ ICON_CATEGORIES = {
         "SETUP": "setup.png",
         "TIMETABLE": "timetable.png",
         "SAVE": "save.png",
+        "SAVED": "saved.png",
         "LOAD": "load.png",
     },
     "construction/": {

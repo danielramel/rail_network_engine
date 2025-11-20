@@ -19,7 +19,7 @@ class AlertComponent(UIComponent):
             
         return True
             
-    def alert(self, message: str):
+    def show_alert(self, message: str):
         self._visible = True
         self._message = message
             
