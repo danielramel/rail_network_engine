@@ -19,6 +19,9 @@ class Signal:
         self._subscriber = None
         
     def subscribe(self, func: callable) -> None:
+        if self.next_signal is not None:
+            func(self.path, self.next_signal)
+            return
         self._subscriber = func
         
     def train_passed(self) -> None:

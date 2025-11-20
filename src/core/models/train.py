@@ -18,7 +18,7 @@ class Train:
     deceleration : float = 1.4 # in m/s²
     timetable : TimeTable = None
     _is_live : bool = False
-    is_shutting_down : bool = False
+    _is_shutting_down : bool = False
     _railway: 'RailwaySystem'
 
     def __init__(self, id: int, edges: list[Edge], railway: 'RailwaySystem'):
@@ -46,7 +46,7 @@ class Train:
         if not self._is_live:
             return
         
-        if self.is_shutting_down:
+        if self._is_shutting_down:
             self.speed = max(0.0, self.speed - self.deceleration/FPS)
             if self.speed == 0.0:
                 self._shutdown()
@@ -99,8 +99,16 @@ class Train:
         self.path += path
         signal.subscribe(self.signal_turned_green_ahead)
         
-    def _shutdown(self) -> None:    
+    def initiate_shutdown(self) -> None:
+        if self.speed == 0.0:
+            self._shutdown()
+            return
+        self._is_shutting_down = True
+        
+    def _shutdown(self) -> None:
         self._is_live = False
+        self._is_shutting_down = False
+        self.path = self.path[:self.occupied_edge_count]
         self._railway.signalling.unlock_path(self.path[self.occupied_edge_count:])
         
     def get_locomotive_pose(self) -> Pose:

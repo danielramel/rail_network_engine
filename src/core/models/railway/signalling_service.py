@@ -17,11 +17,12 @@ class SignallingService:
             self._railway.graph.set_edge_attr(edge, 'locked', True)
             self._railway.graph.set_node_attr(edge.b, 'locked', True)
             
-    def unlock_path(self, edges: list[Edge]):
+    def unlock_path(self, edges: list[Edge]) -> None:
         for edge in edges:
+            if self._railway.signals.has_signal_with_pose_at(Pose(edge.a, edge.a.direction_to(edge.b))):
+                return
             self._railway.graph.set_edge_attr(edge, 'locked', False)
             self._railway.graph.set_node_attr(edge.b, 'locked', False)
-            self._railway.graph.set_node_attr(edge.a, 'locked', False)
     
     def passed(self, edge: Edge):
         self._railway.graph.set_edge_attr(edge, 'locked', False)
