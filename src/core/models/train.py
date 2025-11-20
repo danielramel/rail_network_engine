@@ -17,9 +17,11 @@ class Train:
     acceleration : float = 1.2  # in m/s²
     deceleration : float = 1.4 # in m/s²
     timetable : TimeTable = None
+    _railway: 'RailwaySystem'
     _is_live : bool = False
     _is_shutting_down : bool = False
-    _railway: 'RailwaySystem'
+    _target_speed: int
+    _target_distance: float
 
     def __init__(self, id: int, edges: list[Edge], railway: 'RailwaySystem'):
         if len(edges) != PLATFORM_LENGTH:
@@ -27,6 +29,8 @@ class Train:
         self.id = id
         self.path = edges
         self._railway = railway
+        self._target_speed = 0
+        self._target_distance = 0.0
         
     def set_timetable(self, timetable: TimeTable) -> None:
         self.timetable = timetable
@@ -64,6 +68,7 @@ class Train:
                 return
 
         edge_length = self._railway.graph.get_edge_attr(self.path[self.occupied_edge_count-1], 'length')
+        self._target_distance = max(0.0, self._target_distance - self.speed/FPS)
         travel_progress = self.speed/edge_length/FPS
         edge_progress = self.edge_progress + travel_progress
         if edge_progress < 1:
@@ -96,7 +101,7 @@ class Train:
     def start(self) -> None:
         self._is_live = True
         path, signal = self._railway.signalling.get_initial_path(self.get_locomotive_pose())
-        self.path += path
+        self.extend_path(path)
         signal.subscribe(self.signal_turned_green_ahead)
         
     def initiate_shutdown(self) -> None:
@@ -116,15 +121,13 @@ class Train:
         return Pose.from_edge(edge)
     
     def get_max_safe_speed(self) -> float:
-        # sum physical lengths of remaining edges
-        remaining_edges = self.path[self.occupied_edge_count-1:]
-        if not remaining_edges:
-            return 0.0
-        distance = (1 - self.edge_progress) * self._railway.graph.get_edge_attr(remaining_edges[0], 'length')
-        distance += sum(self._railway.graph.get_edge_attr(edge, 'length') for edge in remaining_edges[1:])
-        distance = max(0, distance - 50)
-        return (2 * distance * self.deceleration ) ** 0.5
+        # FORMULA: V = sqrt(u^2 + 2as)
+        return (self._target_speed**2 + (2 * self._target_distance * self.deceleration)) ** 0.5
+    
+    def extend_path(self, path: list[Edge]):
+        self.path += path
+        self._target_distance  += sum(self._railway.graph.get_edge_attr(edge, 'length') for edge in path)
     
     def signal_turned_green_ahead(self, path: list[Edge], signal: Signal) -> bool:
-        self.path += path
         signal.subscribe(self.signal_turned_green_ahead)
+        self.extend_path(path)

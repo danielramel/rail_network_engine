@@ -38,4 +38,5 @@ class StationController(ConstructionToolController):
 
         # otherwise, create a new station
         name = user_input()
-        self._railway.stations.add(target.snapped, name)
+        if name:
+            self._railway.stations.add(target.snapped, name)

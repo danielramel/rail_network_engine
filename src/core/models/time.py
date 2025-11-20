@@ -25,3 +25,4 @@ class Time:
             self.current_time = hours * 3600 + minutes * 60 + seconds
         except Exception as e:
             alert(f"Invalid time format: {e}")
+            #TODO it bugs out
