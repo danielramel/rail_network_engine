@@ -1,17 +1,17 @@
-from enum import Enum
+from enum import Enum, auto
 from typing import Callable, Optional
 
 from core.models.time import Time
 from shared.ui.utils.popups import alert
 
 class ViewMode(Enum):
-    SETUP = 0
-    CONSTRUCTION = 1
-    SIMULATION = 2
+    SETUP = auto()
+    CONSTRUCTION = auto()
+    SIMULATION = auto()
     
 class AppState:
     def __init__(self, filename: Optional[str] = None) -> None:
-        self._mode: ViewMode = ViewMode.CONSTRUCTION
+        self._mode: ViewMode = ViewMode.SETUP
         self.filename: Optional[str] = filename
         self.callback: Optional[Callable[[ViewMode], None]] = None
         self.time = Time()

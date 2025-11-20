@@ -33,11 +33,11 @@ class GraphService:
     
     def get_connections_from_pose(self, pose: Pose) -> tuple[Pose]:
         connections = []
-        for neighbor in self._railway.graph.neighbors(pose.position):
-            direction = pose.position.direction_to(neighbor)
-            
-            if direction in pose.direction.get_valid_turns():
-                connections.append(Pose(neighbor, direction))
+        graph_neighbors = self._railway.graph.neighbors(pose.position)
+        for neighbor_pose in pose.get_valid_turns():
+            if neighbor_pose.position in graph_neighbors:
+                connections.append(neighbor_pose)
+
         return tuple(connections)
 
     def remove_segment(self, edges: list[Edge]) -> None:      

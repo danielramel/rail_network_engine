@@ -61,7 +61,7 @@ class SignallingService:
 
                 return tuple(reversed(path))
 
-            for neighbor_pose in current_pose.get_neighbors_in_direction():
+            for neighbor_pose in current_pose.get_valid_turns():
                 if not self._railway.graph.has_edge(Edge(current_pose.position, neighbor_pose.position)):
                     continue
                 
@@ -81,6 +81,9 @@ class SignallingService:
 
         return None
 
+    def disconnect_signal_at(self, a) -> None:
+        raise UserWarning("Not implemented yet")
+    
     def get_path_preview(self, start: Signal, end: Signal) -> list[Edge] | None:
         poses = self.find_path(start.pose, end.pose)
         if poses is None:
@@ -115,9 +118,10 @@ class SignallingService:
                 return path, self._railway.signals.get(pose.position)
                 
             neighbors = self._railway.graph_service.get_connections_from_pose(pose)
-            if len(neighbors) != 1:
-                raise ValueError("Branching or dead-end encountered. Cannot determine initial path.")
+            if len(neighbors) == 0:
+                raise ValueError("Dead-end encountered. There should be a signal here.")
             
+            # if multiple connections, pick the first one
             connection = neighbors[0]
 
             path.append(Edge(pose.position, connection.position))

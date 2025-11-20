@@ -80,7 +80,7 @@ class TrainPanel(Panel):
              self.schedule_button.centery - schedule_text.get_height() // 2)
         )
 
-        button_color = Color.DARKGREY if train.speed != 0.0 else Color.GREY
+        button_color = Color.DARKGREY if train.is_shutting_down else Color.GREY
         pygame.draw.rect(self._surface, button_color, self.stop_button, border_radius=5)
         label_surface = self.instruction_font.render("Shut Down", True, Color.BLACK)
         self._surface.blit(
@@ -100,7 +100,7 @@ class TrainPanel(Panel):
         elif not train.is_live and self.reverse.collidepoint(*event.screen_pos):
             train.reverse()
         elif train.is_live and self.stop_button.collidepoint(*event.screen_pos):
-            train.shutdown()
+            train.is_shutting_down = True
 
     def _on_set_schedule_clicked(self):
         if self._select_schedule_window is None:

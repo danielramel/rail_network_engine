@@ -70,7 +70,7 @@ class PathService:
             if self._railway.signals.has_signal_at(current_pose.position):
                 neighbors = [current_pose.get_next_in_direction()]
             else:
-                neighbors = current_pose.get_neighbors_in_direction()
+                neighbors = current_pose.get_valid_turns()
                 
 
             for neighbor_pose in neighbors:
