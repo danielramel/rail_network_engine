@@ -13,8 +13,8 @@ class Train:
     path : list[Edge]
     edge_progress : float = 0.25
     speed : float = 0.0  # in m/s
-    acceleration : float = 1.2  # in m/s²
     max_speed : int  =  120  # in km/h
+    acceleration : float = 1.2  # in m/s²
     deceleration : float = 1.4 # in m/s²
     timetable : TimeTable = None
     _is_live : bool = False

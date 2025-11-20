@@ -34,11 +34,11 @@ def draw_rail(surface: pygame.Surface, edge: Edge, camera: Camera, color: tuple[
     if length == 50:
         pygame.draw.aaline(surface, color, tuple(edge.a), tuple(edge.b), max(1, 2*int(camera.scale)))
     elif length == 500:
-        draw_long_track(surface, edge, color=color)
+        draw_long_track(surface, edge, color=color, width=2*camera.scale)
     else:
         raise NotImplementedError("Edge length drawing not implemented for length:", length)
     
-def draw_long_track(surface: pygame.Surface, screen_edge: Edge, color):
+def draw_long_track(surface: pygame.Surface, screen_edge: Edge, color, width: float):
     """Draw a dotted line on the surface from start_pos to end_pos."""
     a, b = screen_edge
     if a == b:
@@ -48,12 +48,12 @@ def draw_long_track(surface: pygame.Surface, screen_edge: Edge, color):
     dy = y2 - y1
     
     distance = a.distance_to(b)
-    num_dots = 5
+    num_dots = 6 # will be +1 dots
     dot_spacing = distance / num_dots
-    for i in range(num_dots):
+    for i in range(0, num_dots + 1):
         dot_x = x1 + (dx * (i * dot_spacing) / distance)
         dot_y = y1 + (dy * (i * dot_spacing) / distance)
-        pygame.draw.circle(surface, color, (int(dot_x), int(dot_y)), 1)
+        pygame.draw.circle(surface, color, (int(dot_x), int(dot_y)), max(1, width))
         
 def draw_platform(surface: pygame.Surface, edge: Edge, camera: Camera, color=Color.PURPLE):
     a, b = edge
