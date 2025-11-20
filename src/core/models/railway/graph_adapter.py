@@ -57,6 +57,12 @@ class GraphAdapter:
     
     def remove_edge_attr(self, edge: Edge, key: str) -> None:
         del self._graph.edges[edge][key]
+        
+    def get_edge_length(self, edge: Edge) -> int:
+        return self._graph.edges[edge]['length']
+    
+    def get_edge_speed(self, edge: Edge) -> int:
+        return self._graph.edges[edge]['speed']
 
     def all_edges_with_data(self) -> list[tuple[Edge, dict]]:
         return [(Edge(a, b), data) for a, b, data in self._graph.edges(data=True)]

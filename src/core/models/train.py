@@ -26,7 +26,7 @@ class Train:
     _target_distance: float = 0.0
 
     def __init__(self, id: int, edges: list[Edge], railway: 'RailwaySystem'):
-        if len(edges) != Settings.PLATFORM_LENGTH:
+        if len(edges) != Settings.PLATFORM_EDGE_COUNT:
             raise ValueError("A train must occupy exactly PLATFORM_LENGTH edges.")
         self.id = id
         self.path = edges
@@ -64,7 +64,7 @@ class Train:
             if self.speed == 0.0:
                 return
 
-        edge_length = self._railway.graph.get_edge_attr(self.path[self.occupied_edge_count-1], 'length')
+        edge_length = self._railway.graph.get_edge_length(self.path[self.occupied_edge_count-1])
         self._target_distance = max(0.0, self._target_distance - self.speed/Settings.FPS)
         travel_progress = self.speed/edge_length/Settings.FPS
         edge_progress = self.edge_progress + travel_progress
@@ -75,7 +75,7 @@ class Train:
             self.edge_progress = round(edge_progress, 6)
             return
         
-        next_edge_length = self._railway.graph.get_edge_attr(self.path[self.occupied_edge_count], 'length')
+        next_edge_length = self._railway.graph.get_edge_length(self.path[self.occupied_edge_count])
         edge_progress -= 1
         edge_progress = edge_progress * edge_length / next_edge_length
         self.edge_progress = round(edge_progress, 6)
@@ -83,11 +83,15 @@ class Train:
     @property
     def occupied_edge_count(self) -> int:
         #TODO: in case of different track length this needs to be updated
-        return Settings.PLATFORM_LENGTH if self.edge_progress < 0.5 else Settings.PLATFORM_LENGTH - 1
+        return Settings.PLATFORM_EDGE_COUNT if self.edge_progress < 0.5 else Settings.PLATFORM_EDGE_COUNT - 1
     
     def get_occupied_edges_with_progress(self) -> list[tuple[Edge, float]]:
         distance = self._edge_distance
         edges_with_progress = []
+        i = 0
+        while distance > 0:
+            edge = self.path[i]
+            edge_length = self._railway.graph.get_edge_length(edge)
         
     def get_occupied_edges(self) -> tuple[Edge]:
         return tuple(self.path[:self.occupied_edge_count])
@@ -127,7 +131,7 @@ class Train:
     
     def extend_path(self, path: list[Edge]):
         self.path += path
-        self._target_distance  += sum(self._railway.graph.get_edge_attr(edge, 'length') for edge in path)
+        self._target_distance  += sum(self._railway.graph.get_edge_length(edge) for edge in path)
     
     def signal_turned_green_ahead(self, path: list[Edge], signal: Signal) -> bool:
         signal.subscribe(self.signal_turned_green_ahead)

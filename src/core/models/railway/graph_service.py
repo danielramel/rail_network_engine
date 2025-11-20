@@ -67,14 +67,14 @@ class GraphService:
         def is_edge_blocked(edge: Edge) -> bool:
             if is_initial_platform != self._railway.stations.is_edge_platform(edge):
                 return True
-            if self._railway.graph.get_edge_attr(edge, 'length') != initial_track_length:
+            if self._railway.graph.get_edge_length(edge) != initial_track_length:
                 return True
-            if self._railway.graph.get_edge_attr(edge, 'speed') != initial_track_speed:
+            if self._railway.graph.get_edge_speed(edge) != initial_track_speed:
                 return True
             return False
         
-        initial_track_length = self._railway.graph.get_edge_attr(edge, 'length')
-        initial_track_speed = self._railway.graph.get_edge_attr(edge, 'speed')
+        initial_track_length = self._railway.graph.get_edge_length(edge)
+        initial_track_speed = self._railway.graph.get_edge_speed(edge)
         is_initial_platform = self._railway.stations.is_edge_platform(edge)
         
         edges: set[Edge] = set()
@@ -120,7 +120,7 @@ class GraphService:
         def is_edge_blocked(edge: Edge) -> bool:
             if not self._railway.graph.has_edge(edge):
                 return True
-            if self._railway.graph.get_edge_attr(edge, 'length') != Settings.SHORT_SEGMENT_LENGTH:
+            if self._railway.graph.get_edge_length(edge) != Settings.SHORT_SEGMENT_LENGTH:
                 return True
             if self._railway.stations.is_edge_platform(edge):
                 return True
@@ -157,7 +157,7 @@ class GraphService:
             
             edges.add(edge)
 
-            if len(edges) >= Settings.PLATFORM_LENGTH:
+            if len(edges) >= Settings.PLATFORM_EDGE_COUNT:
                 return True, frozenset(edges)
             
             if self.is_junction(next_pose.position):
