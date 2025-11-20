@@ -6,10 +6,11 @@ from modules.simulation.ui.panel.schedule_selector import ScheduleSelector
 from core.models.repositories.schedule_repository import ScheduleRepository
 from core.config.color import Color
 from shared.ui.models.panel import Panel
+from typing import Callable
 
 class TrainPanel(Panel):
     def __init__(self, train: Train, surface: pygame.Surface, index: int, 
-                 schedule_repository: ScheduleRepository, on_close_callback: callable):
+                 schedule_repository: ScheduleRepository, on_close_callback: Callable):
         self._train = train
         self._schedule_selector = None
         self._schedule_repository = schedule_repository

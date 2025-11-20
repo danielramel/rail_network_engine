@@ -1,5 +1,5 @@
 from modules.construction.models.construction_tool_controller import ConstructionToolController
-from shared.ui.utils.popups import user_input
+from core.models.geometry.position import Position
 from .station_target import find_station_target
 from core.models.railway.railway_system import RailwaySystem
 from modules.construction.models.construction_state import ConstructionState
@@ -37,6 +37,9 @@ class StationController(ConstructionToolController):
             return
 
         # otherwise, create a new station
-        name = user_input()
-        if name:
-            self._railway.stations.add(target.snapped, name)
+        self._input_component.prompt("Enter station name:", lambda name, pos=target.snapped: self._on_station_name_entered(name, pos))
+        
+    def _on_station_name_entered(self, name: str | None, pos: Position) -> None:
+        if name is None or name.strip() == "":
+            return
+        self._railway.stations.add(pos, name)

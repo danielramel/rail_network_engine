@@ -3,13 +3,14 @@ from core.models.geometry.direction import Direction
 from core.models.geometry.edge import Edge
 from core.models.geometry.pose import Pose
 from core.models.geometry.position import Position
+from typing import Callable
 
 @dataclass
 class Signal:
     pose: Pose
     next_signal: 'Signal' = None
     path: list[Edge] = field(default_factory=list)
-    _subscriber: callable = None
+    _subscriber: Callable = None
 
     def connect(self, path: list[Edge], signal: 'Signal') -> None:
         self.next_signal = signal
@@ -18,7 +19,7 @@ class Signal:
             self._subscriber(path, signal)
         self._subscriber = None
         
-    def subscribe(self, func: callable) -> None:
+    def subscribe(self, func: Callable) -> None:
         if self.next_signal is not None:
             func(self.path, self.next_signal)
             return

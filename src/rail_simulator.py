@@ -13,6 +13,7 @@ class RailSimulator:
         self.qt_app = QApplication.instance() or QApplication(sys.argv)
         
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        pygame.key.set_repeat(500, 50)  # 500ms initial delay, 50ms between repeats
         pygame.display.set_caption("Rail Simulator")
         self.clock = pygame.time.Clock()
         

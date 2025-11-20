@@ -16,6 +16,7 @@ from shared.ui.models.ui_controller import UIController
 from shared.ui.components.time_table_button import TimeTableButton
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.components.alert_component import AlertComponent
+from shared.ui.components.input_component import InputComponent
 
 class AppController(UIController, FullScreenUIComponent):
     def __init__(self, screen: pygame.Surface):
@@ -23,12 +24,14 @@ class AppController(UIController, FullScreenUIComponent):
         filename = self._mock_load()
         self._app_state = AppState(filename)
         alert_component = AlertComponent(screen)
-        self._graphics = GraphicsContext(screen, Camera(), alert_component)
+        input_component = InputComponent(screen)
+        self._graphics = GraphicsContext(screen, Camera(), alert_component, input_component)
         self._last_mouse_down_pos: Position | None = None
         
         
         self.elements: list[ClickableUIComponent] = [
             alert_component,
+            input_component,
             TimeTableButton(screen, self._railway),
             ZoomButton(screen, self._graphics.camera),
             LoadButton(screen, self._railway, self._app_state),

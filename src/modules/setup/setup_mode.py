@@ -18,7 +18,7 @@ class SetupMode(FullScreenUIComponent, UIController):
         
         self.state = SetupState(time)
         self.elements = (
-            TimeDisplay(self.state.time, graphics.screen, modifiable=True),
+            TimeDisplay(self.state.time, graphics, modifiable=True),
             SetupButtons(graphics.screen, self.state),
             SetupPanelStrategy(graphics.screen, self.state),
             CameraController(graphics.camera),

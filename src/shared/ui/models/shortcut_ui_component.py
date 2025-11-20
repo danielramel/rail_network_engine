@@ -1,8 +1,9 @@
 import pygame
 from shared.ui.models.ui_component import UIComponent
+from typing import Callable
 
 class ShortcutUIComponent(UIComponent):
-    _shortcuts: dict[tuple[int, bool], callable] = {}
+    _shortcuts: dict[tuple[int, bool], Callable] = {}
 
     def dispatch_event(self, event):
         if event.type == pygame.KEYDOWN:
