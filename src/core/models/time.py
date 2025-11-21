@@ -1,7 +1,7 @@
 from math import floor
 
 class Time:
-    current_time: float = None  # in seconds
+    current_time: float = 15200.0  # TODO set to None when finishing testing
         
     def get_hms(self) -> tuple[str, str, str]:
         if self.current_time is None:

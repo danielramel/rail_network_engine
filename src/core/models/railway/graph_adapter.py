@@ -1,6 +1,7 @@
 from core.models.geometry import Position, Edge
 import networkx as nx
 
+from core.models.rail import Rail
 from core.models.geometry.pose import Pose
 
 class GraphAdapter:
@@ -63,6 +64,9 @@ class GraphAdapter:
     
     def get_edge_speed(self, edge: Edge) -> int:
         return self._graph.edges[edge]['speed']
+    
+    def get_rail(self, edge: Edge) -> Rail:
+        return Rail(edge=edge, speed=self.get_edge_speed(edge), length=self.get_edge_length(edge))
 
     def all_edges_with_data(self) -> list[tuple[Edge, dict]]:
         return [(Edge(a, b), data) for a, b, data in self._graph.edges(data=True)]

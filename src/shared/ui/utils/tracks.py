@@ -74,9 +74,9 @@ def draw_platform(surface: pygame.Surface, edge: Edge, camera: Camera, color=Col
         Position(ax + perp_x * offset, ay + perp_y * offset),
         Position(bx + perp_x * offset, by + perp_y * offset)
     )
-    pygame.draw.aaline(surface, color, tuple(edge1.a), tuple(edge1.b), max(1, 2*int(camera.scale)))  # Draw platform line
+    pygame.draw.aaline(surface, color, tuple(edge1.a), tuple(edge1.b), max(1, 1*int(camera.scale)))  # Draw platform line
     edge2 = Edge(
         Position(ax - perp_x * offset, ay - perp_y * offset),
         Position(bx - perp_x * offset, by - perp_y * offset)
     )
-    pygame.draw.aaline(surface, color, tuple(edge2.a), tuple(edge2.b), max(1, 2*int(camera.scale)))  # Draw platform line
+    pygame.draw.aaline(surface, color, tuple(edge2.a), tuple(edge2.b), max(1, 1*int(camera.scale)))  # Draw platform line

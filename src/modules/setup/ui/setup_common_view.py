@@ -41,8 +41,7 @@ class SetupCommonView(ClickableUIComponent, FullScreenUIComponent):
             draw_station(self._surface, station, self._camera)
 
         for train in self._railway.trains.all():
-            edges = train.get_occupied_edges()
-            if self._state.preview.edge in edges and self._state.preview.action is SetupAction.REMOVE:
+            if train.occupies_edge(self._state.preview.edge) and self._state.preview.action is SetupAction.REMOVE:
                 continue
             draw_train(self._surface, train, self._camera, TRAINDRAWACTION.SHUTDOWN)
 

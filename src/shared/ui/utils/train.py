@@ -5,6 +5,7 @@ from core.config.color import Color
 from core.models.train import Train
 from enum import Enum, auto
 from core.models.geometry.position import Position
+from core.config.settings import Settings
 
 class TRAINDRAWACTION(Enum):
     SHUTDOWN = auto()
@@ -13,9 +14,8 @@ class TRAINDRAWACTION(Enum):
     SELECTED = auto()
     PREVIEWED = auto()
 
-def draw_train(surface: pygame.Surface, train: Train, camera: Camera, action: TRAINDRAWACTION) -> None:
-    edges = train.get_occupied_edges()
-    edge_progress = train.edge_progress
+def draw_train(screen: pygame.Surface, train: Train, camera: Camera, action: TRAINDRAWACTION) -> None:
+    rails = train.get_occupied_rails()
     if action == TRAINDRAWACTION.SHUTDOWN:
         color = Color.DARKGREY
     elif action == TRAINDRAWACTION.LIVE:
@@ -29,6 +29,54 @@ def draw_train(surface: pygame.Surface, train: Train, camera: Camera, action: TR
         
     
     
+    distance = train._path_distance
+    rail_i = 0
+    rail = rails[rail_i]
+    car_i = 0
+    remainder = None
+    while car_i < Settings.TRAIN_CAR_COUNT:
+        if distance >= rail.length:
+            distance -= rail.length
+            rail_i += 1
+            rail = rails[rail_i]
+        
+        if remainder is not None:
+            end = remainder / rail.length
+            draw_occupied_edge(screen, rail.edge.a, rail.edge.b, camera, color, 0.0, end)
+            remainder = None
+            car_i += 1
+            continue
+        
+        start = distance / rail.length
+        end = (distance + Settings.TRAIN_CAR_LENGTH) / rail.length
+        draw_occupied_edge(screen, rail.edge.a, rail.edge.b, camera, color, start, end)
+        
+        
+        distance += Settings.TRAIN_CAR_LENGTH + Settings.TRAIN_CAR_GAP
+        if end > 1.0:
+            remainder = (end - 1.0) * rail.length
+            continue
+        
+        car_i += 1
+        
+    return
+        
+    rail = rails[0]
+    start = distance / rail.length
+    end = (distance + 20) / rail.length
+    draw_occupied_edge(screen, rail.edge.a, rail.edge.b, camera, color, start, end)
+    remainder = rail.length - distance
+    for rail in rails[1:-1]:
+        draw_occupied_edge(screen, rail.edge.a, rail.edge.b, camera, color, 0.0, remainder - 0.1)
+        start = distance / rail.length
+        draw_occupied_edge(screen, rail.edge.a, rail.edge.b, camera, color, start, start + 0.9)
+        remainder = rail.length - distance
+        
+    rail = rails[-1]
+    draw_occupied_edge(screen, rail.edge.a, rail.edge.b, camera, color, 0.0, remainder - 0.1)
+    
+    
+    return
     if edge_progress < 0.5:
         draw_occupied_edge(surface, edges[0].a, edges[0].b, camera, color, edge_progress+0.5, 1.0)
         draw_occupied_edge(surface, edges[1].a, edges[1].b, camera, color, 0.0, edge_progress)
@@ -59,6 +107,11 @@ def draw_occupied_edge(
 ) -> None:
     if end - start <= 0.01:
         return
+    
+    if start < 0:
+        start = 0
+    if end > 1:
+        end = 1
 
     a = camera.world_to_screen(a)
     b = camera.world_to_screen(b)

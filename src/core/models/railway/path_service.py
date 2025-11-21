@@ -3,7 +3,6 @@ import heapq
 
 from typing import TYPE_CHECKING
 
-from core.models.geometry.direction import Direction
 if TYPE_CHECKING:
     from core.models.railway.railway_system import RailwaySystem
 
