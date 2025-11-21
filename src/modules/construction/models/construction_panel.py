@@ -8,4 +8,4 @@ class ConstructionToolPanel(Panel):
     def __init__(self, surface: pygame.Surface, state: ConstructionState) -> None:
         super().__init__(surface)
         
-        self._construction_state = state
+        self._state = state

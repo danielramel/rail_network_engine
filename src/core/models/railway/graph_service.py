@@ -116,7 +116,7 @@ class GraphService:
         return frozenset(nodes), frozenset(edges)
     
     
-    def calculate_platform_preview(self, edge: Edge) -> tuple[bool, frozenset[Edge]]:
+    def calculate_platform_preview(self, edge: Edge, edge_count: int) -> tuple[bool, frozenset[Edge]]:
         def is_edge_blocked(edge: Edge) -> bool:
             if not self._railway.graph.has_edge(edge):
                 return True
@@ -157,7 +157,7 @@ class GraphService:
             
             edges.add(edge)
 
-            if len(edges) >= Settings.PLATFORM_EDGE_COUNT:
+            if len(edges) >= edge_count:
                 return True, frozenset(edges)
             
             if self.is_junction(next_pose.position):

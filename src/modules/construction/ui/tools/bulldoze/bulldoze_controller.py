@@ -13,7 +13,7 @@ class BulldozeController(ConstructionToolController):
 
     def _on_click(self, event: Event) -> bool:
         if event.is_right_click:
-            self._construction_state.switch_tool(None)
+            self._state.switch_tool(None)
             return True
         
         target = find_bulldoze_target(self._railway, event.world_pos, self._camera.scale)

@@ -4,8 +4,7 @@ class Settings:
     STATION_RECT_SIZE = (GRID_SIZE * 4, GRID_SIZE)
     FPS = 30
 
-    PLATFORM_EDGE_COUNT = 7 #TODO make this smaller
-    TRAIN_CAR_COUNT = 7
+    TRAIN_CAR_COUNT = 2
     TRAIN_CAR_LENGTH = 40  # in meters
     TRAIN_CAR_GAP = 10      # in meters
     SHORT_SEGMENT_LENGTH = 50

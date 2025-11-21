@@ -12,7 +12,7 @@ class ConstructionToolController(ClickableUIComponent, FullScreenUIComponent):
     def __init__(self, view: ConstructionView, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
         self.view = view
         self._railway = railway
-        self._construction_state = state
+        self._state = state
         self._camera = graphics.camera
         self._alert_component = graphics.alert_component
         self._input_component = graphics.input_component

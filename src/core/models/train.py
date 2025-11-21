@@ -29,8 +29,6 @@ class Train:
     _occupied_edge_count_cache : int | None = None
      
     def __init__(self, id: int, edges: list[Edge], railway: 'RailwaySystem'):
-        if len(edges) != Settings.PLATFORM_EDGE_COUNT:
-            raise ValueError("A train must occupy exactly PLATFORM_EDGE_COUNT edges.")
         self.id = id
         self._railway = railway
         self.path = [self._railway.graph.get_rail(edge) for edge in edges[-INITIAL_EDGE_COUNT:]]

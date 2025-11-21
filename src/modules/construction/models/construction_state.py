@@ -35,6 +35,7 @@ class ConstructionState:
     moving_station: Optional[Station] = None
     preview: ConstructionPreview = field(default_factory=ConstructionPreview)
     platform_waiting_for_station: bool = False
+    platform_edge_count: int = 7
     
     def switch_tool(self, new_mode: ConstructionTool) -> None:
         """Switch to a new construction mode, clearing previous state."""

@@ -13,17 +13,17 @@ class StationController(ConstructionToolController):
 
     def _on_click(self, event: Event) -> None:
         if event.is_right_click:
-            if self._construction_state.moving_station is not None:
-                self._construction_state.moving_station = None
+            if self._state.moving_station is not None:
+                self._state.moving_station = None
             else:
-                self._construction_state.switch_tool(None)
+                self._state.switch_tool(None)
             return
 
-        target = find_station_target(self._railway, event.world_pos, self._construction_state.moving_station)
+        target = find_station_target(self._railway, event.world_pos, self._state.moving_station)
 
         # pick up a station if moving_station is None and mouse is over a station
-        if not self._construction_state.moving_station and target.hovered_station_pos is not None:
-            self._construction_state.moving_station = self._railway.stations.get_by_position(target.hovered_station_pos)
+        if not self._state.moving_station and target.hovered_station_pos is not None:
+            self._state.moving_station = self._railway.stations.get_by_position(target.hovered_station_pos)
             return
 
         # blocked or overlapping -> do nothing
@@ -31,9 +31,9 @@ class StationController(ConstructionToolController):
             return
 
         # move station if one is being moved
-        if self._construction_state.moving_station:
-            self._railway.stations.move(self._construction_state.moving_station.id, target.snapped)
-            self._construction_state.moving_station = None
+        if self._state.moving_station:
+            self._railway.stations.move(self._state.moving_station.id, target.snapped)
+            self._state.moving_station = None
             return
 
         # otherwise, create a new station

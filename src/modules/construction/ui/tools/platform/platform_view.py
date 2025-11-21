@@ -26,7 +26,7 @@ class PlatformView(ConstructionView):
         self._state.preview.clear()
 
         # handle the platform target preview
-        target = find_platform_target(self._railway, world_pos, self._camera.scale)
+        target = find_platform_target(self._railway, world_pos, self._camera.scale, self._state.platform_edge_count)
         if target.kind is PlatformTargetType.INVALID:
             draw_node(self._surface, world_pos, self._camera, color=Color.PURPLE)
             return

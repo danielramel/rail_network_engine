@@ -14,12 +14,12 @@ class PlatformTarget:
     edges: Optional[Set[Any]] = None
     is_valid: bool = False
 
-def find_platform_target(railway: RailwaySystem, world_pos: Position, camera_scale) -> PlatformTarget:
+def find_platform_target(railway: RailwaySystem, world_pos: Position, camera_scale, platform_edge_count) -> PlatformTarget:
     closest_edge = railway.graph_service.get_closest_edge_on_grid(world_pos, camera_scale)
     if closest_edge is None or \
         not railway.graph.has_edge(closest_edge) or \
         railway.stations.is_edge_platform(closest_edge):
         return PlatformTarget(kind=PlatformTargetType.INVALID, closest_edge=None)
     
-    is_valid, edges = railway.graph_service.calculate_platform_preview(closest_edge)
+    is_valid, edges = railway.graph_service.calculate_platform_preview(closest_edge, platform_edge_count)
     return PlatformTarget(kind=PlatformTargetType.PREVIEW, closest_edge=closest_edge, edges=edges, is_valid=is_valid)

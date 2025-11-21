@@ -34,12 +34,12 @@ class RailPanel(ConstructionToolPanel):
     @property
     def can_decrease_speed(self) -> bool:
         """Check if speed can be decreased."""
-        return self._construction_state.track_speed > self.MIN_SPEED
+        return self._state.track_speed > self.MIN_SPEED
     
     @property
     def can_increase_speed(self) -> bool:
         """Check if speed can be increased."""
-        return self._construction_state.track_speed < self.MAX_SPEED
+        return self._state.track_speed < self.MAX_SPEED
        
     def _init_layout(self) -> None:
         """Compute and persist all rects for layout."""
@@ -107,10 +107,10 @@ class RailPanel(ConstructionToolPanel):
     
     def _adjust_speed(self, delta: int) -> None:
         """Adjust track speed by delta, clamping to valid range."""
-        self._construction_state.track_speed += delta
-        self._construction_state.track_speed = max(
+        self._state.track_speed += delta
+        self._state.track_speed = max(
             self.MIN_SPEED, 
-            min(self.MAX_SPEED, self._construction_state.track_speed)
+            min(self.MAX_SPEED, self._state.track_speed)
         )
        
     def render(self, screen_pos) -> None:
@@ -128,7 +128,7 @@ class RailPanel(ConstructionToolPanel):
         self._render_button(self.speed_plus_rect, self.plus_text, self.can_increase_speed)
         
         # Speed value
-        speed_val = f"{self._construction_state.track_speed} km/h"
+        speed_val = f"{self._state.track_speed} km/h"
         speed_surface = self.instruction_font.render(speed_val, True, Color.YELLOW)
         self._surface.blit(speed_surface, speed_surface.get_rect(center=self.speed_center))
         
@@ -136,7 +136,7 @@ class RailPanel(ConstructionToolPanel):
         self._surface.blit(self.length_label_surface, self.length_label_rect)
         
         # Length toggle buttons
-        is_short = self._construction_state.track_length == self.SHORT_LENGTH
+        is_short = self._state.track_length == self.SHORT_LENGTH
         self._render_toggle_button(self.length_short_rect, "50 m", is_short)
         self._render_toggle_button(self.length_long_rect, "500 m", not is_short)
 
@@ -156,11 +156,11 @@ class RailPanel(ConstructionToolPanel):
         
         # Length toggle
         if self.length_short_rect.collidepoint(*event.screen_pos):
-            self._construction_state.track_length = self.SHORT_LENGTH
+            self._state.track_length = self.SHORT_LENGTH
             return True
         
         if self.length_long_rect.collidepoint(*event.screen_pos):
-            self._construction_state.track_length = self.LONG_LENGTH
+            self._state.track_length = self.LONG_LENGTH
             return True
         
         return self._rect.collidepoint(*event.screen_pos)
