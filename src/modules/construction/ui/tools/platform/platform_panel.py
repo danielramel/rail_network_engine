@@ -1,6 +1,6 @@
 import pygame
 from core.config.color import Color
-from core.config.settings import Settings
+from core.config.settings import Config
 from modules.construction.models.construction_state import ConstructionState
 from modules.construction.models.construction_panel import ConstructionToolPanel
 from core.models.event import Event
@@ -114,7 +114,7 @@ class PlatformPanel(ConstructionToolPanel):
         self._render_button(self.length_plus_rect, self.plus_text, self.can_increase_length)
         
         # Length value
-        length_val = f"{self._state.platform_edge_count * Settings.SHORT_SEGMENT_LENGTH} m"
+        length_val = f"{self._state.platform_edge_count * Config.SHORT_SEGMENT_LENGTH} m"
         length_surface = self.instruction_font.render(length_val, True, Color.YELLOW)
         self._surface.blit(length_surface, length_surface.get_rect(center=self.length_center))
     

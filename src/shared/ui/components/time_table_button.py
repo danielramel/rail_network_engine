@@ -5,7 +5,7 @@ from core.models.geometry.position import Position
 from shared.ui.models.rectangle import RectangleUIComponent
 from core.config.color import Color
 from core.config.paths import ICON_PATHS
-from core.config.settings import Settings
+from core.config.settings import Config
 from modules.timetable.timetable_view import TimetableWindow
 from core.models.event import Event
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
@@ -16,8 +16,8 @@ class TimeTableButton(RectangleUIComponent, ShortcutUIComponent, ClickableUIComp
     def __init__(self, surface: pygame.Surface, railway: RailwaySystem):
         self._railway = railway
 
-        self._icon = IconLoader().get_icon(ICON_PATHS["TIMETABLE"], Settings.BUTTON_SIZE)
-        rect = pygame.Rect(Settings.BUTTON_SIZE//5, 300, Settings.BUTTON_SIZE, Settings.BUTTON_SIZE)
+        self._icon = IconLoader().get_icon(ICON_PATHS["TIMETABLE"], Config.BUTTON_SIZE)
+        rect = pygame.Rect(Config.BUTTON_SIZE//5, 300, Config.BUTTON_SIZE, Config.BUTTON_SIZE)
         super().__init__(rect, surface)
         self.timetable_window = None  # Store window reference
         self._shortcuts = {

@@ -1,11 +1,8 @@
-class Settings:
+class Config:
     GRID_SIZE = 40
     BUTTON_SIZE = 50
     STATION_RECT_SIZE = (GRID_SIZE * 4, GRID_SIZE)
     FPS = 30
 
-    TRAIN_CAR_COUNT = 2
-    TRAIN_CAR_LENGTH = 40  # in meters
-    TRAIN_CAR_GAP = 10      # in meters
     SHORT_SEGMENT_LENGTH = 50
     LONG_SEGMENT_LENGTH = 500

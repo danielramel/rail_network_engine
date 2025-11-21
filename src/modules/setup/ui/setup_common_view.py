@@ -46,5 +46,5 @@ class SetupCommonView(ClickableUIComponent, FullScreenUIComponent):
             draw_train(self._surface, train, self._camera, TRAINDRAWACTION.SHUTDOWN)
 
         if self._state.preview.edge is not None and self._state.preview.action is SetupAction.ADD:
-            train = self._railway.trains.get_preview_train_on_platform_edge(self._state.preview.edge)
+            train = self._railway.trains.get_preview_train_on_platform_edge(self._state.preview.edge, self._state.train_config)
             draw_train(self._surface, train, self._camera, TRAINDRAWACTION.SHUTDOWN)

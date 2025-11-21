@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict
-from core.config.settings import Settings
+from core.config.settings import Config
 from math import hypot, floor
 
 from typing import TYPE_CHECKING
@@ -31,27 +31,27 @@ class Position:
         
         if self == other:
             return ValueError("Same Point")
-        if abs(self.x - other.x) / Settings.GRID_SIZE > 1 or abs(self.y - other.y) / Settings.GRID_SIZE > 1:
+        if abs(self.x - other.x) / Config.GRID_SIZE > 1 or abs(self.y - other.y) / Config.GRID_SIZE > 1:
             raise ValueError("Points are not adjacent")
 
         return Direction(signum(other.x - self.x), signum(other.y - self.y))
     
     def heuristic_to(self, other: 'Position') -> float:
         """Use chebysev distance as heuristic for A* pathfinding."""
-        return max(abs(self.x - other.x), abs(self.y - other.y)) / Settings.GRID_SIZE
+        return max(abs(self.x - other.x), abs(self.y - other.y)) / Config.GRID_SIZE
 
 
     def snap_to_grid(self) -> 'Position':
         """Create a new Point snapped to the grid."""
-        snapped_x = round(self.x / Settings.GRID_SIZE) * Settings.GRID_SIZE
-        snapped_y = round(self.y / Settings.GRID_SIZE) * Settings.GRID_SIZE
+        snapped_x = round(self.x / Config.GRID_SIZE) * Config.GRID_SIZE
+        snapped_y = round(self.y / Config.GRID_SIZE) * Config.GRID_SIZE
         return Position(snapped_x, snapped_y)
     
     def station_rect_overlaps(self, other: 'Position') -> bool:
         """Check if station rectangles at this point and another point overlap."""
-        w, h = Settings.STATION_RECT_SIZE
-        w += Settings.GRID_SIZE
-        h += Settings.GRID_SIZE
+        w, h = Config.STATION_RECT_SIZE
+        w += Config.GRID_SIZE
+        h += Config.GRID_SIZE
         return (
             abs(self.x - other.x) < w and
             abs(self.y - other.y) < h
@@ -59,7 +59,7 @@ class Position:
     
     def is_within_station_rect(self, center: 'Position') -> bool:
         """Check if this point is within the station rectangle centered at another point."""
-        w, h = Settings.STATION_RECT_SIZE
+        w, h = Config.STATION_RECT_SIZE
         return (
             abs(center.x - self.x) * 2 < w + 1 and
             abs(center.y - self.y) * 2 < h + 1
@@ -72,14 +72,14 @@ class Position:
     def get_grid_edges(self) -> tuple['Edge']:
         from core.models.geometry.edge import Edge
         """Get the edges of the grid cell containing this position."""
-        cell_x = floor(self.x / Settings.GRID_SIZE) * Settings.GRID_SIZE
-        cell_y = floor(self.y / Settings.GRID_SIZE) * Settings.GRID_SIZE
+        cell_x = floor(self.x / Config.GRID_SIZE) * Config.GRID_SIZE
+        cell_y = floor(self.y / Config.GRID_SIZE) * Config.GRID_SIZE
 
         corners = (
             Position(cell_x, cell_y),
-            Position(cell_x + Settings.GRID_SIZE, cell_y),
-            Position(cell_x + Settings.GRID_SIZE, cell_y + Settings.GRID_SIZE),
-            Position(cell_x, cell_y + Settings.GRID_SIZE),
+            Position(cell_x + Config.GRID_SIZE, cell_y),
+            Position(cell_x + Config.GRID_SIZE, cell_y + Config.GRID_SIZE),
+            Position(cell_x, cell_y + Config.GRID_SIZE),
         )
 
         return (

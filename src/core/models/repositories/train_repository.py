@@ -1,5 +1,5 @@
 from core.models.geometry.edge import Edge
-from core.models.train import Train
+from core.models.train import Train, TrainConfig
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -30,17 +30,17 @@ class TrainRepository:
     def get(self, train_id: int) -> Train:
         return self._trains[train_id]
     
-    def add_to_platform_edge(self, edge: Edge) -> int:
+    def add_to_platform_edge(self, edge: Edge, config: TrainConfig) -> int:
         platform = [edge.ordered() for edge in sorted(self._railway.stations.get_platform_from_edge(edge))]
         id = self._generate_id()
-        train = Train(id, platform, self._railway)
+        train = Train(id, platform, self._railway, config)
 
         self._trains[id] = train
         self._railway.signalling.lock_path(platform)
         return id
     
-    def get_preview_train_on_platform_edge(self, edge: Edge) -> Train:
+    def get_preview_train_on_platform_edge(self, edge: Edge, config: TrainConfig) -> Train:
         platform = [edge.ordered() for edge in sorted(self._railway.stations.get_platform_from_edge(edge))]
         id = -1  # Preview trains have negative IDs
-        train = Train(id, platform, self._railway)
+        train = Train(id, platform, self._railway, config)
         return train

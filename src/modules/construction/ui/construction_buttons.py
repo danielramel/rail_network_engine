@@ -6,7 +6,7 @@ from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from core.config.color import Color
 from modules.construction.models.construction_state import ConstructionTool, ConstructionState
 from core.config.paths import ICON_PATHS
-from core.config.settings import Settings
+from core.config.settings import Config
 from core.config.keyboard_shortcuts import CONSTRUCTION_TOOL_SELECTION
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 
@@ -15,7 +15,7 @@ class ConstructionButtons(ShortcutUIComponent, ClickableUIComponent):
     handled_events = [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEWHEEL, pygame.KEYDOWN]
     def __init__(self, surface: pygame.Surface, construction_state: ConstructionState):
         self.icon_cache = {
-            tool: IconLoader().get_icon(ICON_PATHS[tool.name], Settings.BUTTON_SIZE)
+            tool: IconLoader().get_icon(ICON_PATHS[tool.name], Config.BUTTON_SIZE)
             for tool in ConstructionTool
         }
         self.buttons = self._get_buttons(surface)
@@ -56,18 +56,18 @@ class ConstructionButtons(ShortcutUIComponent, ClickableUIComponent):
 
 
     def _get_buttons(self, surface: pygame.Surface) -> list[tuple[ConstructionTool, pygame.Rect]]:
-        button_margin = Settings.BUTTON_SIZE // 5
+        button_margin = Config.BUTTON_SIZE // 5
         _, h = surface.get_size()
         buttons = []
         for i, tool in enumerate(ConstructionTool):
-            offset = (Settings.BUTTON_SIZE + button_margin) * i
+            offset = (Config.BUTTON_SIZE + button_margin) * i
             if tool is ConstructionTool.BULLDOZE:
-                offset += (Settings.BUTTON_SIZE + button_margin)
+                offset += (Config.BUTTON_SIZE + button_margin)
             rect = pygame.Rect(
                 button_margin + offset,
-                h - Settings.BUTTON_SIZE - button_margin,
-                Settings.BUTTON_SIZE,
-                Settings.BUTTON_SIZE
+                h - Config.BUTTON_SIZE - button_margin,
+                Config.BUTTON_SIZE,
+                Config.BUTTON_SIZE
             )
             buttons.append((tool, rect))
         return buttons

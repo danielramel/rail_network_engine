@@ -1,4 +1,4 @@
-from core.config.settings import Settings
+from core.config.settings import Config
 from core.models.geometry import Position, Pose
 from collections import deque
 from core.models.geometry.edge import Edge
@@ -120,7 +120,7 @@ class GraphService:
         def is_edge_blocked(edge: Edge) -> bool:
             if not self._railway.graph.has_edge(edge):
                 return True
-            if self._railway.graph.get_edge_length(edge) != Settings.SHORT_SEGMENT_LENGTH:
+            if self._railway.graph.get_edge_length(edge) != Config.SHORT_SEGMENT_LENGTH:
                 return True
             if self._railway.stations.is_edge_platform(edge):
                 return True
@@ -169,7 +169,7 @@ class GraphService:
     
     def get_closest_edge_on_grid(self, world_pos: Position, camera_scale) -> Edge | None:        
         min_edge = None
-        min_distance = Settings.GRID_SIZE / 3 / camera_scale + 1
+        min_distance = Config.GRID_SIZE / 3 / camera_scale + 1
         for edge in world_pos.get_grid_edges():
             if not self._railway.graph.has_edge(edge):
                 continue

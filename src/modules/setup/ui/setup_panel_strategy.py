@@ -8,7 +8,7 @@ class SetupPanelStrategy(Panel):
     def __init__(self, screen: pygame.Surface, state: SetupState):
         self._state = state
         self._panels: dict[SetupTool, Panel] = {
-            SetupTool.PLACE_TRAIN: TrainPlacementPanel(screen),
+            SetupTool.PLACE_TRAIN: TrainPlacementPanel(screen, state),
             SetupTool.REMOVE_TRAIN: TrainRemovalPanel(screen),
         }
 

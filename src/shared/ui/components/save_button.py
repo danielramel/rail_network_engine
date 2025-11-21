@@ -4,7 +4,7 @@ from core.models.railway.railway_system import RailwaySystem
 from core.graphics.icon_loader import IconLoader
 from core.models.geometry.position import Position
 from core.config.color import Color
-from core.config.settings import Settings
+from core.config.settings import Config
 from shared.ui.models.rectangle import RectangleUIComponent
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 from core.models.event import Event
@@ -16,9 +16,9 @@ import json
 class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent):
     _save_timestamp: int = -5000
     def __init__(self, surface: pygame.Surface, railway: RailwaySystem, app_state: AppState) -> None:
-        self._icon = IconLoader().get_icon(ICON_PATHS["SAVE"], Settings.BUTTON_SIZE)
-        self._saved_icon = IconLoader().get_icon(ICON_PATHS["SAVED"], Settings.BUTTON_SIZE)
-        rect = pygame.Rect(200, Settings.BUTTON_SIZE//5, Settings.BUTTON_SIZE, Settings.BUTTON_SIZE)
+        self._icon = IconLoader().get_icon(ICON_PATHS["SAVE"], Config.BUTTON_SIZE)
+        self._saved_icon = IconLoader().get_icon(ICON_PATHS["SAVED"], Config.BUTTON_SIZE)
+        rect = pygame.Rect(200, Config.BUTTON_SIZE//5, Config.BUTTON_SIZE, Config.BUTTON_SIZE)
         super().__init__(rect, surface)
         self._railway = railway
         self._app_state = app_state

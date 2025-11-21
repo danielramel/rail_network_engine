@@ -1,7 +1,7 @@
 import pygame
 from core.config.color import Color
 
-from core.config.settings import Settings
+from core.config.settings import Config
 from core.graphics.camera import Camera
 from core.models.geometry import Position
 from core.models.geometry.edge import Edge
@@ -31,9 +31,9 @@ def draw_track(surface: pygame.Surface, world_edge: Edge, camera: Camera, edge_a
 
 def draw_rail(surface: pygame.Surface, edge: Edge, camera: Camera, color: tuple[int, int, int], length: int) -> None:
     """Draw a track as a dotted line on the surface from edge.a to edge.b."""
-    if length == Settings.SHORT_SEGMENT_LENGTH:
+    if length == Config.SHORT_SEGMENT_LENGTH:
         pygame.draw.aaline(surface, color, tuple(edge.a), tuple(edge.b), max(1, 2*int(camera.scale)))
-    elif length == Settings.LONG_SEGMENT_LENGTH:
+    elif length == Config.LONG_SEGMENT_LENGTH:
         draw_long_track(surface, edge, color=color, width=2*camera.scale)
     else:
         raise NotImplementedError("Edge length drawing not implemented for length:", length)

@@ -7,7 +7,7 @@ from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 from core.config.color import Color
 from core.config.paths import ICON_PATHS
-from core.config.settings import Settings
+from core.config.settings import Config
 from core.models.event import Event
 from core.config.keyboard_shortcuts import MODE_SELECTION
 
@@ -15,7 +15,7 @@ from core.config.keyboard_shortcuts import MODE_SELECTION
 class ModeSelectorButtons(ShortcutUIComponent, ClickableUIComponent):
     def __init__(self, graphics: GraphicsContext, app_state: AppState):
         self.icon_cache = {
-            mode: IconLoader().get_icon(ICON_PATHS[mode.name], Settings.BUTTON_SIZE)
+            mode: IconLoader().get_icon(ICON_PATHS[mode.name], Config.BUTTON_SIZE)
             for mode in ViewMode
         }
         self._buttons = self._get_buttons(graphics.screen)
@@ -65,15 +65,15 @@ class ModeSelectorButtons(ShortcutUIComponent, ClickableUIComponent):
         return any(btn.collidepoint(*screen_pos) for _, btn in self._buttons)
 
     def _get_buttons(self, surface: pygame.Surface) -> list[tuple[ViewMode, pygame.Rect]]:
-        button_margin = Settings.BUTTON_SIZE // 5
+        button_margin = Config.BUTTON_SIZE // 5
         _, h = surface.get_size()
         buttons = []
         for i, mode in enumerate(ViewMode):
             rect = pygame.Rect(
                 button_margin,  # x: margin from the left edge
-                button_margin + i * (Settings.BUTTON_SIZE + button_margin),  # y: stacked from top with margin
-                Settings.BUTTON_SIZE,
-                Settings.BUTTON_SIZE
+                button_margin + i * (Config.BUTTON_SIZE + button_margin),  # y: stacked from top with margin
+                Config.BUTTON_SIZE,
+                Config.BUTTON_SIZE
             )
             buttons.append((mode, rect))
         return buttons

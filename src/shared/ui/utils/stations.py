@@ -2,11 +2,11 @@ from core.config.color import Color
 from core.graphics.camera import Camera
 from core.models.station import Station
 import pygame
-from core.config.settings import Settings
+from core.config.settings import Config
 
 def draw_station(surface: pygame.Surface, station: Station, camera: Camera, color=Color.PURPLE):
     width = max(1, int(round(3 * camera.scale)))
-    w, h = Settings.STATION_RECT_SIZE
+    w, h = Config.STATION_RECT_SIZE
     rect = pygame.Rect(0, 0, w * camera.scale, h * camera.scale)
     rect.center = tuple(camera.world_to_screen(station.position))
     pygame.draw.rect(surface, Color.BLACK, rect)

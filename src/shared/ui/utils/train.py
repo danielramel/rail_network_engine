@@ -5,7 +5,6 @@ from core.config.color import Color
 from core.models.train import Train
 from enum import Enum, auto
 from core.models.geometry.position import Position
-from core.config.settings import Settings
 
 class TRAINDRAWACTION(Enum):
     SHUTDOWN = auto()
@@ -34,7 +33,7 @@ def draw_train(screen: pygame.Surface, train: Train, camera: Camera, action: TRA
     rail = rails[rail_i]
     car_i = 0
     remainder = None
-    while car_i < Settings.TRAIN_CAR_COUNT:
+    while car_i < train.config.car_count:
         if distance >= rail.length:
             distance -= rail.length
             rail_i += 1
@@ -48,11 +47,11 @@ def draw_train(screen: pygame.Surface, train: Train, camera: Camera, action: TRA
             continue
         
         start = distance / rail.length
-        end = (distance + Settings.TRAIN_CAR_LENGTH) / rail.length
+        end = (distance + train.config.car_length) / rail.length
         draw_occupied_edge(screen, rail.edge.a, rail.edge.b, camera, color, start, end)
         
         
-        distance += Settings.TRAIN_CAR_LENGTH + Settings.TRAIN_CAR_GAP
+        distance += train.config.car_length + train.config.car_gap
         if end > 1.0:
             remainder = (end - 1.0) * rail.length
             continue
