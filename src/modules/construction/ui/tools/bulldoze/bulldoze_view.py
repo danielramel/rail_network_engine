@@ -16,9 +16,9 @@ class BulldozeView(ConstructionView):
         if target.kind == BulldozeTargetType.SIGNAL:
             self._state.preview.nodes = frozenset((target.position,))
         elif target.kind == BulldozeTargetType.STATION:
-            draw_station(self._surface, self._railway.stations.get_by_position(target.position), self._camera, color=Color.RED)
+            draw_station(self._screen, self._railway.stations.get_by_position(target.position), self._camera, color=Color.RED)
         elif target.kind == BulldozeTargetType.NONE:
-            draw_node(self._surface, world_pos, self._camera, color=Color.RED)
+            draw_node(self._screen, world_pos, self._camera, color=Color.RED)
         elif target.kind == BulldozeTargetType.PLATFORM:
             self._state.preview.edges = target.edges
             self._state.preview.edge_action = EdgeAction.SPEED

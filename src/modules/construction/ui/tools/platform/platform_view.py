@@ -15,11 +15,11 @@ class PlatformView(ConstructionView):
             middle_point = self._railway.stations.get_middle_of_platform(self._state.preview.edges)
             for station in self._railway.stations.all():
                 if world_pos.is_within_station_rect(station.position):
-                    draw_station(self._surface, station, self._camera, color=Color.LIGHTBLUE)
-                    draw_dotted_line(self._surface, station.position, middle_point, self._camera, color=Color.LIGHTBLUE)
+                    draw_station(self._screen, station, self._camera, color=Color.LIGHTBLUE)
+                    draw_dotted_line(self._screen, station.position, middle_point, self._camera, color=Color.LIGHTBLUE)
                     break
             else:
-                draw_dotted_line(self._surface, world_pos, middle_point, self._camera, color=Color.LIGHTBLUE)
+                draw_dotted_line(self._screen, world_pos, middle_point, self._camera, color=Color.LIGHTBLUE)
             return
 
         # reset preview edges/state
@@ -28,7 +28,7 @@ class PlatformView(ConstructionView):
         # handle the platform target preview
         target = find_platform_target(self._railway, world_pos, self._camera.scale, self._state.platform_edge_count)
         if target.kind is PlatformTargetType.INVALID:
-            draw_node(self._surface, world_pos, self._camera, color=Color.PURPLE)
+            draw_node(self._screen, world_pos, self._camera, color=Color.PURPLE)
             return
 
         self._state.preview.edges = target.edges

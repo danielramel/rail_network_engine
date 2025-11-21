@@ -15,11 +15,11 @@ import json
 
 class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent):
     _save_timestamp: int = -5000
-    def __init__(self, surface: pygame.Surface, railway: RailwaySystem, app_state: AppState) -> None:
+    def __init__(self, screen: pygame.Surface, railway: RailwaySystem, app_state: AppState) -> None:
         self._icon = IconLoader().get_icon(ICON_PATHS["SAVE"], Config.BUTTON_SIZE)
         self._saved_icon = IconLoader().get_icon(ICON_PATHS["SAVED"], Config.BUTTON_SIZE)
         rect = pygame.Rect(200, Config.BUTTON_SIZE//5, Config.BUTTON_SIZE, Config.BUTTON_SIZE)
-        super().__init__(rect, surface)
+        super().__init__(rect, screen)
         self._railway = railway
         self._app_state = app_state
         self._shortcuts = {
@@ -31,7 +31,7 @@ class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
             self.save_game_dialog()
 
     def render(self, screen_pos: Position) -> None:
-        pygame.draw.rect(self._surface, Color.BLACK, self._rect, border_radius=10)
+        pygame.draw.rect(self._screen, Color.BLACK, self._rect, border_radius=10)
         current_time = pygame.time.get_ticks()
         if current_time - self._save_timestamp < 3000:  # 3 seconds
             icon = self._saved_icon
@@ -39,8 +39,8 @@ class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
             icon = self._icon
         
         icon_rect = icon.get_rect(center=self._rect.center)
-        self._surface.blit(icon, icon_rect)
-        pygame.draw.rect(self._surface, Color.WHITE, self._rect, 2, border_radius=10)
+        self._screen.blit(icon, icon_rect)
+        pygame.draw.rect(self._screen, Color.WHITE, self._rect, 2, border_radius=10)
         
     def save_game(self):
         if self._app_state.filename is not None:

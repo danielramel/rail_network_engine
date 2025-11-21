@@ -7,8 +7,8 @@ from shared.ui.models.panel import Panel
 class TrainPlacementPanel(Panel):
     """Signal placement panel with instructions."""
     
-    def __init__(self, surface: pygame.Surface, state: SetupState) -> None:
-        super().__init__(surface, width=500, height=200)
+    def __init__(self, screen: pygame.Surface, state: SetupState) -> None:
+        super().__init__(screen, width=500, height=200)
         self._state = state
         
         self._param_ranges = {
@@ -21,8 +21,8 @@ class TrainPlacementPanel(Panel):
         }
         
         # Pre-render static text
-        self.title_surface = self.title_font.render("Train Placement", True, Color.YELLOW)
-        self.instruction1_surface = self.instruction_font.render(
+        self.title_screen = self.title_font.render("Train Placement", True, Color.YELLOW)
+        self.instruction1_screen = self.instruction_font.render(
             "Click on rail to place train.", True, Color.WHITE
         )
         
@@ -32,13 +32,13 @@ class TrainPlacementPanel(Panel):
     def _init_layout(self) -> None:
         """Compute and persist all rects for layout."""
         # Title position
-        self.title_rect = self.title_surface.get_rect(
+        self.title_rect = self.title_screen.get_rect(
             centerx=self._rect.centerx, 
             top=self._rect.top + self.padding
         )
         
         # Instruction positions
-        self.instruction1_rect = self.instruction1_surface.get_rect(
+        self.instruction1_rect = self.instruction1_screen.get_rect(
             left=self._rect.left + self.padding,
             top=self.title_rect.bottom + 20
         )
@@ -73,10 +73,10 @@ class TrainPlacementPanel(Panel):
         super().render(screen_pos)  # background and border
 
         # Title
-        self._surface.blit(self.title_surface, self.title_rect)
+        self._screen.blit(self.title_screen, self.title_rect)
         
         # Instructions
-        self._surface.blit(self.instruction1_surface, self.instruction1_rect)
+        self._screen.blit(self.instruction1_screen, self.instruction1_rect)
         
         # Parameter controls
         train_config = self._state.train_config
@@ -125,31 +125,31 @@ class TrainPlacementPanel(Panel):
         y_pos = minus_rect.top
         
         text = f"{label}:"
-        surface = self.instruction_font.render(text, True, Color.WHITE)
-        self._surface.blit(surface, (minus_rect.x, y_pos - 18))
+        screen = self.instruction_font.render(text, True, Color.WHITE)
+        self._screen.blit(screen, (minus_rect.x, y_pos - 18))
         
         min_val, max_val, _ = self._param_ranges[param_key]
         can_decrease = value > min_val
         self._render_small_button(minus_rect, "-", can_decrease)
         
         value_text = f"{value:.1f} {unit}" if isinstance(value, float) else f"{value} {unit}"
-        value_surface = self.instruction_font.render(value_text, True, Color.YELLOW)
+        value_screen = self.instruction_font.render(value_text, True, Color.YELLOW)
         center_x = (minus_rect.right + plus_rect.left) // 2
-        self._surface.blit(value_surface, value_surface.get_rect(center=(center_x, minus_rect.centery)))
+        self._screen.blit(value_screen, value_screen.get_rect(center=(center_x, minus_rect.centery)))
         
         can_increase = value < max_val
         self._render_small_button(plus_rect, "+", can_increase)
 
     def _render_small_button(self, rect, text, enabled):
         if enabled:
-            pygame.draw.rect(self._surface, Color.BLACK, rect, border_radius=4)
-            pygame.draw.rect(self._surface, Color.WHITE, rect, width=2, border_radius=4)
-            text_surface = self.instruction_font.render(text, True, Color.WHITE)
+            pygame.draw.rect(self._screen, Color.BLACK, rect, border_radius=4)
+            pygame.draw.rect(self._screen, Color.WHITE, rect, width=2, border_radius=4)
+            text_screen = self.instruction_font.render(text, True, Color.WHITE)
         else:
-            pygame.draw.rect(self._surface, Color.DARKGREY, rect, border_radius=4)
-            text_surface = self.instruction_font.render(text, True, Color.GREY)
+            pygame.draw.rect(self._screen, Color.DARKGREY, rect, border_radius=4)
+            text_screen = self.instruction_font.render(text, True, Color.GREY)
         
-        self._surface.blit(text_surface, text_surface.get_rect(center=rect.center))
+        self._screen.blit(text_screen, text_screen.get_rect(center=rect.center))
 
     def _adjust_param(self, param_key, direction):
         min_val, max_val, increment = self._param_ranges[param_key]

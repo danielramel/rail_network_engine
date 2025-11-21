@@ -12,14 +12,14 @@ from core.config.keyboard_shortcuts import SETUP_TOOL_SELECTION
 
 
 class SetupButtons(ShortcutUIComponent, ClickableUIComponent):
-    def __init__(self, surface: pygame.Surface, setup_state: SetupState):
+    def __init__(self, screen: pygame.Surface, setup_state: SetupState):
         self.icon_cache = {
             tool: IconLoader().get_icon(ICON_PATHS[tool.name], Config.BUTTON_SIZE)
             for tool in SetupTool
         }
-        self.buttons = self._get_buttons(surface)
+        self.buttons = self._get_buttons(screen)
         self._state = setup_state
-        self._surface = surface
+        self._screen = screen
         
         self._shortcuts = {
             (key, False): lambda tool=tool: self._state.switch_tool(tool)
@@ -38,25 +38,25 @@ class SetupButtons(ShortcutUIComponent, ClickableUIComponent):
     def render(self, screen_pos: Position) -> None:
         for tool, btn_rect in self.buttons:
         # Draw a solid background for the button (not transparent)
-            pygame.draw.rect(self._surface, Color.BLACK, btn_rect, border_radius=10)
+            pygame.draw.rect(self._screen, Color.BLACK, btn_rect, border_radius=10)
 
             icon = self.icon_cache[tool]
             icon_rect = icon.get_rect(center=btn_rect.center)
-            self._surface.blit(icon, icon_rect)
+            self._screen.blit(icon, icon_rect)
 
             if tool == self._state.tool:
                 color = Color.YELLOW if not self._state.tool is SetupTool.REMOVE_TRAIN else Color.RED
-                pygame.draw.rect(self._surface, color, btn_rect.inflate(10, 10), 5, border_radius=10)
+                pygame.draw.rect(self._screen, color, btn_rect.inflate(10, 10), 5, border_radius=10)
             else:
-                pygame.draw.rect(self._surface, Color.WHITE, btn_rect.inflate(-2, -2), 1, border_radius=10)
+                pygame.draw.rect(self._screen, Color.WHITE, btn_rect.inflate(-2, -2), 1, border_radius=10)
 
     def contains(self, screen_pos: Position) -> bool:
         return any(btn.collidepoint(*screen_pos) for _, btn in self.buttons)
 
 
-    def _get_buttons(self, surface: pygame.Surface) -> list[tuple[SetupTool, pygame.Rect]]:
+    def _get_buttons(self, screen: pygame.Surface) -> list[tuple[SetupTool, pygame.Rect]]:
         button_margin = Config.BUTTON_SIZE // 5
-        _, h = surface.get_size()
+        _, h = screen.get_size()
         buttons = []
         for i, tool in enumerate(SetupTool):
             rect = pygame.Rect(

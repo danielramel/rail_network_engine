@@ -15,4 +15,4 @@ class TrainPlacementView(SetupView):
             self._state.preview.action = SetupAction.ADD
             
         else:
-            draw_node(self._surface, world_pos, self._camera, color=Color.YELLOW)
+            draw_node(self._screen, world_pos, self._camera, color=Color.YELLOW)

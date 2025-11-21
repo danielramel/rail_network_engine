@@ -5,7 +5,7 @@ from modules.construction.models.construction_state import ConstructionState
 class ConstructionToolPanel(Panel):
     """Base class for construction panels."""
     
-    def __init__(self, surface: pygame.Surface, state: ConstructionState) -> None:
-        super().__init__(surface)
+    def __init__(self, screen: pygame.Surface, state: ConstructionState) -> None:
+        super().__init__(screen)
         
         self._state = state

@@ -12,12 +12,12 @@ from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 class SetupCommonView(ClickableUIComponent, FullScreenUIComponent):
     def __init__(self, railway: RailwaySystem, setup_state: SetupState, graphics: GraphicsContext):
         self._railway = railway
-        self._surface = graphics.screen
+        self._screen = graphics.screen
         self._camera = graphics.camera
         self._state = setup_state
 
     def render(self, screen_pos: Position | None) -> None:        
-        draw_grid(self._surface, self._camera)
+        draw_grid(self._screen, self._camera)
         for edge, data in self._railway.graph.all_edges_with_data():
             speed = data.get('speed')
             length = data.get('length')
@@ -29,22 +29,22 @@ class SetupCommonView(ClickableUIComponent, FullScreenUIComponent):
             else:
                 edge_action = EdgeAction.SPEED
 
-            draw_track(self._surface, edge, self._camera, edge_action, length=length, speed=speed)
+            draw_track(self._screen, edge, self._camera, edge_action, length=length, speed=speed)
 
         for node in self._railway.graph_service.junctions:
-            draw_node(self._surface, node, self._camera, color=Color.WHITE, junction=True)
+            draw_node(self._screen, node, self._camera, color=Color.WHITE, junction=True)
 
         for signal in self._railway.signals.all():
-            draw_signal(self._surface, signal, self._camera, Color.RED)
+            draw_signal(self._screen, signal, self._camera, Color.RED)
 
         for station in self._railway.stations.all():
-            draw_station(self._surface, station, self._camera)
+            draw_station(self._screen, station, self._camera)
 
         for train in self._railway.trains.all():
             if train.occupies_edge(self._state.preview.edge) and self._state.preview.action is SetupAction.REMOVE:
                 continue
-            draw_train(self._surface, train, self._camera, TRAINDRAWACTION.SHUTDOWN)
+            draw_train(self._screen, train, self._camera, TRAINDRAWACTION.SHUTDOWN)
 
         if self._state.preview.edge is not None and self._state.preview.action is SetupAction.ADD:
             train = self._railway.trains.get_preview_train_on_platform_edge(self._state.preview.edge, self._state.train_config)
-            draw_train(self._surface, train, self._camera, TRAINDRAWACTION.SHUTDOWN)
+            draw_train(self._screen, train, self._camera, TRAINDRAWACTION.SHUTDOWN)

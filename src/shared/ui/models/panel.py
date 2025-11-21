@@ -6,16 +6,16 @@ import pygame
 
 class Panel(RectangleUIComponent, ClickableUIComponent):
     def __init__(self, screen: pygame.Surface, x: int = None, y: int = None, height: int = 160, width: int = 400) -> None:
-        self._surface = screen
+        self._screen = screen
         self._rect = self._get_panel_rect(x, y, height, width)
                 
         self.padding: int = 15
         self.title_font = pygame.font.SysFont(None, 28)
         self.instruction_font = pygame.font.SysFont(None, 22)
-        # cannot call super method because _surface needs to be set first
+        # cannot call super method because _screen needs to be set first
         
     def _get_panel_rect(self, x:int, y:int, height: int, width: int) -> pygame.Rect:
-        screen_w, screen_h = self._surface.get_size()
+        screen_w, screen_h = self._screen.get_size()
         if x is None:
             x = (screen_w - width) // 2
         elif x < 0:
@@ -30,5 +30,5 @@ class Panel(RectangleUIComponent, ClickableUIComponent):
         return pygame.Rect(x, y, width, height)
     
     def render(self, screen_pos: Position) -> None:
-        pygame.draw.rect(self._surface, Color.BLACK, self._rect, border_radius=8)
-        pygame.draw.rect(self._surface, Color.WHITE, self._rect, 2, border_radius=8)
+        pygame.draw.rect(self._screen, Color.BLACK, self._rect, border_radius=8)
+        pygame.draw.rect(self._screen, Color.WHITE, self._rect, 2, border_radius=8)

@@ -64,9 +64,9 @@ class ModeSelectorButtons(ShortcutUIComponent, ClickableUIComponent):
     def contains(self, screen_pos: Position) -> bool:
         return any(btn.collidepoint(*screen_pos) for _, btn in self._buttons)
 
-    def _get_buttons(self, surface: pygame.Surface) -> list[tuple[ViewMode, pygame.Rect]]:
+    def _get_buttons(self, screen: pygame.Surface) -> list[tuple[ViewMode, pygame.Rect]]:
         button_margin = Config.BUTTON_SIZE // 5
-        _, h = surface.get_size()
+        _, h = screen.get_size()
         buttons = []
         for i, mode in enumerate(ViewMode):
             rect = pygame.Rect(

@@ -34,14 +34,14 @@ class TimeDisplay(RectangleUIComponent, ClickableUIComponent):
         secs_s = _format_part(secs)
 
         time_text = f"{hours_s}:{minutes_s}:{secs_s}"
-        text_surface = font.render(time_text, True, Color.WHITE)
+        text_screen = font.render(time_text, True, Color.WHITE)
         rect = self._get_rect(self._screen)
-        text_rect = text_surface.get_rect(center=rect.center)
-        self._screen.blit(text_surface, text_rect)
+        text_rect = text_screen.get_rect(center=rect.center)
+        self._screen.blit(text_screen, text_rect)
 
-    def _get_rect(self, surface: pygame.Surface) -> pygame.Rect:
+    def _get_rect(self, screen: pygame.Surface) -> pygame.Rect:
         width, height = 130, 40
-        x = (surface.get_width() - width) // 2
+        x = (screen.get_width() - width) // 2
         y = 10
         return pygame.Rect(x, y, width, height)
     

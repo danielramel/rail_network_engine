@@ -14,4 +14,4 @@ class TrainRemovalView(SetupView):
             self._state.preview.edge = closest_edge
             self._state.preview.action = SetupAction.REMOVE
         else:
-            draw_node(self._surface, world_pos, self._camera, color=Color.RED)
+            draw_node(self._screen, world_pos, self._camera, color=Color.RED)

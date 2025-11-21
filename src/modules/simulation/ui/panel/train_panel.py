@@ -27,8 +27,8 @@ class TrainPanel(Panel):
     def render(self, screen_pos):
         super().render(screen_pos)
         
-        x_surface = self.instruction_font.render("X", True, Color.WHITE)
-        self._surface.blit(x_surface, self._center_in_rect(x_surface, self.close_button))
+        x_screen = self.instruction_font.render("X", True, Color.WHITE)
+        self._screen.blit(x_screen, self._center_in_rect(x_screen, self.close_button))
         
         if self._train.is_live:
             self._render_speed()
@@ -61,8 +61,8 @@ class TrainPanel(Panel):
 
     def _render_speed(self):
         text = f"Speed: {self._train.speed * 3.6:.1f} km/h"
-        surface = self.instruction_font.render(text, True, Color.WHITE)
-        self._surface.blit(surface, (self._rect.x + self.padding, self._rect.y + self.padding))
+        screen = self.instruction_font.render(text, True, Color.WHITE)
+        self._screen.blit(screen, (self._rect.x + self.padding, self._rect.y + self.padding))
 
     def _render_next_stop(self):
         if not self._train.timetable:
@@ -70,13 +70,13 @@ class TrainPanel(Panel):
             
         next_stop = self._train.timetable.get_next_stop(0)
         text = "No more stops." if next_stop is None else f"Next: {next_stop['station'].id}; {next_stop['arrival_time']} min"
-        surface = self.instruction_font.render(text, True, Color.WHITE)
-        self._surface.blit(surface, (self._rect.x + self.padding, self._rect.y + self.padding + 30))
+        screen = self.instruction_font.render(text, True, Color.WHITE)
+        self._screen.blit(screen, (self._rect.x + self.padding, self._rect.y + self.padding + 30))
 
     def _render_button(self, rect, text, color):
-        pygame.draw.rect(self._surface, color, rect, border_radius=5)
-        text_surface = self.instruction_font.render(text, True, Color.BLACK)
-        self._surface.blit(text_surface, self._center_in_rect(text_surface, rect))
+        pygame.draw.rect(self._screen, color, rect, border_radius=5)
+        text_screen = self.instruction_font.render(text, True, Color.BLACK)
+        self._screen.blit(text_screen, self._center_in_rect(text_screen, rect))
 
     def _open_schedule_selector(self):
         if self._schedule_selector is None:
@@ -100,6 +100,6 @@ class TrainPanel(Panel):
         self.stop_button = self.startup_button
         self.reverse_button = pygame.Rect(self._rect.centerx - 180, self._rect.bottom - 45, 120, 30)
         
-    def _center_in_rect(self, surface, rect):
-        return (rect.centerx - surface.get_width() // 2,
-                rect.centery - surface.get_height() // 2)
+    def _center_in_rect(self, screen, rect):
+        return (rect.centerx - screen.get_width() // 2,
+                rect.centery - screen.get_height() // 2)

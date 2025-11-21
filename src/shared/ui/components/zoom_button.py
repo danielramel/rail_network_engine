@@ -9,25 +9,25 @@ from core.graphics.camera import Camera
 
 
 class ZoomButton(RectangleUIComponent, ClickableUIComponent):
-    def __init__(self, surface: pygame.Surface, camera: Camera):
+    def __init__(self, screen: pygame.Surface, camera: Camera):
         self._camera = camera 
-        self._rect = self._get_zoom_box(surface)
-        self._surface = surface
+        self._rect = self._get_zoom_box(screen)
+        self._screen = screen
 
     def render(self, screen_pos: Position) -> None:
         if self.is_hidden():
             return
         zoom_text = f"{int(self._camera.scale * 100)}%"
         zoom_font = pygame.font.SysFont(None, 24)
-        zoom_surface = zoom_font.render(zoom_text, True, Color.WHITE)
-        zoom_box = self._get_zoom_box(self._surface)
-        pygame.draw.rect(self._surface, Color.BLACK, zoom_box, border_radius=4)
-        pygame.draw.rect(self._surface, Color.WHITE, zoom_box, 2, border_radius=4)
-        self._surface.blit(zoom_surface, zoom_surface.get_rect(center=zoom_box.center))
+        zoom_screen = zoom_font.render(zoom_text, True, Color.WHITE)
+        zoom_box = self._get_zoom_box(self._screen)
+        pygame.draw.rect(self._screen, Color.BLACK, zoom_box, border_radius=4)
+        pygame.draw.rect(self._screen, Color.WHITE, zoom_box, 2, border_radius=4)
+        self._screen.blit(zoom_screen, zoom_screen.get_rect(center=zoom_box.center))
         
 
-    def _get_zoom_box(self, surface: pygame.Surface) -> pygame.Rect:
-        w, h = surface.get_size()
+    def _get_zoom_box(self, screen: pygame.Surface) -> pygame.Rect:
+        w, h = screen.get_size()
         return pygame.Rect(w - 100, h - 50, 80, 30)
     
     def _on_click(self, event: Event) -> bool:        

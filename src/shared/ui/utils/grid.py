@@ -4,9 +4,9 @@ import pygame
 from core.config.settings import Config
 from core.graphics.camera import Camera
 
-def draw_grid(surface: pygame.Surface, camera: Camera):
+def draw_grid(screen: pygame.Surface, camera: Camera):
     """Draw grid lines with camera transform"""
-    w, h = surface.get_size()
+    w, h = screen.get_size()
     
     # Calculate world bounds visible on screen
     world_left, world_top = camera.screen_to_world(Position(0, 0))
@@ -21,7 +21,7 @@ def draw_grid(surface: pygame.Surface, camera: Camera):
     while x <= world_right + Config.GRID_SIZE:
         screen_x, _ = camera.world_to_screen(Position(x, 0))
         if 0 <= screen_x <= w:
-            pygame.draw.aaline(surface, (40, 40, 40), (screen_x, 0), (screen_x, h))
+            pygame.draw.aaline(screen, (40, 40, 40), (screen_x, 0), (screen_x, h))
         x += Config.GRID_SIZE
     
     # Draw horizontal grid lines
@@ -29,5 +29,5 @@ def draw_grid(surface: pygame.Surface, camera: Camera):
     while y <= world_bottom + Config.GRID_SIZE:
         _, screen_y = camera.world_to_screen(Position(0, y))
         if 0 <= screen_y <= h:
-            pygame.draw.aaline(surface, (60, 60, 60), (0, screen_y), (w, screen_y))
+            pygame.draw.aaline(screen, (60, 60, 60), (0, screen_y), (w, screen_y))
         y += Config.GRID_SIZE

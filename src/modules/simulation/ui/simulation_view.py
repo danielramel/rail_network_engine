@@ -15,7 +15,7 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
     def __init__(self, railway: RailwaySystem, simulation_state: SimulationState, graphics: GraphicsContext):
         self._railway = railway
         self._state = simulation_state
-        self._surface = graphics.screen
+        self._screen = graphics.screen
         self._camera = graphics.camera
         
     def render(self, world_pos: Position | None) -> None:
@@ -40,11 +40,11 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
                 edge_action = EdgeAction.LOCKED
             elif self._railway.stations.is_edge_platform(edge):
                 edge_action = EdgeAction.PLATFORM
-            draw_track(self._surface, edge, self._camera, edge_action, data["length"])
+            draw_track(self._screen, edge, self._camera, edge_action, data["length"])
 
         for node in self._railway.graph_service.junctions:
             color = Color.GREEN if self._railway.signalling.is_node_locked(node) else Color.WHITE
-            draw_node(self._surface, node, self._camera, color=color, junction=True)
+            draw_node(self._screen, node, self._camera, color=color, junction=True)
 
         for signal in self._railway.signals.all():
             color = Color.RED
@@ -54,11 +54,11 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
                 color = Color.LIME
             elif signal == self._state.preview.signal:
                 color = Color.LIGHTBLUE
-            draw_signal(self._surface, signal, self._camera, color)
+            draw_signal(self._screen, signal, self._camera, color)
         
 
         for station in self._railway.stations.all():
-            draw_station(self._surface, station, self._camera)
+            draw_station(self._screen, station, self._camera)
 
         for train in self._railway.trains.all():
             if self._state.preview.train_id == train.id and train.id not in self._state.selected_trains:
@@ -72,14 +72,14 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             else:
                 action = TRAINDRAWACTION.SHUTDOWN
             
-            draw_train(self._surface, train, self._camera, action)
+            draw_train(self._screen, train, self._camera, action)
 
         
         if self._state.preview.signal is None and world_pos is not None:
-            draw_node(self._surface, world_pos, self._camera, color=Color.LIME)
+            draw_node(self._screen, world_pos, self._camera, color=Color.LIME)
             
             if self._state.selected_signal is not None and len(self._state.preview.path) == 0:
-                draw_dotted_line(self._surface, self._state.selected_signal.position, world_pos, self._camera, color=Color.LIME)
+                draw_dotted_line(self._screen, self._state.selected_signal.position, world_pos, self._camera, color=Color.LIME)
             
             
     def set_preview(self, world_pos: Position | None):
