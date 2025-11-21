@@ -60,7 +60,7 @@ class TrainPanel(Panel):
                 self._train.reverse()
 
     def _render_speed(self):
-        text = f"Speed: {self._train.speed * 3.6:.1f} km/h"
+        text = f"Speed: {int(self._train.speed * 3.6)} km/h"
         screen = self.instruction_font.render(text, True, Color.WHITE)
         self._screen.blit(screen, (self._rect.x + self.padding, self._rect.y + self.padding))
 

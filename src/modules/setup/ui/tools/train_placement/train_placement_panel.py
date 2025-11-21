@@ -12,11 +12,11 @@ class TrainPlacementPanel(Panel):
         self._state = state
         
         self._param_ranges = {
-            'car_count': (1, 10, 1),
-            'car_length': (10.0, 40.0, 0.5),
-            'car_gap': (0, 5, 1),
+            'car_count': (1, 20, 1),
+            'car_length': (10, 40, 1),
+            'car_gap': (0, 20, 1),
             'accel': (0.1, 2.0, 0.1),
-            'max_speed': (50, 200, 10),
+            'max_speed': (50, 300, 10),
             'decel': (0.5, 3.0, 0.1)
         }
         

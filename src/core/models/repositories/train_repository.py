@@ -36,7 +36,6 @@ class TrainRepository:
         train = Train(id, platform, self._railway, config)
 
         self._trains[id] = train
-        self._railway.signalling.lock_path(platform)
         return id
     
     def get_preview_train_on_platform_edge(self, edge: Edge, config: TrainConfig) -> Train:

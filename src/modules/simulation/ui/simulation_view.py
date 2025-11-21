@@ -2,7 +2,7 @@ from core.config.color import Color
 from core.models.geometry.edge import Edge
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
-from shared.ui.utils import draw_track, draw_node, draw_signal, draw_station, draw_train, draw_dotted_line
+from shared.ui.utils import draw_track, draw_node, draw_signal, draw_station, draw_train, draw_dotted_line, draw_grid
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
@@ -20,6 +20,8 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
         
     def render(self, world_pos: Position | None) -> None:
         self.set_preview(world_pos)
+        
+        draw_grid(self._screen, self._camera)
 
         for edge, data in self._railway.graph.all_edges_with_data():
             edge_action = EdgeAction.NORMAL

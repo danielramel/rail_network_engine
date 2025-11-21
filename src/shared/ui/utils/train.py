@@ -58,43 +58,6 @@ def draw_train(screen: pygame.Surface, train: Train, camera: Camera, action: TRA
         
         car_i += 1
         
-    return
-        
-    rail = rails[0]
-    start = distance / rail.length
-    end = (distance + 20) / rail.length
-    draw_occupied_edge(screen, rail.edge.a, rail.edge.b, camera, color, start, end)
-    remainder = rail.length - distance
-    for rail in rails[1:-1]:
-        draw_occupied_edge(screen, rail.edge.a, rail.edge.b, camera, color, 0.0, remainder - 0.1)
-        start = distance / rail.length
-        draw_occupied_edge(screen, rail.edge.a, rail.edge.b, camera, color, start, start + 0.9)
-        remainder = rail.length - distance
-        
-    rail = rails[-1]
-    draw_occupied_edge(screen, rail.edge.a, rail.edge.b, camera, color, 0.0, remainder - 0.1)
-    
-    
-    return
-    if edge_progress < 0.5:
-        draw_occupied_edge(screen, edges[0].a, edges[0].b, camera, color, edge_progress+0.5, 1.0)
-        draw_occupied_edge(screen, edges[1].a, edges[1].b, camera, color, 0.0, edge_progress)
-        draw_occupied_edge(screen, edges[1].a, edges[1].b, camera, color, edge_progress+0.5, 1.0)
-        for edge in edges[2:-2]:
-            draw_occupied_edge(screen, edge.a, edge.b, camera, color, 0.0, edge_progress)
-            draw_occupied_edge(screen, edge.a, edge.b, camera, color, edge_progress + 0.5, 1.0)
-        draw_occupied_edge(screen, edges[-2].a, edges[-2].b, camera, color, 0.0, edge_progress)
-        draw_occupied_edge(screen, edges[-2].a, edges[-2].b, camera, color, edge_progress + 0.5, 1.0)
-        draw_occupied_edge(screen, edges[-1].a, edges[-1].b, camera, color, 0.0, edge_progress)
-        
-    else:
-        draw_occupied_edge(screen, edges[0].a, edges[0].b, camera, color, edge_progress-0.5, edge_progress)
-        for edge in edges[1:-1]:
-            draw_occupied_edge(screen, edge.a, edge.b, camera, color, edge_progress - 0.5, edge_progress)
-        draw_occupied_edge(screen, edges[-1].a, edges[-1].b, camera, color, edge_progress-0.5, edge_progress)
-    
-
-
 def draw_occupied_edge(
     screen: pygame.Surface,
     a: Position,
