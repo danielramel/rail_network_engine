@@ -5,8 +5,8 @@ class Settings:
     FPS = 30
 
     PLATFORM_EDGE_COUNT = 7 #TODO make this smaller
-    TRAIN_CAR_COUNT = 6
-    TRAIN_CAR_LENGTH = 20  # in meters
-    TRAIN_CAR_GAP = 5      # in meters
+    TRAIN_CAR_COUNT = 7
+    TRAIN_CAR_LENGTH = 40  # in meters
+    TRAIN_CAR_GAP = 10      # in meters
     SHORT_SEGMENT_LENGTH = 50
     LONG_SEGMENT_LENGTH = 500
