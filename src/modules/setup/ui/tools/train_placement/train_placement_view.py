@@ -1,7 +1,7 @@
 from core.config.settings import Config
 from core.models.geometry.position import Position
 from modules.setup.models.setup_view import SetupView
-from shared.ui.utils.nodes import draw_node
+from shared.ui.utils.nodes import draw_circle_cursor
 from core.config.color import Color
 
 class TrainPlacementView(SetupView):
@@ -17,4 +17,4 @@ class TrainPlacementView(SetupView):
             else:
                 self._state.preview.train_to_preview = self._railway.trains.create_train(platform, self._state.train_config)
         else:
-            draw_node(self._screen, world_pos, self._camera, color=Color.YELLOW)
+            draw_circle_cursor(self._screen, world_pos, self._camera, Color.YELLOW)

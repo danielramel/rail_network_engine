@@ -37,7 +37,7 @@ class SetupCommonView(ClickableUIComponent, FullScreenUIComponent):
             draw_track(self._screen, edge, self._camera, edge_action, length=length, speed=speed)
 
         for node in self._railway.graph_service.junctions:
-            draw_node(self._screen, node, self._camera, color=Color.WHITE, junction=True)
+            draw_node(self._screen, node, self._camera, Color.WHITE, junction=True)
 
         for signal in self._railway.signals.all():
             draw_signal(self._screen, signal, self._camera, Color.RED)

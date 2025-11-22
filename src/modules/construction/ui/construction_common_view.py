@@ -6,6 +6,7 @@ from shared.ui.utils.nodes import draw_node
 from shared.ui.utils.signal import draw_signal
 from shared.ui.utils.station import draw_station
 from shared.ui.utils.lines import draw_dotted_line
+from core.config.color import Color
 
 
 from core.config.color import Color
@@ -26,7 +27,7 @@ class ConstructionCommonView(ConstructionView):
                 draw_track(self._screen, edge, self._camera, EdgeAction.SPEED, speed=speed, length=length)
 
         for node in self._railway.graph_service.junctions:
-            draw_node(self._screen, node, self._camera, junction=True)
+            draw_node(self._screen, node, self._camera, Color.WHITE, junction=True)
 
         for signal in self._railway.signals.all():
             if self._state.is_bulldoze_preview_node(signal.node):

@@ -1,9 +1,10 @@
 import pygame
+from core.models.geometry.node import Node
 from core.models.geometry.position import Position
 from core.graphics.camera import Camera
 
 
-def draw_dotted_line(screen: pygame.Surface, world_a: Position, world_b: Position, camera: Camera, color, num_dots: int = None):
+def draw_dotted_line(screen: pygame.Surface, world_a: Position | Node, world_b: Position | Node, camera: Camera, color, num_dots: int = None):
     """Draw a dotted line on the screen from start_pos to end_pos."""
     a = camera.world_to_screen(world_a)
     b = camera.world_to_screen(world_b)

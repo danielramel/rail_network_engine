@@ -4,7 +4,7 @@ from core.models.geometry.position import Position
 from core.config.color import Color
 from shared.ui.utils.lines import draw_dotted_line
 from shared.ui.utils.station import draw_station
-from shared.ui.utils.nodes import draw_node
+from shared.ui.utils.nodes import draw_circle_cursor
 from .platform_target import PlatformTargetType, find_platform_target
 
 class PlatformView(ConstructionView):
@@ -28,7 +28,7 @@ class PlatformView(ConstructionView):
 
         target = find_platform_target(self._railway, world_pos, self._camera.scale, self._state.platform_edge_count)
         if target.kind is PlatformTargetType.NONE:
-            draw_node(self._screen, world_pos, self._camera, color=Color.PURPLE)
+            draw_circle_cursor(self._screen, world_pos, self._camera, Color.PURPLE)
             return
 
         self._state.preview.edges = target.edges
