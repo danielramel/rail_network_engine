@@ -13,8 +13,8 @@ class TrainPlacementView(SetupView):
         if closest_edge and self._railway.stations.is_edge_platform(closest_edge) and not self._railway.trains.get_train_on_edge(closest_edge):
             platform = self._railway.stations.get_platform_from_edge(closest_edge)
             if self._state.train_config.total_length > len(platform) *  Config.SHORT_SEGMENT_LENGTH:
-                draw_node(self._screen, world_pos, self._camera, color=Color.RED) #TODO draw platform red
-                return
-            self._state.preview.train_to_preview = self._railway.trains.create_train(platform, self._state.train_config)
+                self._state.preview.invalid_platform_edges = platform
+            else:
+                self._state.preview.train_to_preview = self._railway.trains.create_train(platform, self._state.train_config)
         else:
             draw_node(self._screen, world_pos, self._camera, color=Color.YELLOW)

@@ -22,14 +22,15 @@ class PlatformView(ConstructionView):
                 draw_dotted_line(self._screen, world_pos, middle_point, self._camera, color=Color.LIGHTBLUE)
             return
 
-        # reset preview edges/state
         self._state.preview.clear()
 
-        # handle the platform target preview
         target = find_platform_target(self._railway, world_pos, self._camera.scale, self._state.platform_edge_count)
-        if target.kind is PlatformTargetType.INVALID:
+        if target.kind is PlatformTargetType.NONE:
             draw_node(self._screen, world_pos, self._camera, color=Color.PURPLE)
             return
 
         self._state.preview.edges = target.edges
-        self._state.preview.edge_action = EdgeAction.PLATFORM if target.is_valid else EdgeAction.INVALID_PLATFORM
+        if target.kind is PlatformTargetType.INVALID:
+            self._state.preview.edge_action = EdgeAction.INVALID_PLATFORM
+        else:
+            self._state.preview.edge_action = EdgeAction.PLATFORM

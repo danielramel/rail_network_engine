@@ -36,11 +36,11 @@ class PlatformController(ConstructionToolController):
 
         target = find_platform_target(self._railway, event.world_pos, self._camera.scale, self._state.platform_edge_count)
 
-        if target.kind is PlatformTargetType.INVALID:
+        if target.kind is PlatformTargetType.NONE:
             return
 
-        if not target.is_valid:
-            self._alert_component.show_alert(f'Platform too short!')
+        if target.kind is PlatformTargetType.INVALID:
+            self._alert_component.show_alert(target.message)
             return
 
         # prepare to select station

@@ -21,8 +21,13 @@ class SetupCommonView(ClickableUIComponent, FullScreenUIComponent):
         for edge, data in self._railway.graph.all_edges_with_data():
             speed = data.get('speed')
             length = data.get('length')
-            
-            edge_action = EdgeAction.PLATFORM if self._railway.stations.is_edge_platform(edge) else EdgeAction.SPEED
+            if self._railway.stations.is_edge_platform(edge):
+                if edge in self._state.preview.invalid_platform_edges:
+                    edge_action = EdgeAction.INVALID_PLATFORM
+                else:
+                    edge_action = EdgeAction.PLATFORM
+            else:
+                edge_action = EdgeAction.SPEED
 
             draw_track(self._screen, edge, self._camera, edge_action, length=length, speed=speed)
 

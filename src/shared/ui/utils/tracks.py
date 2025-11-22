@@ -11,21 +11,23 @@ from shared.ui.services.color_from_speed import color_from_speed
         
 def draw_track(screen: pygame.Surface, world_edge: Edge, camera: Camera, edge_action: EdgeAction, length: int, speed: int = None) -> None:
     screen_edge = camera.world_to_screen(world_edge)
-    if edge_action in (EdgeAction.BULLDOZE, EdgeAction.INVALID_PLATFORM):
+    if edge_action is EdgeAction.BULLDOZE:
         draw_rail(screen, screen_edge, camera, color=Color.RED, length=length)
-    elif edge_action == EdgeAction.PLATFORM_SELECTED:
+    elif edge_action is EdgeAction.INVALID_PLATFORM:
+        draw_platform(screen, screen_edge, camera, color=Color.RED)
+    elif edge_action is EdgeAction.PLATFORM_SELECTED:
         draw_platform(screen, screen_edge, camera, color=Color.LIGHTBLUE)
-    elif edge_action == EdgeAction.PLATFORM:
+    elif edge_action is EdgeAction.PLATFORM:
         draw_platform(screen, screen_edge, camera, color=Color.PURPLE)
-    elif edge_action == EdgeAction.LOCKED_PLATFORM:
+    elif edge_action is EdgeAction.LOCKED_PLATFORM:
         draw_platform(screen, screen_edge, camera, color=Color.LIME)
-    elif edge_action == EdgeAction.LOCKED_PREVIEW:
+    elif edge_action is EdgeAction.LOCKED_PREVIEW:
         draw_rail(screen, screen_edge, camera, color=Color.GREEN, length=length)
-    elif edge_action == EdgeAction.LOCKED:
+    elif edge_action is EdgeAction.LOCKED:
         draw_rail(screen, screen_edge, camera, color=Color.LIME, length=length)
-    elif edge_action == EdgeAction.NORMAL:
+    elif edge_action is EdgeAction.NORMAL:
         draw_rail(screen, screen_edge, camera, color=Color.WHITE, length=length)
-    elif edge_action == EdgeAction.SPEED:
+    elif edge_action is EdgeAction.SPEED:
         color = color_from_speed(speed)
         draw_rail(screen, screen_edge, camera, color=color, length=length)
 
