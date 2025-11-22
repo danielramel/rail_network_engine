@@ -8,6 +8,10 @@ class AlertComponent(UIComponent):
     def __init__(self, screen: pygame.Surface):
         self._screen = screen
         
+        self._font = pygame.font.SysFont(None, 32)
+        self._padding_x = 60
+        self._padding_y = 40
+        
     def handle_event(self, event: Event):
         if not self._visible:
             return False
@@ -22,6 +26,18 @@ class AlertComponent(UIComponent):
     def show_alert(self, message: str):
         self._visible = True
         self._message = message
+        
+        # Precompute box_rect and related elements
+        w, h = self._screen.get_size()
+        self._text_surf = self._font.render(self._message, True, Color.RED)
+        self._text_rect = self._text_surf.get_rect(center=(w // 2, h // 2))
+        
+        self._box_rect = pygame.Rect(
+            self._text_rect.x - self._padding_x,
+            self._text_rect.y - self._padding_y,
+            self._text_rect.width + self._padding_x * 2,
+            self._text_rect.height + self._padding_y * 2
+        )
             
     def contains(self, screen_pos):
         return self._visible
@@ -31,26 +47,13 @@ class AlertComponent(UIComponent):
             return
 
         w, h = self._screen.get_size()
-        font = pygame.font.SysFont(None, 32)
-
-        text_surf = font.render(self._message, True, Color.RED)
-        text_rect = text_surf.get_rect(center=(w // 2, h // 2))
-
-        padding_x = 60
-        padding_y = 40
-        box_rect = pygame.Rect(
-            text_rect.x - padding_x,
-            text_rect.y - padding_y,
-            text_rect.width + padding_x * 2,
-            text_rect.height + padding_y * 2
-        )
-
+        
         blur_src = self._screen.copy()
         small = pygame.transform.smoothscale(blur_src, (w // 10, h // 10))
         blur = pygame.transform.smoothscale(small, (w, h))
         blur.set_alpha(180)
         self._screen.blit(blur, (0, 0))
 
-        pygame.draw.rect(self._screen, Color.BLACK, box_rect, border_radius=16)
-        pygame.draw.rect(self._screen, Color.RED, box_rect, 2, border_radius=16)
-        self._screen.blit(text_surf, text_rect)
+        pygame.draw.rect(self._screen, Color.BLACK, self._box_rect, border_radius=16)
+        pygame.draw.rect(self._screen, Color.RED, self._box_rect, 2, border_radius=16)
+        self._screen.blit(self._text_surf, self._text_rect)

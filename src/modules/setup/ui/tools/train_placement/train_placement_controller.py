@@ -22,4 +22,4 @@ class TrainPlacementController(SetupToolController):
             if self._state.train_config.total_length > len(platform) *  Config.SHORT_SEGMENT_LENGTH:
                 self._graphics.alert_component.show_alert('Train is too long for the selected platform!')
                 return
-            self._railway.trains.add_to_platform(closest_edge, self._state.train_config)
+            self._railway.trains.add_to_platform(platform, self._state.train_config)
