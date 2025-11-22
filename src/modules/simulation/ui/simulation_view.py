@@ -3,7 +3,7 @@ from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.utils.grid import draw_grid
 from shared.ui.utils.tracks import draw_track
-from shared.ui.utils.nodes import draw_node
+from shared.ui.utils.nodes import draw_junction_node, draw_node
 from shared.ui.utils.signal import draw_signal
 from shared.ui.utils.station import draw_station
 from shared.ui.utils.lines import draw_dotted_line
@@ -48,7 +48,7 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
 
         for node in self._railway.graph_service.junctions:
             color = Color.GREEN if self._railway.signalling.is_node_locked(node) else Color.WHITE
-            draw_node(self._screen, node, self._camera, color=color, junction=True)
+            draw_junction_node(self._screen, node, self._camera, color)
 
         for signal in self._railway.signals.all():
             color = Color.RED

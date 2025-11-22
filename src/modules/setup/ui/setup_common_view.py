@@ -1,6 +1,6 @@
 from core.config.color import Color
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
-from shared.ui.utils.nodes import draw_node
+from shared.ui.utils.nodes import draw_junction_node
 from shared.ui.utils.tracks import draw_track
 from shared.ui.utils.signal import draw_signal
 from shared.ui.utils.station import draw_station
@@ -37,7 +37,7 @@ class SetupCommonView(ClickableUIComponent, FullScreenUIComponent):
             draw_track(self._screen, edge, self._camera, edge_action, length=length, speed=speed)
 
         for node in self._railway.graph_service.junctions:
-            draw_node(self._screen, node, self._camera, Color.WHITE, junction=True)
+            draw_junction_node(self._screen, node, self._camera)
 
         for signal in self._railway.signals.all():
             draw_signal(self._screen, signal, self._camera, Color.RED)
