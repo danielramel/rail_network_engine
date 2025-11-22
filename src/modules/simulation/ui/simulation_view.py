@@ -28,14 +28,11 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             is_locked = self._railway.signalling.is_edge_locked(edge)
             is_platform = self._railway.stations.is_edge_platform(edge)
             is_in_preview = edge in self._state.preview.path
-            is_occupied = self._railway.trains.get_train_on_edge(edge) is not None
 
             if is_platform and is_locked:
                 edge_action = EdgeAction.LOCKED_PLATFORM
             elif is_platform:
                 edge_action = EdgeAction.PLATFORM
-            elif is_occupied:
-                continue #draw later
             elif is_in_preview:
                 edge_action = EdgeAction.LOCKED_PREVIEW
             elif is_locked:
