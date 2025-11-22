@@ -12,6 +12,7 @@ class TRAINDRAWACTION(Enum):
     SCHEDULED = auto()
     SELECTED = auto()
     PREVIEWED = auto()
+    REMOVE_PREVIEW = auto()
 
 def draw_train(screen: pygame.Surface, train: Train, camera: Camera, action: TRAINDRAWACTION) -> None:
     rails = train.get_occupied_rails()
@@ -25,6 +26,8 @@ def draw_train(screen: pygame.Surface, train: Train, camera: Camera, action: TRA
         color = Color.ORANGE
     elif action == TRAINDRAWACTION.PREVIEWED:
         color = Color.YELLOW
+    elif action == TRAINDRAWACTION.REMOVE_PREVIEW:
+        color = Color.RED
         
     
     

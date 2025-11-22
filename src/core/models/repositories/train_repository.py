@@ -31,15 +31,13 @@ class TrainRepository:
     def get(self, train_id: int) -> Train:
         return self._trains[train_id]
     
-    def add_to_platform(self, platform: frozenset[Edge], config: TrainConfig) -> int:
-        platform = [edge.ordered() for edge in sorted(platform)]
+    def add_to_repository(self, train: Train) -> int:
         id = self._generate_id()
-        train = Train(id, platform, self._railway, config)
+        train.id = id
         self._trains[id] = train
         return id
     
-    def get_preview_train(self, platform: frozenset[Edge], config: TrainConfig) -> Train:
+    def create_train(self, platform: frozenset[Edge], config: TrainConfig) -> Train:
         platform = [edge.ordered() for edge in sorted(platform)]
-        id = -1  # Preview trains have negative IDs
-        train = Train(id, platform, self._railway, config)
+        train = Train(platform, self._railway, config)
         return train

@@ -1,5 +1,4 @@
 from core.config.settings import Config
-from core.models.geometry.edge import Edge
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.graphics_context import GraphicsContext
 from modules.setup.models.setup_state import SetupState
@@ -22,4 +21,6 @@ class TrainPlacementController(SetupToolController):
             if self._state.train_config.total_length > len(platform) *  Config.SHORT_SEGMENT_LENGTH:
                 self._graphics.alert_component.show_alert('Train is too long for the selected platform!')
                 return
-            self._railway.trains.add_to_platform(platform, self._state.train_config)
+            
+            train = self._railway.trains.create_train(platform, self._state.train_config)
+            self._railway.trains.add_to_repository(train)

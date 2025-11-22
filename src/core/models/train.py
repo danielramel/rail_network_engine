@@ -27,7 +27,7 @@ class TrainConfig:
 
 
 class Train:
-    id : int
+    id: int = None
     path : list[Rail] = []
     _railway: 'RailwaySystem'
     config: TrainConfig
@@ -39,9 +39,7 @@ class Train:
     _path_distance : float = 0.0
     _occupied_edge_count_cache : int | None = None
      
-    def __init__(self, id: int, edges: list[Edge], railway: 'RailwaySystem', config: TrainConfig) -> None:
-        #TODO check if it is long enough
-        self.id = id
+    def __init__(self, edges: list[Edge], railway: 'RailwaySystem', config: TrainConfig) -> None:
         self._railway = railway
         self.config = replace(config)
         self.path = [self._railway.graph.get_rail(edge) for edge in edges[-(int((self.config.total_length + 1) // Config.SHORT_SEGMENT_LENGTH) + 1):]]
