@@ -1,4 +1,5 @@
 from core.config.color import Color
+from core.config.settings import Config
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station, draw_train, TRAINDRAWACTION
 from core.graphics.graphics_context import GraphicsContext
@@ -46,5 +47,8 @@ class SetupCommonView(ClickableUIComponent, FullScreenUIComponent):
             draw_train(self._screen, train, self._camera, TRAINDRAWACTION.SHUTDOWN)
 
         if self._state.preview.edge is not None and self._state.preview.action is SetupAction.ADD:
-            train = self._railway.trains.get_preview_train_on_platform_edge(self._state.preview.edge, self._state.train_config)
+            platform = self._railway.stations.get_platform_from_edge(self._state.preview.edge)
+            if self._state.train_config.total_length > len(platform) *  Config.SHORT_SEGMENT_LENGTH:
+                return
+            train = self._railway.trains.get_preview_train(platform, self._state.train_config)
             draw_train(self._screen, train, self._camera, TRAINDRAWACTION.SHUTDOWN)

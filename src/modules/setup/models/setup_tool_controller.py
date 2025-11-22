@@ -1,5 +1,5 @@
 from core.models.railway.railway_system import RailwaySystem
-from core.graphics.camera import Camera
+from core.graphics.graphics_context import GraphicsContext
 from modules.setup.models.setup_state import SetupState
 from modules.setup.models.setup_view import SetupView
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
@@ -10,12 +10,12 @@ from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 
 class SetupToolController(ClickableUIComponent, FullScreenUIComponent):
     """Base class for controllers that manage setup modes."""
-    def __init__(self, view: SetupView, railway: RailwaySystem, state: SetupState, camera: Camera):
+    def __init__(self, view: SetupView, railway: RailwaySystem, state: SetupState, graphics: GraphicsContext):
         self._view = view
         self._railway = railway
         self._state = state
-        self._camera = camera
-
+        self._graphics = graphics
+        
     def render(self, screen_pos: Position):
-        world_pos = self._camera.screen_to_world(screen_pos) if screen_pos is not None else None
+        world_pos = self._graphics.camera.screen_to_world(screen_pos) if screen_pos is not None else None
         self._view.render(world_pos)

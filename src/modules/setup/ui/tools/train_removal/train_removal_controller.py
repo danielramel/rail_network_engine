@@ -7,14 +7,14 @@ from modules.setup.ui.tools.train_removal.train_removal_view import TrainRemoval
 class TrainRemovalController(SetupToolController):
     def __init__(self, railway: RailwaySystem, state: SetupState, graphics: GraphicsContext):
         view = TrainRemovalView(railway, state, graphics)
-        super().__init__(view, railway, state, graphics.camera)
+        super().__init__(view, railway, state, graphics)
 
     def _on_click(self, event)-> None:            
         if event.is_right_click:
             self._state.switch_tool(None)
             return
         
-        closest_edge = self._railway.graph_service.get_closest_edge_on_grid(event.world_pos, self._camera.scale)
+        closest_edge = self._railway.graph_service.get_closest_edge_on_grid(event.world_pos, self._graphics.camera.scale)
         if closest_edge and self._railway.stations.is_edge_platform(closest_edge):
             train_id = self._railway.trains.get_train_on_edge(closest_edge)
             if train_id is not None:

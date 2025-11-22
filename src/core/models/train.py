@@ -4,12 +4,15 @@ from core.models.geometry.pose import Pose
 from core.models.rail import Rail
 from core.models.signal import Signal
 from core.models.timetable import TimeTable
+from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from core.models.railway.railway_system import RailwaySystem
     
 DT = 1 / Config.FPS
     
+
+@dataclass
 class TrainConfig:
     car_count: int = 6
     car_length: int = 25
@@ -17,18 +20,11 @@ class TrainConfig:
     acceleration: float = 1.2
     deceleration: float = 1.4
     max_speed: int = 160
-    total_length: int = None # only set in freeze()
-    
-    def freeze(self):
-        c = TrainConfig()
-        c.car_count = self.car_count
-        c.car_length = self.car_length
-        c.car_gap = self.car_gap
-        c.acceleration = self.acceleration
-        c.deceleration = self.deceleration
-        c.max_speed = self.max_speed
-        c.total_length = (self.car_count * self.car_length) + ((self.car_count - 1) * self.car_gap)
-        return c
+
+    @property
+    def total_length(self) -> int:
+        return (self.car_count * self.car_length) + ((self.car_count - 1) * self.car_gap)
+
 
 class Train:
     id : int
@@ -47,7 +43,7 @@ class Train:
         #TODO check if it is long enough
         self.id = id
         self._railway = railway
-        self.config = config.freeze()
+        self.config = replace(config)
         self.path = [self._railway.graph.get_rail(edge) for edge in edges[-(int((self.config.total_length + 1) // Config.SHORT_SEGMENT_LENGTH) + 1):]]
         #TODO place it on the front of the platform
         
