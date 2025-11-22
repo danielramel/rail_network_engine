@@ -1,7 +1,7 @@
 from .lines import draw_dotted_line, draw_dashed_line
 from .tracks import draw_track
 from .nodes import draw_node
-from .signals import draw_signal
+from .signal import draw_signal
 from .stations import draw_station
 from .grid import draw_grid
 from .train import draw_train, TRAINDRAWACTION
