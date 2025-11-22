@@ -19,3 +19,6 @@ class TrainRemovalController(SetupToolController):
             train_id = self._railway.trains.get_train_on_edge(closest_edge)
             if train_id is not None:
                 self._railway.trains.remove(train_id)
+                return
+        
+        self._graphics.alert_component.show_alert("No train found here!")

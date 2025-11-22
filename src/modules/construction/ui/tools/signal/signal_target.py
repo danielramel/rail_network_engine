@@ -13,29 +13,41 @@ class SignalTarget:
     kind: SignalTargetType
     pose: Pose
     offset: bool = False
+    message: str | None = None
 
 def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
     snapped = pos.snap_to_grid()
 
     if not railway.graph.has_node_at(snapped) or railway.graph_service.is_junction(snapped) or railway.graph_service.is_curve(snapped):
+        if not railway.graph.has_node_at(snapped):
+            message = "No track at this position!"
+        elif railway.graph_service.is_junction(snapped):
+            message = "Cannot place signal at junctions!"
+        else:
+            message = "Cannot place signal on curves!"
+            
         return SignalTarget(
             kind=SignalTargetType.INVALID,
             pose=Pose(position=snapped, direction=(1, 0)),
-            offset=True
+            offset=True,
+            message=message
         )
 
     if railway.signals.has_signal_at(snapped):
-        signal = railway.signals.get(snapped)
-
-        current_direction = signal.direction
-        neighbors = railway.graph.neighbors(snapped)
-        direction = snapped.direction_to(neighbors[0])
-        if direction == current_direction and railway.graph.degree_at(snapped) == 2:
-            direction = snapped.direction_to(neighbors[1])
+        toggle_direction = railway.signals.get(snapped).direction.opposite()
+        
+        if railway.graph.degree_at(snapped) < 2:
+            return SignalTarget(
+                kind=SignalTargetType.INVALID,
+                pose=Pose(position=snapped, direction=toggle_direction),
+                offset=True,
+                message="Cannot toggle signals at dead ends!"
+            )
+            
 
         return SignalTarget(
             kind=SignalTargetType.TOGGLE,
-            pose=Pose(snapped, direction),
+            pose=Pose(snapped, toggle_direction),
             offset=True
         )
 

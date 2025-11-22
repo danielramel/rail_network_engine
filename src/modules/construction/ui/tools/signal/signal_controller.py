@@ -19,6 +19,7 @@ class SignalController(ConstructionToolController):
         target = find_signal_target(self._railway, event.world_pos)
         
         if target.kind is SignalTargetType.INVALID:
+            self._graphics.alert_component.show_alert(target.message)
             return
 
         self._railway.signals.set(target.pose)

@@ -27,6 +27,7 @@ class StationController(ConstructionToolController):
             return
 
         # blocked or overlapping -> do nothing
+        #TODO continue from here showing alerts
         elif target.blocked_by_node or target.overlaps_station:
             return
 
@@ -37,7 +38,7 @@ class StationController(ConstructionToolController):
             return
 
         # otherwise, create a new station
-        self._input_component.request_input("Enter station name:", lambda name, pos=target.snapped: self._on_station_name_entered(name, pos))
+        self._graphics.input_component.request_input("Enter station name:", lambda name, pos=target.snapped: self._on_station_name_entered(name, pos))
         
     def _on_station_name_entered(self, name: str | None, pos: Position) -> None:
         if name is None or name.strip() == "":

@@ -13,10 +13,8 @@ class ConstructionToolController(ClickableUIComponent, FullScreenUIComponent):
         self.view = view
         self._railway = railway
         self._state = state
-        self._camera = graphics.camera
-        self._alert_component = graphics.alert_component
-        self._input_component = graphics.input_component
+        self._graphics = graphics
         
     def render(self, screen_pos: Position):
-        world_pos = self._camera.screen_to_world(screen_pos) if screen_pos is not None else None
+        world_pos = self._graphics.camera.screen_to_world(screen_pos) if screen_pos is not None else None
         self.view.render(world_pos)
