@@ -5,7 +5,7 @@ from core.models.railway.railway_system import RailwaySystem
 from core.graphics.camera import Camera
 from core.models.app_state import AppState
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
-from shared.ui.components.load_button import LoadButton
+from shared.ui.components.open_button import OpenButton
 from shared.ui.components.save_button import SaveButton
 from shared.ui.components.mode_selector_buttons import ModeSelectorButtons
 from core.models.event import Event
@@ -34,7 +34,7 @@ class AppController(UIController, FullScreenUIComponent):
             input_component,
             TimeTableButton(screen, self._railway),
             ZoomButton(screen, self._graphics.camera),
-            LoadButton(screen, self._railway, self._app_state),
+            OpenButton(screen, self._railway, self._app_state),
             SaveButton(screen, self._railway, self._app_state),
             ModeSelectorButtons(self._graphics, self._app_state),
             ModeStrategy(self._app_state, self._railway, self._graphics)

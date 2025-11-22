@@ -12,7 +12,7 @@ from shared.ui.models.rectangle import RectangleUIComponent
 from core.models.event import Event
 
 
-class LoadButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent):
+class OpenButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent):
     def __init__(self, screen: pygame.Surface, railway: RailwaySystem, app_state: AppState):
         rect = pygame.Rect(200+Config.BUTTON_SIZE + Config.BUTTON_SIZE//5, Config.BUTTON_SIZE//5, Config.BUTTON_SIZE, Config.BUTTON_SIZE)
         self._icon = IconLoader().get_icon(ICON_PATHS["LOAD"], Config.BUTTON_SIZE)
@@ -21,7 +21,7 @@ class LoadButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
         self._app_state = app_state
         # define shortcut here after method exists
         self._shortcuts = {
-            (pygame.K_l, True): self.load_game_ui
+            (pygame.K_o, True): self.load_game_ui
         }
 
     def _on_click(self, event: Event) -> None:
