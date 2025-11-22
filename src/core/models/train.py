@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from core.models.railway.railway_system import RailwaySystem
     
 DT = 1 / Config.FPS
+INITIAL_DISTANCE_TO_PLATFORM_END = 1.0
 
 
 class Train:
@@ -21,23 +22,16 @@ class Train:
     speed : float = 0.0
     timetable : TimeTable = None
     _is_live : bool = False
-    _targets: list[tuple[float, float]] = [] # list of (distance, speed)
-    _target_distance: float = 0.0
     _path_distance : float = 0.0
     _occupied_edge_count_cache : int | None = None
      
     def __init__(self, edges: list[Edge], railway: 'RailwaySystem', config: TrainConfig) -> None:
         self._railway = railway
         self.config = config.copy()
-        self.path = [self._railway.graph.get_rail(edge) for edge in edges[-(int((self.config.total_length + 1) // Config.SHORT_SEGMENT_LENGTH) + 1):]]
+        self.path = [self._railway.graph.get_rail(edge) for edge in edges[-(int((self.config.total_length + INITIAL_DISTANCE_TO_PLATFORM_END) // Config.SHORT_SEGMENT_LENGTH) + 1):]]
         
-        # put train right before the end of the platform
-        remaining = self.config.total_length + 1
-        i = 0
-        while remaining - self.path[i].length > 0:
-            remaining -= self.path[i].length
-            i += 1   
-        self._path_distance = self.path[i].length - remaining
+        remaining = self.get_distance_to_path_end()
+        self._path_distance = remaining - INITIAL_DISTANCE_TO_PLATFORM_END
         
     def set_timetable(self, timetable: TimeTable) -> None:
         self.timetable = timetable
@@ -48,16 +42,16 @@ class Train:
 
         max_safe_speed = self.get_max_safe_speed()
         speed_with_acc = self.speed + (self.config.acceleration * DT)
-        self.speed = min(max_safe_speed, speed_with_acc, self.config.max_speed)
+        self.speed = min(max_safe_speed, speed_with_acc)
             
         if self.speed == 0.0:
             return
             
             
         self._occupied_edge_count_cache = None
-        travel_distance = self.speed * DT - self.config.deceleration * DT * DT / 2 
+        travel_distance = self.speed * DT - self.config.deceleration * DT * DT / 2
         self._path_distance += travel_distance
-        self._target_distance = max(self._target_distance - travel_distance, 0.0)
+        # self._target_distance = max(self._target_distance - travel_distance, 0.0)
         
         first_edge_length = self.path[0].length
         if self._path_distance >= first_edge_length:
@@ -97,13 +91,7 @@ class Train:
         
     def reverse(self) -> None:
         self._target_distance = self._path_distance
-        remaining = self.config.total_length + self._path_distance
-        i = 0
-        while remaining - self.path[i].length > 0:
-            remaining -= self.path[i].length
-            i += 1     
-    
-        self._path_distance = self.path[-1].length - remaining
+        self._path_distance = self.get_distance_to_path_end()
         self.path = [rail.reversed() for rail in reversed(self.path)]
         
         
@@ -114,25 +102,34 @@ class Train:
         return Pose.from_edge(self.path[self._occupied_edge_count - 1].edge)
     
     def get_max_safe_speed(self) -> float:
-        if self._target_distance <= 1:
-            return 0.0
-        # FORMULA: V = sqrt(u^2 + 2as)
-        return (0**2 + (2 * (self._target_distance) * self.config.deceleration)) ** 0.5
+        def get_max_speed(distance: float, speed: float) -> float:
+            if distance <= 1.0:
+                return speed
+            # FORMULA: V = sqrt(u^2 + 2as)
+            return (speed**2 + (2 * distance * self.config.deceleration)) ** 0.5
+        
+        distance = self.get_distance_to_path_end()
+        min_speed = min(self.config.max_speed, self.path[self._occupied_edge_count - 1].speed)
+        for rail in self.path[self._occupied_edge_count:]:
+            min_speed = min(min_speed, get_max_speed(distance, rail.speed))
+            distance += rail.length
+            
+        min_speed = min(min_speed, get_max_speed(distance, 0.0))
+            
+        return min_speed
     
+    def get_distance_to_path_end(self) -> float:
+        remaining = self.config.total_length + self._path_distance
+        i = 0
+        while remaining - self.path[i].length > 0:
+            remaining -= self.path[i].length
+            i += 1
+        return self.path[i].length - remaining
+            
     def extend_path(self, extension: list[Edge]):
         path = [self._railway.graph.get_rail(edge) for edge in extension]
         self.path += path
-        self._target_distance += sum(rail.length for rail in path)
-        # target_distance = 0.0
-        # target_speed = 0.0
-        # max_speed = 0.0
-        # for rail in reversed(path):
-        #     target_distance += rail.length
-        #     max_speed = (2 * target_distance * self.config.deceleration) ** 0.5
-        #     if max_speed > rail.speed:
-        #         target_speed = rail.speed
-        #         target_distance = 0.0
-            
+                    
     def signal_turned_green_ahead(self, path: list[Edge], signal: Signal) -> bool:
         self.extend_path(path)
         signal.subscribe(self.signal_turned_green_ahead)
