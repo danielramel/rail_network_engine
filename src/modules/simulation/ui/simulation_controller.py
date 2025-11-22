@@ -37,7 +37,7 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
                 self._state.selected_signal = signal
             return
             
-        closest_edge = self._railway.graph_service.get_closest_edge_on_grid(click.world_pos, self._camera.scale)
+        closest_edge = self._railway.graph_service.get_closest_edge(click.world_pos, self._camera.scale)
         train_id = self._railway.trains.get_train_on_edge(closest_edge)
         if train_id:
             if train_id in self._state.selected_trains:

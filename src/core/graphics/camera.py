@@ -13,6 +13,10 @@ class Camera:
         self.drag_start_y = 0
         self.drag_start_cam_x = 0
         self.drag_start_cam_y = 0
+        
+    def factor(self, value: float) -> float:
+        """Scale a value according to the current camera scale"""
+        return value * self.scale
 
     def screen_to_world(self, pos: Position | Edge) -> Position | Edge:
         """Convert screen coordinates to world coordinates"""

@@ -11,15 +11,8 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, order=True)
 class Position:
-    x: int
-    y: int
-
-    def __post_init__(self):
-        # Ensure x and y are integers: if not, round them to nearest int.
-        rounded_x = int(round(self.x))
-        rounded_y = int(round(self.y))
-        object.__setattr__(self, 'x', rounded_x)
-        object.__setattr__(self, 'y', rounded_y)
+    x: float
+    y: float
             
     def __iter__(self):
         return iter((self.x, self.y))
@@ -90,17 +83,25 @@ class Position:
         ax, ay = a.x, a.y
         bx, by = b.x, b.y
         px, py = self.x, self.y
-        vx, vy = bx - ax, by - ay
-        wx, wy = px - ax, py - ay
-        c1 = wx * vx + wy * vy
-        if c1 <= 0:
-            return ((px - ax)**2 + (py - ay)**2)**0.5
-        c2 = vx * vx + vy * vy
-        if c2 <= c1:
-            return ((px - bx)**2 + (py - by)**2)**0.5
-        t = c1 / c2
-        cx, cy = ax + t * vx, ay + t * vy
-        return ((px - cx)**2 + (py - cy)**2)**0.5
+
+        abx, aby = bx - ax, by - ay
+        apx, apy = px - ax, py - ay
+        ab_len_sq = abx * abx + aby * aby
+
+        if ab_len_sq == 0.0:
+            return hypot(apx, apy)
+
+        t = (apx * abx + apy * aby) / ab_len_sq
+        if t <= 0.0:
+            nx, ny = ax, ay
+        elif t >= 1.0:
+            nx, ny = bx, by
+        else:
+            nx, ny = ax + t * abx, ay + t * aby
+
+        return hypot(px - nx, py - ny)
+
+        
     
     def move(self, dx: int, dy: int) -> 'Position':
         """Return a new Position moved by dx and dy."""

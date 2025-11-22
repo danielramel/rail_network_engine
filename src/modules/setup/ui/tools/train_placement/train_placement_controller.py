@@ -15,7 +15,7 @@ class TrainPlacementController(SetupToolController):
             self._state.switch_tool(None)
             return
         
-        closest_edge = self._railway.graph_service.get_closest_edge_on_grid(event.world_pos, self._graphics.camera.scale)
+        closest_edge = self._railway.graph_service.get_closest_edge(event.world_pos, self._graphics.camera.scale)
         if closest_edge and self._railway.stations.is_edge_platform(closest_edge) and not self._railway.trains.get_train_on_edge(closest_edge):
             platform = self._railway.stations.get_platform_from_edge(closest_edge)
             if self._state.train_config.total_length > len(platform) *  Config.SHORT_SEGMENT_LENGTH:

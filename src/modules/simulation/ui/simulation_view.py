@@ -95,7 +95,7 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             path = self._railway.signalling.get_path_preview(self._state.selected_signal, signal)
             self._state.preview.path = path if path is not None else []
             
-        closest_edge = self._railway.graph_service.get_closest_edge_on_grid(world_pos, self._camera.scale)
+        closest_edge = self._railway.graph_service.get_closest_edge(world_pos, self._camera.scale)
         train_id = closest_edge is not None and self._railway.trains.get_train_on_edge(closest_edge)
         if train_id:
             self._state.preview.train_id = train_id
