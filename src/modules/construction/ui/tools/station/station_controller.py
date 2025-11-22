@@ -1,6 +1,6 @@
 from modules.construction.models.construction_tool_controller import ConstructionToolController
 from core.models.geometry.position import Position
-from .station_target import find_station_target
+from .station_target import StationTargetType, find_station_target
 from core.models.railway.railway_system import RailwaySystem
 from modules.construction.models.construction_state import ConstructionState
 from .station_view import StationView
@@ -21,24 +21,21 @@ class StationController(ConstructionToolController):
 
         target = find_station_target(self._railway, event.world_pos, self._state.moving_station)
 
-        # pick up a station if moving_station is None and mouse is over a station
-        if not self._state.moving_station and target.hovered_station_pos is not None:
-            self._state.moving_station = self._railway.stations.get_by_position(target.hovered_station_pos)
+        if target.kind is StationTargetType.HOVERED:
+            self._state.moving_station = self._railway.stations.get_by_position(target.position)
+            return
+        
+        if target.kind is StationTargetType.BLOCKED:
+            message = "Cannot move station here!" if self._state.moving_station else "Cannot build station here!"
+            self._graphics.alert_component.show_alert(message)
             return
 
-        # blocked or overlapping -> do nothing
-        #TODO continue from here showing alerts
-        elif target.blocked_by_node or target.overlaps_station:
-            return
-
-        # move station if one is being moved
         if self._state.moving_station:
-            self._railway.stations.move(self._state.moving_station.id, target.snapped)
+            self._railway.stations.move(self._state.moving_station.id, target.position)
             self._state.moving_station = None
             return
 
-        # otherwise, create a new station
-        self._graphics.input_component.request_input("Enter station name:", lambda name, pos=target.snapped: self._on_station_name_entered(name, pos))
+        self._graphics.input_component.request_input("Enter station name:", lambda name, pos=target.position: self._on_station_name_entered(name, pos))
         
     def _on_station_name_entered(self, name: str | None, pos: Position) -> None:
         if name is None or name.strip() == "":

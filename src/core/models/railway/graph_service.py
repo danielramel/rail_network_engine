@@ -55,6 +55,9 @@ class GraphService:
             self._railway.graph.add_node(p) 
         for a, b in zip(points[:-1], points[1:]):
             self._railway.graph.add_edge(a, b, speed=speed, length=length)
+            
+    def is_station_blocked_by_node(self, station_pos: Position) -> bool:
+        return any(station_pos.is_within_station_rect(node_pos) for node_pos in self._railway.graph.nodes)
 
     def get_segment(self, edge: Edge) -> tuple[frozenset[Position], frozenset[Edge]]:
         def is_node_blocked(pos: Position) -> bool:
