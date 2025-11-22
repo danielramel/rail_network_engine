@@ -40,7 +40,6 @@ class Train:
     speed : float = 0.0  # in m/s
     timetable : TimeTable = None
     _is_live : bool = False
-    _is_shutting_down : bool = False
     _target_speed: int = 0  #TODO
     _target_distance: float = 0.0
     _path_distance : float = 0.0
@@ -52,6 +51,7 @@ class Train:
         self._railway = railway
         self.config = config.copy()
         self.path = [self._railway.graph.get_rail(edge) for edge in edges[-(int((self.config.total_length + 1) // Config.SHORT_SEGMENT_LENGTH) + 1):]]
+        #TODO place it on the front of the platform
         
     def set_timetable(self, timetable: TimeTable) -> None:
         self.timetable = timetable
@@ -59,19 +59,13 @@ class Train:
     def tick(self):
         if not self._is_live:
             return
-        
-        if self._is_shutting_down:
-            self.speed = max(0.0, self.speed - self.config.deceleration * DT)
-            if self.speed == 0.0:
-                self._shutdown()
-                return
-        else:
-            max_safe_speed = self.get_max_safe_speed()
-            speed_with_acc = self.speed + (self.config.acceleration * DT)
-            self.speed = min(max_safe_speed, speed_with_acc, self.config.max_speed/3.6)
-                
-            if self.speed == 0.0:
-                return
+
+        max_safe_speed = self.get_max_safe_speed()
+        speed_with_acc = self.speed + (self.config.acceleration * DT)
+        self.speed = min(max_safe_speed, speed_with_acc, self.config.max_speed/3.6)
+            
+        if self.speed == 0.0:
+            return
             
             
         self._occupied_edge_count_cache = None
@@ -126,17 +120,9 @@ class Train:
         self._path_distance = self.path[-1].length - remaining
         self.path = [rail.reversed() for rail in reversed(self.path)]
         
-    def initiate_shutdown(self) -> None:
-        if self.speed == 0.0:
-            self._shutdown()
-            return
-        self._is_shutting_down = True
         
-    def _shutdown(self) -> None:
+    def shutdown(self) -> None:
         self._is_live = False
-        self._is_shutting_down = False
-        self.path = self.path[:self._occupied_edge_count]
-        self._railway.signalling.unlock_path(self.path[self._occupied_edge_count:])
         
     def get_locomotive_pose(self) -> Pose:
         return Pose.from_edge(self.path[self._occupied_edge_count - 1].edge)

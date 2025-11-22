@@ -37,7 +37,7 @@ class TrainPanel(Panel):
             label = "Change Schedule" if self._train.timetable else "Add Schedule"
             self._render_button(self.schedule_button, label, Color.GREY)
             
-            color = Color.DARKGREY if self._train._is_shutting_down else Color.GREY
+            color = Color.GREY if self._train.speed == 0.0 else Color.DARKGREY
             self._render_button(self.stop_button, "Shut Down", color)
         else:
             self._render_button(self.startup_button, "Startup", Color.GREY)
@@ -51,8 +51,8 @@ class TrainPanel(Panel):
         if self._train.is_live:
             if self.schedule_button.collidepoint(*event.screen_pos):
                 self._open_schedule_selector()
-            elif self.stop_button.collidepoint(*event.screen_pos):
-                self._train.initiate_shutdown()
+            elif self.stop_button.collidepoint(*event.screen_pos) and self._train.speed == 0.0:
+                self._train.shutdown()
         else:
             if self.startup_button.collidepoint(*event.screen_pos):
                 self._train.start()
