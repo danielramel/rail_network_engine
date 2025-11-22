@@ -43,7 +43,14 @@ class Train:
         self._railway = railway
         self.config = replace(config)
         self.path = [self._railway.graph.get_rail(edge) for edge in edges[-(int((self.config.total_length + 1) // Config.SHORT_SEGMENT_LENGTH) + 1):]]
-        #TODO place it on the front of the platform
+        
+        # put train right before the end of the platform
+        remaining = self.config.total_length + 1
+        i = 0
+        while remaining - self.path[i].length > 0:
+            remaining -= self.path[i].length
+            i += 1   
+        self._path_distance = self.path[i].length - remaining
         
     def set_timetable(self, timetable: TimeTable) -> None:
         self.timetable = timetable

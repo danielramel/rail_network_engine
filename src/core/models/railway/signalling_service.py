@@ -84,6 +84,7 @@ class SignallingService:
 
     def disconnect_signal_at(self, a) -> None:
         raise UserWarning("Not implemented yet")
+        # TODO implement disconnecting signals
     
     def get_path_preview(self, start: Signal, end: Signal) -> list[Edge] | None:
         poses = self.find_path(start.pose, end.pose)
