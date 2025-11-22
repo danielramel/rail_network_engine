@@ -5,8 +5,9 @@ import pygame
 from core.config.settings import Config
 
 def draw_station(screen: pygame.Surface, station: Station, camera: Camera, color=Color.PURPLE):
-    width = max(1, int(round(3 * camera.scale)))
-    w, h = Config.STATION_RECT_SIZE
+    width = max(1, round(3 * camera.scale))
+    w = Config.STATION_RECT_WIDTH * Config.GRID_SIZE
+    h = Config.STATION_RECT_HEIGHT * Config.GRID_SIZE
     rect = pygame.Rect(0, 0, w * camera.scale, h * camera.scale)
     rect.center = tuple(camera.world_to_screen(station.position))
     pygame.draw.rect(screen, Color.BLACK, rect)

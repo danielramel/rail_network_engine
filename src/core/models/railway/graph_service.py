@@ -58,6 +58,19 @@ class GraphService:
             
     def is_station_blocked_by_node(self, station_pos: Position) -> bool:
         return any(station_pos.is_within_station_rect(node_pos) for node_pos in self._railway.graph.nodes)
+    
+    def get_closest_edge_on_grid(self, world_pos: Position, camera_scale) -> Edge | None:        
+        min_edge = None
+        min_distance = 1 / 3 / camera_scale + 1
+        for edge in world_pos.get_grid_edges():
+            if not self._railway.graph.has_edge(edge):
+                continue
+            distance = world_pos.distance_to_edge(edge)
+            if distance <= min_distance:
+                min_distance = distance
+                min_edge = edge
+
+        return min_edge
 
     def get_segment(self, edge: Edge) -> tuple[frozenset[Position], frozenset[Edge]]:
         def is_node_blocked(pos: Position) -> bool:
@@ -168,17 +181,4 @@ class GraphService:
             
             stack.append(next_pose)
                 
-        return False, frozenset(edges)    
-    
-    def get_closest_edge_on_grid(self, world_pos: Position, camera_scale) -> Edge | None:        
-        min_edge = None
-        min_distance = Config.GRID_SIZE / 3 / camera_scale + 1
-        for edge in world_pos.get_grid_edges():
-            if not self._railway.graph.has_edge(edge):
-                continue
-            distance = world_pos.distance_to_edge(edge)
-            if distance <= min_distance:
-                min_distance = distance
-                min_edge = edge
-
-        return min_edge
+        return False, frozenset(edges)

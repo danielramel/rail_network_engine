@@ -15,7 +15,7 @@ def draw_dotted_line(screen: pygame.Surface, world_a: Position, world_b: Positio
     
     distance = a.distance_to(b)
     if num_dots is None:
-        num_dots = max(1, int(world_a.distance_to(world_b) // 10))  # default: one dot every 10 pixels
+        num_dots = max(1, int(distance // 10))  # default: one dot every 10 pixels
     dot_spacing = distance / num_dots
     for i in range(num_dots):
         dot_x = x1 + (dx * (i * dot_spacing) / distance)

@@ -1,3 +1,4 @@
+from core.config.settings import Config
 from core.models.geometry import Position
 from core.models.geometry.edge import Edge
 
@@ -18,17 +19,17 @@ class Camera:
         if isinstance(pos, Edge):
             return Edge(self.screen_to_world(pos.a), self.screen_to_world(pos.b))
 
-        world_x = (pos.x / self.scale) - self.x
-        world_y = (pos.y / self.scale) - self.y
+        world_x = ((pos.x / self.scale) - self.x) / Config.GRID_SIZE
+        world_y = ((pos.y / self.scale) - self.y) / Config.GRID_SIZE
         return Position(world_x, world_y)
 
-    def world_to_screen(self, obj: Position | Edge) -> Position | Edge:
+    def world_to_screen(self, pos: Position | Edge) -> Position | Edge:
         """Convert world coordinates to screen coordinates"""
-        if isinstance(obj, Edge):
-            return Edge(self.world_to_screen(obj.a), self.world_to_screen(obj.b))
+        if isinstance(pos, Edge):
+            return Edge(self.world_to_screen(pos.a), self.world_to_screen(pos.b))
 
-        screen_x = (obj.x + self.x) * self.scale
-        screen_y = (obj.y + self.y) * self.scale
+        screen_x = (pos.x * Config.GRID_SIZE + self.x) * self.scale
+        screen_y = (pos.y * Config.GRID_SIZE + self.y) * self.scale
         return Position(screen_x, screen_y)
 
     

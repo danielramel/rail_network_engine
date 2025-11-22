@@ -21,8 +21,8 @@ class Pose(NamedTuple):
     def get_valid_turns(self) -> list['Pose']:
         neighbors = []
         for dir in self.direction.get_valid_turns():
-            nx = self.position.x + dir.x * Config.GRID_SIZE
-            ny = self.position.y + dir.y * Config.GRID_SIZE
+            nx = self.position.x + dir.x
+            ny = self.position.y + dir.y
             new_state = Pose(Position(nx, ny), dir)
 
             neighbors.append(new_state)
@@ -34,8 +34,8 @@ class Pose(NamedTuple):
     def get_next_in_direction(self) -> 'Pose':
         return Pose(
             Position(
-                self.position.x + self.direction.x * Config.GRID_SIZE,
-                self.position.y + self.direction.y * Config.GRID_SIZE
+                self.position.x + self.direction.x,
+                self.position.y + self.direction.y
             ),
             self.direction
         )

@@ -22,11 +22,12 @@ ANGLE_MAP = {
 
 
 def draw_signal(screen: pygame.Surface, alignment: Pose, camera: Camera, color=Color.WHITE, offset=False):
-    """Draw a signal triangle at the given position and orientation."""        
+    """Draw a signal triangle at the given position and orientation."""      
+    #TODO fix
     if offset:
         draw_node(screen, alignment.position, camera, color=Color.YELLOW)
         # Adjust the position for the offset
-        offset_y = Config.GRID_SIZE * camera.scale / 1.25
+        offset_y = camera.scale / 1.25
         offset_position = Position(alignment.position.x, alignment.position.y - offset_y / camera.scale)
         alignment = Pose(offset_position, alignment.direction)
     
