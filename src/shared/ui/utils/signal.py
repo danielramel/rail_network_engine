@@ -10,27 +10,18 @@ import math
 
 ANGLE_MAP = {
     (0, 1): 0,
-    (1, 1): 45,
-    (1, 0): 90,
-    (1, -1): 135,
+    (-1, 1): 45,
+    (-1, 0): 90,
+    (-1, -1): 135,
     (0, -1): 180,
-    (-1, -1): 225,
-    (-1, 0): 270,
-    (-1, 1): 315
+    (1, -1): 225,
+    (1, 0): 270,
+    (1, 1): 315
 }
 
 
-def draw_signal(screen: pygame.Surface, alignment: Pose, camera: Camera, color=Color.WHITE, offset=False):
-    """Draw a signal triangle at the given position and orientation."""      
-    #TODO fix
-    if offset:
-        draw_node(screen, alignment.node, camera, color=Color.YELLOW)
-        # Adjust the position for the offset
-        offset_y = camera.scale / 1.25
-        offset_position = Position(alignment.node.x, alignment.node.y - offset_y / camera.scale)
-        alignment = Pose(offset_position, alignment.direction)
-    
-
+def draw_signal(screen: pygame.Surface, alignment: Pose, camera: Camera, color=Color.WHITE):
+    """Draw a signal triangle at the given position and orientation."""
     size = int(20 * camera.scale)
 
     # local triangle points with origin at TOP vertex
@@ -42,7 +33,7 @@ def draw_signal(screen: pygame.Surface, alignment: Pose, camera: Camera, color=C
     ]
 
 
-    angle_deg = ANGLE_MAP[tuple(alignment.direction)]
+    angle_deg = ANGLE_MAP[tuple(alignment.direction)] + 180
     ang = math.radians(angle_deg)
 
     cos_a = math.cos(ang)

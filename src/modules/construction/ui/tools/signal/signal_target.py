@@ -14,7 +14,6 @@ class SignalTargetType(Enum):
 class SignalTarget:
     kind: SignalTargetType
     pose: Pose
-    offset: bool = False
     message: str | None = None
 
 def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
@@ -31,7 +30,6 @@ def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
         return SignalTarget(
             kind=SignalTargetType.INVALID,
             pose=Pose(node=node, direction=(1, 0)),
-            offset=True,
             message=message
         )
 
@@ -42,7 +40,6 @@ def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
             return SignalTarget(
                 kind=SignalTargetType.INVALID,
                 pose=Pose(node=node, direction=toggle_direction),
-                offset=True,
                 message="Cannot toggle signals at dead ends!"
             )
             
@@ -50,7 +47,6 @@ def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
         return SignalTarget(
             kind=SignalTargetType.TOGGLE,
             pose=Pose(node, toggle_direction),
-            offset=True
         )
 
     # no signal at node -> preview toward first neighbor
@@ -64,5 +60,4 @@ def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
     return SignalTarget(
         kind=SignalTargetType.ADD,
         pose=Pose(node, direction),
-        offset=False
     )

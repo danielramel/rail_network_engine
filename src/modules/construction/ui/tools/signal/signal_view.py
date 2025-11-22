@@ -13,4 +13,4 @@ class SignalView(ConstructionView):
             return
 
         color = Color.RED if target.kind == SignalTargetType.INVALID else Color.YELLOW
-        draw_signal(self._screen, target.pose, self._camera, color=color, offset=target.offset)
+        draw_signal(self._screen, target.pose, self._camera, color=color)
