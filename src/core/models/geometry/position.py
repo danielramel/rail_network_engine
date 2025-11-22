@@ -47,7 +47,7 @@ class Position:
         snapped_y = round(self.y / Config.GRID_SIZE) * Config.GRID_SIZE
         return Position(snapped_x, snapped_y)
     
-    def station_rect_overlaps(self, other: 'Position') -> bool:
+    def station_rects_overlap(self, other: 'Position') -> bool:
         """Check if station rectangles at this point and another point overlap."""
         w, h = Config.STATION_RECT_SIZE
         w += Config.GRID_SIZE

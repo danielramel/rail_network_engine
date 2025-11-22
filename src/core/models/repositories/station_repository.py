@@ -14,7 +14,7 @@ class StationRepository:
         self._railway = railway
     
     def add(self, pos: Position, name: str) -> Station:
-        station = Station(name, pos, id=self._next_id)
+        station = Station(name, pos, self._next_id)
         self._stations[station.id] = station
         self._next_id += 1
         return station

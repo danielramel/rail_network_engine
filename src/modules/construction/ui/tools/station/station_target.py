@@ -21,7 +21,7 @@ def find_station_target(railway: RailwaySystem, world_pos: Position, moving_stat
             break
 
     blocked = any(snapped.is_within_station_rect(node_pos) for node_pos in railway.graph.nodes)
-    overlaps = any(snapped.station_rect_overlaps(station.position) for station in railway.stations.all() if station.position != (moving_station.position if moving_station else None))
+    overlaps = any(snapped.station_rects_overlap(station.position) for station in railway.stations.all() if station.position != (moving_station.position if moving_station else None))
 
     return StationTarget(
         snapped=snapped,
