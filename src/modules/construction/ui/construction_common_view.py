@@ -1,6 +1,13 @@
 from shared.ui.enums.edge_action import EdgeAction
 from core.models.geometry.position import Position
-from shared.ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station, draw_dotted_line
+from shared.ui.utils.grid import draw_grid
+from shared.ui.utils.tracks import draw_track
+from shared.ui.utils.nodes import draw_node
+from shared.ui.utils.signal import draw_signal
+from shared.ui.utils.station import draw_station
+from shared.ui.utils.lines import draw_dotted_line
+
+
 from core.config.color import Color
 from modules.construction.models.construction_view import ConstructionView
 

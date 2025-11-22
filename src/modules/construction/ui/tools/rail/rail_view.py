@@ -4,7 +4,7 @@ from modules.construction.models.construction_view import ConstructionView
 from core.models.geometry.position import Position
 from core.config.color import Color
 from shared.ui.enums.edge_action import EdgeAction
-from shared.ui.utils import draw_node
+from shared.ui.utils.nodes import draw_node
 from shared.ui.services.color_from_speed import color_from_speed
 from shared.ui.utils.tracks import draw_track
 from .rail_target import find_rail_target, RailTargetType

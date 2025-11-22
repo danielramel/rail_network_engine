@@ -1,7 +1,7 @@
 from modules.construction.models.construction_view import ConstructionView
 from core.models.geometry.position import Position
 from core.config.color import Color
-from shared.ui.utils import draw_signal
+from shared.ui.utils.signal import draw_signal
 from .signal_target import find_signal_target, SignalTargetType
 
 class SignalView(ConstructionView):

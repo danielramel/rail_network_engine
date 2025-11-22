@@ -2,7 +2,8 @@ from modules.construction.models.construction_view import ConstructionView
 from core.models.geometry.position import Position
 from core.models.station import Station
 from core.config.color import Color
-from shared.ui.utils import draw_station, draw_dotted_line
+from shared.ui.utils.lines import draw_dotted_line
+from shared.ui.utils.station import draw_station
 from .station_target import StationTargetType, find_station_target
 
 class StationView(ConstructionView):

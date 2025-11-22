@@ -1,6 +1,11 @@
 from core.config.color import Color
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
-from shared.ui.utils import draw_grid, draw_track, draw_node, draw_signal, draw_station, draw_train, TRAINDRAWACTION
+from shared.ui.utils.nodes import draw_node
+from shared.ui.utils.tracks import draw_track
+from shared.ui.utils.signal import draw_signal
+from shared.ui.utils.station import draw_station
+from shared.ui.utils.train import TRAINDRAWACTION, draw_train
+from shared.ui.utils.grid import draw_grid
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from shared.ui.enums.edge_action import EdgeAction
