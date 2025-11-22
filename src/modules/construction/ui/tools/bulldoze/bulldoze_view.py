@@ -1,7 +1,7 @@
 from shared.ui.enums.edge_action import EdgeAction
 from .bulldoze_target import BulldozeTargetType, find_bulldoze_target
 from modules.construction.models.construction_view import ConstructionView
-from core.models.geometry import Position
+from core.models.geometry.position import Position
 from shared.ui.utils import draw_station, draw_node
 from core.config.color import Color
 
@@ -14,9 +14,9 @@ class BulldozeView(ConstructionView):
         
         target = find_bulldoze_target(self._railway, world_pos, self._camera.scale)
         if target.kind == BulldozeTargetType.SIGNAL:
-            self._state.preview.nodes = frozenset((target.position,))
+            self._state.preview.nodes = frozenset((target.node,))
         elif target.kind == BulldozeTargetType.STATION:
-            draw_station(self._screen, self._railway.stations.get_by_position(target.position), self._camera, color=Color.RED)
+            draw_station(self._screen, self._railway.stations.get_by_node(target.node), self._camera, color=Color.RED)
         elif target.kind == BulldozeTargetType.NONE:
             draw_node(self._screen, world_pos, self._camera, color=Color.RED)
         elif target.kind == BulldozeTargetType.PLATFORM:

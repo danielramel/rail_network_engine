@@ -24,7 +24,7 @@ class PlatformController(ConstructionToolController):
         # if user is currently selecting a station for the platform
         if self._state.platform_waiting_for_station:
             for station in self._railway.stations.all():
-                if event.world_pos.is_within_station_rect(station.position):
+                if event.world_pos.is_within_station_rect(station.node):
                     self._railway.stations.add_platform(station.id, self._state.preview.edges)
                     break
             self._state.platform_waiting_for_station = False

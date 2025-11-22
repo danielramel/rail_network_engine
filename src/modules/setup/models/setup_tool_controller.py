@@ -16,6 +16,6 @@ class SetupToolController(ClickableUIComponent, FullScreenUIComponent):
         self._state = state
         self._graphics = graphics
         
-    def render(self, screen_pos: Position):
+    def render(self, screen_pos: Position | None) -> None:
         world_pos = self._graphics.camera.screen_to_world(screen_pos) if screen_pos is not None else None
         self._view.render(world_pos)

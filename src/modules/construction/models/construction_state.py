@@ -2,7 +2,9 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
 from core.config.settings import Config
-from core.models.geometry import Position, Edge, Pose
+from core.models.geometry.node import Node
+from core.models.geometry.edge import Edge
+from core.models.geometry.pose import Pose
 from core.models.station import Station
 from shared.ui.enums.edge_action import EdgeAction
 
@@ -16,7 +18,7 @@ class ConstructionTool(Enum):
 @dataclass
 class ConstructionPreview:
     edges: frozenset[Edge] = field(default_factory=frozenset)
-    nodes: frozenset[Position] = field(default_factory=frozenset)
+    nodes: frozenset[Node] = field(default_factory=frozenset)
     edge_action: EdgeAction = EdgeAction.NORMAL
     
     def clear(self) -> None:
@@ -52,9 +54,9 @@ class ConstructionState:
         """Check if an edge (in either direction) is in the preview set."""
         return edge in self.preview.edges
     
-    def is_bulldoze_preview_node(self, pos: Position) -> bool:
-        """Check if a position is marked for bulldozing."""
-        return self.tool is ConstructionTool.BULLDOZE and pos in self.preview.nodes
+    def is_bulldoze_preview_node(self, node: Node) -> bool:
+        """Check if a node is marked for bulldozing."""
+        return self.tool is ConstructionTool.BULLDOZE and node in self.preview.nodes
 
     def is_station_being_moved(self, station: Station) -> bool:
         """Check if a specific station is currently being moved."""

@@ -1,5 +1,6 @@
 from core.models.railway.graph_adapter import GraphAdapter
-from core.models.geometry import Position, Pose
+from core.models.geometry.node import Node
+from core.models.geometry.pose import Pose
 from core.models.signal import Signal
 
 class SignalRepository:
@@ -7,25 +8,25 @@ class SignalRepository:
     def __init__(self, graph: GraphAdapter):
         self._graph = graph
 
-    def has_signal_at(self, pos: Position) -> bool:
-        return self._graph.has_node_at(pos) and self._graph.has_node_attr(pos, 'signal')
+    def has_signal_at(self, node: Node) -> bool:
+        return self._graph.has_node_at(node) and self._graph.has_node_attr(node, 'signal')
     
     def has_signal_with_pose_at(self, pose: Pose) -> bool:
-        if not self.has_signal_at(pose.position):
+        if not self.has_signal_at(pose.node):
             return False
-        signal = self.get(pose.position)
+        signal = self.get(pose.node)
         return signal.direction == pose.direction
     
-    def get(self, pos: Position) -> Signal:
-        if not self.has_signal_at(pos):
+    def get(self, node: Node) -> Signal | None:
+        if not self.has_signal_at(node):
             return None
-        return self._graph.get_node_attr(pos, 'signal')
+        return self._graph.get_node_attr(node, 'signal')
 
     def set(self, pose: Pose) -> None:
-        self._graph.set_node_attr(pose.position, 'signal', Signal(pose))
+        self._graph.set_node_attr(pose.node, 'signal', Signal(pose))
 
-    def remove(self, pos: Position) -> None:
-        self._graph.remove_node_attr(pos, 'signal')
+    def remove(self, node: Node) -> None:
+        self._graph.remove_node_attr(node, 'signal')
 
     def all(self) -> tuple[Signal]:
         return tuple(self._graph.all_nodes_with_attr('signal').values())

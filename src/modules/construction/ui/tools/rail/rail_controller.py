@@ -1,7 +1,7 @@
 from modules.construction.models.construction_tool_controller import ConstructionToolController
 from core.models.geometry.direction import Direction
 from .rail_target import find_rail_target, RailTargetType
-from core.models.geometry import Pose
+from core.models.geometry.pose import Pose
 from .rail_view import RailView
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
@@ -34,15 +34,15 @@ class RailController(ConstructionToolController):
             self._state.construction_anchor = None
 
         elif target.kind is RailTargetType.NODE:
-            if self._railway.signals.has_signal_at(target.snapped):
-                signal = self._railway.signals.get(target.snapped)
+            if self._railway.signals.has_signal_at(target.node):
+                signal = self._railway.signals.get(target.node)
                 self._state.construction_anchor = signal.pose
                 return
-            self._state.construction_anchor = Pose(target.snapped, Direction(0, 0))
+            self._state.construction_anchor = Pose(target.node, Direction(0, 0))
 
         elif target.kind is RailTargetType.PATH:
             self._railway.graph_service.add_segment(target.found_path, self._state.track_speed, self._state.track_length)
             self._state.construction_anchor = Pose(
-                target.snapped,
-                target.found_path[-2].direction_to(target.snapped)
+                target.node,
+                target.found_path[-2].direction_to(target.node)
             )

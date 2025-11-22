@@ -1,4 +1,7 @@
-from core.models.geometry import Position, Edge
+from core.models.geometry.edge import Edge
+from core.models.geometry.node import Node
+from core.models.geometry.position import Position
+
 from core.models.station import Station
 from core.models.railway.graph_adapter import GraphAdapter
 from typing import TYPE_CHECKING
@@ -13,8 +16,8 @@ class StationRepository:
         self._next_id: int = 1
         self._railway = railway
     
-    def add(self, pos: Position, name: str) -> Station:
-        station = Station(name, pos, self._next_id)
+    def add(self, node: Node, name: str) -> Station:
+        station = Station(name, node, self._next_id)
         self._stations[station.id] = station
         self._next_id += 1
         return station
@@ -22,16 +25,16 @@ class StationRepository:
     def _remove(self, station_id: str) -> Station:
         return self._stations.pop(station_id)
     
-    def move(self, station_id: str, new_pos: Position) -> None:
+    def move(self, station_id: str, new_node: Node) -> None:
         station = self._stations[station_id]
-        station.position = new_pos
+        station.node = new_node
     
     def get(self, station_id: str) -> Station:
         return self._stations[station_id]
     
-    def get_by_position(self, pos: Position) -> Station | None:
+    def get_by_node(self, node: Node) -> Station | None:
         for station in self._stations.values():
-            if station.position == pos:
+            if station.node == node:
                 return station
         return None
     
@@ -44,8 +47,8 @@ class StationRepository:
     def all(self) -> tuple[Station]:
         return tuple(self._stations.values())
     
-    def is_within_any(self, pos: Position) -> bool:
-        return any(pos.is_within_station_rect(station.position) for station in self._stations.values())
+    def is_within_any(self, node: Node) -> bool:
+        return any(node.is_within_station_rect(station.node) for station in self._stations.values())
     
     def add_platform(self, station_id: str, edges: frozenset[Edge]) -> None:
         platform = sorted(edges)
@@ -64,16 +67,16 @@ class StationRepository:
             self._railway.graph.remove_node_attr(edge.a, 'station')
             self._railway.graph.remove_node_attr(edge.b, 'station')
             
-    def is_platform_at(self, pos: Position) -> bool:
-        if not self._railway.graph.has_node_at(pos):
+    def is_platform_at(self, node: Node) -> bool:
+        if not self._railway.graph.has_node_at(node):
             return False
-        return self._railway.graph.has_node_attr(pos, 'station')
+        return self._railway.graph.has_node_attr(node, 'station')
     
     def _remove_platform_from_station(self, station_id: str, edges: frozenset[Edge]) -> None:
         self._stations[station_id].platforms.remove(edges)
     
-    def get_platform_at(self, pos: Position) -> bool:
-        return self._railway.graph.get_node_attr(pos, 'station')
+    def get_platform_at(self, node: Node) -> bool:
+        return self._railway.graph.get_node_attr(node, 'station')
     
     def is_edge_platform(self, edge: Edge) -> bool:
         if not self._railway.graph.has_edge(edge):
@@ -94,8 +97,8 @@ class StationRepository:
         mid_edge = sorted_edges[len(sorted_edges) // 2]
         return mid_edge.midpoint()
     
-    def remove_station_at(self, pos: Position):
-        station = self.get_by_position(pos)
+    def remove_station_at(self, node: Node):
+        station = self.get_by_node(node)
         self._remove(station.id)
         for platform in station.platforms:
             self._remove_platform(platform)
@@ -124,7 +127,7 @@ class StationRepository:
             id = int(id)
             station = Station(
                 name=station_data["name"],
-                position=Position.from_dict(station_data["position"]),
+                node=Node.from_dict(station_data["node"]),
                 id=id,
                 platforms={frozenset(Edge.from_dict(edge_data) for edge_data in platform_data)
                            for platform_data in station_data["platforms"]}

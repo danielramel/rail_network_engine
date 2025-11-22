@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from core.models.geometry.edge import Edge
-from core.models.geometry.position import Position
 from core.models.signal import Signal
 from typing import Callable
 from enum import Enum
@@ -34,7 +33,7 @@ class TimeControlState:
 @dataclass
 class SimulationPreview:
     path: list[Edge] = field(default_factory=list)
-    signal: Position = None
+    signal: Signal = None
     train_id: int = None
     
     def clear(self) -> None:

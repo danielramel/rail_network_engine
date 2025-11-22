@@ -4,7 +4,7 @@ from core.graphics.camera import Camera
 from core.config.color import Color
 from core.models.train import Train
 from enum import Enum, auto
-from core.models.geometry.position import Position
+from core.models.geometry.node import Node
 
 class TRAINDRAWACTION(Enum):
     SHUTDOWN = auto()
@@ -63,8 +63,8 @@ def draw_train(screen: pygame.Surface, train: Train, camera: Camera, action: TRA
         
 def draw_occupied_edge(
     screen: pygame.Surface,
-    a: Position,
-    b: Position,
+    a: Node,
+    b: Node,
     camera: Camera,
     color: tuple[int, int, int],
     start: float,

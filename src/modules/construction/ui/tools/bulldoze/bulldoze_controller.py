@@ -18,10 +18,10 @@ class BulldozeController(ConstructionToolController):
         
         target = find_bulldoze_target(self._railway, event.world_pos, self._graphics.camera.scale)
         if target.kind == BulldozeTargetType.SIGNAL:
-            self._railway.signals.remove(target.position)
+            self._railway.signals.remove(target.node)
             return True
         elif target.kind == BulldozeTargetType.STATION:
-            self._railway.stations.remove_station_at(target.position)
+            self._railway.stations.remove_station_at(target.node)
             return True
         elif target.kind == BulldozeTargetType.PLATFORM:
             self._railway.stations.remove_platform_at(target.edge)

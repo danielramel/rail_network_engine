@@ -1,5 +1,4 @@
 from core.config.color import Color
-from core.models.geometry.edge import Edge
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.utils import draw_track, draw_node, draw_signal, draw_station, draw_train, draw_dotted_line, draw_grid
@@ -78,11 +77,11 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             draw_node(self._screen, world_pos, self._camera, color=Color.LIME)
             
             if self._state.selected_signal is not None and len(self._state.preview.path) == 0:
-                draw_dotted_line(self._screen, self._state.selected_signal.position, world_pos, self._camera, color=Color.LIME)
+                draw_dotted_line(self._screen, self._state.selected_signal.node, world_pos, self._camera, color=Color.LIME)
             
             
     def set_preview(self, world_pos: Position | None):
-        self._state.preview.clear() 
+        self._state.preview.clear()
         if world_pos is None:
             return
         

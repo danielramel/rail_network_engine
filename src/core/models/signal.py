@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
-from core.models.geometry.direction import Direction
-from core.models.geometry.edge import Edge
 from core.models.geometry.pose import Pose
-from core.models.geometry.position import Position
+from core.models.geometry.edge import Edge
+from core.models.geometry.direction import Direction
+from core.models.geometry.node import Node
 from typing import Callable
 
 @dataclass
@@ -34,8 +34,8 @@ class Signal:
         return self.pose.direction
     
     @property
-    def position(self) -> Position:
-        return self.pose.position
+    def node(self) -> Node:
+        return self.pose.node
     
     def to_dict(self) -> dict:
         return {

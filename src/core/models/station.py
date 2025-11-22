@@ -1,11 +1,11 @@
-from core.models.geometry import Position
 from core.models.geometry.edge import Edge
+from core.models.geometry.node import Node
 from dataclasses import dataclass, field
 
 @dataclass
 class Station:
     name: str
-    position: Position
+    node: Node
     id: int
     platforms: set[frozenset[Edge]] = field(default_factory=set)
 
@@ -13,7 +13,7 @@ class Station:
         return {
             "id": self.id,
             "name": self.name,
-            "position": self.position.to_dict(),
+            "node": self.node.to_dict(),
             "platforms": [
             [edge.to_dict() for edge in platform]
             for platform in self.platforms

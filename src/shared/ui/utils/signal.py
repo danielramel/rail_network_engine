@@ -3,7 +3,6 @@ from core.models.geometry.position import Position
 from core.models.geometry.pose import Pose
 from core.graphics.camera import Camera
 from core.config.color import Color
-from core.config.settings import Config
 from shared.ui.utils.nodes import draw_node
 
 import pygame
@@ -25,10 +24,10 @@ def draw_signal(screen: pygame.Surface, alignment: Pose, camera: Camera, color=C
     """Draw a signal triangle at the given position and orientation."""      
     #TODO fix
     if offset:
-        draw_node(screen, alignment.position, camera, color=Color.YELLOW)
+        draw_node(screen, alignment.node, camera, color=Color.YELLOW)
         # Adjust the position for the offset
         offset_y = camera.scale / 1.25
-        offset_position = Position(alignment.position.x, alignment.position.y - offset_y / camera.scale)
+        offset_position = Position(alignment.node.x, alignment.node.y - offset_y / camera.scale)
         alignment = Pose(offset_position, alignment.direction)
     
 
@@ -57,7 +56,7 @@ def draw_signal(screen: pygame.Surface, alignment: Pose, camera: Camera, color=C
         rot_pts.append((rx, ry))
 
     # translate so anchor is exactly at world → screen position
-    sx, sy = camera.world_to_screen(alignment.position)
+    sx, sy = camera.world_to_screen(alignment.node)
     scr_pts = [(sx + px, sy + py) for px, py in rot_pts]
 
     pygame.draw.polygon(screen, Color.BLACK, scr_pts)

@@ -1,7 +1,6 @@
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from modules.construction.models.construction_state import ConstructionState
-from shared.ui.enums.edge_action import EdgeAction
 from core.models.geometry.position import Position
 
 class ConstructionView:

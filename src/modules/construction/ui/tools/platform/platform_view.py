@@ -1,6 +1,6 @@
 from shared.ui.enums.edge_action import EdgeAction
 from modules.construction.models.construction_view import ConstructionView
-from core.models.geometry import Position
+from core.models.geometry.position import Position
 from core.config.color import Color
 from shared.ui.utils import draw_node, draw_station, draw_dotted_line
 from .platform_target import PlatformTargetType, find_platform_target
@@ -14,9 +14,9 @@ class PlatformView(ConstructionView):
         if self._state.platform_waiting_for_station:
             middle_point = self._railway.stations.get_middle_of_platform(self._state.preview.edges)
             for station in self._railway.stations.all():
-                if world_pos.is_within_station_rect(station.position):
+                if world_pos.is_within_station_rect(station.node):
                     draw_station(self._screen, station, self._camera, color=Color.LIGHTBLUE)
-                    draw_dotted_line(self._screen, station.position, middle_point, self._camera, color=Color.LIGHTBLUE)
+                    draw_dotted_line(self._screen, station.node, middle_point, self._camera, color=Color.LIGHTBLUE)
                     break
             else:
                 draw_dotted_line(self._screen, world_pos, middle_point, self._camera, color=Color.LIGHTBLUE)

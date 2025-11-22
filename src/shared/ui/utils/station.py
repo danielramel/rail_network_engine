@@ -9,7 +9,7 @@ def draw_station(screen: pygame.Surface, station: Station, camera: Camera, color
     w = Config.STATION_RECT_WIDTH * Config.GRID_SIZE
     h = Config.STATION_RECT_HEIGHT * Config.GRID_SIZE
     rect = pygame.Rect(0, 0, w * camera.scale, h * camera.scale)
-    rect.center = tuple(camera.world_to_screen(station.position))
+    rect.center = tuple(camera.world_to_screen(station.node))
     pygame.draw.rect(screen, Color.BLACK, rect)
     pygame.draw.rect(screen, color, rect, width)
 

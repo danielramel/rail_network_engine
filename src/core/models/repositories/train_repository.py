@@ -1,4 +1,3 @@
-from core.config.settings import Config
 from core.models.geometry.edge import Edge
 from core.models.train import Train, TrainConfig
 from typing import TYPE_CHECKING

@@ -1,4 +1,4 @@
-from core.models.geometry import Position
+from core.models.geometry.position import Position
 from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent

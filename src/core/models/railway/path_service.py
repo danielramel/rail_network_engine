@@ -1,4 +1,6 @@
-from core.models.geometry import Position, Pose, Edge
+from core.models.geometry.edge import Edge
+from core.models.geometry.node import Node
+from core.models.geometry.pose import Pose
 import heapq
 
 from typing import TYPE_CHECKING
@@ -11,13 +13,13 @@ class PathService:
     def __init__(self, railway: 'RailwaySystem'):
         self._railway = railway
         
-    def find_grid_path(self, start: Pose, end: Position) -> tuple[Position]:
+    def find_grid_path(self, start: Pose, end: Node) -> tuple[Node]:
         def is_pose_blocked(pose: Pose) -> bool:
-            if self._railway.stations.is_within_any(pose.position):
+            if self._railway.stations.is_within_any(pose.node):
                 return True
             
-            if self._railway.signals.has_signal_at(pose.position):
-                signal = self._railway.signals.get(pose.position)
+            if self._railway.signals.has_signal_at(pose.node):
+                signal = self._railway.signals.get(pose.node)
                 if pose not in (signal.pose, signal.pose.opposite()):
                     return True
             return False
@@ -35,15 +37,15 @@ class PathService:
             
             # check for diagonal platform cutting
 
-            if edge.is_diagonal() and self._railway.stations.is_edge_platform(Edge(Position(edge.a.x, edge.b.y), Position(edge.b.x, edge.a.y))):
+            if edge.is_diagonal() and self._railway.stations.is_edge_platform(Edge(Node(edge.a.x, edge.b.y), Node(edge.b.x, edge.a.y))):
                 return True
             return False
         
         if is_pose_blocked(start) or self._railway.stations.is_within_any(end):
-            raise ValueError("Start or end position is blocked")
+            raise ValueError("Start or end node is blocked")
 
-        if start.position == end:
-            return (start.position,)
+        if start.node == end:
+            return (start.node,)
 
         priority_queue: list[tuple[float, Pose]] = []
         came_from: dict[Pose, Pose] = {}
@@ -51,22 +53,22 @@ class PathService:
         f_score: dict[Pose, float] = {}
 
         g_score[start] = 0
-        f_score[start] = start.position.heuristic_to(end)
+        f_score[start] = start.node.heuristic_to(end)
         heapq.heappush(priority_queue, (f_score[start], start))
 
         while priority_queue:
             _, current_pose = heapq.heappop(priority_queue)
 
-            if current_pose.position == end:
-                path = [current_pose.position]
+            if current_pose.node == end:
+                path = [current_pose.node]
 
                 while current_pose in came_from:
                     current_pose = came_from[current_pose]
-                    path.append(current_pose.position)
+                    path.append(current_pose.node)
 
                 return tuple(reversed(path))
             
-            if self._railway.signals.has_signal_at(current_pose.position):
+            if self._railway.signals.has_signal_at(current_pose.node):
                 neighbors = [current_pose.get_next_in_direction()]
             else:
                 neighbors = current_pose.get_valid_turns()
@@ -76,7 +78,7 @@ class PathService:
                 if is_pose_blocked(neighbor_pose):
                     continue
                 
-                if is_edge_blocked(Edge(current_pose.position, neighbor_pose.position)):
+                if is_edge_blocked(Edge(current_pose.node, neighbor_pose.node)):
                     continue                    
                 
                 cost = 1.0 if current_pose.direction == neighbor_pose.direction else 1.01 # slight penalty for turning
@@ -85,7 +87,7 @@ class PathService:
                 if neighbor_pose not in g_score or tentative_g_score < g_score[neighbor_pose]:
                     came_from[neighbor_pose] = current_pose
                     g_score[neighbor_pose] = tentative_g_score
-                    f_score[neighbor_pose] = tentative_g_score + neighbor_pose.position.heuristic_to(end)
+                    f_score[neighbor_pose] = tentative_g_score + neighbor_pose.node.heuristic_to(end)
 
                     heapq.heappush(priority_queue, (f_score[neighbor_pose], neighbor_pose))
 

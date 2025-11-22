@@ -1,4 +1,5 @@
-from core.models.geometry import Position, Pose
+from core.models.geometry.pose import Pose
+from core.models.geometry.node import Node
 from core.models.railway.graph_adapter import GraphAdapter
 from core.models.railway.graph_service import GraphService
 from core.models.railway.path_service import PathService
@@ -43,7 +44,7 @@ class RailwaySystem:
     def trains(self) -> TrainRepository:
         return self._train_repository
     
-    def find_path(self, start: Pose, end: Position) -> list[Position] | None:
+    def find_path(self, start: Pose, end: Node) -> list[Node] | None:
         return self._pathfinder.find_grid_path(start, end)
     
     @property

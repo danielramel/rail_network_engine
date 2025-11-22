@@ -4,9 +4,9 @@ from core.models.geometry.position import Position
 import pygame
 
 
-def draw_node(screen: pygame.Surface, node: Position, camera: Camera, color=Color.WHITE, junction=False) -> None:
+def draw_node(screen: pygame.Surface, position: Position, camera: Camera, color=Color.WHITE, junction=False) -> None:
     """Draw a node on the given screen using the camera."""
-    screen_x, screen_y = camera.world_to_screen(node)
+    screen_x, screen_y = camera.world_to_screen(position)
     if junction:
         outer_radius = int(2 * camera.scale)
         inner_radius = int(1 * camera.scale)

@@ -1,48 +1,49 @@
-from core.models.geometry import Position, Edge
+from core.models.geometry.edge import Edge
 import networkx as nx
 
 from core.models.rail import Rail
 from core.models.geometry.pose import Pose
+from core.models.geometry.node import Node
 
 class GraphAdapter:
     def __init__(self):
         self._graph = nx.Graph()
         
     @property
-    def nodes(self) -> set[Position]:
+    def nodes(self) -> set[Node]:
         return self._graph.nodes
     
     @property
     def edges(self) -> frozenset[Edge]:
         return frozenset((Edge(*edge) for edge in self._graph.edges))
     
-    def add_node(self, pos: Position) -> None:
-        self._graph.add_node(pos)
+    def add_node(self, node: Node) -> None:
+        self._graph.add_node(node)
         
-    def has_node_at(self, pos: Position) -> bool:
-        return pos in self._graph.nodes
+    def has_node_at(self, node: Node) -> bool:
+        return node in self._graph.nodes
     
-    def remove_node(self, pos: Position) -> None:
-        self._graph.remove_node(pos)
+    def remove_node(self, node: Node) -> None:
+        self._graph.remove_node(node)
     
-    def has_node_attr(self, pos: Position, key:str) -> bool:
-        return key in self._graph.nodes[pos]
+    def has_node_attr(self, node: Node, key:str) -> bool:
+        return key in self._graph.nodes[node]
     
-    def get_node_attr(self, pos: Position, key:str) -> dict:
-        return self._graph.nodes[pos].get(key, None)
+    def get_node_attr(self, node: Node, key:str) -> dict:
+        return self._graph.nodes[node].get(key, None)
     
-    def set_node_attr(self, pos: Position, key: str, value) -> None:
-        self._graph.nodes[pos][key] = value
+    def set_node_attr(self, node: Node, key: str, value) -> None:
+        self._graph.nodes[node][key] = value
         
-    def remove_node_attr(self, pos: Position, key: str) -> None:
-        if pos in self._graph.nodes and key in self._graph.nodes[pos]:
-            del self._graph.nodes[pos][key]
+    def remove_node_attr(self, node: Node, key: str) -> None:
+        if node in self._graph.nodes and key in self._graph.nodes[node]:
+            del self._graph.nodes[node][key]
     
-    def all_nodes_with_attr(self, key: str) -> dict[Position, dict]:
+    def all_nodes_with_attr(self, key: str) -> dict[Node, dict]:
         return {n: data[key] for n, data in self._graph.nodes(data=True) if key in data}
     
-    def degree_at(self, pos: Position) -> int:
-        return self._graph.degree[pos]
+    def degree_at(self, node: Node) -> int:
+        return self._graph.degree[node]
     
     def has_edge(self, edge: Edge) -> bool:
         return self._graph.has_edge(*edge)
@@ -71,28 +72,27 @@ class GraphAdapter:
     def all_edges_with_data(self) -> list[tuple[Edge, dict]]:
         return [(Edge(a, b), data) for a, b, data in self._graph.edges(data=True)]
 
-    def neighbors(self, pos: Position) -> tuple[Position]:
-        return tuple(self._graph.neighbors(pos))
+    def neighbors(self, node: Node) -> tuple[Node]:
+        return tuple(self._graph.neighbors(node))
     
     def get_dead_end_poses(self) -> list[Pose]:
         nodes = [node for node, degree in self._graph.degree() if degree == 1]
         return [Pose(node, next(iter(self._graph.neighbors(node))).direction_to(node)) for node in nodes]
 
 
-    def add_edge(self, a: Position, b: Position, speed: int, length: int) -> None:
+    def add_edge(self, a: Node, b: Node, speed: int, length: int) -> None:
         self._graph.add_edge(a, b, speed=speed, length=length)
 
     def remove_edge(self, edge: Edge) -> None:
         self._graph.remove_edge(edge.a, edge.b)
         
-    def get_edges(self, pos: Position) -> list[Edge]:
-        return self._graph.edges(pos)
+    def get_edges(self, node: Node) -> list[Edge]:
+        return self._graph.edges(node)
         
         
     def to_dict(self) -> dict:
         graph_data = nx.node_link_data(self._graph, edges="edges")
         
-        # convert Position objects in node attributes to dicts
         for node in graph_data['nodes']:
             node['id'] = node['id'].to_dict()
             for key in list(node.keys()):
@@ -113,11 +113,11 @@ class GraphAdapter:
         instance = cls()
         
         for node in graph_data['nodes']:
-            node['id'] = Position.from_dict(node['id'])
+            node['id'] = Node.from_dict(node['id'])
             
         for edge in graph_data['edges']:
-            edge['source'] = Position.from_dict(edge['source'])
-            edge['target'] = Position.from_dict(edge['target'])
+            edge['source'] = Node.from_dict(edge['source'])
+            edge['target'] = Node.from_dict(edge['target'])
 
         instance._graph = nx.node_link_graph(graph_data, edges="edges")
         

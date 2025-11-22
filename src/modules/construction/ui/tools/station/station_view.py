@@ -1,5 +1,5 @@
 from modules.construction.models.construction_view import ConstructionView
-from core.models.geometry import Position
+from core.models.geometry.position import Position
 from core.models.station import Station
 from core.config.color import Color
 from shared.ui.utils import draw_station, draw_dotted_line
@@ -13,17 +13,17 @@ class StationView(ConstructionView):
         target = find_station_target(self._railway, world_pos, moving_station)
 
         if target.kind is StationTargetType.HOVERED:
-            draw_station(self._screen, self._railway.stations.get_by_position(target.position), self._camera, color=Color.LIGHTBLUE)
+            draw_station(self._screen, self._railway.stations.get_by_node(target.node), self._camera, color=Color.LIGHTBLUE)
             return
 
         if moving_station:
             color = Color.RED if target.kind is StationTargetType.BLOCKED else Color.LIGHTBLUE
-            station = Station(moving_station.name, target.position, -1)
+            station = Station(moving_station.name, target.node, -1)
             draw_station(self._screen, station, self._camera, color=color)
             for middle_point in self._railway.stations.platforms_middle_points(moving_station):
-                draw_dotted_line(self._screen, middle_point, target.position, self._camera, color=color)
+                draw_dotted_line(self._screen, middle_point, target.node, self._camera, color=color)
                 
         else:
             color = Color.RED if target.kind is StationTargetType.BLOCKED else Color.YELLOW
-            station = Station("STATION", target.position, -1)
+            station = Station("STATION", target.node, -1)
             draw_station(self._screen, station, self._camera, color=color)

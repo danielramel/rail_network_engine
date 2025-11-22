@@ -3,8 +3,9 @@ from core.config.color import Color
 
 from core.config.settings import Config
 from core.graphics.camera import Camera
-from core.models.geometry import Position
+from core.models.geometry.node import Node
 from core.models.geometry.edge import Edge
+from core.models.geometry.position import Position
 from shared.ui.enums.edge_action import EdgeAction
 from shared.ui.services.color_from_speed import color_from_speed
 
@@ -72,13 +73,9 @@ def draw_platform(screen: pygame.Surface, edge: Edge, camera: Camera, color=Colo
         perp_x = perp_y = 0
 
     # Offset both lines in opposite perpendicular directions
-    edge1 = Edge(
-        Position(ax + perp_x * offset, ay + perp_y * offset),
-        Position(bx + perp_x * offset, by + perp_y * offset)
-    )
-    pygame.draw.aaline(screen, color, tuple(edge1.a), tuple(edge1.b), max(1, 1*int(camera.scale)))  # Draw platform line
-    edge2 = Edge(
-        Position(ax - perp_x * offset, ay - perp_y * offset),
-        Position(bx - perp_x * offset, by - perp_y * offset)
-    )
-    pygame.draw.aaline(screen, color, tuple(edge2.a), tuple(edge2.b), max(1, 1*int(camera.scale)))  # Draw platform line
+    a = Position(ax + perp_x * offset, ay + perp_y * offset)
+    b = Position(bx + perp_x * offset, by + perp_y * offset)
+    pygame.draw.aaline(screen, color, tuple(a), tuple(b), max(1, 1*int(camera.scale)))  # Draw platform line
+    a = Position(ax - perp_x * offset, ay - perp_y * offset)
+    b = Position(bx - perp_x * offset, by - perp_y * offset)
+    pygame.draw.aaline(screen, color, tuple(a), tuple(b), max(1, 1*int(camera.scale)))  # Draw platform line

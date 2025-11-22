@@ -4,11 +4,10 @@ from modules.simulation.simulation_mode import SimulationMode
 from core.models.app_state import AppState, ViewMode
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.graphics_context import GraphicsContext
-from core.models.geometry import Position
+from core.models.geometry.position import Position
 
 from shared.ui.models.ui_controller import UIController
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
-from core.models.time import Time
 
 
 class ModeStrategy(FullScreenUIComponent):

@@ -1,4 +1,4 @@
-from core.models.geometry import Position
+from core.models.geometry.position import Position
 from modules.setup.models.setup_view import SetupView
 from shared.ui.utils.nodes import draw_node
 from core.config.color import Color

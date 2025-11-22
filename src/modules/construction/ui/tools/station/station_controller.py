@@ -22,7 +22,7 @@ class StationController(ConstructionToolController):
         target = find_station_target(self._railway, event.world_pos, self._state.moving_station)
 
         if target.kind is StationTargetType.HOVERED:
-            self._state.moving_station = self._railway.stations.get_by_position(target.position)
+            self._state.moving_station = self._railway.stations.get_by_node(target.node)
             return
         
         if target.kind is StationTargetType.BLOCKED:
@@ -31,11 +31,11 @@ class StationController(ConstructionToolController):
             return
 
         if self._state.moving_station:
-            self._railway.stations.move(self._state.moving_station.id, target.position)
+            self._railway.stations.move(self._state.moving_station.id, target.node)
             self._state.moving_station = None
             return
 
-        self._graphics.input_component.request_input("Enter station name:", lambda name, pos=target.position: self._on_station_name_entered(name, pos))
+        self._graphics.input_component.request_input("Enter station name:", lambda name, pos=target.node: self._on_station_name_entered(name, pos))
         
     def _on_station_name_entered(self, name: str | None, pos: Position) -> None:
         if name is None or name.strip() == "":

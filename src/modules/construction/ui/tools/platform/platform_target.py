@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Optional, Set, Any
 from core.config.settings import Config
-from core.models.geometry import Position
+from core.models.geometry.position import Position
 from core.models.railway.railway_system import RailwaySystem
 class PlatformTargetType(Enum):
     NONE = auto()

@@ -10,7 +10,7 @@ from shared.ui.components.save_button import SaveButton
 from shared.ui.components.mode_selector_buttons import ModeSelectorButtons
 from core.models.event import Event
 from shared.ui.components.zoom_button import ZoomButton
-from core.models.geometry import Position
+from core.models.geometry.position import Position
 from core.graphics.graphics_context import GraphicsContext
 from shared.ui.models.ui_controller import UIController
 from shared.ui.components.time_table_button import TimeTableButton

@@ -1,8 +1,9 @@
 import heapq
 from typing import Optional
-from core.models.geometry import Position, Edge
+from core.models.geometry.edge import Edge
+from core.models.geometry.node import Node
+from core.models.geometry.pose import Pose
 from core.models.signal import Signal
-from core.models.geometry import Pose
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -35,11 +36,11 @@ class SignallingService:
     def is_edge_locked(self, edge: Edge) -> bool:
         return self._railway.graph.get_edge_attr(edge, 'locked') is True
     
-    def is_node_locked(self, node: Position) -> bool:
+    def is_node_locked(self, node: Node) -> bool:
         return self._railway.graph.get_node_attr(node, 'locked') is True
 
     def find_path(self, start: Pose, end: Pose) -> list[Pose] | None:
-        if start.position == end.position:
+        if start.node == end.node:
             return None
         
         priority_queue: list[tuple[float, Pose]] = []
@@ -47,7 +48,7 @@ class SignallingService:
         g_score: dict[Pose, float] = {}
 
         g_score[start] = 0
-        f_score = start.position.heuristic_to(end.position)
+        f_score = start.node.heuristic_to(end.node)
         heapq.heappush(priority_queue, (f_score, start))
 
         while priority_queue:
@@ -63,11 +64,11 @@ class SignallingService:
                 return tuple(reversed(path))
 
             for neighbor_pose in current_pose.get_valid_turns():
-                if not self._railway.graph.has_edge(Edge(current_pose.position, neighbor_pose.position)):
+                if not self._railway.graph.has_edge(Edge(current_pose.node, neighbor_pose.node)):
                     continue
                 
                 
-                if self.is_node_locked(neighbor_pose.position):
+                if self.is_node_locked(neighbor_pose.node):
                     continue
                 
                 cost = 1.0 if current_pose.direction == neighbor_pose.direction else 1.01 # slight penalty for turning
@@ -76,7 +77,7 @@ class SignallingService:
                 if neighbor_pose not in g_score or tentative_g_score < g_score[neighbor_pose]:
                     came_from[neighbor_pose] = current_pose
                     g_score[neighbor_pose] = tentative_g_score
-                    f_score = tentative_g_score + neighbor_pose.position.heuristic_to(end.position)
+                    f_score = tentative_g_score + neighbor_pose.node.heuristic_to(end.node)
 
                     heapq.heappush(priority_queue, (f_score, neighbor_pose))
 
@@ -90,7 +91,7 @@ class SignallingService:
         poses = self.find_path(start.pose, end.pose)
         if poses is None:
             return None
-        edges = [Edge(poses[i].position, poses[i+1].position) for i in range(len(poses)-1)]
+        edges = [Edge(poses[i].node, poses[i+1].node) for i in range(len(poses)-1)]
         return edges
             
     def connect_signals(self, from_signal: Signal, to_signal: Signal) -> None:
@@ -98,12 +99,12 @@ class SignallingService:
         if poses is None:
             return None
 
-        edges = [Edge(poses[i].position, poses[i+1].position) for i in range(len(poses)-1)]
+        edges = [Edge(poses[i].node, poses[i+1].node) for i in range(len(poses)-1)]
         current_signal = from_signal
         current_signal_index = 0
         for i, pose in enumerate(poses[1:], start=1):
             if self._railway.signals.has_signal_with_pose_at(pose):
-                signal = self._railway.signals.get(pose.position)
+                signal = self._railway.signals.get(pose.node)
                 current_signal.connect(edges[current_signal_index:i], signal)
                 current_signal = signal
                 current_signal_index = i
@@ -111,13 +112,13 @@ class SignallingService:
         self.lock_path(edges)
 
     def get_initial_path(self, start_pose: Pose) -> tuple[list[Edge], Optional[Signal]]:
-        visited = set[Position]()
+        visited = set[Node]()
         pose = start_pose
         path = []
         while True:
-            visited.add(pose.position)
+            visited.add(pose.node)
             if self._railway.signals.has_signal_with_pose_at(pose):
-                return path, self._railway.signals.get(pose.position)
+                return path, self._railway.signals.get(pose.node)
                 
             neighbors = self._railway.graph_service.get_connections_from_pose(pose)
             if len(neighbors) == 0:
@@ -126,5 +127,5 @@ class SignallingService:
             # if multiple connections, pick the first one
             connection = neighbors[0]
 
-            path.append(Edge(pose.position, connection.position))
+            path.append(Edge(pose.node, connection.node))
             pose = connection

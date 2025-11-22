@@ -22,7 +22,7 @@ class ConstructionCommonView(ConstructionView):
             draw_node(self._screen, node, self._camera, junction=True)
 
         for signal in self._railway.signals.all():
-            if self._state.is_bulldoze_preview_node(signal.position):
+            if self._state.is_bulldoze_preview_node(signal.node):
                 draw_signal(self._screen, signal, self._camera, color=Color.RED)
             else:
                 draw_signal(self._screen, signal, self._camera)
@@ -31,5 +31,5 @@ class ConstructionCommonView(ConstructionView):
             if self._state.is_station_being_moved(station):
                 continue
             for middle_point in self._railway.stations.platforms_middle_points(station):
-                draw_dotted_line(self._screen, middle_point, station.position, self._camera, color=Color.PURPLE)
+                draw_dotted_line(self._screen, middle_point, station.node, self._camera, color=Color.PURPLE)
             draw_station(self._screen, station, self._camera)

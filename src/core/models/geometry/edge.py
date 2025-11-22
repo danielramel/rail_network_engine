@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 from core.models.geometry.direction import Direction
+from core.models.geometry.node import Node
 from core.models.geometry.position import Position
 
 
 @dataclass(frozen=True, order=True)
 class Edge:
-    a: Position
-    b: Position
+    a: Node
+    b: Node
 
     def __iter__(self):
         return iter((self.a, self.b))
@@ -33,11 +34,6 @@ class Edge:
     
     def midpoint(self) -> Position:
         return Position((self.a.x + self.b.x) / 2, (self.a.y + self.b.y) / 2)
-
-    def move(self, direction: Direction, distance: float) -> 'Edge':
-        new_a = Position(self.a.x + direction.x * distance, self.a.y + direction.y * distance)
-        new_b = Position(self.b.x + direction.x * distance, self.b.y + direction.y * distance)
-        return Edge(new_a, new_b)
     
     def is_diagonal(self) -> bool:
         return self.a.x != self.b.x and self.a.y != self.b.y
@@ -51,13 +47,12 @@ class Edge:
 
     def ordered(self, reversed: bool = False) -> 'Edge':
         return Edge(*sorted((self.a, self.b), reverse=reversed))
-
     
     def reversed(self) -> 'Edge':
         return Edge(self.b, self.a)
         
     @classmethod
     def from_dict(cls, data: dict) -> 'Edge':
-        a = Position.from_dict(data["a"])
-        b = Position.from_dict(data["b"])
+        a = Node.from_dict(data["a"])
+        b = Node.from_dict(data["b"])
         return cls(a, b)

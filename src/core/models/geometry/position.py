@@ -3,8 +3,7 @@ from core.config.settings import Config
 from math import hypot, floor
 
 from typing import TYPE_CHECKING
-
-from core.models.geometry.direction import Direction
+from core.models.geometry.node import Node
 if TYPE_CHECKING:
     from core.models.geometry.edge import Edge
 
@@ -17,42 +16,21 @@ class Position:
     def __iter__(self):
         return iter((self.x, self.y))
     
-    def direction_to(self, other: 'Position') -> Direction:
-        """Get direction from this point to another point."""
-        def signum(x: int) -> int:
-            return (x > 0) - (x < 0)
-        
-        if self == other:
-            return ValueError("Same Point")
-        if abs(self.x - other.x) > 1 or abs(self.y - other.y) > 1:
-            raise ValueError("Points are not adjacent")
-
-        return Direction(signum(other.x - self.x), signum(other.y - self.y))
     
-    def heuristic_to(self, other: 'Position') -> float:
-        """Use chebysev distance as heuristic for A* pathfinding."""
-        return max(abs(self.x - other.x), abs(self.y - other.y))
 
-
-    def snap_to_grid(self) -> 'Position':
+    def snap_to_grid(self) -> Node:
         """Create a new Point snapped to the grid."""
-        return Position(round(self.x), round(self.y))
+        return Node(round(self.x), round(self.y))
     
-    def station_rects_overlap(self, other: 'Position') -> bool:
-        """Check if station rectangles at this point and another point overlap."""
-        return (
-            abs(self.x - other.x) < Config.STATION_RECT_WIDTH + 1 and
-            abs(self.y - other.y) < Config.STATION_RECT_HEIGHT + 1
-        )
     
-    def is_within_station_rect(self, center: 'Position') -> bool:
+    def is_within_station_rect(self, center: 'Node') -> bool:
         """Check if this point is within the station rectangle centered at another point."""
         return (
             abs(center.x - self.x) * 2 < Config.STATION_RECT_WIDTH + 1 and
             abs(center.y - self.y) * 2 < Config.STATION_RECT_HEIGHT + 1
         )
     
-    def distance_to(self, other: 'Position') -> float:
+    def distance_to(self, other: Node) -> float:
         """Calculate the Euclidean distance to another position."""
         return hypot(self.x - other.x, self.y - other.y)
     
@@ -63,10 +41,10 @@ class Position:
         cell_y = floor(self.y)
 
         corners = (
-            Position(cell_x, cell_y),
-            Position(cell_x  + 1, cell_y),
-            Position(cell_x + 1, cell_y + 1),
-            Position(cell_x, cell_y + 1),
+            Node(cell_x, cell_y),
+            Node(cell_x  + 1, cell_y),
+            Node(cell_x + 1, cell_y + 1),
+            Node(cell_x, cell_y + 1),
         )
 
         return (
@@ -103,13 +81,13 @@ class Position:
 
         
     
-    def move(self, dx: int, dy: int) -> 'Position':
+    def move(self, dx: int, dy: int) -> 'Node':
         """Return a new Position moved by dx and dy."""
-        return Position(self.x + dx, self.y + dy)
+        return Node(self.x + dx, self.y + dy)
 
     def to_dict(self) -> dict:
         return asdict(self)
     
     @classmethod
-    def from_dict(cls, data: dict) -> 'Position':
+    def from_dict(cls, data: dict) -> 'Node':
         return cls(**data)
