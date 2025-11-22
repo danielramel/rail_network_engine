@@ -1,9 +1,7 @@
 import pygame
-from core.models.geometry.position import Position
 from core.models.geometry.pose import Pose
 from core.graphics.camera import Camera
 from core.config.color import Color
-from shared.ui.utils.nodes import draw_node
 
 import pygame
 import math

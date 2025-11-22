@@ -8,7 +8,7 @@ class TrainPlacementPanel(Panel):
     """Signal placement panel with instructions."""
     
     def __init__(self, screen: pygame.Surface, state: SetupState) -> None:
-        super().__init__(screen, width=500, height=200)
+        super().__init__(screen, width=500, height=250)
         self._state = state
         
         self._param_ranges = {
@@ -67,6 +67,9 @@ class TrainPlacementPanel(Panel):
         
         self.car_gap_minus = pygame.Rect(self._rect.x + 340, controls_y, 30, 30)
         self.car_gap_plus = pygame.Rect(self._rect.x + 440, controls_y, 30, 30)
+        
+        # Total length position
+        self.total_length_y = controls_y + 50
        
     def render(self, screen_pos) -> None:
         """Render panel with instructions."""
@@ -84,9 +87,9 @@ class TrainPlacementPanel(Panel):
         self._render_param_control(self.max_speed_minus, self.max_speed_plus, "Max Speed", 
                                    train_config.max_speed, "km/h", 'max_speed')
         self._render_param_control(self.accel_minus, self.accel_plus, "Accel", 
-                                   train_config.acceleration, "m/s²", 'accel')
+                                   train_config.acceleration_in_m_s2, "m/s²", 'accel')
         self._render_param_control(self.decel_minus, self.decel_plus, "Decel", 
-                                   train_config.deceleration, "m/s²", 'decel')
+                                   train_config.deceleration_in_m_s2, "m/s²", 'decel')
         # Bottom row
         self._render_param_control(self.car_count_minus, self.car_count_plus, "Car Count", 
                                    train_config.car_count, "", 'car_count')
@@ -94,6 +97,12 @@ class TrainPlacementPanel(Panel):
                                    train_config.car_length, "m", 'car_length')
         self._render_param_control(self.car_gap_minus, self.car_gap_plus, "Car Gap", 
                                    train_config.car_gap, "m", 'car_gap')
+        
+        # Total length
+        total_length_text = f"Total Length: {train_config.total_length:.1f} m"
+        total_length_screen = self.instruction_font.render(total_length_text, True, Color.YELLOW)
+        total_length_rect = total_length_screen.get_rect(centerx=self._rect.centerx, top=self.total_length_y)
+        self._screen.blit(total_length_screen, total_length_rect)
     
     def _on_click(self, event: Event):
         if self.car_count_minus.collidepoint(*event.screen_pos):
@@ -165,11 +174,11 @@ class TrainPlacementPanel(Panel):
             new_val = train_config.car_gap + (direction * int(increment))
             train_config.car_gap = max(int(min_val), min(int(max_val), new_val))
         elif param_key == 'accel':
-            new_val = train_config.acceleration + (direction * increment)
-            train_config.acceleration = max(min_val, min(max_val, new_val))
+            new_val = train_config.acceleration_in_m_s2 + (direction * increment)
+            train_config.acceleration_in_m_s2 = max(min_val, min(max_val, new_val))
         elif param_key == 'max_speed':
             new_val = train_config.max_speed + (direction * int(increment))
             train_config.max_speed = max(int(min_val), min(int(max_val), new_val))
         elif param_key == 'decel':
-            new_val = train_config.deceleration + (direction * increment)
-            train_config.deceleration = max(min_val, min(max_val, new_val))
+            new_val = train_config.deceleration_in_m_s2 + (direction * increment)
+            train_config.deceleration_in_m_s2 = max(min_val, min(max_val, new_val))
