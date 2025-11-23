@@ -27,7 +27,7 @@ def find_bulldoze_target(railway: RailwaySystem, world_pos: Node) -> BulldozeTar
         if world_pos.is_within_station_rect(station.node):
             return BulldozeTarget(kind=BulldozeTargetType.STATION, node=station.node)
 
-    closest_edge = railway.graph_service.get_closest_edge(world_pos, tunnels=True)
+    closest_edge = railway.graph_service.get_closest_edge(world_pos, only_surface=False)
     if closest_edge is None:
         return BulldozeTarget(kind=BulldozeTargetType.NONE, node=world_pos)
 

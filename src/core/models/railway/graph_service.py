@@ -67,10 +67,10 @@ class GraphService:
             return False
         return any(n.level != 0 for n in self._railway.graph.neighbors(node))
     
-    def get_closest_edge(self, world_pos: Position, tunnels: bool = False) -> Edge | None:
+    def get_closest_edge(self, world_pos: Position, only_surface: bool = True) -> Edge | None:
         min_edge = None
         min_distance = 1.0
-        for edge in world_pos.get_grid_edges(tunnels=tunnels):
+        for edge in world_pos.get_grid_edges(only_surface=only_surface):
             if not self._railway.graph.has_edge(edge):
                 continue
             distance = world_pos.distance_to_edge(edge)
@@ -113,12 +113,17 @@ class GraphService:
         a, b = edge
         pose_to_a = Pose.from_nodes(b, a)
         pose_to_b = Pose.from_nodes(a, b)
-
-        if not is_node_blocked(a):
-            stack.append(pose_to_a)
-
-        if not is_node_blocked(b):
+        
+        if a.level == 0 and b.level == 1:
             stack.append(pose_to_b)
+        elif b.level == 0 and a.level == 1:
+            stack.append(pose_to_a)
+        else:
+            if not is_node_blocked(a):
+                stack.append(pose_to_a)
+
+            if not is_node_blocked(b):
+                stack.append(pose_to_b)
 
         while stack:
             pose = stack.popleft()            
