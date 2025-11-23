@@ -18,8 +18,8 @@ class RailTarget:
     node: Node
     found_path: Optional[List] = None
 
-def find_rail_target(railway: RailwaySystem, screen_pos: Position, construction_anchor: Optional[Pose]) -> RailTarget:
-    node = screen_pos.snap_to_grid()
+def find_rail_target(railway: RailwaySystem, world_pos: Position, construction_anchor: Optional[Pose]) -> RailTarget:
+    node = world_pos.snap_to_grid()
     if railway.stations.is_within_any(node):
         return RailTarget(kind=RailTargetType.BLOCKED, node=node)
 
