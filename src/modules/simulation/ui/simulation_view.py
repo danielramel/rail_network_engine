@@ -92,7 +92,7 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             return
         
         snapped = world_pos.snap_to_grid()
-        if self._railway.signals.has_signal(snapped):
+        if self._railway.signals.has(snapped):
             signal = self._railway.signals.get(snapped)
             self._state.preview.signal = signal
             if self._state.selected_signal is None:

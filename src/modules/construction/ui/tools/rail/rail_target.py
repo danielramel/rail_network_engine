@@ -28,7 +28,7 @@ def find_rail_target(railway: RailwaySystem, world_pos: Position, construction_a
         return RailTarget(kind=RailTargetType.BLOCKED, node=snapped)
 
     if construction_anchor is None:
-        if railway.signals.has_signal(snapped):
+        if railway.signals.has(snapped):
             signal = railway.signals.get(snapped)
             return RailTarget(kind=RailTargetType.ANCHOR, node=snapped, anchor=signal.pose)
         return RailTarget(kind=RailTargetType.ANCHOR, node=snapped, anchor=Pose(snapped, Direction(0, 0)))

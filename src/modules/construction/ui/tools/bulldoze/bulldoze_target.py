@@ -20,7 +20,7 @@ class BulldozeTarget:
 
 def find_bulldoze_target(railway: RailwaySystem, world_pos: Node) -> BulldozeTarget:
     snapped = world_pos.snap_to_grid()
-    if railway.signals.has_signal(snapped):
+    if railway.signals.has(snapped):
         return BulldozeTarget(kind=BulldozeTargetType.SIGNAL, node=snapped)
 
     for station in railway.stations.all():

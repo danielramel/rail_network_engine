@@ -36,7 +36,7 @@ def find_tunnel_target(railway: RailwaySystem, world_pos: Position, construction
     if construction_anchor is not None and snapped == construction_anchor.node:
         return TunnelTarget(kind=TunnelTargetType.ANCHOR_SAME, node=snapped)
     
-    if railway.signals.has_signal(snapped):
+    if railway.signals.has(snapped):
         return TunnelTarget(kind=TunnelTargetType.BLOCKED, node=snapped, message="Please remove the signal first!")        
     neighbor = railway.graph.neighbors(snapped)[0]
     

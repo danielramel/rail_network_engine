@@ -24,13 +24,13 @@ class PathFinder:
                 if self._railway.graph.has_edge(edge.tunnel_level()):
                     return True
                 
-                if self._railway.signals.has_signal(edge.a):
+                if self._railway.signals.has(edge.a):
                     signal = self._railway.signals.get(edge.a)
                     
                     if edge.direction.opposite() not in (signal.direction, signal.direction.opposite()):
                         return True
                     
-                if self._railway.signals.has_signal(edge.b):
+                if self._railway.signals.has(edge.b):
                     signal = self._railway.signals.get(edge.b)
                     
                     if edge.direction not in (signal.direction, signal.direction.opposite()):

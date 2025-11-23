@@ -7,15 +7,11 @@ from core.models.event import Event
 
 
 class PlatformPanel(ConstructionToolPanel):
-    MIN_LENGTH = 2
-    MAX_LENGTH = 10
-    LENGTH_INCREMENT = 1
-
     def __init__(self, screen: pygame.Surface, state: ConstructionState) -> None:
         super().__init__(screen, state)
 
         self._param_ranges = {
-            'platform_length': (self.MIN_LENGTH, self.MAX_LENGTH, self.LENGTH_INCREMENT)
+            'platform_length': (2, Config.MAX_PLATFORM_EDGE_COUNT, 1)
         }
 
         self.title_screen = self.title_font.render("Platform Placement", True, Color.YELLOW)

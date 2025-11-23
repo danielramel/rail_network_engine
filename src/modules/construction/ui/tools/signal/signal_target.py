@@ -31,7 +31,7 @@ def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
     if railway.graph_service.is_tunnel_entry(snapped):
         return SignalTarget(kind=SignalTargetType.INVALID, pose=invalid_pose, message="Cannot place signal at tunnel entrances!")
 
-    if railway.signals.has_signal(snapped):
+    if railway.signals.has(snapped):
         toggle_direction = railway.signals.get(snapped).direction.opposite()
         
         if railway.graph.degree_at(snapped) < 2:

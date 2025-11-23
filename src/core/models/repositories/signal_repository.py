@@ -8,17 +8,17 @@ class SignalRepository:
     def __init__(self, graph: GraphAdapter):
         self._graph = graph
 
-    def has_signal(self, node: Node) -> bool:
+    def has(self, node: Node) -> bool:
         return self._graph.has_node(node) and self._graph.has_node_attr(node, 'signal')
     
     def has_signal_with_pose_at(self, pose: Pose) -> bool:
-        if not self.has_signal(pose.node):
+        if not self.has(pose.node):
             return False
         signal = self.get(pose.node)
         return signal.direction == pose.direction
     
     def get(self, node: Node) -> Signal | None:
-        if not self.has_signal(node):
+        if not self.has(node):
             return None
         return self._graph.get_node_attr(node, 'signal')
 

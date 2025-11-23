@@ -4,6 +4,7 @@ from core.models.geometry.position import Position
 from core.models.geometry.pose import Pose
 from collections import deque
 from core.models.geometry.edge import Edge
+from core.config.settings import Config
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from core.models.railway.railway_system import RailwaySystem
@@ -48,7 +49,7 @@ class GraphService:
         for node in list(self._railway.graph.nodes):
             if self._railway.graph.degree_at(node) == 0:
                 self._railway.graph.remove_node(node)
-            elif self._railway.graph.degree_at(node) == 1 and self._railway.signals.has_signal(node):
+            elif self._railway.graph.degree_at(node) == 1 and self._railway.signals.has(node):
                 self._railway.signals.set(Pose(node, (self._railway.graph.neighbors(node)[0]).direction_to(node)))
 
     def add_segment(self, nodes: list[Node], speed: int, length: int) -> None:
@@ -152,6 +153,9 @@ class GraphService:
     
     
     def calculate_platform_preview(self, edge: Edge, edge_count: int) -> tuple[bool, frozenset[Edge]]:
+        def is_node_blocked(node: Node) -> bool:
+            return self.is_junction(node)
+        
         def is_edge_blocked(edge: Edge) -> bool:
             if not self._railway.graph.has_edge(edge):
                 return True
@@ -175,10 +179,10 @@ class GraphService:
         pose_to_a = Pose.from_nodes(b, a)
         pose_to_b = Pose.from_nodes(a, b)
 
-        if not self.is_junction(a):
+        if not is_node_blocked(a):
             stack.append(pose_to_a)
 
-        if not self.is_junction(b):
+        if not is_node_blocked(b):
             stack.append(pose_to_b)
 
         while stack:
@@ -195,7 +199,7 @@ class GraphService:
             if len(edges) >= edge_count:
                 return True, frozenset(edges)
             
-            if self.is_junction(next_pose.node):
+            if is_node_blocked(next_pose.node):
                 continue
             
             stack.append(next_pose)

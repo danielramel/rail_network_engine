@@ -15,6 +15,7 @@ ICON_CATEGORIES = {
         "STATION": "station.png",
         "BULLDOZE": "bulldoze.png",
         "PLATFORM": "platform.png",
+        "DEAD_END": "dead_end.png",
     },
     "simulation/": {
         "TRAIN_PLACEMENT": "train_placement.png",
