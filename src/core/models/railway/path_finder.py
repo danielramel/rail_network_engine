@@ -21,7 +21,7 @@ class PathFinder:
         edge_blocked_cache: dict[Edge, bool] = {}
         def is_edge_blocked(edge: Edge) -> bool:
             def _func(edge: Edge) -> bool:
-                if self._railway.graph.has_edge(edge.tunnel_level()):
+                if self._railway.graph.has_edge(edge.toggle_level()):
                     return True
                 
                 if self._railway.signals.has(edge.a):
@@ -38,11 +38,11 @@ class PathFinder:
                     
                     
                 if self._railway.stations.is_platform_at(edge.a):
-                    if self._railway.graph.degree_at(edge.a) == 2 and edge.b not in self._railway.graph.neighbors(edge.a):
+                    if edge.b not in self._railway.graph.neighbors(edge.a):
                         return True
                     
                 if self._railway.stations.is_platform_at(edge.b):
-                    if self._railway.graph.degree_at(edge.b) == 2 and edge.a not in self._railway.graph.neighbors(edge.b):
+                    if edge.a not in self._railway.graph.neighbors(edge.b):
                         return True
                 
                 # check for diagonal platform cutting

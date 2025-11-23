@@ -51,13 +51,11 @@ class StationRepository:
         return any(node.is_within_station_rect(station.node) for station in self._stations.values())
     
     def add_platform(self, station_id: str, edges: frozenset[Edge]) -> None:
-        platform = sorted(edges)
+        platform = [edge.sorted() for edge in sorted(edges)]
         self._railway.graph.set_edge_attr(platform[0], 'station', station_id)
-        for edge in platform[1:-1]:
+        for edge in platform[1:]:
             self._railway.graph.set_edge_attr(edge, 'station', station_id)
             self._railway.graph.set_node_attr(edge.a, 'station', station_id)
-            self._railway.graph.set_node_attr(edge.b, 'station', station_id)
-        self._railway.graph.set_edge_attr(platform[-1], 'station', station_id)
         
         self._stations[station_id].platforms.add(edges)
     

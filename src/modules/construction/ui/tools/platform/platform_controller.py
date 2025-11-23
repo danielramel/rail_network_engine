@@ -43,6 +43,5 @@ class PlatformController(ConstructionToolController):
             self._graphics.alert_component.show_alert(target.message)
             return
 
-        # prepare to select station
         self._state.platform_waiting_for_station = True
         self._state.preview.edge_action = EdgeAction.PLATFORM_SELECTED

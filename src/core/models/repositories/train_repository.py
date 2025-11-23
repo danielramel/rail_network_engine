@@ -37,6 +37,6 @@ class TrainRepository:
         return id
     
     def create_train(self, platform: frozenset[Edge], config: TrainConfig) -> Train:
-        platform = [edge.ordered() for edge in sorted(platform)]
+        platform = [edge.sorted() for edge in sorted(platform)]
         train = Train(platform, self._railway, config)
         return train

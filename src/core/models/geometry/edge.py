@@ -26,14 +26,13 @@ class Edge:
         return {self.a, self.b} == {other.a, other.b}
     
     def tunnel_level(self) -> 'Edge':
-        a_other = self.a.tunnel_level()
-        b_other = self.b.tunnel_level()
-        return Edge(a_other, b_other)
+        return Edge(self.a.tunnel_level(), self.b.tunnel_level())
     
     def surface_level(self) -> 'Edge':
-        a_other = self.a.surface_level()
-        b_other = self.b.surface_level()
-        return Edge(a_other, b_other)
+        return Edge(self.a.surface_level(), self.b.surface_level())
+    
+    def toggle_level(self) -> 'Edge':
+        return Edge(self.a.toggle_level(), self.b.toggle_level())
     
     @property
     def level(self) -> int:
@@ -55,7 +54,7 @@ class Edge:
             "b": self.b.to_dict()
             }
 
-    def ordered(self, reversed: bool = False) -> 'Edge':
+    def sorted(self, reversed: bool = False) -> 'Edge':
         return Edge(*sorted((self.a, self.b), reverse=reversed))
     
     def reversed(self) -> 'Edge':
