@@ -6,12 +6,12 @@ from modules.construction.models.construction_panel import ConstructionToolPanel
 from core.models.event import Event
 
 
-class DeadEndPanel(ConstructionToolPanel):
+class PortalPanel(ConstructionToolPanel):
     def __init__(self, screen: pygame.Surface, state: ConstructionState) -> None:
         super().__init__(screen, state)
-        self.title_screen = self.title_font.render("Dead End Placement", True, Color.YELLOW)
+        self.title_screen = self.title_font.render("Portal Placement", True, Color.YELLOW)
         self.instruction_screen = self.instruction_font.render(
-            "Click on end of rail to place dead end.", True, Color.WHITE
+            "Click on end of rail to place portal.", True, Color.WHITE
         )
         self.button_size = 32
         self._init_layout()

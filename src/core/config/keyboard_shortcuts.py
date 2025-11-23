@@ -14,7 +14,7 @@ CONSTRUCTION_TOOL_SELECTION = {
     pygame.K_3: ConstructionTool.SIGNAL,
     pygame.K_4: ConstructionTool.STATION,
     pygame.K_5: ConstructionTool.PLATFORM,
-    pygame.K_6: ConstructionTool.DEAD_END,
+    pygame.K_6: ConstructionTool.PORTAL,
     pygame.K_0: ConstructionTool.BULLDOZE,
 }
 

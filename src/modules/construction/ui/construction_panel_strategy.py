@@ -1,7 +1,7 @@
 import pygame
 from modules.construction.models.construction_panel import ConstructionToolPanel
 from modules.construction.models.construction_state import ConstructionState, ConstructionTool
-from modules.construction.ui.tools.dead_end.dead_end_panel import DeadEndPanel
+from modules.construction.ui.tools.portal.portal_panel import PortalPanel
 from modules.construction.ui.tools.tunnel.tunnel_panel import TunnelPanel
 from shared.ui.models.panel import Panel
 from .tools.rail.rail_panel import RailPanel
@@ -21,7 +21,7 @@ class ConstructionPanelStrategy(Panel):
             ConstructionTool.STATION: StationPanel(screen, state),
             ConstructionTool.PLATFORM: PlatformPanel(screen, state),
             ConstructionTool.BULLDOZE: BulldozePanel(screen, state),
-            ConstructionTool.DEAD_END: DeadEndPanel(screen, state),
+            ConstructionTool.PORTAL: PortalPanel(screen, state),
         }
 
     def render(self, screen_pos):

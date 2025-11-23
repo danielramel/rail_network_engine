@@ -108,11 +108,19 @@ class StationRepository:
         station_id = self._railway.graph.get_edge_attr(edge, 'station')
         self._remove_platform(platform_edges)
         self._remove_platform_from_station(station_id, platform_edges)
+        
+    def add_portal(self, edges: frozenset[Edge]) -> None:
+        for edge in edges:
+            self._railway.graph.set_edge_attr(edge, 'portal', True)
+            
+    def remove_portal(self, edges: frozenset[Edge]) -> None:
+        for edge in edges:
+            self._railway.graph.remove_edge_attr(edge, 'portal')
 
     def to_dict(self) -> dict:
         return {
             "next_id": self._next_id,
-            "stations": {station.id: station.to_dict() for station in self._stations.values()}
+            "stations": {station.id: station.to_dict() for station in self._stations.values()},
         }
     
     @classmethod
