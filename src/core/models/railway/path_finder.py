@@ -14,13 +14,12 @@ class PathFinder:
     def __init__(self, railway: 'RailwaySystem'):
         self._railway = railway
         
-    def find_grid_path(self, start: Pose, end: Node) -> tuple[Node] | None:
-        def is_node_blocked(node: Node) -> bool:
-            return self._railway.stations.is_within_any(node)
-        
+    def is_node_blocked(self, node: Node) -> bool:
+        return self._railway.stations.is_within_any(node) or self._railway.graph_service.is_tunnel_entry(node)
+    
+    def find_grid_path(self, start: Pose, end: Node) -> tuple[Node] | None:        
         edge_blocked_cache: dict[Edge, bool] = {}
         def is_edge_blocked(edge: Edge) -> bool:
-            
             def _func(edge: Edge) -> bool:
                 if self._railway.graph.has_edge(edge.tunnel_level()):
                     return True
@@ -57,7 +56,7 @@ class PathFinder:
             edge_blocked_cache[edge] = blocked
             return blocked
         
-        if is_node_blocked(start.node) or is_node_blocked(end):
+        if self.is_node_blocked(start.node) or self.is_node_blocked(end):
             raise ValueError("Start or end node is blocked")
 
         priority_queue: list[tuple[float, Pose]] = []
@@ -82,7 +81,7 @@ class PathFinder:
                 return tuple(reversed(path))
             
             for neighbor_pose in current_pose.get_connecting_poses():
-                if is_node_blocked(neighbor_pose.node):
+                if self.is_node_blocked(neighbor_pose.node):
                     continue
                 
                 if is_edge_blocked(Edge(current_pose.node, neighbor_pose.node)):
@@ -104,16 +103,21 @@ class PathFinder:
     
     
     def find_tunnel_path(self, start: Pose, end: Pose) -> tuple[Node] | None:
-        def is_node_blocked(node: Node) -> bool:
+        def _is_node_blocked(node: Node) -> bool:
             return self._railway.stations.is_within_any(node)
         
         def is_edge_blocked(edge: Edge) -> bool:
             return self._railway.graph.has_edge(edge.surface_level())
         
         entrance = start.get_next_in_direction().tunnel_level()
+        
+        #length 1 tunnel
+        if entrance.node.surface_level() == end.node and entrance.direction == end.direction:
+            return tuple([start.node, end.node])
+        
         exit = end.get_previous_in_direction().tunnel_level()
         
-        if is_node_blocked(entrance.node) or is_node_blocked(exit.node):
+        if _is_node_blocked(entrance.node) or _is_node_blocked(exit.node):
             return None
 
         priority_queue: list[tuple[float, Pose]] = []
@@ -129,7 +133,7 @@ class PathFinder:
             _, current_pose = heapq.heappop(priority_queue)
                         
             if current_pose == exit:
-                path = [exit.node, current_pose.node]
+                path = [end.node, current_pose.node]
 
                 while current_pose in came_from:
                     current_pose = came_from[current_pose]
@@ -140,13 +144,18 @@ class PathFinder:
                 return tuple(reversed(path))
             
             for neighbor_pose in current_pose.get_connecting_poses():
-                if is_node_blocked(neighbor_pose.node):
+                if _is_node_blocked(neighbor_pose.node):
                     continue
-                
-                if is_edge_blocked(Edge(current_pose.node, neighbor_pose.node)):
+                edge = Edge(current_pose.node, neighbor_pose.node)
+                if is_edge_blocked(edge):
                     continue                    
                 
-                cost = 1.0 if current_pose.direction == neighbor_pose.direction else 1.01 # slight penalty for turning
+                cost = 1.0
+                if current_pose.direction != neighbor_pose.direction:
+                    cost += 0.1
+                if self._railway.graph.has_edge(edge):
+                    cost += 5.0  # heavy penalty for reusing existing track
+                    
                 tentative_g_score = g_score[current_pose] + cost
 
                 if neighbor_pose not in g_score or tentative_g_score < g_score[neighbor_pose]:

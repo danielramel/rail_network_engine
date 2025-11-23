@@ -24,7 +24,7 @@ class RailTarget:
 def find_rail_target(railway: RailwaySystem, world_pos: Position, construction_anchor: Optional[Pose]) -> RailTarget:
     snapped = world_pos.snap_to_grid()
     
-    if railway.stations.is_within_any(snapped):
+    if railway.pathfinder.is_node_blocked(snapped):
         return RailTarget(kind=RailTargetType.BLOCKED, node=snapped)
 
     if construction_anchor is None:

@@ -37,6 +37,8 @@ class Node:
     def surface_level(self) -> 'Node':
         return Node(self.x, self.y, level=0)
 
+    def toggle_level(self) -> 'Node':
+        return Node(self.x, self.y, level=0 if self.level != 0 else 1)
     
     def direction_to(self, other: 'Node') -> Direction:
         """Get direction from this point to another point."""

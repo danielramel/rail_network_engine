@@ -32,10 +32,10 @@ class GraphService:
     def junctions(self) -> list[Node]:
         return [n for n in self._railway.graph.nodes if self.is_junction(n)]
     
-    def get_valid_turn_neighbors_from_pose(self, pose: Pose) -> tuple[Pose]:
+    def get_turn_neighbors(self, pose: Pose) -> tuple[Pose]:
         connections = []
         graph_neighbors = self._railway.graph.neighbors(pose.node)
-        for neighbor_pose in pose.get_connecting_poses():
+        for neighbor_pose in pose.get_connecting_poses(other_level=True):
             if neighbor_pose.node in graph_neighbors:
                 connections.append(neighbor_pose)
 
@@ -62,6 +62,11 @@ class GraphService:
     def is_station_blocked_by_node(self, station_pos: Node) -> bool:
         return any(node_pos.is_within_station_rect(station_pos) for node_pos in self._railway.graph.nodes)
     
+    def is_tunnel_entry(self, node: Node) -> bool:
+        if not self._railway.graph.has_node(node):
+            return False
+        return any(n.level != 0 for n in self._railway.graph.neighbors(node))
+    
     def get_closest_edge(self, world_pos: Position, tunnels: bool = False) -> Edge | None:
         min_edge = None
         min_distance = 1.0
@@ -84,6 +89,10 @@ class GraphService:
             return False
         
         def is_edge_blocked(edge: Edge) -> bool:
+            #never stop at tunnel edges
+            if edge.level == 1:
+                return False
+            
             if is_initial_platform != self._railway.stations.is_edge_platform(edge):
                 return True
             if self._railway.graph.get_edge_length(edge) != initial_track_length:
@@ -112,12 +121,10 @@ class GraphService:
             stack.append(pose_to_b)
 
         while stack:
-            pose = stack.popleft()
-            connections = self.get_valid_turn_neighbors_from_pose(pose)
-            
+            pose = stack.popleft()            
             nodes.add(pose.node)
 
-            for neighbor, direction in connections:
+            for neighbor, direction in self.get_turn_neighbors(pose):
                 edge = Edge(pose.node, neighbor)
                 if is_edge_blocked(edge):
                     continue
@@ -128,6 +135,10 @@ class GraphService:
                     continue
                 
                 if is_node_blocked(neighbor):
+                    continue
+                
+                # prevent going from tunnel to surface (not vice versa)
+                if pose.node.level == 1 and neighbor.level == 0:
                     continue
                 
                 stack.append(Pose(neighbor, direction))

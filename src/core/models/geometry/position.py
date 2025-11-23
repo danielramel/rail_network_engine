@@ -15,8 +15,6 @@ class Position:
             
     def __iter__(self):
         return iter((self.x, self.y))
-    
-    
 
     def snap_to_grid(self) -> Node:
         """Create a new Point snapped to the grid."""

@@ -35,6 +35,10 @@ class Edge:
         b_other = self.b.surface_level()
         return Edge(a_other, b_other)
     
+    @property
+    def level(self) -> int:
+        return 1 if self.a.level == 1 or self.b.level == 1 else 0
+    
     def equals_ordered(self, other: 'Edge') -> bool:
         return self.a == other.a and self.b == other.b
     

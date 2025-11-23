@@ -35,15 +35,16 @@ def find_tunnel_target(railway: RailwaySystem, world_pos: Position, construction
     
     if construction_anchor is not None and snapped == construction_anchor.node:
         return TunnelTarget(kind=TunnelTargetType.ANCHOR_SAME, node=snapped)
-        
+    
+    if railway.signals.has_signal(snapped):
+        return TunnelTarget(kind=TunnelTargetType.BLOCKED, node=snapped, message="Please remove the signal first!")        
     neighbor = railway.graph.neighbors(snapped)[0]
-    dir = snapped.direction_to(neighbor)
     
     if construction_anchor is None:
         return TunnelTarget(kind=TunnelTargetType.ANCHOR, anchor=Pose.from_nodes(neighbor, snapped), node=snapped)
 
     
-    found_path = railway.pathfinder.find_tunnel_path(construction_anchor, Pose.from_nodes(snapped, neighbor))
+    found_path = railway.pathfinder.find_tunnel_path(construction_anchor, Pose.from_nodes(snapped, neighbor).get_previous_in_direction())
     if found_path is None:
         return TunnelTarget(kind=TunnelTargetType.NO_PATH, node=snapped)
     

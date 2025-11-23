@@ -63,11 +63,7 @@ class SignallingService:
 
                 return tuple(reversed(path))
 
-            for neighbor_pose in current_pose.get_connecting_poses():
-                if not self._railway.graph.has_edge(Edge(current_pose.node, neighbor_pose.node)):
-                    continue
-                
-                
+            for neighbor_pose in self._railway.graph_service.get_turn_neighbors(current_pose):                
                 if self.is_node_locked(neighbor_pose.node):
                     continue
                 
@@ -120,7 +116,7 @@ class SignallingService:
             if self._railway.signals.has_signal_with_pose_at(pose):
                 return path, self._railway.signals.get(pose.node)
                 
-            neighbors = self._railway.graph_service.get_valid_turn_neighbors_from_pose(pose)
+            neighbors = self._railway.graph_service.get_turn_neighbors(pose)
             if len(neighbors) == 0:
                 raise ValueError("Dead-end encountered. There should be a signal here.")
             

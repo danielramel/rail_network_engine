@@ -18,20 +18,18 @@ class SignalTarget:
 
 def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
     snapped = pos.snap_to_grid()
+    invalid_pose = Pose(node=snapped, direction=(1, 0))
+    if not railway.graph.has_node(snapped):
+        return SignalTarget(kind=SignalTargetType.INVALID, pose=invalid_pose, message="No track at this position!")
 
-    if not railway.graph.has_node(snapped) or railway.graph_service.is_junction(snapped) or railway.graph_service.is_curve(snapped):
-        if not railway.graph.has_node(snapped):
-            message = "No track at this position!"
-        elif railway.graph_service.is_junction(snapped):
-            message = "Cannot place signal at junctions!"
-        else:
-            message = "Cannot place signal on curves!"
-            
-        return SignalTarget(
-            kind=SignalTargetType.INVALID,
-            pose=Pose(node=snapped, direction=(1, 0)),
-            message=message
-        )
+    if railway.graph_service.is_junction(snapped):
+        return SignalTarget(kind=SignalTargetType.INVALID, pose=invalid_pose, message="Cannot place signal at junctions!")
+
+    if railway.graph_service.is_curve(snapped):
+        return SignalTarget(kind=SignalTargetType.INVALID, pose=invalid_pose, message="Cannot place signal on curves!")
+    
+    if railway.graph_service.is_tunnel_entry(snapped):
+        return SignalTarget(kind=SignalTargetType.INVALID, pose=invalid_pose, message="Cannot place signal at tunnel entrances!")
 
     if railway.signals.has_signal(snapped):
         toggle_direction = railway.signals.get(snapped).direction.opposite()
