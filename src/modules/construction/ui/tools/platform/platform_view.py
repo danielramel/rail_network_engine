@@ -11,22 +11,20 @@ class PlatformView(ConstructionView):
     def render(self, world_pos: Position | None):
         if world_pos is None:
             return
-        
-        # handle the “select_station” preview mode first
-        if self._state.platform_waiting_for_station:
+
+        target = find_platform_target(self._railway, world_pos, self._state.platform_edge_count, self._state.platform_waiting_for_station)
+        if target.kind is PlatformTargetType.WAITING_FOR_STATION:
             middle_point = self._railway.stations.get_middle_of_platform(self._state.preview.edges)
-            for station in self._railway.stations.all():
-                if world_pos.is_within_station_rect(station.node):
-                    draw_station(self._screen, station, self._camera, color=Color.LIGHTBLUE)
-                    draw_dotted_line(self._screen, station.node, middle_point, self._camera, color=Color.LIGHTBLUE)
-                    break
-            else:
-                draw_dotted_line(self._screen, world_pos, middle_point, self._camera, color=Color.LIGHTBLUE)
+            draw_dotted_line(self._screen, world_pos, middle_point, self._camera, color=Color.LIGHTBLUE)
             return
-
+        
+        if target.kind is PlatformTargetType.STATION_FOUND:
+            draw_station(self._screen, target.station, self._camera, color=Color.LIGHTBLUE)
+            middle_point = self._railway.stations.get_middle_of_platform(self._state.preview.edges)
+            draw_dotted_line(self._screen, target.station.node, middle_point, self._camera, color=Color.LIGHTBLUE)
+            return
+        
         self._state.preview.clear()
-
-        target = find_platform_target(self._railway, world_pos, self._state.platform_edge_count)
         if target.kind is PlatformTargetType.NONE:
             draw_node(self._screen, world_pos, self._camera, Color.PURPLE)
             return

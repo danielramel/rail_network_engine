@@ -21,20 +21,20 @@ class PlatformController(ConstructionToolController):
                 self._state.switch_tool(None)
             return
                 
-        # if user is currently selecting a station for the platform
-        if self._state.platform_waiting_for_station:
-            for station in self._railway.stations.all():
-                if event.world_pos.is_within_station_rect(station.node):
-                    self._railway.stations.add_platform(station.id, self._state.preview.edges)
-                    break
-            self._state.platform_waiting_for_station = False
-            return
-
         if len(self._railway.stations.all()) == 0:
             self._graphics.alert_component.show_alert('Please build a station first.')
             return
 
-        target = find_platform_target(self._railway, event.world_pos, self._state.platform_edge_count)
+        target = find_platform_target(self._railway, event.world_pos, self._state.platform_edge_count, self._state.platform_waiting_for_station)
+        
+        if target.kind is PlatformTargetType.STATION_FOUND:
+            self._railway.stations.add_platform(target.station.id, self._state.preview.edges)
+            self._state.platform_waiting_for_station = False
+            return
+        
+        if target.kind is PlatformTargetType.WAITING_FOR_STATION:
+            self._state.platform_waiting_for_station = False
+            return
 
         if target.kind is PlatformTargetType.NONE:
             return
