@@ -19,13 +19,13 @@ class ConstructionCommonView(ConstructionView):
         for edge, data in self._railway.graph.all_edges_with_data():
             speed = data["speed"]
             length = data["length"]
-            z = data.get("z", 0)
+            level = data.get("level", 0)
             if edge in self._state.preview.edges:
                 draw_track(self._screen, edge, self._camera, self._state.preview.edge_action, speed=speed, length=length)
             elif self._railway.stations.is_edge_platform(edge):
                 draw_track(self._screen, edge, self._camera, EdgeAction.PLATFORM, length=length)
             else:
-                if z == 0:
+                if level == 0:
                     draw_track(self._screen, edge, self._camera, EdgeAction.SPEED, speed=speed, length=length)
                 else:
                     draw_track(self._screen, edge, self._camera, EdgeAction.TUNNEL_SPEED, speed=speed, length=length)

@@ -44,14 +44,14 @@ def draw_train(screen: pygame.Surface, train: Train, camera: Camera, action: TRA
         
         if remainder is not None:
             end = remainder / rail.length
-            draw_occupied_edge(screen, rail.edge.a, rail.edge.b, camera, color, 0.0, end)
+            draw_train_car(screen, rail.edge.a, rail.edge.b, camera, color, 0.0, end)
             remainder = None
             car_i += 1
             continue
         
         start = distance / rail.length
         end = (distance + train.config.car_length) / rail.length
-        draw_occupied_edge(screen, rail.edge.a, rail.edge.b, camera, color, start, end)
+        draw_train_car(screen, rail.edge.a, rail.edge.b, camera, color, start, end)
         
         
         distance += train.config.car_length + train.config.car_gap
@@ -61,7 +61,7 @@ def draw_train(screen: pygame.Surface, train: Train, camera: Camera, action: TRA
         
         car_i += 1
         
-def draw_occupied_edge(
+def draw_train_car(
     screen: pygame.Surface,
     a: Node,
     b: Node,

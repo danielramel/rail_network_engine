@@ -4,8 +4,8 @@ from modules.construction.models.construction_state import ConstructionState
 from modules.construction.models.construction_panel import ConstructionToolPanel
 from core.models.event import Event
     
-class RailPanel(ConstructionToolPanel):
-    """Rail construction panel with +/- controls for track speed and toggle for track length."""
+class TunnelPanel(ConstructionToolPanel):
+    """Tunnel construction panel with +/- controls for track speed and toggle for track length."""
     
     # Speed configuration constants
     MIN_SPEED = 10
@@ -22,7 +22,7 @@ class RailPanel(ConstructionToolPanel):
         self.button_size: int = 32
         
         # Pre-render static text
-        self.title_screen = self.title_font.render("Rail Construction", True, Color.YELLOW)
+        self.title_screen = self.title_font.render("Tunnel Construction", True, Color.YELLOW)
         self.speed_label_screen = self.instruction_font.render("Track speed:", True, Color.WHITE)
         self.length_label_screen = self.instruction_font.render("Track length:", True, Color.WHITE)
         self.minus_text = self.instruction_font.render("-", True, Color.WHITE)

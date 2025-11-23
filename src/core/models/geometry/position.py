@@ -55,7 +55,7 @@ class Position:
 
         if not tunnels:
             return tuple(edges)
-        return tuple(edges) + tuple(edge.toggle_level() for edge in edges)
+        return tuple(edges) + tuple(edge.tunnel_level() for edge in edges)
     
     def distance_to_edge(self, edge: 'Edge') -> float:
         a, b = edge.a, edge.b

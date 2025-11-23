@@ -22,18 +22,13 @@ class Pose(NamedTuple):
         for dir in self.direction.get_valid_turns():
             nx = self.node.x + dir.x
             ny = self.node.y + dir.y
-            new_state = Pose(Node(nx, ny, self.node.z), dir)
+            new_state = Pose(Node(nx, ny, self.node.level), dir)
 
             neighbors.append(new_state)
         return neighbors
     
-    def get_connecting_nodes(self) -> list[Node]:
-        nodes = []
-        for dir in self.direction.get_valid_turns():
-            nx = self.node.x + dir.x
-            ny = self.node.y + dir.y
-            nodes.append(Node(nx, ny, self.node.z))
-        return nodes
+    def tunnel_level(self) -> 'Pose':
+        return Pose(self.node.tunnel_level(), self.direction)
     
     def opposite(self) -> 'Pose':
         return Pose(self.node, self.direction.opposite())
@@ -42,9 +37,17 @@ class Pose(NamedTuple):
         return Pose(
             Node(
                 self.node.x + self.direction.x,
-                self.node.y + self.direction.y,
-                self.node.z
+                self.node.y + self.direction.y
             ),
+            self.direction
+        )
+        
+    def get_previous_in_direction(self) -> 'Pose':
+        return Pose(
+            Node(
+                self.node.x - self.direction.x,
+                self.node.y - self.direction.y
+                ),
             self.direction
         )
     

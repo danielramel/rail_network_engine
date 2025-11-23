@@ -7,31 +7,31 @@ from shared.ui.enums.edge_action import EdgeAction
 from shared.ui.utils.nodes import draw_node
 from shared.ui.services.color_from_speed import color_from_speed
 from shared.ui.utils.tracks import draw_track
-from .rail_target import find_rail_target, RailTargetType
+from .tanel_target import find_tunnel_target, TunnelTargetType
 
-class RailView(ConstructionView):
+class TunnelView(ConstructionView):
     def render(self, world_pos: Position | None):
         if world_pos is None:
             if self._state.construction_anchor is not None:
                 draw_node(self._screen, self._state.construction_anchor.node, self._camera, color=color_from_speed(self._state.track_speed))
             return
 
-        target = find_rail_target(self._railway, world_pos, self._state.construction_anchor)
+        target = find_tunnel_target(self._railway, world_pos, self._state.construction_anchor)
 
         color = color_from_speed(self._state.track_speed)
 
-        if target.kind in (RailTargetType.ANCHOR, RailTargetType.ANCHOR_SAME):
+        if target.kind in (TunnelTargetType.ANCHOR, TunnelTargetType.ANCHOR_SAME):
             draw_node(self._screen, target.node, self._camera, color)
             return
         
-        if target.kind == RailTargetType.BLOCKED:
+        if target.kind == TunnelTargetType.BLOCKED:
             draw_node(self._screen, target.node, self._camera, Color.RED)
             
             if self._state.construction_anchor is not None:
                 draw_node(self._screen, self._state.construction_anchor.node, self._camera, color=color)
             return
 
-        if target.kind == RailTargetType.NO_PATH:
+        if target.kind == TunnelTargetType.NO_PATH:
             draw_node(self._screen, target.node,  self._camera, color=Color.RED)
             if self._state.construction_anchor is not None:
                 draw_node(self._screen, self._state.construction_anchor.node, self._camera, color=Color.RED)
@@ -39,6 +39,6 @@ class RailView(ConstructionView):
 
         # path preview
         for line in zip(target.found_path[:-1], target.found_path[1:]):
-            draw_track(self._screen, Edge(*line), camera=self._camera, edge_action=EdgeAction.SPEED, length=self._state.track_length, speed=self._state.track_speed)
+            draw_track(self._screen, Edge(*line), camera=self._camera, edge_action=EdgeAction.TUNNEL_SPEED, length=self._state.track_length, speed=self._state.track_speed)
         draw_node(self._screen, target.node, self._camera, color)
         draw_node(self._screen, self._state.construction_anchor.node, self._camera, color=color)

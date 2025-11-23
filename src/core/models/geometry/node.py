@@ -7,7 +7,7 @@ from core.models.geometry.direction import Direction
 class Node:
     x: int
     y: int
-    z: int = 0
+    level: int = 0
     
     def __post_init__(self):
         if not isinstance(self.x, int):
@@ -31,9 +31,11 @@ class Node:
             abs(self.y - other.y) < Config.STATION_RECT_HEIGHT + 1
         )
         
-    def toggle_level(self) -> 'Node':
-        """Get the same node at the other level (z=0 <-> z=1)."""
-        return Node(self.x, self.y, 1 - self.z)
+    def tunnel_level(self) -> 'Node':
+        return Node(self.x, self.y, level=1)
+    
+    def surface_level(self) -> 'Node':
+        return Node(self.x, self.y, level=0)
 
     
     def direction_to(self, other: 'Node') -> Direction:

@@ -17,47 +17,47 @@ class SignalTarget:
     message: str | None = None
 
 def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
-    node = pos.snap_to_grid()
+    snapped = pos.snap_to_grid()
 
-    if not railway.graph.has_node(node) or railway.graph_service.is_junction(node) or railway.graph_service.is_curve(node):
-        if not railway.graph.has_node(node):
+    if not railway.graph.has_node(snapped) or railway.graph_service.is_junction(snapped) or railway.graph_service.is_curve(snapped):
+        if not railway.graph.has_node(snapped):
             message = "No track at this position!"
-        elif railway.graph_service.is_junction(node):
+        elif railway.graph_service.is_junction(snapped):
             message = "Cannot place signal at junctions!"
         else:
             message = "Cannot place signal on curves!"
             
         return SignalTarget(
             kind=SignalTargetType.INVALID,
-            pose=Pose(node=node, direction=(1, 0)),
+            pose=Pose(node=snapped, direction=(1, 0)),
             message=message
         )
 
-    if railway.signals.has_signal(node):
-        toggle_direction = railway.signals.get(node).direction.opposite()
+    if railway.signals.has_signal(snapped):
+        toggle_direction = railway.signals.get(snapped).direction.opposite()
         
-        if railway.graph.degree_at(node) < 2:
+        if railway.graph.degree_at(snapped) < 2:
             return SignalTarget(
                 kind=SignalTargetType.INVALID,
-                pose=Pose(node=node, direction=toggle_direction),
+                pose=Pose(node=snapped, direction=toggle_direction),
                 message="Cannot toggle signals at dead ends!"
             )
             
 
         return SignalTarget(
             kind=SignalTargetType.TOGGLE,
-            pose=Pose(node, toggle_direction),
+            pose=Pose(snapped, toggle_direction),
         )
 
     # no signal at node -> preview toward first neighbor
-    neighbors = sorted(railway.graph.neighbors(node), reverse=True)
+    neighbors = sorted(railway.graph.neighbors(snapped), reverse=True)
     
-    direction = node.direction_to(neighbors[0])
+    direction = snapped.direction_to(neighbors[0])
     
-    if railway.graph.degree_at(node) == 1:
+    if railway.graph.degree_at(snapped) == 1:
         direction = direction.opposite()
         
     return SignalTarget(
         kind=SignalTargetType.ADD,
-        pose=Pose(node, direction),
+        pose=Pose(snapped, direction),
     )

@@ -10,6 +10,7 @@ ICON_CATEGORIES = {
     },
     "construction/": {
         "RAIL": "rail.png",
+        "TUNNEL": "tunnel.png",
         "SIGNAL": "signal.png",
         "STATION": "station.png",
         "BULLDOZE": "bulldoze.png",

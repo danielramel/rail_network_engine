@@ -10,9 +10,10 @@ MODE_SELECTION = {
 from modules.construction.models.construction_state import ConstructionTool
 CONSTRUCTION_TOOL_SELECTION = {
     pygame.K_1: ConstructionTool.RAIL,
-    pygame.K_2: ConstructionTool.SIGNAL,
-    pygame.K_3: ConstructionTool.STATION,
-    pygame.K_4: ConstructionTool.PLATFORM,
+    pygame.K_2: ConstructionTool.TUNNEL,
+    pygame.K_3: ConstructionTool.SIGNAL,
+    pygame.K_4: ConstructionTool.STATION,
+    pygame.K_5: ConstructionTool.PLATFORM,
     pygame.K_0: ConstructionTool.BULLDOZE,
 }
 

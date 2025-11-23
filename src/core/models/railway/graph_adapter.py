@@ -80,8 +80,8 @@ class GraphAdapter:
         return [Pose(node, next(iter(self._graph.neighbors(node))).direction_to(node)) for node in nodes]
 
 
-    def add_edge(self, a: Node, b: Node, speed: int, length: int, z: int ) -> None:
-        self._graph.add_edge(a, b, speed=speed, length=length, z=z)
+    def add_edge(self, a: Node, b: Node, speed: int, length: int, level: int = 0) -> None:
+        self._graph.add_edge(a, b, speed=speed, length=length, level=level)
 
     def remove_edge(self, edge: Edge) -> None:
         self._graph.remove_edge(edge.a, edge.b)
@@ -103,7 +103,7 @@ class GraphAdapter:
             edge["source"] = edge["source"].to_dict()
             edge["target"] = edge["target"].to_dict()
             for key in list(edge.keys()):
-                if key not in ("source", "target", "speed", "length", "z"):
+                if key not in ("source", "target", "speed", "length", "level"):
                     del edge[key]
         
         return graph_data

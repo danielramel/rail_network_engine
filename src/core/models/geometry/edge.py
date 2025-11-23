@@ -25,14 +25,15 @@ class Edge:
             return NotImplemented
         return {self.a, self.b} == {other.a, other.b}
     
-    def toggle_level(self) -> 'Edge':
-        a_other = self.a.toggle_level()
-        b_other = self.b.toggle_level()
+    def tunnel_level(self) -> 'Edge':
+        a_other = self.a.tunnel_level()
+        b_other = self.b.tunnel_level()
         return Edge(a_other, b_other)
     
-    @property
-    def level(self) -> int:
-        return self.a.z
+    def surface_level(self) -> 'Edge':
+        a_other = self.a.surface_level()
+        b_other = self.b.surface_level()
+        return Edge(a_other, b_other)
     
     def equals_ordered(self, other: 'Edge') -> bool:
         return self.a == other.a and self.b == other.b

@@ -44,8 +44,9 @@ class RailwaySystem:
     def trains(self) -> TrainRepository:
         return self._train_repository
     
-    def find_path(self, start: Pose, end: Node) -> list[Node] | None:
-        return self._pathfinder.find_grid_path(start, end)
+    @property
+    def pathfinder(self) -> PathFinder:
+        return self._pathfinder
     
     @property
     def signalling(self) -> SignallingService:

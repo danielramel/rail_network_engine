@@ -1,6 +1,7 @@
 import pygame
 from modules.construction.models.construction_panel import ConstructionToolPanel
 from modules.construction.models.construction_state import ConstructionState, ConstructionTool
+from modules.construction.ui.tools.tunnel.tunnel_panel import TunnelPanel
 from shared.ui.models.panel import Panel
 from .tools.rail.rail_panel import RailPanel
 from .tools.signal.signal_panel import SignalPanel
@@ -14,6 +15,7 @@ class ConstructionPanelStrategy(Panel):
         self._state = state
         self._panels: dict[ConstructionTool, ConstructionToolPanel] = {
             ConstructionTool.RAIL: RailPanel(screen, state),
+            ConstructionTool.TUNNEL: TunnelPanel(screen, state),
             ConstructionTool.SIGNAL: SignalPanel(screen, state),
             ConstructionTool.STATION: StationPanel(screen, state),
             ConstructionTool.PLATFORM: PlatformPanel(screen, state),

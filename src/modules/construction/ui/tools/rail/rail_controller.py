@@ -22,7 +22,7 @@ class RailController(ConstructionToolController):
                 self._state.switch_tool(None)
             return
         
-        target = find_rail_target(self._railway, event.world_pos, self._state.construction_anchor, self._state.is_tunnel)
+        target = find_rail_target(self._railway, event.world_pos, self._state.construction_anchor)
         
         if target.kind is RailTargetType.BLOCKED:
             self._graphics.alert_component.show_alert("Position blocked!")
@@ -33,15 +33,11 @@ class RailController(ConstructionToolController):
         elif target.kind is RailTargetType.ANCHOR_SAME:
             self._state.construction_anchor = None
 
-        elif target.kind is RailTargetType.NODE:
-            if self._railway.signals.has_signal(target.node):
-                signal = self._railway.signals.get(target.node)
-                self._state.construction_anchor = signal.pose
-                return
-            self._state.construction_anchor = Pose(target.node, Direction(0, 0))
+        elif target.kind is RailTargetType.ANCHOR:
+            self._state.construction_anchor = target.anchor
 
         elif target.kind is RailTargetType.PATH:
-            self._railway.graph_service.add_segment(target.found_path, self._state.track_speed, self._state.track_length, self._state.is_tunnel)
+            self._railway.graph_service.add_segment(target.found_path, self._state.track_speed, self._state.track_length)
             self._state.construction_anchor = Pose(
                 target.node,
                 target.found_path[-2].direction_to(target.node)

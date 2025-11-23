@@ -39,26 +39,31 @@ def draw_rail(screen: pygame.Surface, edge: Edge, camera: Camera, color: tuple[i
     if length == Config.SHORT_SEGMENT_LENGTH:
         pygame.draw.aaline(screen, color, tuple(edge.a), tuple(edge.b), max(1, 2*int(camera.scale)))
     elif length == Config.LONG_SEGMENT_LENGTH:
-        draw_long_track(screen, edge, color=color, width=2*camera.scale)
+        draw_long_track(screen, edge, color=color, width=max(1, 2*int(camera.scale)))
     else:
         raise NotImplementedError("Edge length drawing not implemented for length:", length)
     
-def draw_long_track(screen: pygame.Surface, screen_edge: Edge, color, width: float):
+def draw_long_track(screen: pygame.Surface, screen_edge: Edge, color, width: int):
     """Draw a dotted line on the screen from start_pos to end_pos."""
-    a, b = screen_edge
-    if a == b:
-        return
-    (x1, y1), (x2, y2) = a, b
-    dx = x2 - x1
-    dy = y2 - y1
+    (a_x, a_y), (b_x, b_y) = screen_edge
+    dx = b_x - a_x
+    dy = b_y - a_y
+
+    dash_start_x = a_x + dx * 0.1
+    dash_start_y = a_y + dy * 0.1
+    dash_end_x = a_x + dx * 0.4
+    dash_end_y = a_y + dy * 0.4
+
+    pygame.draw.aaline(screen, color, (dash_start_x, dash_start_y), (dash_end_x, dash_end_y), width)
     
-    distance = a.distance_to(b)
-    num_dots = 6 # will be +1 dots
-    dot_spacing = distance / num_dots
-    for i in range(0, num_dots + 1):
-        dot_x = x1 + (dx * (i * dot_spacing) / distance)
-        dot_y = y1 + (dy * (i * dot_spacing) / distance)
-        pygame.draw.circle(screen, color, (int(dot_x), int(dot_y)), max(1, width))
+    dash_start_x = a_x + dx * 0.6
+    dash_start_y = a_y + dy * 0.6
+    dash_end_x = a_x + dx * 0.9
+    dash_end_y = a_y + dy * 0.9
+
+    pygame.draw.aaline(screen, color, (dash_start_x, dash_start_y), (dash_end_x, dash_end_y), width)
+    
+    
         
 def draw_platform(screen: pygame.Surface, edge: Edge, camera: Camera, color=Color.PURPLE):
     a, b = edge

@@ -2,6 +2,7 @@ from core.models.railway.railway_system import RailwaySystem
 from modules.construction.models.construction_state import ConstructionState
 from core.graphics.graphics_context import GraphicsContext
 from modules.construction.ui.construction_common_view import ConstructionCommonView
+from modules.construction.ui.tools.tunnel.tunnel_controller import TunnelController
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from modules.construction.models.construction_state import ConstructionTool
 from core.models.geometry.position import Position
@@ -23,6 +24,7 @@ class ConstructionToolStrategy(ClickableUIComponent, FullScreenUIComponent):
 
         self._controllers: dict[ConstructionTool, ConstructionToolController] = {
             ConstructionTool.RAIL: RailController(railway, state, graphics),
+            ConstructionTool.TUNNEL: TunnelController(railway, state, graphics),
             ConstructionTool.SIGNAL: SignalController(railway, state, graphics),
             ConstructionTool.STATION: StationController(railway, state, graphics),
             ConstructionTool.PLATFORM: PlatformController(railway, state, graphics),

@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Optional
 from core.models.geometry.node import Node
+from core.models.geometry.position import Position
 from core.models.railway.railway_system import RailwaySystem
 from core.models.station import Station
 class StationTargetType(Enum):
@@ -14,7 +15,7 @@ class StationTarget:
     kind: StationTargetType
     node: Optional[Node] = None
 
-def find_station_target(railway: RailwaySystem, world_pos: Node, moving_station: Station) -> StationTarget:
+def find_station_target(railway: RailwaySystem, world_pos: Position, moving_station: Station) -> StationTarget:
     snapped = world_pos.snap_to_grid()
 
     if not moving_station:

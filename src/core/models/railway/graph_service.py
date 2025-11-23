@@ -28,12 +28,6 @@ class GraphService:
         neighbors = self._railway.graph.neighbors(node)
         return neighbors[0].direction_to(node) != node.direction_to(neighbors[1])
     
-    def level_change_at(self, node: Node) -> bool:
-        if self._railway.graph.degree_at(node) == 1 and self._railway.graph.degree_at(node.toggle_level()) == 1:
-            return False
-        return True
-    #TODO
-    
     @property
     def junctions(self) -> list[Node]:
         return [n for n in self._railway.graph.nodes if self.is_junction(n)]
@@ -57,16 +51,13 @@ class GraphService:
             elif self._railway.graph.degree_at(node) == 1 and self._railway.signals.has_signal(node):
                 self._railway.signals.set(Pose(node, (self._railway.graph.neighbors(node)[0]).direction_to(node)))
 
-    def add_segment(self, nodes: list[Node], speed: int, length: int, is_tunnel: bool) -> None:
-        z = 1 if is_tunnel else 0
-        i = 0
-        first_node = nodes[0]
-        if self._railway.graph.has_node(first_node.toggle_level()) and self._railway.graph.degree_at(first_node.toggle_level()) == 1 and self._railway.graph.neighbors(first_node.toggle_level())[0].toggle_level() in Pose.from_nodes(nodes[1], first_node).get_connecting_nodes():
-            self._railway.graph.add_edge(first_node.toggle_level(), nodes[1], speed=speed, length=length, z=z)
-            i = 1
-            #TODO continue from here
-        for a, b in zip(nodes[i:-1], nodes[i+1:]):
-            self._railway.graph.add_edge(a, b, speed=speed, length=length, z=z)
+    def add_segment(self, nodes: list[Node], speed: int, length: int) -> None:
+        for a, b in zip(nodes[:-1], nodes[1:]):
+            self._railway.graph.add_edge(a, b, speed=speed, length=length)
+            
+    def add_tunnel_segment(self, nodes: list[Node], speed: int, length: int) -> None:
+        for a, b in zip(nodes[:-1], nodes[1:]):
+            self._railway.graph.add_edge(a, b, speed=speed, length=length, level=1)
             
     def is_station_blocked_by_node(self, station_pos: Node) -> bool:
         return any(node_pos.is_within_station_rect(station_pos) for node_pos in self._railway.graph.nodes)

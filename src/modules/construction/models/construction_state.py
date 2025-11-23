@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import Enum, auto
 from typing import Optional
 from core.config.settings import Config
 from core.models.geometry.node import Node
@@ -9,11 +9,12 @@ from core.models.station import Station
 from shared.ui.enums.edge_action import EdgeAction
 
 class ConstructionTool(Enum):
-    RAIL = 1
-    SIGNAL = 2
-    STATION = 3
-    PLATFORM = 4
-    BULLDOZE = 5
+    RAIL = auto()
+    TUNNEL = auto()
+    SIGNAL = auto()
+    STATION = auto()
+    PLATFORM = auto()
+    BULLDOZE = auto()
     
 @dataclass
 class ConstructionPreview:
@@ -34,7 +35,6 @@ class ConstructionState:
     construction_anchor: Pose | None = None
     track_speed: int = 120
     track_length: int = Config.SHORT_SEGMENT_LENGTH
-    is_tunnel: bool = False
     moving_station: Optional[Station] = None
     preview: ConstructionPreview = field(default_factory=ConstructionPreview)
     platform_waiting_for_station: bool = False
