@@ -34,7 +34,7 @@ class PlatformController(ConstructionToolController):
             self._graphics.alert_component.show_alert('Please build a station first.')
             return
 
-        target = find_platform_target(self._railway, event.world_pos, self._graphics.camera.scale, self._state.platform_edge_count)
+        target = find_platform_target(self._railway, event.world_pos, self._state.platform_edge_count)
 
         if target.kind is PlatformTargetType.NONE:
             return

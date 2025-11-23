@@ -10,3 +10,4 @@ class EdgeAction(Enum):
     LOCKED = auto()
     LOCKED_PREVIEW = auto()
     LOCKED_PLATFORM = auto()
+    TUNNEL_SPEED = auto()

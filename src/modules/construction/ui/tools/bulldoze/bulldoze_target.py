@@ -18,16 +18,16 @@ class BulldozeTarget:
     edges: frozenset[Edge] = None  # set of edges for preview
     nodes: frozenset[Node] = None  # set of nodes for preview
 
-def find_bulldoze_target(railway: RailwaySystem, world_pos: Node, camera_scale) -> BulldozeTarget:
+def find_bulldoze_target(railway: RailwaySystem, world_pos: Node) -> BulldozeTarget:
     snapped = world_pos.snap_to_grid()
-    if railway.signals.has_signal_at(snapped):
+    if railway.signals.has_signal(snapped):
         return BulldozeTarget(kind=BulldozeTargetType.SIGNAL, node=snapped)
 
     for station in railway.stations.all():
         if world_pos.is_within_station_rect(station.node):
             return BulldozeTarget(kind=BulldozeTargetType.STATION, node=station.node)
 
-    closest_edge = railway.graph_service.get_closest_edge(world_pos, camera_scale)
+    closest_edge = railway.graph_service.get_closest_edge(world_pos, tunnels=True)
     if closest_edge is None:
         return BulldozeTarget(kind=BulldozeTargetType.NONE, node=world_pos)
 

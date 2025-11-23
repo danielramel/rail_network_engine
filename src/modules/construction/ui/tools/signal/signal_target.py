@@ -19,8 +19,8 @@ class SignalTarget:
 def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
     node = pos.snap_to_grid()
 
-    if not railway.graph.has_node_at(node) or railway.graph_service.is_junction(node) or railway.graph_service.is_curve(node):
-        if not railway.graph.has_node_at(node):
+    if not railway.graph.has_node(node) or railway.graph_service.is_junction(node) or railway.graph_service.is_curve(node):
+        if not railway.graph.has_node(node):
             message = "No track at this position!"
         elif railway.graph_service.is_junction(node):
             message = "Cannot place signal at junctions!"
@@ -33,7 +33,7 @@ def find_signal_target(railway: RailwaySystem, pos: Position) -> SignalTarget:
             message=message
         )
 
-    if railway.signals.has_signal_at(node):
+    if railway.signals.has_signal(node):
         toggle_direction = railway.signals.get(node).direction.opposite()
         
         if railway.graph.degree_at(node) < 2:

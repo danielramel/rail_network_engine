@@ -16,7 +16,7 @@ class RailView(ConstructionView):
                 draw_node(self._screen, self._state.construction_anchor.node, self._camera, color=color_from_speed(self._state.track_speed))
             return
 
-        target = find_rail_target(self._railway, world_pos, self._state.construction_anchor)
+        target = find_rail_target(self._railway, world_pos, self._state.construction_anchor, self._state.is_tunnel)
 
         color = color_from_speed(self._state.track_speed)
 
@@ -32,13 +32,13 @@ class RailView(ConstructionView):
             return
 
         if target.kind == RailTargetType.NO_PATH:
-            draw_node(self._screen, target.node, self._camera, color=Color.RED)
+            draw_node(self._screen, target.node,  self._camera, color=Color.RED)
             if self._state.construction_anchor is not None:
                 draw_node(self._screen, self._state.construction_anchor.node, self._camera, color=Color.RED)
             return
 
         # path preview
         for line in zip(target.found_path[:-1], target.found_path[1:]):
-            draw_track(self._screen, Edge(*line), camera=self._camera, edge_action=EdgeAction.SPEED, length=self._state.track_length, speed=self._state.track_speed)
+            draw_track(self._screen, Edge(*line), camera=self._camera, edge_action=EdgeAction.TUNNEL_SPEED if self._state.is_tunnel else EdgeAction.SPEED, length=self._state.track_length, speed=self._state.track_speed)
         draw_node(self._screen, target.node, self._camera, color)
         draw_node(self._screen, self._state.construction_anchor.node, self._camera, color=color)

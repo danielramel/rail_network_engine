@@ -23,11 +23,11 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
         if click.is_right_click:
             if self._state.selected_signal:
                 self._state.selected_signal = None
-            elif self._railway.signals.has_signal_at(snapped):
+            elif self._railway.signals.has_signal(snapped):
                 self._railway.signalling.disconnect_signal_at(snapped)
             return
                 
-        if self._railway.signals.has_signal_at(snapped):
+        if self._railway.signals.has_signal(snapped):
             signal = self._railway.signals.get(snapped)
                         
             if self._state.selected_signal:
@@ -37,7 +37,7 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
                 self._state.selected_signal = signal
             return
             
-        closest_edge = self._railway.graph_service.get_closest_edge(click.world_pos, self._camera.scale)
+        closest_edge = self._railway.graph_service.get_closest_edge(click.world_pos)
         train_id = self._railway.trains.get_train_on_edge(closest_edge)
         if train_id:
             if train_id in self._state.selected_trains:

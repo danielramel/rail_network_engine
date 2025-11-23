@@ -2,7 +2,7 @@ from core.models.geometry.pose import Pose
 from core.models.geometry.node import Node
 from core.models.railway.graph_adapter import GraphAdapter
 from core.models.railway.graph_service import GraphService
-from core.models.railway.path_service import PathService
+from core.models.railway.path_finder import PathFinder
 from core.models.railway.signalling_service import SignallingService
 from core.models.repositories.station_repository import StationRepository
 from core.models.repositories.schedule_repository import ScheduleRepository
@@ -17,7 +17,7 @@ class RailwaySystem:
         self._station_repository = StationRepository(self)
         self._schedule_repository = ScheduleRepository()
         self._train_repository = TrainRepository(self)
-        self._pathfinder = PathService(self)
+        self._pathfinder = PathFinder(self)
         self._signalling_service = SignallingService(self)
     
     @property

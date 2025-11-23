@@ -13,10 +13,6 @@ class Edge:
         return iter((self.a, self.b))
     
     @property
-    def length(self) -> float:
-        return self.a.distance_to(self.b)
-    
-    @property
     def direction(self) -> Direction:
         return self.a.direction_to(self.b)
 
@@ -29,6 +25,15 @@ class Edge:
             return NotImplemented
         return {self.a, self.b} == {other.a, other.b}
     
+    def toggle_level(self) -> 'Edge':
+        a_other = self.a.toggle_level()
+        b_other = self.b.toggle_level()
+        return Edge(a_other, b_other)
+    
+    @property
+    def level(self) -> int:
+        return self.a.z
+    
     def equals_ordered(self, other: 'Edge') -> bool:
         return self.a == other.a and self.b == other.b
     
@@ -38,12 +43,12 @@ class Edge:
     def is_diagonal(self) -> bool:
         return self.a.x != self.b.x and self.a.y != self.b.y
     
-    def to_dict(self) -> dict:
+    
+    def to_dict_simple(self) -> dict:
         return {
             "a": self.a.to_dict(),
-            "b": self.b.to_dict(),
-            "length": self.length
-        }
+            "b": self.b.to_dict()
+            }
 
     def ordered(self, reversed: bool = False) -> 'Edge':
         return Edge(*sorted((self.a, self.b), reverse=reversed))
@@ -52,7 +57,7 @@ class Edge:
         return Edge(self.b, self.a)
         
     @classmethod
-    def from_dict(cls, data: dict) -> 'Edge':
+    def from_dict_simple(cls, data: dict) -> 'Edge':
         a = Node.from_dict(data["a"])
         b = Node.from_dict(data["b"])
         return cls(a, b)

@@ -26,7 +26,7 @@ class PlatformView(ConstructionView):
 
         self._state.preview.clear()
 
-        target = find_platform_target(self._railway, world_pos, self._camera.scale, self._state.platform_edge_count)
+        target = find_platform_target(self._railway, world_pos, self._state.platform_edge_count)
         if target.kind is PlatformTargetType.NONE:
             draw_node(self._screen, world_pos, self._camera, Color.PURPLE)
             return

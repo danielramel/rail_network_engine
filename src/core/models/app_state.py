@@ -10,7 +10,7 @@ class ViewMode(Enum):
     
 class AppState:
     def __init__(self, filename: Optional[str] = None) -> None:
-        self._mode: ViewMode = ViewMode.SETUP
+        self._mode: ViewMode = ViewMode.CONSTRUCTION
         self.filename: Optional[str] = filename
         self.callback: Optional[Callable[[ViewMode], None]] = None
         self.time = Time()

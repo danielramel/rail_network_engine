@@ -13,7 +13,7 @@ class BulldozeView(ConstructionView):
         if world_pos is None:
             return
         
-        target = find_bulldoze_target(self._railway, world_pos, self._camera.scale)
+        target = find_bulldoze_target(self._railway, world_pos)
         if target.kind == BulldozeTargetType.SIGNAL:
             self._state.preview.nodes = frozenset((target.node,))
         elif target.kind == BulldozeTargetType.STATION:

@@ -3,7 +3,6 @@ from core.config.color import Color
 
 from core.config.settings import Config
 from core.graphics.camera import Camera
-from core.models.geometry.node import Node
 from core.models.geometry.edge import Edge
 from core.models.geometry.position import Position
 from shared.ui.enums.edge_action import EdgeAction
@@ -31,6 +30,9 @@ def draw_track(screen: pygame.Surface, world_edge: Edge, camera: Camera, edge_ac
     elif edge_action is EdgeAction.SPEED:
         color = color_from_speed(speed)
         draw_rail(screen, screen_edge, camera, color=color, length=length)
+    elif edge_action is EdgeAction.TUNNEL_SPEED:
+        color = color_from_speed(speed)
+        draw_tunnel(screen, screen_edge, camera, color=color, length=length)
 
 def draw_rail(screen: pygame.Surface, edge: Edge, camera: Camera, color: tuple[int, int, int], length: int) -> None:
     """Draw a track as a dotted line on the screen from edge.a to edge.b."""
@@ -79,3 +81,23 @@ def draw_platform(screen: pygame.Surface, edge: Edge, camera: Camera, color=Colo
     a = Position(ax - perp_x * offset, ay - perp_y * offset)
     b = Position(bx - perp_x * offset, by - perp_y * offset)
     pygame.draw.aaline(screen, color, tuple(a), tuple(b), max(1, 1*int(camera.scale)))  # Draw platform line
+    
+    
+    
+    
+    
+def draw_tunnel(screen: pygame.Surface, screen_edge: Edge, camera: Camera, color: Color, length: int) -> None:
+    a, b = screen_edge
+    if a == b:
+        return
+    (x1, y1), (x2, y2) = a, b
+    dx = x2 - x1
+    dy = y2 - y1
+    
+    distance = a.distance_to(b)
+    num_dots = max(1, int(distance // 10))
+    dot_spacing = distance / num_dots
+    for i in range(num_dots + 1):
+        dot_x = x1 + (dx * (i * dot_spacing) / distance)
+        dot_y = y1 + (dy * (i * dot_spacing) / distance)
+        pygame.draw.circle(screen, color, (int(dot_x), int(dot_y)), 1)

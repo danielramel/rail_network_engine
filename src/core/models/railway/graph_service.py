@@ -27,16 +27,21 @@ class GraphService:
         
         neighbors = self._railway.graph.neighbors(node)
         return neighbors[0].direction_to(node) != node.direction_to(neighbors[1])
-        
+    
+    def level_change_at(self, node: Node) -> bool:
+        if self._railway.graph.degree_at(node) == 1 and self._railway.graph.degree_at(node.toggle_level()) == 1:
+            return False
+        return True
+    #TODO
     
     @property
     def junctions(self) -> list[Node]:
         return [n for n in self._railway.graph.nodes if self.is_junction(n)]
     
-    def get_connections_from_pose(self, pose: Pose) -> tuple[Pose]:
+    def get_valid_turn_neighbors_from_pose(self, pose: Pose) -> tuple[Pose]:
         connections = []
         graph_neighbors = self._railway.graph.neighbors(pose.node)
-        for neighbor_pose in pose.get_valid_turns():
+        for neighbor_pose in pose.get_connecting_poses():
             if neighbor_pose.node in graph_neighbors:
                 connections.append(neighbor_pose)
 
@@ -49,22 +54,27 @@ class GraphService:
         for node in list(self._railway.graph.nodes):
             if self._railway.graph.degree_at(node) == 0:
                 self._railway.graph.remove_node(node)
-            elif self._railway.graph.degree_at(node) == 1 and self._railway.signals.has_signal_at(node):
+            elif self._railway.graph.degree_at(node) == 1 and self._railway.signals.has_signal(node):
                 self._railway.signals.set(Pose(node, (self._railway.graph.neighbors(node)[0]).direction_to(node)))
 
-    def add_segment(self, nodes: list[Node], speed: int, length: int) -> None:
-        for p in nodes:
-            self._railway.graph.add_node(p) 
-        for a, b in zip(nodes[:-1], nodes[1:]):
-            self._railway.graph.add_edge(a, b, speed=speed, length=length)
+    def add_segment(self, nodes: list[Node], speed: int, length: int, is_tunnel: bool) -> None:
+        z = 1 if is_tunnel else 0
+        i = 0
+        first_node = nodes[0]
+        if self._railway.graph.has_node(first_node.toggle_level()) and self._railway.graph.degree_at(first_node.toggle_level()) == 1 and self._railway.graph.neighbors(first_node.toggle_level())[0].toggle_level() in Pose.from_nodes(nodes[1], first_node).get_connecting_nodes():
+            self._railway.graph.add_edge(first_node.toggle_level(), nodes[1], speed=speed, length=length, z=z)
+            i = 1
+            #TODO continue from here
+        for a, b in zip(nodes[i:-1], nodes[i+1:]):
+            self._railway.graph.add_edge(a, b, speed=speed, length=length, z=z)
             
     def is_station_blocked_by_node(self, station_pos: Node) -> bool:
         return any(node_pos.is_within_station_rect(station_pos) for node_pos in self._railway.graph.nodes)
     
-    def get_closest_edge(self, world_pos: Position, camera_scale) -> Edge | None:        
+    def get_closest_edge(self, world_pos: Position, tunnels: bool = False) -> Edge | None:
         min_edge = None
         min_distance = 1.0
-        for edge in world_pos.get_grid_edges():
+        for edge in world_pos.get_grid_edges(tunnels=tunnels):
             if not self._railway.graph.has_edge(edge):
                 continue
             distance = world_pos.distance_to_edge(edge)
@@ -112,7 +122,7 @@ class GraphService:
 
         while stack:
             pose = stack.popleft()
-            connections = self.get_connections_from_pose(pose)
+            connections = self.get_valid_turn_neighbors_from_pose(pose)
             
             nodes.add(pose.node)
 

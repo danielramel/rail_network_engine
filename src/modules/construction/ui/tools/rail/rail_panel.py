@@ -17,7 +17,7 @@ class RailPanel(ConstructionToolPanel):
     LONG_LENGTH = 500
     
     def __init__(self, screen: pygame.Surface, state: ConstructionState) -> None:
-        super().__init__(screen, state)
+        super().__init__(screen, state, height=200)
         
         self.button_size: int = 32
         
@@ -25,6 +25,7 @@ class RailPanel(ConstructionToolPanel):
         self.title_screen = self.title_font.render("Rail Construction", True, Color.YELLOW)
         self.speed_label_screen = self.instruction_font.render("Track speed:", True, Color.WHITE)
         self.length_label_screen = self.instruction_font.render("Track length:", True, Color.WHITE)
+        self.tunnel_label_screen = self.instruction_font.render("Tunnel:", True, Color.WHITE)
         self.minus_text = self.instruction_font.render("-", True, Color.WHITE)
         self.plus_text = self.instruction_font.render("+", True, Color.WHITE)
         
@@ -85,6 +86,26 @@ class RailPanel(ConstructionToolPanel):
             toggle_width, 
             self.button_size
         )
+        
+        # Tunnel label position
+        self.tunnel_label_rect = self.tunnel_label_screen.get_rect(
+            left=self._rect.left + self.padding,
+            top=self.length_label_rect.bottom + 30
+        )
+        
+        # Tunnel toggle buttons (No tunnel and Tunnel)
+        tunnel_button_y = self.tunnel_label_rect.top - 4
+        tunnel_start_x = self.tunnel_label_rect.right + 20
+        tunnel_width = 80
+        tunnel_spacing = 10
+        
+        self.tunnel_no_rect = pygame.Rect(tunnel_start_x, tunnel_button_y, tunnel_width, self.button_size)
+        self.tunnel_yes_rect = pygame.Rect(
+            tunnel_start_x + tunnel_width + tunnel_spacing, 
+            tunnel_button_y, 
+            tunnel_width, 
+            self.button_size
+        )
     
     def _render_button(self, rect: pygame.Rect, text_screen: pygame.Surface, enabled: bool) -> None:
         """Render a button with consistent styling."""
@@ -139,6 +160,13 @@ class RailPanel(ConstructionToolPanel):
         is_short = self._state.track_length == self.SHORT_LENGTH
         self._render_toggle_button(self.length_short_rect, "50 m", is_short)
         self._render_toggle_button(self.length_long_rect, "500 m", not is_short)
+        
+        # Tunnel label
+        self._screen.blit(self.tunnel_label_screen, self.tunnel_label_rect)
+        
+        # Tunnel toggle buttons
+        self._render_toggle_button(self.tunnel_no_rect, "No tunnel", not self._state.is_tunnel)
+        self._render_toggle_button(self.tunnel_yes_rect, "Tunnel", self._state.is_tunnel)
 
     def _on_click(self, event: Event) -> bool:
         """Handle +/- clicks and length toggle; return True if the event was consumed."""     
@@ -161,6 +189,15 @@ class RailPanel(ConstructionToolPanel):
         
         if self.length_long_rect.collidepoint(*event.screen_pos):
             self._state.track_length = self.LONG_LENGTH
+            return True
+        
+        # Tunnel toggle
+        if self.tunnel_no_rect.collidepoint(*event.screen_pos):
+            self._state.is_tunnel = False
+            return True
+        
+        if self.tunnel_yes_rect.collidepoint(*event.screen_pos):
+            self._state.is_tunnel = True
             return True
         
         return self._rect.collidepoint(*event.screen_pos)

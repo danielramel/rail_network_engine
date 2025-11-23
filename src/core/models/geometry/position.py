@@ -34,7 +34,7 @@ class Position:
         """Calculate the Euclidean distance to another position."""
         return hypot(self.x - other.x, self.y - other.y)
     
-    def get_grid_edges(self) -> tuple['Edge']:
+    def get_grid_edges(self, tunnels: bool = False) -> tuple['Edge']:
         from core.models.geometry.edge import Edge
         """Get the edges of the grid cell containing this position."""
         cell_x = floor(self.x)
@@ -46,15 +46,16 @@ class Position:
             Node(cell_x + 1, cell_y + 1),
             Node(cell_x, cell_y + 1),
         )
-
-        return (
-            Edge(corners[0], corners[1]),
+        edges = (Edge(corners[0], corners[1]),
             Edge(corners[1], corners[2]),
             Edge(corners[2], corners[3]),
             Edge(corners[3], corners[0]),
             Edge(corners[0], corners[2]),
-            Edge(corners[1], corners[3]),
-        )
+            Edge(corners[1], corners[3]))
+
+        if not tunnels:
+            return tuple(edges)
+        return tuple(edges) + tuple(edge.toggle_level() for edge in edges)
     
     def distance_to_edge(self, edge: 'Edge') -> float:
         a, b = edge.a, edge.b

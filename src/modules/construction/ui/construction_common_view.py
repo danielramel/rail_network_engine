@@ -17,14 +17,19 @@ class ConstructionCommonView(ConstructionView):
         draw_grid(self._screen, self._camera)
 
         for edge, data in self._railway.graph.all_edges_with_data():
-            speed = data.get('speed')
-            length = data.get('length')
+            speed = data["speed"]
+            length = data["length"]
+            z = data.get("z", 0)
             if edge in self._state.preview.edges:
                 draw_track(self._screen, edge, self._camera, self._state.preview.edge_action, speed=speed, length=length)
             elif self._railway.stations.is_edge_platform(edge):
                 draw_track(self._screen, edge, self._camera, EdgeAction.PLATFORM, length=length)
             else:
-                draw_track(self._screen, edge, self._camera, EdgeAction.SPEED, speed=speed, length=length)
+                if z == 0:
+                    draw_track(self._screen, edge, self._camera, EdgeAction.SPEED, speed=speed, length=length)
+                else:
+                    draw_track(self._screen, edge, self._camera, EdgeAction.TUNNEL_SPEED, speed=speed, length=length)
+                
 
         for node in self._railway.graph_service.junctions:
             draw_junction_node(self._screen, node, self._camera)

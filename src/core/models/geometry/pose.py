@@ -17,15 +17,23 @@ class Pose(NamedTuple):
     def from_edge(cls, edge: Edge) -> 'Pose':
         return cls.from_nodes(edge.a, edge.b)
     
-    def get_valid_turns(self) -> list['Pose']:
+    def get_connecting_poses(self) -> list['Pose']:
         neighbors = []
         for dir in self.direction.get_valid_turns():
             nx = self.node.x + dir.x
             ny = self.node.y + dir.y
-            new_state = Pose(Node(nx, ny), dir)
+            new_state = Pose(Node(nx, ny, self.node.z), dir)
 
             neighbors.append(new_state)
         return neighbors
+    
+    def get_connecting_nodes(self) -> list[Node]:
+        nodes = []
+        for dir in self.direction.get_valid_turns():
+            nx = self.node.x + dir.x
+            ny = self.node.y + dir.y
+            nodes.append(Node(nx, ny, self.node.z))
+        return nodes
     
     def opposite(self) -> 'Pose':
         return Pose(self.node, self.direction.opposite())
@@ -34,7 +42,8 @@ class Pose(NamedTuple):
         return Pose(
             Node(
                 self.node.x + self.direction.x,
-                self.node.y + self.direction.y
+                self.node.y + self.direction.y,
+                self.node.z
             ),
             self.direction
         )
@@ -42,7 +51,7 @@ class Pose(NamedTuple):
     
     def to_dict(self) -> dict:
         return {
-            "position": self.node.to_dict(),
+            "node": self.node.to_dict(),
             "direction": self.direction.to_dict()
         }
         

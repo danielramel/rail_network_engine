@@ -14,7 +14,7 @@ class TrainRemovalController(SetupToolController):
             self._state.switch_tool(None)
             return
         
-        closest_edge = self._railway.graph_service.get_closest_edge(event.world_pos, self._graphics.camera.scale)
+        closest_edge = self._railway.graph_service.get_closest_edge(event.world_pos)
         if closest_edge and self._railway.stations.is_edge_platform(closest_edge):
             train_id = self._railway.trains.get_train_on_edge(closest_edge)
             if train_id is not None:

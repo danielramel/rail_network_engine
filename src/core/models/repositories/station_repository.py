@@ -68,7 +68,7 @@ class StationRepository:
             self._railway.graph.remove_node_attr(edge.b, 'station')
             
     def is_platform_at(self, node: Node) -> bool:
-        if not self._railway.graph.has_node_at(node):
+        if not self._railway.graph.has_node(node):
             return False
         return self._railway.graph.has_node_attr(node, 'station')
     
@@ -129,7 +129,7 @@ class StationRepository:
                 name=station_data["name"],
                 node=Node.from_dict(station_data["node"]),
                 id=id,
-                platforms={frozenset(Edge.from_dict(edge_data) for edge_data in platform_data)
+                platforms={frozenset(Edge.from_dict_simple(edge_data) for edge_data in platform_data)
                            for platform_data in station_data["platforms"]}
             )
             instance._stations[id] = station

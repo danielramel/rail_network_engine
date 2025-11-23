@@ -4,7 +4,7 @@ from core.models.geometry.position import Position
 from core.graphics.camera import Camera
 
 
-def draw_dotted_line(screen: pygame.Surface, world_a: Position | Node, world_b: Position | Node, camera: Camera, color, num_dots: int = None):
+def draw_dotted_line(screen: pygame.Surface, world_a: Position | Node, world_b: Position | Node, camera: Camera, color):
     """Draw a dotted line on the screen from start_pos to end_pos."""
     a = camera.world_to_screen(world_a)
     b = camera.world_to_screen(world_b)
@@ -15,9 +15,8 @@ def draw_dotted_line(screen: pygame.Surface, world_a: Position | Node, world_b: 
     dy = y2 - y1
     
     distance = a.distance_to(b)
-    if num_dots is None:
-        num_dots = max(1, int(distance // 10))  # default: one dot every 10 pixels
-    dot_spacing = distance / num_dots
+    num_dots = max(1, int(distance // 10))
+    dot_spacing = distance / num_dots  # default: one dot every 10 pixels
     for i in range(num_dots):
         dot_x = x1 + (dx * (i * dot_spacing) / distance)
         dot_y = y1 + (dy * (i * dot_spacing) / distance)

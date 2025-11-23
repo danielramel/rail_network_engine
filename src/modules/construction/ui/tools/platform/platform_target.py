@@ -15,8 +15,8 @@ class PlatformTarget:
     edges: Optional[Set[Any]] = None
     message: Optional[str] = None
 
-def find_platform_target(railway: RailwaySystem, world_pos: Position, camera_scale, platform_edge_count) -> PlatformTarget:
-    closest_edge = railway.graph_service.get_closest_edge(world_pos, camera_scale)
+def find_platform_target(railway: RailwaySystem, world_pos: Position, platform_edge_count) -> PlatformTarget:
+    closest_edge = railway.graph_service.get_closest_edge(world_pos)
     if closest_edge is None:
         return PlatformTarget(kind=PlatformTargetType.NONE)
     
