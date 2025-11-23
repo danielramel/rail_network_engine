@@ -14,7 +14,6 @@ class ConstructionTool(Enum):
     SIGNAL = auto()
     STATION = auto()
     PLATFORM = auto()
-    PORTAL = auto()
     BULLDOZE = auto()
     
 @dataclass

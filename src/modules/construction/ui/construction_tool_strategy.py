@@ -2,7 +2,6 @@ from core.models.railway.railway_system import RailwaySystem
 from modules.construction.models.construction_state import ConstructionState
 from core.graphics.graphics_context import GraphicsContext
 from modules.construction.ui.construction_common_view import ConstructionCommonView
-from modules.construction.ui.tools.portal.portal_controller import PortalController
 from modules.construction.ui.tools.tunnel.tunnel_controller import TunnelController
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from modules.construction.models.construction_state import ConstructionTool
@@ -30,7 +29,6 @@ class ConstructionToolStrategy(ClickableUIComponent, FullScreenUIComponent):
             ConstructionTool.STATION: StationController(railway, state, graphics),
             ConstructionTool.PLATFORM: PlatformController(railway, state, graphics),
             ConstructionTool.BULLDOZE: BulldozeController(railway, state, graphics),
-            ConstructionTool.PORTAL: PortalController(railway, state, graphics),
         }
         
     def _on_click(self, event) -> None:

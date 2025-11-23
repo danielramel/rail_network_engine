@@ -103,7 +103,7 @@ class GraphAdapter:
             edge["source"] = edge["source"].to_dict()
             edge["target"] = edge["target"].to_dict()
             for key in list(edge.keys()):
-                if key not in ("source", "target", "speed", "length", "level", "portal"):
+                if key not in ("source", "target", "speed", "length", "level"):
                     print(f"Removing key {key} from edge {edge}")
                     del edge[key]
         
