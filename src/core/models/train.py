@@ -55,9 +55,11 @@ class Train:
             
         if self.speed == 0.0:
             if self._routed_to_station_ahead:
-                if self.timetable.get_departure_time() > self._railway.time.current_time.in_minutes():
-                    self.calculate_braking_curve()
+                dep_time = self.timetable.get_departure_time()
+                if dep_time is not None and dep_time <= self._railway.time.in_minutes():
+                    self._routed_to_station_ahead = False
                     self.timetable.depart_station()
+                    self.calculate_braking_curve()
             return
             
             
@@ -74,6 +76,8 @@ class Train:
             self._railway.signalling.passed(passed_rail.edge)
             
     def calculate_braking_curve(self):
+        if self._routed_to_station_ahead:
+            return
         self._braking_curve = []
         speed = 0.0
         for rail in reversed(self.path[self._occupied_edge_count - 1:]):
@@ -82,19 +86,10 @@ class Train:
                 if self.timetable and station_id == self.timetable.get_next_station().id:
                     self._routed_to_station_ahead = True
                     speed = 0.0
+            #add the speed at the end of this rail
             self._braking_curve.append(speed)
             speed = min(rail.speed, self.get_max_speed(rail.length, speed))
             
-            
-        #             if self._railway.stations.is_edge_platform(rail.edge):
-    #                 station_id = self._railway.stations.get_edge_platform(rail.edge)
-    #                 if self.timetable and station_id == self.timetable.get_next_station().id:
-    #                     platform = self._railway.stations.get_platform_from_edge(rail.edge)
-    #                     braking_speed = min(braking_speed, _get_max_speed(distance + len(platform)*Config.SHORT_SEGMENT_LENGTH, 0.0))
-    #                     braking_speed = min(braking_speed, min(self._railway.graph.get_edge_speed(edge) for edge in platform))
-    #                     return braking_speed
-            
-    
     @property
     def _occupied_edge_count(self) -> int:
         if self._occupied_edge_count_cache is not None:
