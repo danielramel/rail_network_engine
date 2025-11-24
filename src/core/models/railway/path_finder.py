@@ -37,11 +37,11 @@ class PathFinder:
                         return True
                     
                     
-                if self._railway.stations.is_platform_at(edge.a):
+                if self._railway.stations.is_node_platform(edge.a):
                     if edge.b not in self._railway.graph.neighbors(edge.a):
                         return True
                     
-                if self._railway.stations.is_platform_at(edge.b):
+                if self._railway.stations.is_node_platform(edge.b):
                     if edge.a not in self._railway.graph.neighbors(edge.b):
                         return True
                 
