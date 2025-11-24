@@ -45,8 +45,6 @@ class Train:
         if not self._is_live:
             return
         
-        #TODO continue from braking curve calculation
-
         distance_until_next_edge = self.get_distance_until_next_edge()
         speed_due_to_braking = self.get_max_speed(distance_until_next_edge, self._braking_curve[-1])
         speed_with_acc = self.speed + (self.config.acceleration * DT)
@@ -72,7 +70,13 @@ class Train:
     def calculate_braking_curve(self):
         self._braking_curve = []
         speed = 0.0
+        next_station_found = False
         for rail in reversed(self.path[self._occupied_edge_count - 1:]):
+            if not next_station_found and self._railway.stations.is_edge_platform(rail.edge):
+                station_id = self._railway.stations.get_edge_platform(rail.edge)
+                if self.timetable and station_id == self.timetable.get_next_station().id:
+                    next_station_found = True
+                    speed = 0.0
             self._braking_curve.append(speed)
             speed = min(rail.speed, self.get_max_speed(rail.length, speed))
             
