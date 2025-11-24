@@ -28,6 +28,7 @@ class Train:
     _unsubscribe: Callable | None = None
     _braking_curve: list[float] = None
     _routed_to_station_ahead: bool = False
+    _dwell_time_counter: float = 0.0
      
     def __init__(self, edges: list[Edge], railway: 'RailwaySystem', config: TrainConfig) -> None:
         self._railway = railway
@@ -55,13 +56,15 @@ class Train:
             
         if self.speed == 0.0:
             if self._routed_to_station_ahead:
+                #train is stopped at station
+                self._dwell_time_counter += DT
                 dep_time = self.timetable.get_departure_time()
-                if dep_time is not None and dep_time <= self._railway.time.in_minutes():
+                if dep_time is not None and dep_time <= self._railway.time.in_minutes() and self._dwell_time_counter >= Config.MIN_TRAIN_STOP_TIME:
                     self._routed_to_station_ahead = False
                     self.timetable.depart_station()
                     self.calculate_braking_curve()
+                    self._dwell_time_counter = 0.0
             return
-            
             
         self._occupied_edge_count_cache = None
         travel_distance = (self.speed * DT - self.config.deceleration * DT * DT / 2)/3.6
@@ -129,12 +132,12 @@ class Train:
     def reverse(self) -> None:
         self._path_distance = self.get_distance_until_next_edge()
         self.path = [rail.reversed() for rail in reversed(self.path)]
-        self._routed_to_station_ahead = False
             
     def shutdown(self) -> None:
         self._is_live = False
         self.path = self.path[:self._occupied_edge_count]
         self._unsubscribe()
+        self._routed_to_station_ahead = False
         
     def get_locomotive_pose(self) -> Pose:
         return Pose.from_edge(self.path[self._occupied_edge_count - 1].edge)

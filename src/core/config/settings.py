@@ -12,3 +12,4 @@ class Config:
     TRAIN_CAR_GAP = 5
     MAX_TRAIN_CAR_COUNT = 16
     MAX_PLATFORM_EDGE_COUNT = 12
+    MIN_TRAIN_STOP_TIME = 30  #seconds
