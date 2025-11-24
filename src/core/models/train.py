@@ -26,17 +26,16 @@ class Train:
     _path_distance : float = 0.0
     _occupied_edge_count_cache : int | None = None
     _unsubscribe: Callable | None = None
-    _cached_max_safe_speed: float | None = None
-    _braking_curve = None
+    _braking_curve: list[float] = None 
      
     def __init__(self, edges: list[Edge], railway: 'RailwaySystem', config: TrainConfig) -> None:
         self._railway = railway
         self.config = config.copy()
         self.path = []
-        self._braking_curve = deque()
+        self._braking_curve = []
         self.extend_path(edges[-(int((self.config.total_length + INITIAL_DISTANCE_TO_PLATFORM_END) // Config.SHORT_SEGMENT_LENGTH) + 1):])
         
-        remaining = self.get_distance_to_path_end()
+        remaining = self.get_distance_until_next_edge()
         self._path_distance = remaining - INITIAL_DISTANCE_TO_PLATFORM_END
         
     def set_timetable(self, timetable: TimeTable) -> None:
@@ -45,10 +44,14 @@ class Train:
     def tick(self):
         if not self._is_live:
             return
+        
+        #TODO continue from braking curve calculation
 
-        max_safe_speed = self.get_max_safe_speed()
-        speed_with_acc = self.speed + (self.config.acceleration * DT)            
-        self.speed = min(max_safe_speed, speed_with_acc)
+        distance_until_next_edge = self.get_distance_until_next_edge()
+        speed_due_to_braking = self.get_max_speed(distance_until_next_edge, self._braking_curve[-1])
+        speed_with_acc = self.speed + (self.config.acceleration * DT)
+        speed_due_to_tracks = min(rail.speed for rail in self.path[:self._occupied_edge_count])
+        self.speed = min(speed_due_to_braking, speed_with_acc, speed_due_to_tracks)
             
         if self.speed == 0.0:
             return
@@ -56,14 +59,23 @@ class Train:
             
         self._occupied_edge_count_cache = None
         travel_distance = self.speed * DT - self.config.deceleration * DT * DT / 2
+        if distance_until_next_edge < travel_distance:
+            self._braking_curve.pop()
         self._path_distance += travel_distance
-        # self._target_distance = max(self._target_distance - travel_distance, 0.0)
         
         first_edge_length = self.path[0].length
         if self._path_distance >= first_edge_length:
             self._path_distance -= first_edge_length
             passed_rail = self.path.pop(0)
             self._railway.signalling.passed(passed_rail.edge)
+            
+    def calculate_braking_curve(self):
+        self._braking_curve = []
+        speed = 0.0
+        for rail in reversed(self.path[self._occupied_edge_count - 1:]):
+            self._braking_curve.append(speed)
+            speed = min(rail.speed, self.get_max_speed(rail.length, speed))
+            
     
     @property
     def _occupied_edge_count(self) -> int:
@@ -99,8 +111,10 @@ class Train:
         
         self._unsubscribe = signal.subscribe(self.signal_turned_green_ahead)
         
+        self.calculate_braking_curve()
+        
     def reverse(self) -> None:
-        self._path_distance = self.get_distance_to_path_end()
+        self._path_distance = self.get_distance_until_next_edge()
         self.path = [rail.reversed() for rail in reversed(self.path)]        
             
     def shutdown(self) -> None:
@@ -111,56 +125,44 @@ class Train:
     def get_locomotive_pose(self) -> Pose:
         return Pose.from_edge(self.path[self._occupied_edge_count - 1].edge)
     
-    def get_max_safe_speed(self) -> float:        
-        def _inner_func():
-            def _get_max_speed(distance: float, speed: float) -> float:
-                if distance <= 1.0:
-                    return speed
-                # FORMULA: V = sqrt(u^2 + 2as)
-                return (speed**2 + (2 * distance * self.config.deceleration)) ** 0.5
+    # def get_max_safe_speed(self) -> float:        
+    #     def _inner_func():
+    #         def _get_max_speed(distance: float, speed: float) -> float:
+    #             if distance <= 1.0:
+    #                 return speed
+    #             # FORMULA: V = sqrt(u^2 + 2as)
+    #             return (speed**2 + (2 * distance * self.config.deceleration)) ** 0.5
             
-            distance = self.get_distance_to_path_end()
-            braking_speed = float('inf')
-            for rail in self.path[self._occupied_edge_count:]:
-                if self._railway.stations.is_edge_platform(rail.edge):
-                    station_id = self._railway.stations.get_edge_platform(rail.edge)
-                    if self.timetable and station_id == self.timetable.get_next_station().id:
-                        platform = self._railway.stations.get_platform_from_edge(rail.edge)
-                        braking_speed = min(braking_speed, _get_max_speed(distance + len(platform)*Config.SHORT_SEGMENT_LENGTH, 0.0))
-                        braking_speed = min(braking_speed, min(self._railway.graph.get_edge_speed(edge) for edge in platform))
-                        return braking_speed
-                braking_speed = min(braking_speed, _get_max_speed(distance, rail.speed))
-                distance += rail.length
+    #         distance = self.get_distance_to_path_end()
+    #         braking_speed = float('inf')
+    #         for rail in self.path[self._occupied_edge_count:]:
+    #             if self._railway.stations.is_edge_platform(rail.edge):
+    #                 station_id = self._railway.stations.get_edge_platform(rail.edge)
+    #                 if self.timetable and station_id == self.timetable.get_next_station().id:
+    #                     platform = self._railway.stations.get_platform_from_edge(rail.edge)
+    #                     braking_speed = min(braking_speed, _get_max_speed(distance + len(platform)*Config.SHORT_SEGMENT_LENGTH, 0.0))
+    #                     braking_speed = min(braking_speed, min(self._railway.graph.get_edge_speed(edge) for edge in platform))
+    #                     return braking_speed
+    #             braking_speed = min(braking_speed, _get_max_speed(distance, rail.speed))
+    #             distance += rail.length
                 
-            braking_speed = min(braking_speed, _get_max_speed(distance, 0.0))
-            return braking_speed
+    #         braking_speed = min(braking_speed, _get_max_speed(distance, 0.0))
+    #         return braking_speed
         
             
-        return min(self.config.max_speed, min(rail.speed for rail in self.path[:self._occupied_edge_count]), _inner_func())
+    #     return min(self.config.max_speed, min(rail.speed for rail in self.path[:self._occupied_edge_count]), _inner_func())
     
-    def extend_path(self, extension: list[Edge]):
-        def get_max_speed(distance: float, speed: float) -> float:
-            # FORMULA: V = sqrt(u^2 + 2as)
-            return (speed**2 + (2 * distance * self.config.deceleration)) ** 0.5
+    def extend_path(self, extension: list[Edge]) -> None:
         self.path += [self._railway.graph.get_rail(edge) for edge in extension]
-
-        temp = []
-        distance = 0.0
-        speed = 0.0
-        for rail in reversed(self.path[self._occupied_edge_count:]):
-            distance += rail.length
-            if rail.speed < get_max_speed(distance, speed):
-                temp.append((distance, speed))
-                distance = 0.0
-                speed = rail.speed
-                
-        temp.append((distance, speed))
-                
-        print(temp)
-                
-            
         
-    def get_distance_to_path_end(self) -> float:
+    def get_max_speed(self, distance: float, speed: float) -> float:
+        if distance <= 1.0:
+            return speed
+            # FORMULA: V = sqrt(u^2 + 2as)
+        return (speed**2 + (2 * distance * self.config.deceleration)) ** 0.5
+                
+        
+    def get_distance_until_next_edge(self) -> float:
         remaining = self.config.total_length + self._path_distance
         i = 0
         while remaining - self.path[i].length > 0:
@@ -175,3 +177,4 @@ class Train:
             self.extend_path(signal.path)
             signal = signal.next_signal
         self._unsubscribe = signal.subscribe(self.signal_turned_green_ahead)
+        self.calculate_braking_curve()
