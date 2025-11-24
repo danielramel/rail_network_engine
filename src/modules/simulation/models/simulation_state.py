@@ -9,8 +9,8 @@ from core.models.time import Time
 class TimeControlMode(Enum):
     PAUSE = 0
     PLAY = 1
-    FAST_FORWARD = 3
-    SUPER_FAST_FORWARD = 10
+    FAST_FORWARD = 5
+    SUPER_FAST_FORWARD = 25
     
 
 class TimeControlState:

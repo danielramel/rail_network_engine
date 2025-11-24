@@ -40,3 +40,19 @@ class TrainRepository:
         platform = [edge.sorted() for edge in sorted(platform)]
         train = Train(platform, self._railway, config)
         return train
+    
+    def to_dict(self) -> dict:
+        return {
+            'trains': [train.to_dict() for train in self._trains.values()],
+            "next_id": self._next_id
+        }
+        
+    @classmethod
+    def from_dict(cls, data: dict, railway: 'RailwaySystem') -> 'TrainRepository':
+        instance = cls(railway)
+        for train_data in data['trains']:
+            train = Train.from_dict(train_data, railway)
+            instance._trains[train.id] = train
+            
+        instance._next_id = data["next_id"]
+        return instance

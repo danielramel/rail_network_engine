@@ -62,6 +62,7 @@ class RailwaySystem:
             'station_repository': self._station_repository.to_dict(),
             'signal_repository': self._signal_repository.to_dict(),
             'schedule_repository': self._schedule_repository.to_dict(),
+            'train_repository': self._train_repository.to_dict()
         }
         
     def replace_from_dict(self, data: dict) -> None:
@@ -69,4 +70,4 @@ class RailwaySystem:
         self._station_repository = StationRepository.from_dict(self, data["station_repository"])
         self._signal_repository = SignalRepository.from_dict(self._graph_adapter, data["signal_repository"])
         self._schedule_repository = ScheduleRepository.from_dict(self, data['schedule_repository'])
-        self._train_repository = TrainRepository(self)
+        self._train_repository = TrainRepository.from_dict(data['train_repository'], self)

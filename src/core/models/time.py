@@ -1,7 +1,7 @@
 from math import floor
 
 class Time:
-    current_time: float = 25000.0  # seconds since midnight #TODO change this when submitting thesis
+    current_time: float = 24500.0  # seconds since midnight #TODO change this when submitting thesis
         
     def get_hms(self) -> tuple[str, str, str]:
         if self.current_time is None:
@@ -18,3 +18,6 @@ class Time:
     def set_time_from_string(self, time_str: str) -> None:
         hours, minutes, seconds = map(int, time_str.split(":"))
         self.current_time = hours * 3600 + minutes * 60 + seconds
+        
+    def in_minutes(self) -> int:
+        return int(self.current_time // 60)

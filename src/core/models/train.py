@@ -27,7 +27,7 @@ class Train:
     _occupied_edge_count_cache : int | None = None
     _unsubscribe: Callable | None = None
     _braking_curve: list[float] = None
-    _departure_from_station: bool = False
+    _routed_to_station_ahead: bool = False
      
     def __init__(self, edges: list[Edge], railway: 'RailwaySystem', config: TrainConfig) -> None:
         self._railway = railway
@@ -38,6 +38,7 @@ class Train:
         
         remaining = self.get_distance_until_next_edge()
         self._path_distance = remaining - INITIAL_DISTANCE_TO_PLATFORM_END
+        
         
     def set_timetable(self, timetable: TimeTable) -> None:
         self.timetable = timetable
@@ -53,13 +54,15 @@ class Train:
         self.speed = min(speed_due_to_braking, speed_with_acc, speed_due_to_tracks)
             
         if self.speed == 0.0:
-            if len(self._braking_curve) > 1:
-                self._departure_from_station = True
+            if self._routed_to_station_ahead:
+                if self.timetable.get_departure_time() > self._railway.time.current_time.in_minutes():
+                    self.calculate_braking_curve()
+                    self.timetable.depart_station()
             return
             
             
         self._occupied_edge_count_cache = None
-        travel_distance = self.speed * DT - self.config.deceleration * DT * DT / 2
+        travel_distance = (self.speed * DT - self.config.deceleration * DT * DT / 2)/3.6
         if distance_until_next_edge < travel_distance:
             self._braking_curve.pop()
         self._path_distance += travel_distance
@@ -73,12 +76,11 @@ class Train:
     def calculate_braking_curve(self):
         self._braking_curve = []
         speed = 0.0
-        next_station_found = False
         for rail in reversed(self.path[self._occupied_edge_count - 1:]):
-            if not next_station_found and self._railway.stations.is_edge_platform(rail.edge):
+            if not self._routed_to_station_ahead and self._railway.stations.is_edge_platform(rail.edge):
                 station_id = self._railway.stations.get_edge_platform(rail.edge)
                 if self.timetable and station_id == self.timetable.get_next_station().id:
-                    next_station_found = True
+                    self._routed_to_station_ahead = True
                     speed = 0.0
             self._braking_curve.append(speed)
             speed = min(rail.speed, self.get_max_speed(rail.length, speed))
@@ -168,3 +170,25 @@ class Train:
             signal = signal.next_signal
         self._unsubscribe = signal.subscribe(self.signal_turned_green_ahead)
         self.calculate_braking_curve()
+        
+        
+    def to_dict(self) -> dict:
+        return {
+            'id': self.id,
+            'path': [rail.edge.to_dict_simple() for rail in self.path],
+            'config': self.config.to_dict(),
+            'speed': self.speed,
+            '_is_live': self._is_live,
+            '_path_distance': self._path_distance
+        }
+        
+    @classmethod
+    def from_dict(cls, data: dict, railway: 'RailwaySystem') -> 'Train':
+        edges = [Edge.from_dict_simple(edge_data) for edge_data in data['path']]
+        config = TrainConfig.from_dict(data['config'])
+        train = cls(edges, railway, config)
+        train.id = data['id']
+        train.speed = data['speed']
+        train._is_live = data['_is_live']
+        train._path_distance = data['_path_distance']
+        return train

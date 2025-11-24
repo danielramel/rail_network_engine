@@ -1,4 +1,4 @@
-from dataclasses import dataclass, replace
+from dataclasses import asdict, dataclass, replace
 from core.config.settings import Config
 
 @dataclass
@@ -16,3 +16,10 @@ class TrainConfig:
     
     def copy(self) -> 'TrainConfig':
         return replace(self, acceleration=self.acceleration_in_m_s2 * 3.6, deceleration=self.deceleration_in_m_s2 * 3.6)
+    
+    def to_dict(self) -> dict:
+        return asdict(self)
+    
+    @classmethod
+    def from_dict(cls, data: dict) -> 'TrainConfig':
+        return cls(**data)
