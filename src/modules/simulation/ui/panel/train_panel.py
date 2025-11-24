@@ -27,8 +27,6 @@ class TrainPanel(Panel):
         
         x_screen = self.instruction_font.render("X", True, Color.WHITE)
         self._screen.blit(x_screen, self._center_in_rect(x_screen, self.close_button))
-        label = "Change Schedule" if self._train.timetable else "Add Schedule"
-        self._render_button(self.schedule_button, label, Color.GREY)
         self._render_next_stop()
         self._render_speed()
         
@@ -36,6 +34,8 @@ class TrainPanel(Panel):
             color = Color.GREY if self._train.speed == 0.0 else Color.DARKGREY
             self._render_button(self.stop_button, "Shut Down", color)
         else:
+            label = "Change Schedule" if self._train.timetable else "Add Schedule"
+            self._render_button(self.schedule_button, label, Color.GREY)
             self._render_button(self.startup_button, "Startup", Color.GREY)
             self._render_button(self.reverse_button, "Reverse (R)", Color.GREY)
             
@@ -43,7 +43,6 @@ class TrainPanel(Panel):
         if self.close_button.collidepoint(*event.screen_pos):
             self._on_close_callback(self._train.id)
             return
-        if self.schedule_button.collidepoint(*event.screen_pos):
             self._open_schedule_selector()
             
         elif self.reverse_button.collidepoint(*event.screen_pos) and not self._train.is_live:
@@ -53,7 +52,9 @@ class TrainPanel(Panel):
             if self.stop_button.collidepoint(*event.screen_pos) and self._train.speed == 0.0:
                 self._train.shutdown()
         else:
-            if self.startup_button.collidepoint(*event.screen_pos):
+            if self.schedule_button.collidepoint(*event.screen_pos):
+                self._open_schedule_selector()
+            elif self.startup_button.collidepoint(*event.screen_pos):
                 self._train.start()
 
     def _render_speed(self):
@@ -98,6 +99,6 @@ class TrainPanel(Panel):
         self.stop_button = self.startup_button
         self.reverse_button = pygame.Rect(self._rect.centerx - 180, self._rect.bottom - 45, 120, 30)
         
-    def _center_in_rect(self, screen, rect):
+    def _center_in_rect(self, screen: pygame.Surface, rect: pygame.Rect) -> tuple[int, int]:
         return (rect.centerx - screen.get_width() // 2,
                 rect.centery - screen.get_height() // 2)
