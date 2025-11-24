@@ -12,18 +12,24 @@ from modules.simulation.models.simulation_state import SimulationState
 
 class SimulationMode(UIController, FullScreenUIComponent):
     elements: tuple[ClickableUIComponent]
+
     def __init__(self, railway: RailwaySystem, graphics: GraphicsContext):
         self._railway = railway
         self._graphics = graphics
-        graphics.input_component.request_input("Enter simulation start time (HH:MM:SS):", self._on_time_set)
-    
-        return
+        self.elements = ()
 
-    def _on_time_set(self, time_str: str) -> None:
-        self._railway.time.set_time_from_string(time_str)
+        if not self._railway.time:  # requires your time object to expose this flag
+            graphics.input_component.request_input(
+                "Enter simulation start time (HH:MM:SS):",
+                self._on_time_set
+            )
+            return
+
+        self._initialize()
+
+    def _initialize(self):
         self._railway.signals.add_signals_to_dead_ends()
         self._state = SimulationState(self._railway.time)
-        
         self.elements = (
             TimeControlButtons(self._state.time_control, self._graphics.screen),
             TimeDisplay(self._state.time, self._graphics),
@@ -31,3 +37,15 @@ class SimulationMode(UIController, FullScreenUIComponent):
             CameraController(self._graphics.camera),
             SimulationController(self._railway, self._state, self._graphics),
         )
+
+    def _on_time_set(self, time_str: str) -> None:
+        try:
+            self._railway.time.set_time_from_string(time_str)
+        except ValueError:
+            self._graphics.alert_component.show_alert("Invalid time format. Use HH:MM:SS.")
+            self._graphics.input_component.request_input(
+                "Enter simulation start time (HH:MM:SS):",
+                self._on_time_set
+            )
+            return
+        self._initialize()
