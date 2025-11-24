@@ -20,12 +20,12 @@ class ConstructionTool(Enum):
 class ConstructionPreview:
     edges: frozenset[Edge] = field(default_factory=frozenset)
     nodes: frozenset[Node] = field(default_factory=frozenset)
-    edge_action: EdgeAction = EdgeAction.NORMAL
+    edge_action: EdgeAction = None
     
     def clear(self) -> None:
         self.edges = frozenset()
         self.nodes = frozenset()
-        self.edge_action = EdgeAction.NORMAL
+        self.edge_action = None
     
     
 @dataclass

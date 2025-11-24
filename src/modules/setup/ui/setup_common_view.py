@@ -23,9 +23,11 @@ class SetupCommonView(ClickableUIComponent, FullScreenUIComponent):
 
     def render(self, screen_pos: Position | None) -> None:        
         draw_grid(self._screen, self._camera)
+        
         for edge, data in self._railway.graph.all_edges_with_data():
             speed = data.get('speed')
             length = data.get('length')
+            level = data.get('level', 0)
             if self._railway.stations.is_edge_platform(edge):
                 if edge in self._state.preview.invalid_platform_edges:
                     edge_action = EdgeAction.INVALID_PLATFORM

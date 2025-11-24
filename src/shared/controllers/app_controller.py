@@ -84,7 +84,8 @@ class AppController(UIController, FullScreenUIComponent):
     
 # #TODO create main menu
 # train visualization
+# disconnect signals
 # enter exit from map
-# delete schedule
 # ask for save on exit
-# megall megalloban majd visszafordul
+# create camera centering method
+# tunnel view

@@ -1,7 +1,7 @@
 from enum import Enum, auto
 
 class EdgeAction(Enum):
-    NORMAL = auto()
+    NO_SPEED = auto()
     SPEED = auto()
     PLATFORM = auto()
     PLATFORM_SELECTED = auto()
@@ -10,4 +10,3 @@ class EdgeAction(Enum):
     LOCKED = auto()
     LOCKED_PREVIEW = auto()
     LOCKED_PLATFORM = auto()
-    TUNNEL_SPEED = auto()

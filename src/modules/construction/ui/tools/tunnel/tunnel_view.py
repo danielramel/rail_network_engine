@@ -39,6 +39,6 @@ class TunnelView(ConstructionView):
 
         # path preview
         for line in zip(target.found_path[:-1], target.found_path[1:]):
-            draw_track(self._screen, Edge(*line), camera=self._camera, edge_action=EdgeAction.TUNNEL_SPEED, length=self._state.track_length, speed=self._state.track_speed)
+            draw_track(self._screen, Edge(*line), camera=self._camera, edge_action=EdgeAction.SPEED, length=self._state.track_length, speed=self._state.track_speed)
         draw_node(self._screen, target.node, self._camera, color)
         draw_node(self._screen, self._state.construction_anchor.node, self._camera, color=color)

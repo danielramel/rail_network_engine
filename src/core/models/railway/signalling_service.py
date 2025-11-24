@@ -19,6 +19,8 @@ class SignallingService:
             self._railway.graph.set_node_attr(edge.a, 'locked', True)
             
     def release_path(self, edges: list[Edge]) -> None:
+        if not edges:
+            return
         for edge in edges[:-1]:
             if self._railway.signals.has_with_pose(Pose.from_nodes(edge.a, edge.b).get_previous_in_direction()):
                 return

@@ -29,7 +29,7 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
         draw_grid(self._screen, self._camera)
 
         for edge, data in self._railway.graph.all_edges_with_data():
-            edge_action = EdgeAction.NORMAL
+            edge_action = EdgeAction.NO_SPEED
             is_locked = self._railway.signalling.is_edge_locked(edge)
             is_platform = self._railway.stations.is_edge_platform(edge)
             is_in_preview = edge in self._state.preview.path
