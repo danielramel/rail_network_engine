@@ -4,16 +4,20 @@ from core.models.geometry.position import Position
 from core.models.geometry.edge import Edge
 
 class Camera:
-    def __init__(self):
-        self.x = 0.0
-        self.y = 0.0
-        self.scale = 1.0
-        self.min_scale = 0.4
-        self.max_scale = 3.0
-        self.drag_start_x = 0
-        self.drag_start_y = 0
-        self.drag_start_cam_x = 0
-        self.drag_start_cam_y = 0
+    MIN_SCALE = 0.4
+    MAX_SCALE = 3.0
+    drag_start_x = 0
+    drag_start_y = 0
+    drag_start_cam_x = 0
+    drag_start_cam_y = 0
+    def __init__(self, middle_position: Position, screen_width: int, screen_height: int):
+        self.scale = self.MIN_SCALE
+        
+        self.reset_x = screen_width / (2 * self.scale) - middle_position.x * Config.GRID_SIZE
+        self.reset_y = screen_height / (2 * self.scale) - middle_position.y * Config.GRID_SIZE
+        self.x = self.reset_x
+        self.y = self.reset_y
+
         
     def factor(self, value: float) -> float:
         """Scale a value according to the current camera scale"""
@@ -64,7 +68,7 @@ class Camera:
         zoom_factor = 1.2 if zoom_direction > 0 else 1.0 / 1.2
         # compute new scale and round to nearest 5% increment (0.05)
         new_scale = round(self.scale * zoom_factor / 0.05) * 0.05
-        new_scale = max(self.min_scale, min(new_scale, self.max_scale))
+        new_scale = max(self.MIN_SCALE, min(new_scale, self.MAX_SCALE))
         
         if new_scale == self.scale:
             return  # No change needed
@@ -85,9 +89,9 @@ class Camera:
     
     def reset(self):
         """Reset camera to default position and scale"""
-        self.x = 0.0
-        self.y = 0.0
-        self.scale = 1.0
+        self.x = self.reset_x
+        self.y = self.reset_y
+        self.scale = self.MIN_SCALE
         
     def is_reset(self) -> bool:
-        return self.x == 0.0 and self.y == 0.0 and self.scale == 1.0
+        return self.x == self.reset_x and self.y == self.reset_y and self.scale == self.MIN_SCALE

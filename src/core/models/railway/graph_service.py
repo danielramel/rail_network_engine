@@ -205,3 +205,10 @@ class GraphService:
             stack.append(next_pose)
                 
         return False, frozenset(edges)
+    
+    def get_graph_middle(self) -> Position:
+        min_x = min(node.x for node in self._railway.graph.nodes)
+        max_x = max(node.x for node in self._railway.graph.nodes)
+        min_y = min(node.y for node in self._railway.graph.nodes)
+        max_y = max(node.y for node in self._railway.graph.nodes)
+        return Position((min_x + max_x) / 2, (min_y + max_y) / 2)

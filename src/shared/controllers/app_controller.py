@@ -1,5 +1,6 @@
 import pygame
 from core.config.color import Color
+from core.config.settings import Config
 from shared.controllers.mode_strategy import ModeStrategy
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.camera import Camera
@@ -25,7 +26,9 @@ class AppController(UIController, FullScreenUIComponent):
         self._app_state = AppState(filename)
         alert_component = AlertComponent(screen)
         input_component = InputComponent(screen)
-        self._graphics = GraphicsContext(screen, Camera(), alert_component, input_component)
+        middle_position = self._railway.graph_service.get_graph_middle()
+        w, h = screen.get_size()
+        self._graphics = GraphicsContext(screen, Camera(middle_position, w, h), alert_component, input_component)
         self._last_mouse_down_pos: Position | None = None
         
         
@@ -83,7 +86,6 @@ class AppController(UIController, FullScreenUIComponent):
     
     
 # #TODO create main menu
-# train visualization
 # enter exit from map
 # ask for save on exit
 # create camera centering method
