@@ -9,16 +9,14 @@ from shared.ui.models.ui_controller import UIController
 from shared.controllers.camera_controller import CameraController
 from core.models.railway.railway_system import RailwaySystem
 from modules.setup.models.setup_state import SetupState
-from core.models.time import Time
 
 class SetupMode(FullScreenUIComponent, UIController):
     elements: tuple[UIComponent]
-    def __init__(self, railway: RailwaySystem, graphics: GraphicsContext, time: Time):
+    def __init__(self, railway: RailwaySystem, graphics: GraphicsContext):
         railway.signals.add_signals_to_dead_ends()
         
-        self.state = SetupState(time)
+        self.state = SetupState(railway.time)
         self.elements = (
-            TimeDisplay(self.state.time, graphics, modifiable=True),
             SetupButtons(graphics.screen, self.state),
             SetupPanelStrategy(graphics.screen, self.state),
             CameraController(graphics.camera),

@@ -24,7 +24,7 @@ class ModeSelectorButtons(ShortcutUIComponent, ClickableUIComponent):
         self._alert_component = graphics.alert_component
         
         self._shortcuts = {
-            (key, False): lambda mode=mode: self._try_switch_mode(mode)
+            (key, False): lambda mode=mode: self._state.switch_mode(mode)
             for key, mode in MODE_SELECTION.items()
         }
         
@@ -34,17 +34,9 @@ class ModeSelectorButtons(ShortcutUIComponent, ClickableUIComponent):
             return False
         for mode, btn in self._buttons:
             if btn.collidepoint(*event.screen_pos):
-                self._try_switch_mode(mode)
+                self._state.switch_mode(mode)
                 return True
-        return False
-    
-    def _try_switch_mode(self, new_mode: ViewMode):
-        if new_mode == ViewMode.SIMULATION and self._state.time.current_time is None:
-            self._alert_component.show_alert("Please set time first!")
-            return
-        
-        self._state.switch_mode(new_mode)
-        
+        return False        
 
     def render(self, screen_pos: Position) -> None:
         for mode, btn_rect in self._buttons:

@@ -71,6 +71,6 @@ class AppController(UIController, FullScreenUIComponent):
         filename = sys.argv[1]
         with open(filename, 'r', encoding='utf-8') as f:
             data = json.loads(f.read())
-            self._railway.from_dict(data)
+            self._railway.replace_from_dict(data)
             
         return filename

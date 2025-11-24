@@ -13,7 +13,6 @@ class AppState:
         self._mode: ViewMode = ViewMode.SETUP
         self.filename: Optional[str] = filename
         self.callback: Optional[Callable[[ViewMode], None]] = None
-        self.time = Time()
     
     def subscribe(self, callback: Callable[[ViewMode], None]) -> None:
         self.callback = callback

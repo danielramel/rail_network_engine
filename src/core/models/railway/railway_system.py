@@ -1,5 +1,4 @@
-from core.models.geometry.pose import Pose
-from core.models.geometry.node import Node
+from core.models.time import Time
 from core.models.railway.graph_adapter import GraphAdapter
 from core.models.railway.graph_service import GraphService
 from core.models.railway.path_finder import PathFinder
@@ -11,6 +10,7 @@ from core.models.repositories.signal_repository import SignalRepository
 
 class RailwaySystem:
     def __init__(self):
+        self.time = Time()
         self._graph_adapter = GraphAdapter()
         self._graph_service = GraphService(self)
         self._signal_repository = SignalRepository(self._graph_adapter)
@@ -64,8 +64,8 @@ class RailwaySystem:
             'schedule_repository': self._schedule_repository.to_dict(),
         }
         
-    def from_dict(self, data: dict) -> None:
-        self._graph_adapter = self._graph_adapter.from_dict(data['graph'])
+    def replace_from_dict(self, data: dict) -> None:
+        self._graph_adapter = GraphAdapter.from_dict(data['graph'])
         self._station_repository = StationRepository.from_dict(self, data["station_repository"])
         self._signal_repository = SignalRepository.from_dict(self._graph_adapter, data["signal_repository"])
         self._schedule_repository = ScheduleRepository.from_dict(self, data['schedule_repository'])

@@ -26,7 +26,8 @@ class Train:
     _path_distance : float = 0.0
     _occupied_edge_count_cache : int | None = None
     _unsubscribe: Callable | None = None
-    _braking_curve: list[float] = None 
+    _braking_curve: list[float] = None
+    _departure_from_station: bool = False
      
     def __init__(self, edges: list[Edge], railway: 'RailwaySystem', config: TrainConfig) -> None:
         self._railway = railway
@@ -52,6 +53,8 @@ class Train:
         self.speed = min(speed_due_to_braking, speed_with_acc, speed_due_to_tracks)
             
         if self.speed == 0.0:
+            if len(self._braking_curve) > 1:
+                self._departure_from_station = True
             return
             
             
