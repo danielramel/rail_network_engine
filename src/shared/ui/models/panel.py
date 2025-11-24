@@ -29,6 +29,6 @@ class Panel(RectangleUIComponent, ClickableUIComponent):
                     
         return pygame.Rect(x, y, width, height)
     
-    def render(self, screen_pos: Position) -> None:
+    def render(self, screen_pos: Position, border_color: Color = Color.WHITE) -> None:
         pygame.draw.rect(self._screen, Color.BLACK, self._rect, border_radius=8)
-        pygame.draw.rect(self._screen, Color.WHITE, self._rect, 2, border_radius=8)
+        pygame.draw.rect(self._screen, border_color, self._rect, 2, border_radius=8)

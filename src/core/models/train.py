@@ -21,7 +21,7 @@ class Train:
     config: TrainConfig
     speed : float = 0.0
     schedule : Schedule = None
-    _is_live : bool = False
+    live : bool = False
     _path_distance : float = 0.0
     _occupied_edge_count_cache : int | None = None
     _unsubscribe: Callable | None = None
@@ -37,7 +37,7 @@ class Train:
         self._path_distance = self.get_distance_until_next_edge() - INITIAL_DISTANCE_TO_PLATFORM_END
         
     def tick(self):
-        if not self._is_live:
+        if not self.live:
             return
         
         distance_until_next_edge = self.get_distance_until_next_edge()
@@ -74,7 +74,7 @@ class Train:
             
     
     def start(self) -> None:
-        self._is_live = True
+        self.live = True
         self.set_initial_path()
         self.compute_speed_profile()
         
@@ -107,7 +107,7 @@ class Train:
         self.path = [rail.reversed() for rail in reversed(self.path)]
             
     def shutdown(self) -> None:
-        self._is_live = False
+        self.live = False
         self._railway.signalling.release_path([rail.edge for rail in self.path[self._occupied_edge_count:]])
         self.path = self.path[:self._occupied_edge_count]
         self._unsubscribe()
@@ -146,10 +146,6 @@ class Train:
         self.schedule = None
     
     @property
-    def is_live(self) -> bool:
-        return self._is_live
-    
-    @property
     def _occupied_edge_count(self) -> int:
         if self._occupied_edge_count_cache is not None:
             return self._occupied_edge_count_cache
@@ -182,8 +178,6 @@ class Train:
             'id': self.id,
             'path': [rail.edge.to_dict_simple() for rail in self.path],
             'config': self.config.to_dict(),
-            'speed': self.speed,
-            '_is_live': self._is_live,
             '_path_distance': self._path_distance
         }
         
@@ -193,7 +187,5 @@ class Train:
         config = TrainConfig.from_dict(data['config'])
         train = cls(edges, railway, config)
         train.id = data['id']
-        train.speed = data['speed']
-        train._is_live = data['_is_live']
         train._path_distance = data['_path_distance']
         return train

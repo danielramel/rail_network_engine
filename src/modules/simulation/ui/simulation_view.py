@@ -1,4 +1,5 @@
 from core.config.color import Color
+from core.config.settings import Config
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.utils.grid import draw_grid
@@ -7,13 +8,12 @@ from shared.ui.utils.nodes import draw_junction_node, draw_node
 from shared.ui.utils.signal import draw_signal
 from shared.ui.utils.station import draw_station
 from shared.ui.utils.lines import draw_dotted_line
-from shared.ui.utils.train import draw_train, TRAINDRAWACTION
+from shared.ui.utils.train import draw_train
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
 from shared.ui.enums.edge_action import EdgeAction
 from core.models.geometry.position import Position
-from shared.ui.utils.train import TRAINDRAWACTION
 
 
 class SimulationView(ClickableUIComponent, FullScreenUIComponent):
@@ -64,18 +64,14 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             draw_station(self._screen, station, self._camera)
 
         for train in self._railway.trains.all():
-            if self._state.preview.train_id == train.id and train.id not in self._state.selected_trains:
-                action = TRAINDRAWACTION.PREVIEWED
-            elif train.id in self._state.selected_trains:
-                action = TRAINDRAWACTION.SELECTED
-            elif train.schedule is not None:
-                action = TRAINDRAWACTION.SCHEDULED
-            elif train.is_live:
-                action = TRAINDRAWACTION.LIVE
+            if train.schedule is not None:
+                color = Color[train.schedule.color]
+            elif train.live:
+                color = Config.TRAIN_LIVE_COLOR
             else:
-                action = TRAINDRAWACTION.SHUTDOWN
+                color = Config.TRAIN_SHUTDOWN_COLOR
             
-            draw_train(self._screen, train, self._camera, action)
+            draw_train(self._screen, train, self._camera, color, lighten_flag=self._state.preview.train_id == train.id)
 
         
         if self._state.preview.signal is None and world_pos is not None:
@@ -101,5 +97,5 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             
         closest_edge = self._railway.graph_service.get_closest_edge(world_pos, only_surface=False)
         train_id = closest_edge is not None and self._railway.trains.get_train_on_edge(closest_edge)
-        if train_id:
+        if train_id is not None:
             self._state.preview.train_id = train_id

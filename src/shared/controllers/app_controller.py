@@ -84,7 +84,6 @@ class AppController(UIController, FullScreenUIComponent):
     
 # #TODO create main menu
 # train visualization
-# disconnect signals
 # enter exit from map
 # ask for save on exit
 # create camera centering method

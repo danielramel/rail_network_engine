@@ -1,3 +1,4 @@
+from core.config.settings import Config
 from core.models.route import Route
 import pygame
 from core.models.train import Train
@@ -23,34 +24,33 @@ class TrainPanel(Panel):
         self._init_buttons()
 
     def render(self, screen_pos):
-        super().render(screen_pos)
+        color = self._train.schedule.color if self._train.schedule else Config.TRAIN_LIVE_COLOR if self._train.live else Config.TRAIN_SHUTDOWN_COLOR
+        super().render(screen_pos, border_color=color)
         
         x_screen = self.instruction_font.render("X", True, Color.WHITE)
         self._screen.blit(x_screen, self._center_in_rect(x_screen, self.close_button))
         self._render_next_stop()
         self._render_speed()
         
-        if self._train.is_live:
+        if self._train.live:
             color = Color.GREY if self._train.speed == 0.0 else Color.DARKGREY
             self._render_button(self.stop_button, "Shut Down", color)
         else:
             label = "Change Schedule" if self._train.schedule else "Add Schedule"
             self._render_button(self.set_schedule_button, label, Color.GREY)
             self._render_button(self.startup_button, "Startup", Color.GREY)
-            self._render_button(self.reverse_button, "Reverse (R)", Color.GREY)
+            self._render_button(self.reverse_button, "Reverse", Color.GREY)
             if self._train.schedule:
                 self._render_button(self.remove_schedule_button, "Remove Schedule", Color.GREY)
             
     def _on_click(self, event: Event):
         if self.close_button.collidepoint(*event.screen_pos):
             self._on_close_callback(self._train.id)
-            return
-            self._open_schedule_selector()
             
-        elif self.reverse_button.collidepoint(*event.screen_pos) and not self._train.is_live:
+        elif self.reverse_button.collidepoint(*event.screen_pos) and not self._train.live:
             self._train.reverse()
                 
-        if self._train.is_live:
+        if self._train.live:
             if self.stop_button.collidepoint(*event.screen_pos) and self._train.speed == 0.0:
                 self._train.shutdown()
         else:

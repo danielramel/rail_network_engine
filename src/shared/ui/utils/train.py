@@ -4,33 +4,22 @@ from core.config.settings import Config
 from core.graphics.camera import Camera
 from core.config.color import Color
 from core.models.train import Train
-from enum import Enum, auto
 from core.models.geometry.node import Node
 
-class TRAINDRAWACTION(Enum):
-    SHUTDOWN = auto()
-    LIVE = auto()
-    SCHEDULED = auto()
-    SELECTED = auto()
-    PREVIEWED = auto()
-    REMOVE_PREVIEW = auto()
 
-def draw_train(screen: pygame.Surface, train: Train, camera: Camera, action: TRAINDRAWACTION) -> None:
+def draw_train(screen: pygame.Surface, train: Train, camera: Camera, color: Color, lighten_flag: bool = False) -> None:
+    def lighten(rgb: tuple[int, int, int]) -> tuple[int, int, int]:
+        factor = 0.8
+        r, g, b = rgb
+        return (
+            int(r + (255 - r) * factor),
+            int(g + (255 - g) * factor),
+            int(b + (255 - b) * factor)
+        )       
     rails = train.get_occupied_rails()
-    if action == TRAINDRAWACTION.SHUTDOWN:
-        color = Color.DARKGREY
-    elif action == TRAINDRAWACTION.LIVE:
-        color = Color.WHITE
-    elif action == TRAINDRAWACTION.SCHEDULED:
-        color = train.schedule.color
-    elif action == TRAINDRAWACTION.SELECTED:
-        color = Color.ORANGE
-    elif action == TRAINDRAWACTION.PREVIEWED:
-        color = Color.YELLOW
-    elif action == TRAINDRAWACTION.REMOVE_PREVIEW:
-        color = Color.RED
         
-    
+    if lighten_flag:
+        color = lighten(color)
     
     distance = train._path_distance
     rail_i = 0
@@ -45,14 +34,14 @@ def draw_train(screen: pygame.Surface, train: Train, camera: Camera, action: TRA
         
         if remainder is not None:
             end = remainder / rail.length
-            draw_train_car(screen, rail.edge.a, rail.edge.b, camera, color, 0.0, end)
+            draw_train_car(screen, rail.edge.a, rail.edge.b, camera, color, 0.0, end, car_i == train.config.car_count - 1)
             remainder = None
             car_i += 1
             continue
         
         start = distance / rail.length
         end = (distance + Config.TRAIN_CAR_LENGTH) / rail.length
-        draw_train_car(screen, rail.edge.a, rail.edge.b, camera, color, start, end)
+        draw_train_car(screen, rail.edge.a, rail.edge.b, camera, color, start, end, car_i == train.config.car_count - 1)
         
         
         distance += Config.TRAIN_CAR_LENGTH + Config.TRAIN_CAR_GAP
@@ -70,6 +59,7 @@ def draw_train_car(
     color: tuple[int, int, int],
     start: float,
     end: float,
+    is_last: bool
 ) -> None:
     if end - start <= 0.01:
         return
@@ -90,6 +80,9 @@ def draw_train_car(
     dash_end_x = a_x + dx * end
     dash_end_y = a_y + dy * end
 
-    width = max(4, int(15 * int(camera.scale)))
+    width = max(4, int(13 * int(camera.scale)))
+    if is_last:
+        pygame.draw.line(screen, Color.BLUE, (dash_start_x, dash_start_y), (dash_end_x, dash_end_y), width)
+        return
 
     pygame.draw.line(screen, color, (dash_start_x, dash_start_y), (dash_end_x, dash_end_y), width)

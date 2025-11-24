@@ -1,10 +1,11 @@
 from core.config.color import Color
+from core.config.settings import Config
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.utils.nodes import draw_junction_node
 from shared.ui.utils.tracks import draw_track
 from shared.ui.utils.signal import draw_signal
 from shared.ui.utils.station import draw_station
-from shared.ui.utils.train import TRAINDRAWACTION, draw_train
+from shared.ui.utils.train import draw_train
 from shared.ui.utils.grid import draw_grid
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
@@ -27,7 +28,6 @@ class SetupCommonView(ClickableUIComponent, FullScreenUIComponent):
         for edge, data in self._railway.graph.all_edges_with_data():
             speed = data.get('speed')
             length = data.get('length')
-            level = data.get('level', 0)
             if self._railway.stations.is_edge_platform(edge):
                 if edge in self._state.preview.invalid_platform_edges:
                     edge_action = EdgeAction.INVALID_PLATFORM
@@ -49,9 +49,9 @@ class SetupCommonView(ClickableUIComponent, FullScreenUIComponent):
 
         for train in self._railway.trains.all():
             if self._state.preview.train_id_to_remove == train.id:
-                draw_train(self._screen, train, self._camera, TRAINDRAWACTION.REMOVE_PREVIEW)
+                draw_train(self._screen, train, self._camera, Color.RED)
                 continue
-            draw_train(self._screen, train, self._camera, TRAINDRAWACTION.SHUTDOWN)
+            draw_train(self._screen, train, self._camera, Config.TRAIN_SHUTDOWN_COLOR)
 
         if self._state.preview.train_to_preview is not None:
-            draw_train(self._screen, self._state.preview.train_to_preview, self._camera, TRAINDRAWACTION.SHUTDOWN)
+            draw_train(self._screen, self._state.preview.train_to_preview, self._camera, Config.TRAIN_LIVE_COLOR)
