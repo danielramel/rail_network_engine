@@ -6,14 +6,13 @@ from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.models.rectangle import RectangleUIComponent
 from core.models.time import Time
 
-class TimeDisplay(RectangleUIComponent, ClickableUIComponent):
-    def __init__(self, time: Time, graphics: GraphicsContext, modifiable: bool = False) -> None:
+class TimeDisplay(RectangleUIComponent):
+    def __init__(self, time: Time, graphics: GraphicsContext) -> None:
         self._rect = self._get_rect(graphics.screen)
         self._screen = graphics.screen
         self._input_component = graphics.input_component
         self._alert_component = graphics.alert_component
         self._time = time
-        self._modifiable = modifiable
 
     def render(self, screen_pos: Position) -> None:
         font = pygame.font.SysFont("Courier New", 24)
@@ -44,23 +43,3 @@ class TimeDisplay(RectangleUIComponent, ClickableUIComponent):
         x = (screen.get_width() - width) // 2
         y = 10
         return pygame.Rect(x, y, width, height)
-    
-    def _on_click(self, event) -> None:
-        if not self._modifiable:
-            return
-        
-        self._input_component.request_input("Enter time (HH:MM:SS): ", self._set_time)
-        
-    def _set_time(self, new_time: str):
-        if new_time is None:
-            return
-        
-        if new_time.count(":") != 2:
-            self._alert_component.show_alert("Invalid time format. Use HH:MM:SS.")
-            return
-        
-        try:
-            self._time.set_time_from_string(new_time)
-        except ValueError:
-            self._alert_component.show_alert("Invalid time format. Use HH:MM:SS.")
-            return
