@@ -82,9 +82,10 @@ class Train:
         path, signal = self._railway.signalling.get_initial_path(self.get_locomotive_pose())
         self.extend_path(path, signal)
         
-    def signal_cleared(self, path: list[Edge], signal: Signal) -> bool:
-        self.extend_path(path, signal)
+    def signal_cleared(self, signal: Signal, path: list[Edge], next_signal: Signal) -> bool:
+        self.extend_path(path, next_signal)
         self.compute_speed_profile()
+        signal.subscribe(self.signal_dropped)
         
     def extend_path(self, extension: list[Edge], signal: Signal) -> None:
         self.path += [self._railway.graph.get_rail(edge) for edge in extension]

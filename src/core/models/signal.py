@@ -16,8 +16,9 @@ class Signal:
         self.next_signal = signal
         self.path = path
         if self._subscriber is not None:
-            self._subscriber(path, signal)
-        self._subscriber = None
+            func = self._subscriber
+            self._subscriber = None
+            func(self, path, signal)
         
     def subscribe(self, func: Callable) -> None:
         self._subscriber = func
