@@ -11,7 +11,7 @@ class SignalRepository:
     def has(self, node: Node) -> bool:
         return self._graph.has_node(node) and self._graph.has_node_attr(node, 'signal')
     
-    def has_signal_with_pose_at(self, pose: Pose) -> bool:
+    def has_with_pose(self, pose: Pose) -> bool:
         if not self.has(pose.node):
             return False
         signal = self.get(pose.node)
@@ -34,7 +34,7 @@ class SignalRepository:
     def add_signals_to_dead_ends(self) -> None:
         poses = self._graph.get_dead_end_poses()
         for pose in poses:
-            if not self.has_signal_with_pose_at(pose):
+            if not self.has_with_pose(pose):
                 self.set(pose) # overwrites existing signal if any
         
     

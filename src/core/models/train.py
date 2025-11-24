@@ -137,6 +137,7 @@ class Train:
             
     def shutdown(self) -> None:
         self._is_live = False
+        self._railway.signalling.release_path([rail.edge for rail in self.path[self._occupied_edge_count:]])
         self.path = self.path[:self._occupied_edge_count]
         self._unsubscribe()
         self._routed_to_station_ahead = False

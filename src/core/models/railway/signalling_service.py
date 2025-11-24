@@ -18,12 +18,18 @@ class SignallingService:
             self._railway.graph.set_edge_attr(edge, 'locked', True)
             self._railway.graph.set_node_attr(edge.a, 'locked', True)
             
-    def unlock_path(self, edges: list[Edge]) -> None:
-        for edge in edges:
-            if self._railway.signals.has_signal_with_pose_at(Pose(edge.a, edge.a.direction_to(edge.b))):
+    def release_path(self, edges: list[Edge]) -> None:
+        for edge in edges[:-1]:
+            if self._railway.signals.has_with_pose(Pose.from_nodes(edge.a, edge.b).get_previous_in_direction()):
                 return
             self._railway.graph.set_edge_attr(edge, 'locked', False)
-            self._railway.graph.set_node_attr(edge.a, 'locked', False)
+            self._railway.graph.set_node_attr(edge.b, 'locked', False)
+            
+        edge = edges[-1]
+        if self._railway.signals.has_with_pose(Pose.from_nodes(edge.a, edge.b).get_previous_in_direction()):
+            return
+        self._railway.graph.set_edge_attr(edge, 'locked', False)
+        
     
     def cleared(self, edge: Edge):
         self._railway.graph.set_edge_attr(edge, 'locked', False)
@@ -102,7 +108,7 @@ class SignallingService:
         current_signal = from_signal
         current_signal_index = 0
         for i, pose in enumerate(poses[1:], start=1):
-            if self._railway.signals.has_signal_with_pose_at(pose):
+            if self._railway.signals.has_with_pose(pose):
                 signal = self._railway.signals.get(pose.node)
                 current_signal.connect(edges[current_signal_index:i], signal)
                 current_signal = signal
@@ -116,7 +122,7 @@ class SignallingService:
         path = []
         while True:
             visited.add(pose.node)
-            if self._railway.signals.has_signal_with_pose_at(pose):
+            if self._railway.signals.has_with_pose(pose):
                 return path, self._railway.signals.get(pose.node)
                 
             neighbors = self._railway.graph_service.get_turn_neighbors(pose)
