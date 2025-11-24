@@ -84,6 +84,8 @@ class TrainPanel(Panel):
                 self._schedule_selector.showNormal()
             self._schedule_selector.raise_()
             self._schedule_selector.activateWindow()
+            
+        self._schedule_selector.window_closed.connect(lambda: setattr(self, '_schedule_selector', None))
 
     def _on_schedule_chosen(self, schedule: Schedule, start_time: int):
         self._schedule_selector = None

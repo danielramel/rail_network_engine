@@ -16,6 +16,7 @@ from core.config.color import Color
 
 class ScheduleSelector(QWidget):
     schedule_chosen = pyqtSignal(Schedule, int)
+    window_closed = pyqtSignal()
 
     def __init__(self, schedules: list[Schedule], parent=None):
         super().__init__(parent)
@@ -122,5 +123,7 @@ class ScheduleSelector(QWidget):
         self.schedule_chosen.emit(schedule, start_time)
         super().close()
         
-        
+    def closeEvent(self, event) -> None:
+        self.window_closed.emit()
+        super().closeEvent(event)
     
