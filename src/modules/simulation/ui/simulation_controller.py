@@ -23,8 +23,10 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
         if click.is_right_click:
             if self._state.selected_signal:
                 self._state.selected_signal = None
-            elif self._railway.signals.has(snapped):
-                self._railway.signalling.disconnect_signal_at(snapped)
+                return
+            signal = self._railway.signals.get(snapped)
+            if signal is not None:
+                self._railway.signalling.drop_signal(signal)
             return
                 
         if self._railway.signals.has(snapped):

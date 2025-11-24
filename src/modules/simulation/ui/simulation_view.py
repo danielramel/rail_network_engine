@@ -47,8 +47,7 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             draw_track(self._screen, edge, self._camera, edge_action, data["length"])
 
         for node in self._railway.graph_service.junctions:
-            color = Color.GREEN if self._railway.signalling.is_node_locked(node) else Color.WHITE
-            draw_junction_node(self._screen, node, self._camera, color)
+            draw_junction_node(self._screen, node, self._camera, Color.WHITE)
 
         for signal in self._railway.signals.all():
             color = Color.RED

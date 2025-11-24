@@ -88,4 +88,3 @@ class AppController(UIController, FullScreenUIComponent):
 # enter exit from map
 # ask for save on exit
 # create camera centering method
-# tunnel view

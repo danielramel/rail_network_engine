@@ -16,39 +16,29 @@ class SignallingService:
     def lock_path(self, edges: list[Edge]) -> None:
         for edge in edges:
             self._railway.graph.set_edge_attr(edge, 'locked', True)
-            self._railway.graph.set_node_attr(edge.a, 'locked', True)
             
     def release_path(self, edges: list[Edge]) -> None:
         if not edges:
             return
-        for edge in edges[:-1]:
+        for edge in edges:
             if self._railway.signals.has_with_pose(Pose.from_nodes(edge.a, edge.b).get_previous_in_direction()):
                 return
             self._railway.graph.set_edge_attr(edge, 'locked', False)
-            self._railway.graph.set_node_attr(edge.b, 'locked', False)
-            
-        edge = edges[-1]
-        if self._railway.signals.has_with_pose(Pose.from_nodes(edge.a, edge.b).get_previous_in_direction()):
-            return
-        self._railway.graph.set_edge_attr(edge, 'locked', False)
-        
     
-    def cleared(self, edge: Edge):
+    def passed(self, edge: Edge):
         self._railway.graph.set_edge_attr(edge, 'locked', False)
-        self._railway.graph.set_node_attr(edge.a, 'locked', False)
         
-    def passed(self, node: Node):
+    def reached(self, node: Node):
         signal = self._railway.signals.get(node)
         if signal is not None:
-            signal.passed()
+            signal.reached()
             
-
         
     def is_edge_locked(self, edge: Edge) -> bool:
         return self._railway.graph.get_edge_attr(edge, 'locked') is True
     
     def is_node_locked(self, node: Node) -> bool:
-        return self._railway.graph.get_node_attr(node, 'locked') is True
+        return any(self.is_edge_locked(Edge(node, neighbor)) for neighbor in self._railway.graph.neighbors(node))
 
     def find_path(self, start: Pose, end: Pose) -> list[Pose] | None:
         if start.node == end.node:
@@ -90,9 +80,10 @@ class SignallingService:
 
         return None
 
-    def disconnect_signal_at(self, a) -> None:
-        return
-        # TODO implement disconnecting signals
+    def drop_signal(self, signal: Signal) -> None:
+        for edge in signal.path:
+            self._railway.graph.set_edge_attr(edge, 'locked', False)
+        signal.drop()
     
     def get_path_preview(self, start: Signal, end: Signal) -> list[Edge] | None:
         poses = self.find_path(start.pose, end.pose)
@@ -118,7 +109,7 @@ class SignallingService:
                 
         self.lock_path(edges)
 
-    def get_initial_path(self, start_pose: Pose) -> tuple[list[Edge], Optional[Signal]]:
+    def get_initial_path(self, start_pose: Pose) -> tuple[list[Edge], Signal]:
         visited = set[Node]()
         pose = start_pose
         path = []
@@ -133,6 +124,9 @@ class SignallingService:
             
             # if multiple connections, pick the first one
             connection = neighbors[0]
+            if connection.node in visited:
+                raise ValueError("Loop encountered in railway graph. There should be a signal here.") #TODO handle this
+            
 
             path.append(Edge(pose.node, connection.node))
             pose = connection

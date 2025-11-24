@@ -20,18 +20,25 @@ class Signal:
         self._subscriber = None
         
     def subscribe(self, func: Callable) -> None:
-        if self.next_signal is not None:
-            func(self.path, self.next_signal)
-            return self.unsubscribe
         self._subscriber = func
         return self.unsubscribe
     
     def unsubscribe(self) -> None:
         self._subscriber = None
         
-    def passed(self) -> None:
+    def reached(self) -> None:
+        self._subscriber = None
         self.next_signal = None
         self.path = []
+        
+    def drop(self) -> None:
+        self.next_signal = None
+        self.path = []
+
+        if self._subscriber is not None:
+            func = self._subscriber
+            self._subscriber = None
+            func()
         
     @property
     def direction(self) -> Direction:
