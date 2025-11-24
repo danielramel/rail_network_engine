@@ -1,5 +1,6 @@
 import pygame
 
+from core.config.settings import Config
 from core.graphics.camera import Camera
 from core.config.color import Color
 from core.models.train import Train
@@ -50,11 +51,11 @@ def draw_train(screen: pygame.Surface, train: Train, camera: Camera, action: TRA
             continue
         
         start = distance / rail.length
-        end = (distance + train.config.car_length) / rail.length
+        end = (distance + Config.TRAIN_CAR_LENGTH) / rail.length
         draw_train_car(screen, rail.edge.a, rail.edge.b, camera, color, start, end)
         
         
-        distance += train.config.car_length + train.config.car_gap
+        distance += Config.TRAIN_CAR_LENGTH + Config.TRAIN_CAR_GAP
         if end > 1.0:
             remainder = (end - 1.0) * rail.length
             continue
@@ -89,6 +90,6 @@ def draw_train_car(
     dash_end_x = a_x + dx * end
     dash_end_y = a_y + dy * end
 
-    width = max(3, int(10 * int(camera.scale)))
+    width = max(4, int(10 * int(camera.scale)))
 
     pygame.draw.aaline(screen, color, (dash_start_x, dash_start_y), (dash_end_x, dash_end_y), width)

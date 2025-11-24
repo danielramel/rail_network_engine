@@ -9,13 +9,11 @@ from shared.ui.models.panel import Panel
 from typing import Callable
 
 class TrainPanel(Panel):
-    def __init__(self, train: Train, screen: pygame.Surface, index: int, 
-                 schedule_repository: ScheduleRepository, on_close_callback: Callable):
+    def __init__(self, train: Train, screen: pygame.Surface, index: int, schedule_repository: ScheduleRepository, on_close_callback: Callable):
         self._train = train
         self._schedule_selector = None
         self._schedule_repository = schedule_repository
         self._on_close_callback = on_close_callback
-        
         
         super().__init__(screen, x=-420, y=20 + index * 270)
         self._init_buttons()
@@ -29,14 +27,12 @@ class TrainPanel(Panel):
         
         x_screen = self.instruction_font.render("X", True, Color.WHITE)
         self._screen.blit(x_screen, self._center_in_rect(x_screen, self.close_button))
+        label = "Change Schedule" if self._train.timetable else "Add Schedule"
+        self._render_button(self.schedule_button, label, Color.GREY)
+        self._render_next_stop()
+        self._render_speed()
         
         if self._train.is_live:
-            self._render_speed()
-            self._render_next_stop()
-            
-            label = "Change Schedule" if self._train.timetable else "Add Schedule"
-            self._render_button(self.schedule_button, label, Color.GREY)
-            
             color = Color.GREY if self._train.speed == 0.0 else Color.DARKGREY
             self._render_button(self.stop_button, "Shut Down", color)
         else:
@@ -47,17 +43,18 @@ class TrainPanel(Panel):
         if self.close_button.collidepoint(*event.screen_pos):
             self._on_close_callback(self._train.id)
             return
+        if self.schedule_button.collidepoint(*event.screen_pos):
+            self._open_schedule_selector()
             
+        elif self.reverse_button.collidepoint(*event.screen_pos) and not self._train.is_live:
+            self._train.reverse()
+                
         if self._train.is_live:
-            if self.schedule_button.collidepoint(*event.screen_pos):
-                self._open_schedule_selector()
-            elif self.stop_button.collidepoint(*event.screen_pos) and self._train.speed == 0.0:
+            if self.stop_button.collidepoint(*event.screen_pos) and self._train.speed == 0.0:
                 self._train.shutdown()
         else:
             if self.startup_button.collidepoint(*event.screen_pos):
                 self._train.start()
-            elif self.reverse_button.collidepoint(*event.screen_pos):
-                self._train.reverse()
 
     def _render_speed(self):
         text = f"Speed: {int(self._train.speed)} km/h"
@@ -68,9 +65,8 @@ class TrainPanel(Panel):
         if not self._train.timetable:
             return
             
-        next_stop = self._train.timetable.get_next_stop(0)
-        text = "No more stops." if next_stop is None else f"Next: {next_stop['station'].id}; {next_stop['arrival_time']} min"
-        screen = self.instruction_font.render(text, True, Color.WHITE)
+        next_stop_str = self._train.timetable.get_next_stop_str()
+        screen = self.instruction_font.render(next_stop_str, True, Color.WHITE)
         self._screen.blit(screen, (self._rect.x + self.padding, self._rect.y + self.padding + 30))
 
     def _render_button(self, rect, text, color):
@@ -95,7 +91,7 @@ class TrainPanel(Panel):
 
     def _init_buttons(self):
         self.close_button = pygame.Rect(self._rect.right - 30, self._rect.top + 10, 20, 20)
-        self.schedule_button = pygame.Rect(self._rect.centerx - 60, self._rect.bottom - 85, 120, 30)
+        self.schedule_button = pygame.Rect(self._rect.centerx - 60, self._rect.bottom - 85, 140, 30)
         self.startup_button = pygame.Rect(self._rect.centerx + 60, self._rect.bottom - 45, 120, 30)
         self.stop_button = self.startup_button
         self.reverse_button = pygame.Rect(self._rect.centerx - 180, self._rect.bottom - 45, 120, 30)

@@ -10,13 +10,14 @@ class TimeTable:
     color: Color
     schedule_code: str
     stops: list[dict[str, int]]
+    _station_index: int = 0
     
     
     def __init__(self, schedule: 'Schedule', start_time: int) -> 'TimeTable':
         self.schedule_code = schedule.code
         self.color = schedule.color
         current_time = start_time
-        self.stops = [{
+        self.stops: list[dict[str, int | None]] = [{
                     'station': schedule.stops[0]['station'],
                     'arrival_time': None,
                     'departure_time': start_time
@@ -43,5 +44,15 @@ class TimeTable:
         self.schedule_code = schedule.code
         
         
-    def get_next_stop(self, index: int) -> dict[str, int] | None:
-        return self.stops[index] if index < len(self.stops) else None
+    def get_next_stop(self) -> dict[str, int] | None:
+        return self.stops[self._station_index]
+    
+    
+    def get_next_stop_str(self) -> str:
+        def format_time(minutes: int) -> str:
+            return f"{minutes // 60:02d}:{minutes % 60:02d}"
+        
+        if self._station_index == 0:
+            return f"Departure from: {self.stops[0]['station'].name} at {format_time(self.stops[0]['departure_time'])}"
+        
+        return

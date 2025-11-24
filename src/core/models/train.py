@@ -6,7 +6,7 @@ from core.models.signal import Signal
 from core.models.timetable import TimeTable
 from core.models.train_config import TrainConfig
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 if TYPE_CHECKING:
     from core.models.railway.railway_system import RailwaySystem
     
@@ -24,6 +24,7 @@ class Train:
     _is_live : bool = False
     _path_distance : float = 0.0
     _occupied_edge_count_cache : int | None = None
+    _unsubscribe: Callable | None = None
      
     def __init__(self, edges: list[Edge], railway: 'RailwaySystem', config: TrainConfig) -> None:
         self._railway = railway
@@ -87,12 +88,16 @@ class Train:
         self._is_live = True
         path, signal = self._railway.signalling.get_initial_path(self.get_locomotive_pose())
         self.extend_path(path)
-        signal.subscribe(self.signal_turned_green_ahead)
+        while signal.next_signal is not None:
+            self.extend_path(signal.path)
+            signal = signal.next_signal
+        
+        self._unsubscribe = signal.subscribe(self.signal_turned_green_ahead)
         
     def reverse(self) -> None:
-        self._target_distance = self._path_distance
         self._path_distance = self.get_distance_to_path_end()
-        self.path = [rail.reversed() for rail in reversed(self.path)]
+        self.path = [rail.reversed() for rail in reversed(self.path)]        
+            
         
         
     def shutdown(self) -> None:
@@ -109,8 +114,12 @@ class Train:
             return (speed**2 + (2 * distance * self.config.deceleration)) ** 0.5
         
         distance = self.get_distance_to_path_end()
-        min_speed = min(self.config.max_speed, self.path[self._occupied_edge_count - 1].speed)
+        min_speed = min(self.config.max_speed, min(rail.speed for rail in self.path[:self._occupied_edge_count]))
         for rail in self.path[self._occupied_edge_count:]:
+            platform = self._railway.stations.get_platform_from_edge(rail.edge)
+            if platform is not None:
+                min_speed = min(min_speed, get_max_speed(distance + len(platform)*Config.SHORT_SEGMENT_LENGTH, 0.0))
+                return min_speed
             min_speed = min(min_speed, get_max_speed(distance, rail.speed))
             distance += rail.length
             
@@ -132,4 +141,7 @@ class Train:
                     
     def signal_turned_green_ahead(self, path: list[Edge], signal: Signal) -> bool:
         self.extend_path(path)
-        signal.subscribe(self.signal_turned_green_ahead)
+        while signal.next_signal is not None:
+            self.extend_path(signal.path)
+            signal = signal.next_signal
+        self._unsubscribe = signal.subscribe(self.signal_turned_green_ahead)
