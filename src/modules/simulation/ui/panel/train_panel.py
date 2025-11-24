@@ -15,7 +15,7 @@ class TrainPanel(Panel):
         self._schedule_repository = route_repository
         self._on_close_callback = on_close_callback
         
-        super().__init__(screen, x=-420, y=20 + index * 270)
+        super().__init__(screen, height=200, x=-420, y=20 + index * 270)
         self._init_buttons()
         
     def change_index(self, index: int):
@@ -35,9 +35,11 @@ class TrainPanel(Panel):
             self._render_button(self.stop_button, "Shut Down", color)
         else:
             label = "Change Schedule" if self._train.schedule else "Add Schedule"
-            self._render_button(self.schedule_button, label, Color.GREY)
+            self._render_button(self.set_schedule_button, label, Color.GREY)
             self._render_button(self.startup_button, "Startup", Color.GREY)
             self._render_button(self.reverse_button, "Reverse (R)", Color.GREY)
+            if self._train.schedule:
+                self._render_button(self.remove_schedule_button, "Remove Schedule", Color.GREY)
             
     def _on_click(self, event: Event):
         if self.close_button.collidepoint(*event.screen_pos):
@@ -52,8 +54,10 @@ class TrainPanel(Panel):
             if self.stop_button.collidepoint(*event.screen_pos) and self._train.speed == 0.0:
                 self._train.shutdown()
         else:
-            if self.schedule_button.collidepoint(*event.screen_pos):
+            if self.set_schedule_button.collidepoint(*event.screen_pos):
                 self._open_schedule_selector()
+            elif self.remove_schedule_button.collidepoint(*event.screen_pos) and self._train.schedule:
+                self._train.remove_schedule()
             elif self.startup_button.collidepoint(*event.screen_pos):
                 self._train.start()
 
@@ -94,7 +98,8 @@ class TrainPanel(Panel):
 
     def _init_buttons(self):
         self.close_button = pygame.Rect(self._rect.right - 30, self._rect.top + 10, 20, 20)
-        self.schedule_button = pygame.Rect(self._rect.centerx - 60, self._rect.bottom - 85, 140, 30)
+        self.set_schedule_button = pygame.Rect(self._rect.centerx - 60, self._rect.bottom - 125, 140, 30)
+        self.remove_schedule_button = pygame.Rect(self._rect.centerx - 60, self._rect.bottom - 85, 140, 30)
         self.startup_button = pygame.Rect(self._rect.centerx + 60, self._rect.bottom - 45, 120, 30)
         self.stop_button = self.startup_button
         self.reverse_button = pygame.Rect(self._rect.centerx - 180, self._rect.bottom - 45, 120, 30)

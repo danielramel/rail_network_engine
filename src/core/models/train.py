@@ -43,7 +43,8 @@ class Train:
     def set_schedule(self, schedule: Schedule) -> None:
         self.schedule = schedule
         
-    
+    def remove_schedule(self) -> None:
+        self.schedule = None
         
     def tick(self):
         if not self._is_live:

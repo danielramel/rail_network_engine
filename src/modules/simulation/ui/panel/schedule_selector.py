@@ -18,10 +18,10 @@ class ScheduleSelector(QWidget):
     schedule_chosen = pyqtSignal(Route, int)
     window_closed = pyqtSignal()
 
-    def __init__(self, schedules: list[Route], parent=None):
+    def __init__(self, routes: list[Route], parent=None):
         super().__init__(parent)
-        self._schedules = schedules
-        self._selected_schedule: Route | None = None
+        self._routes = routes
+        self._selected_route: Route | None = None
         self.setWindowTitle("Select Schedule")
         self.setGeometry(300, 200, 600, 400)
 
@@ -38,10 +38,10 @@ class ScheduleSelector(QWidget):
         # Horizontal layout for the two panels
         panels_layout = QHBoxLayout()
 
-        self.schedule_list = QListWidget()
-        self.schedule_list.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
-        self.schedule_list.itemSelectionChanged.connect(self._on_schedule_selected)
-        panels_layout.addWidget(self.schedule_list)
+        self.route_list = QListWidget()
+        self.route_list.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
+        self.route_list.itemSelectionChanged.connect(self._on_route_selected)
+        panels_layout.addWidget(self.route_list)
 
         self.start_times_list = QListWidget()
         self.start_times_list.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
@@ -68,8 +68,8 @@ class ScheduleSelector(QWidget):
         return f"{h:02d}:{m:02d}"
 
     def _populate_schedule_list(self):
-        self.schedule_list.clear()
-        for s in self._schedules:
+        self.route_list.clear()
+        for s in self._routes:
             if not s.stops:
                 label = f"{s.code} — (no stations)"
             else:
@@ -86,19 +86,19 @@ class ScheduleSelector(QWidget):
             # ensure text contrast
             item.setForeground(Qt.GlobalColor.black)
 
-            self.schedule_list.addItem(item)
+            self.route_list.addItem(item)
 
-    def _on_schedule_selected(self):
-        selected_items = self.schedule_list.selectedItems()
+    def _on_route_selected(self):
+        selected_items = self.route_list.selectedItems()
         if not selected_items:
-            self._selected_schedule = None
+            self._selected_route = None
             self.start_times_list.clear()
             self.select_btn.setEnabled(False)
             return
 
         item = selected_items[0]
         schedule = item.data(int(Qt.ItemDataRole.UserRole))
-        self._selected_schedule = schedule
+        self._selected_route = schedule
         self._populate_start_times(schedule)
 
     def _populate_start_times(self, schedule: Route):
@@ -111,16 +111,16 @@ class ScheduleSelector(QWidget):
         self.select_btn.setEnabled(bool(times))
 
     def _on_confirm(self):
-        sched_item = self.schedule_list.currentItem()
+        route_item = self.route_list.currentItem()
         time_item = self.start_times_list.currentItem()
 
-        if not sched_item or not time_item:
-            QMessageBox.warning(self, "Incomplete selection", "Select both schedule and start time.")
+        if not route_item or not time_item:
+            QMessageBox.warning(self, "Incomplete selection", "Select both route and start time.")
             return
 
-        schedule = sched_item.data(int(Qt.ItemDataRole.UserRole))
+        route = route_item.data(int(Qt.ItemDataRole.UserRole))
         start_time = time_item.data(int(Qt.ItemDataRole.UserRole))
-        self.schedule_chosen.emit(schedule, start_time)
+        self.schedule_chosen.emit(route, start_time)
         super().close()
         
     def closeEvent(self, event) -> None:
