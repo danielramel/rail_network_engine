@@ -33,7 +33,7 @@ class SimulationMode(UIController, FullScreenUIComponent):
         self.elements = (
             TimeControlButtons(self._state.time_control, self._graphics.screen),
             TimeDisplay(self._state.time, self._graphics),
-            TrainPanelManager(self._railway, self._state, self._graphics.screen, self._railway.schedules),
+            TrainPanelManager(self._railway, self._state, self._graphics.screen, self._railway.routes),
             CameraController(self._graphics.camera),
             SimulationController(self._railway, self._state, self._graphics),
         )

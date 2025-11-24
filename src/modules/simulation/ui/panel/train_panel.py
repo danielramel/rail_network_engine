@@ -1,18 +1,18 @@
-from core.models.schedule import Schedule
+from core.models.route import Route
 import pygame
 from core.models.train import Train
 from core.models.event import Event
 from modules.simulation.ui.panel.schedule_selector import ScheduleSelector
-from core.models.repositories.schedule_repository import ScheduleRepository
+from core.models.repositories.route_repository import RouteRepository
 from core.config.color import Color
 from shared.ui.models.panel import Panel
 from typing import Callable
 
 class TrainPanel(Panel):
-    def __init__(self, train: Train, screen: pygame.Surface, index: int, schedule_repository: ScheduleRepository, on_close_callback: Callable):
+    def __init__(self, train: Train, screen: pygame.Surface, index: int, route_repository: RouteRepository, on_close_callback: Callable):
         self._train = train
         self._schedule_selector = None
-        self._schedule_repository = schedule_repository
+        self._schedule_repository = route_repository
         self._on_close_callback = on_close_callback
         
         super().__init__(screen, x=-420, y=20 + index * 270)
@@ -34,7 +34,7 @@ class TrainPanel(Panel):
             color = Color.GREY if self._train.speed == 0.0 else Color.DARKGREY
             self._render_button(self.stop_button, "Shut Down", color)
         else:
-            label = "Change Schedule" if self._train.timetable else "Add Schedule"
+            label = "Change Schedule" if self._train.schedule else "Add Schedule"
             self._render_button(self.schedule_button, label, Color.GREY)
             self._render_button(self.startup_button, "Startup", Color.GREY)
             self._render_button(self.reverse_button, "Reverse (R)", Color.GREY)
@@ -63,10 +63,10 @@ class TrainPanel(Panel):
         self._screen.blit(screen, (self._rect.x + self.padding, self._rect.y + self.padding))
 
     def _render_next_stop(self):
-        if not self._train.timetable:
+        if not self._train.schedule:
             return
             
-        next_stop_str = self._train.timetable.get_next_stop_str()
+        next_stop_str = self._train.schedule.get_next_stop_str()
         screen = self.instruction_font.render(next_stop_str, True, Color.WHITE)
         self._screen.blit(screen, (self._rect.x + self.padding, self._rect.y + self.padding + 30))
 
@@ -88,9 +88,9 @@ class TrainPanel(Panel):
             
         self._schedule_selector.window_closed.connect(lambda: setattr(self, '_schedule_selector', None))
 
-    def _on_schedule_chosen(self, schedule: Schedule, start_time: int):
+    def _on_schedule_chosen(self, schedule: Route, start_time: int):
         self._schedule_selector = None
-        self._train.set_timetable(schedule.create_timetable(start_time))
+        self._train.set_schedule(schedule.create_schedule(start_time))
 
     def _init_buttons(self):
         self.close_button = pygame.Rect(self._rect.right - 30, self._rect.top + 10, 20, 20)

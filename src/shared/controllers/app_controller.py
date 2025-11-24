@@ -13,7 +13,7 @@ from shared.ui.components.zoom_button import ZoomButton
 from core.models.geometry.position import Position
 from core.graphics.graphics_context import GraphicsContext
 from shared.ui.models.ui_controller import UIController
-from shared.ui.components.time_table_button import TimeTableButton
+from shared.ui.components.route_button import RouteButton
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.components.alert_component import AlertComponent
 from shared.ui.components.input_component import InputComponent
@@ -32,7 +32,7 @@ class AppController(UIController, FullScreenUIComponent):
         self.elements: list[ClickableUIComponent] = [
             alert_component,
             input_component,
-            TimeTableButton(screen, self._railway),
+            RouteButton(screen, self._railway),
             ZoomButton(screen, self._graphics.camera),
             OpenButton(screen, self._railway, self._app_state),
             SaveButton(screen, self._railway, self._app_state),

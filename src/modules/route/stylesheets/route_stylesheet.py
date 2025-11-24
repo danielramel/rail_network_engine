@@ -1,4 +1,4 @@
-TIMETABLE_STYLESHEET = """
+ROUTE_STYLESHEET = """
 QMainWindow { background-color: #1a1a1a; }
 QTableWidget { 
     background-color: #2d2d2d; 

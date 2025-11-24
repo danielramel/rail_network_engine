@@ -1,10 +1,9 @@
-from collections import deque
 from core.models.geometry.edge import Edge
 from core.models.geometry.pose import Pose
 from core.config.settings import Config
 from core.models.rail import Rail
 from core.models.signal import Signal
-from core.models.timetable import TimeTable
+from core.models.schedule import Schedule
 from core.models.train_config import TrainConfig
 
 from typing import TYPE_CHECKING, Callable
@@ -21,7 +20,7 @@ class Train:
     _railway: 'RailwaySystem'
     config: TrainConfig
     speed : float = 0.0
-    timetable : TimeTable = None
+    schedule : Schedule = None
     _is_live : bool = False
     _path_distance : float = 0.0
     _occupied_edge_count_cache : int | None = None
@@ -41,8 +40,10 @@ class Train:
         self._path_distance = remaining - INITIAL_DISTANCE_TO_PLATFORM_END
         
         
-    def set_timetable(self, timetable: TimeTable) -> None:
-        self.timetable = timetable
+    def set_schedule(self, schedule: Schedule) -> None:
+        self.schedule = schedule
+        
+    
         
     def tick(self):
         if not self._is_live:
@@ -58,10 +59,10 @@ class Train:
             if self._routed_to_station_ahead:
                 #train is stopped at station
                 self._dwell_time_counter += DT
-                dep_time = self.timetable.get_departure_time()
+                dep_time = self.schedule.get_departure_time()
                 if dep_time is not None and dep_time <= self._railway.time.in_minutes() and self._dwell_time_counter >= Config.MIN_TRAIN_STOP_TIME:
                     self._routed_to_station_ahead = False
-                    self.timetable.depart_station()
+                    self.schedule.depart_station()
                     self.calculate_braking_curve()
                     self._dwell_time_counter = 0.0
             return
@@ -88,7 +89,7 @@ class Train:
         for rail in reversed(self.path[self._occupied_edge_count - 1:]):
             if not self._routed_to_station_ahead and self._railway.stations.is_edge_platform(rail.edge):
                 station_id = self._railway.stations.get_edge_platform(rail.edge)
-                if self.timetable and station_id == self.timetable.get_next_station().id:
+                if self.schedule and station_id == self.schedule.get_next_station().id:
                     self._routed_to_station_ahead = True
                     speed = 0.0
             #add the speed at the end of this rail

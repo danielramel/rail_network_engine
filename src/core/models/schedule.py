@@ -1,64 +1,68 @@
-from core.models.station import Station
-from dataclasses import dataclass, field
-from core.models.timetable import TimeTable
 from typing import TYPE_CHECKING
+
+from core.config.color import Color
+from core.models.station import Station
 if TYPE_CHECKING:
-    from core.models.railway.railway_system import RailwaySystem
+    from core.models.route import Route
 
-@dataclass
+    
+
 class Schedule:
-    code: str
-    color: str
-    first_train: int
-    last_train: int
-    frequency: int
-    stops: list[dict[str, Station | int]] = field(default_factory=list)
-
-    def remove_station_from_stops(self, station_id: int):
-        for stop in self.stops[:]:
-            if stop['station'].id == station_id:
-                self.stops.remove(stop)
-                
-    def create_timetable(self, start_time: int) -> TimeTable:
-        return TimeTable(self, start_time)
-
-    def to_dict(self) -> dict:
-        """Convert to serialisable dict used by repository persistence."""
-        return {
-            'code': self.code,
-            'color': self.color,
-            'first_train': self.first_train,
-            'last_train': self.last_train,
-            'frequency': self.frequency,
-            'stops': [
-                {
-                    'id': entry['station'].id,
-                    'travel_time': entry.get('travel_time'),
-                    'stop_time': entry.get('stop_time')
-                } for entry in self.stops
-            ]
-        }
+    color: Color
+    route_code: str
+    stops: list[dict[str, int]]
+    _station_index: int = 0
+    
+    
+    def __init__(self, route: 'Route', start_time: int) -> 'Schedule':
+        self.route_code = route.code
+        self.color = route.color
+        current_time = start_time
+        self.stops: list[dict[str, int | None]] = [{
+                    'station': route.stops[0]['station'],
+                    'arrival_time': None,
+                    'departure_time': start_time
+                }]
         
-    def get_full_travel_time(self) -> int:
-        return sum(stop['travel_time']+stop['stop_time'] for stop in self.stops[1:-1]) + self.stops[-1]['travel_time']
-
-    @classmethod
-    def from_dict(cls, data: dict, railway: 'RailwaySystem') -> 'Schedule':
-        
-        stops: list[dict[str, Station | int]] = []
-
-        for stop in data['stops']:
-            stops.append({
-                'station': railway.stations.get(stop['id']),
-                'travel_time': stop["travel_time"],
-                'stop_time': stop["stop_time"]
+        for stop in route.stops[1:-1]:
+            travel_time = stop['travel_time']
+            stop_time = stop['stop_time']
+            arrival_time = current_time + travel_time
+            departure_time = arrival_time + stop_time
+            self.stops.append({
+                'station': stop['station'],
+                'arrival_time': arrival_time,
+                'departure_time': departure_time
             })
-
-        return cls(
-            code=data['code'],
-            color=data['color'],
-            first_train=data['first_train'],
-            last_train=data['last_train'],
-            frequency=data['frequency'],
-            stops=stops
-        )
+            current_time = departure_time
+            
+        self.stops.append({
+            'station': route.stops[-1]['station'],
+            'arrival_time': current_time + route.stops[-1]['travel_time'],
+            'departure_time': None
+        })
+        
+        self.route_code = route.code
+        
+    def get_departure_time(self) -> int | None:
+        if self._station_index >= len(self.stops):
+            return None
+        return self.stops[self._station_index]['departure_time']
+    
+    def depart_station(self) -> None:
+        self._station_index += 1
+        
+    def get_next_station(self) -> Station:
+        return self.stops[self._station_index]['station']
+    
+    def get_next_stop_str(self) -> str:
+        def format_time(minutes: int) -> str:
+            return f"{minutes // 60:02d}:{minutes % 60:02d}"
+        
+        if self._station_index == 0:
+            return f"{self.stops[0]['station'].name}: Departure: {format_time(self.stops[0]['departure_time'])}"
+        
+        if self._station_index == len(self.stops) - 1:
+            return f"{self.stops[-1]['station'].name}: Arrival: {format_time(self.stops[-1]['arrival_time'])}"
+        
+        return f"{self.stops[self._station_index]['station'].name}: {format_time(self.stops[self._station_index]['arrival_time'])} - {format_time(self.stops[self._station_index]['departure_time'])}"

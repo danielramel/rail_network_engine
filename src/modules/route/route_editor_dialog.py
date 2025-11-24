@@ -5,28 +5,28 @@ from PyQt6.QtWidgets import (QDialog, QFormLayout, QComboBox,
 from PyQt6.QtCore import Qt, QTime
 from PyQt6.QtWidgets import QLineEdit
 from PyQt6.QtGui import QIcon, QColor, QBrush
-from modules.timetable.stylesheets.schedule_editor_stylesheet import (
+from modules.route.stylesheets.route_editor_stylesheet import (
     TABLE_STYLE, MOVE_BUTTON_STYLE,
     ADD_BUTTON_STYLE, REMOVE_BUTTON_STYLE
 )
 from core.models.railway.railway_system import RailwaySystem
-from core.models.schedule import Schedule
+from core.models.route import Route
 
-class ScheduleEditorDialog(QDialog):
-    def __init__(self, parent, railway: RailwaySystem, schedule: Schedule = None):
+class RouteEditorDialog(QDialog):
+    def __init__(self, parent, railway: RailwaySystem, route: Route = None):
         self.selected_row = None
         self._railway = railway
-        self._editing_schedule = schedule
+        self._editing_route = route
         super().__init__(parent)
         self._init_layout()
         
-        # If editing an existing schedule, populate the fields
-        if schedule is not None:
-            self.set_data(schedule)
+        # If editing an existing route, populate the fields
+        if route is not None:
+            self.set_data(route)
         
     def get_data(self) -> dict:
-        """Collect schedule data from the dialog, ignoring arrival and departure times."""
-        schedule_data = {
+        """Collect route data from the dialog, ignoring arrival and departure times."""
+        route_data = {
             "code": self.code_edit.text(),
             "color": self.color_combo.currentText(),
             "first_train_time": self.first_train_time_edit.time().toString("HH:mm"),
@@ -53,27 +53,27 @@ class ScheduleEditorDialog(QDialog):
                 ] if self.stations_table.rowCount() > 1 else []
                     }
 
-        return schedule_data
+        return route_data
 
-    def set_data(self, schedule: Schedule):
-        """Populate the dialog fields from an existing schedule."""
+    def set_data(self, route: Route):
+        """Populate the dialog fields from an existing route."""
         # Set basic fields
-        self.code_edit.setText(schedule.code)
-        color_index = self.color_combo.findText(schedule.color)
+        self.code_edit.setText(route.code)
+        color_index = self.color_combo.findText(route.color)
         if color_index >= 0:
             self.color_combo.setCurrentIndex(color_index)
         
         # Set time fields
-        first_hours = schedule.first_train // 60
-        first_mins = schedule.first_train % 60
+        first_hours = route.first_train // 60
+        first_mins = route.first_train % 60
         self.first_train_time_edit.setTime(QTime(first_hours, first_mins))
         
-        last_hours = schedule.last_train // 60
-        last_mins = schedule.last_train % 60
+        last_hours = route.last_train // 60
+        last_mins = route.last_train % 60
         self.last_train_time_edit.setTime(QTime(last_hours, last_mins))
         
         # Set frequency
-        freq_index = self.freq_combo.findText(str(schedule.frequency))
+        freq_index = self.freq_combo.findText(str(route.frequency))
         if freq_index >= 0:
             self.freq_combo.setCurrentIndex(freq_index)
         
@@ -81,8 +81,8 @@ class ScheduleEditorDialog(QDialog):
         while self.stations_table.rowCount() > 0:
             self.stations_table.removeRow(0)
         
-        # Add rows for each stop in the schedule
-        for i, stop in enumerate(schedule.stops):
+        # Add rows for each stop in the route
+        for i, stop in enumerate(route.stops):
             self.add_empty_station_row(i)
             
             # Set the station
@@ -98,7 +98,7 @@ class ScheduleEditorDialog(QDialog):
                     travel_spinbox.setValue(stop['travel_time'])
             
             # Set stop time (skip last station)
-            if i < len(schedule.stops) - 1 and stop.get('stop_time') is not None:
+            if i < len(route.stops) - 1 and stop.get('stop_time') is not None:
                 stop_spinbox = self.stations_table.cellWidget(i, 3)
                 if stop_spinbox:
                     stop_spinbox.setValue(stop['stop_time'])
@@ -211,7 +211,7 @@ class ScheduleEditorDialog(QDialog):
     # Layout and UI initialization
 
     def _init_layout(self):
-        title = "Edit Schedule" if self._editing_schedule else "Add Schedule"
+        title = "Edit route" if self._editing_route else "Add route"
         self.setWindowTitle(title)
         self.setMinimumSize(600, 800)
         
@@ -219,7 +219,7 @@ class ScheduleEditorDialog(QDialog):
         
         # Code and Color on same row
         self.code_edit = QLineEdit()
-        self.code_edit.setPlaceholderText("Enter Schedule code")
+        self.code_edit.setPlaceholderText("Enter route code")
         self.color_combo = self._create_combo_box(("RED", "BLUE", "GREEN", "YELLOW", "ORANGE", "PURPLE"))
         
         code_color_layout = QHBoxLayout()

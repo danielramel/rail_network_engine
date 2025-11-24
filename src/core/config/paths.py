@@ -3,7 +3,7 @@ ICON_CATEGORIES = {
         "CONSTRUCTION": "construction.png",
         "SIMULATION": "simulation.png",
         "SETUP": "setup.png",
-        "TIMETABLE": "timetable.png",
+        "ROUTE": "route.png",
         "SAVE": "save.png",
         "SAVED": "saved.png",
         "LOAD": "load.png",

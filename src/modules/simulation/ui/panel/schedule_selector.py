@@ -10,19 +10,19 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtGui import QColor, QBrush
-from core.models.schedule import Schedule
+from core.models.route import Route
 from core.config.color import Color
 
 
 class ScheduleSelector(QWidget):
-    schedule_chosen = pyqtSignal(Schedule, int)
+    schedule_chosen = pyqtSignal(Route, int)
     window_closed = pyqtSignal()
 
-    def __init__(self, schedules: list[Schedule], parent=None):
+    def __init__(self, schedules: list[Route], parent=None):
         super().__init__(parent)
         self._schedules = schedules
-        self._selected_schedule: Schedule | None = None
-        self.setWindowTitle("Select Schedule and Start Time")
+        self._selected_schedule: Route | None = None
+        self.setWindowTitle("Select Schedule")
         self.setGeometry(300, 200, 600, 400)
 
         self._init_ui()
@@ -101,7 +101,7 @@ class ScheduleSelector(QWidget):
         self._selected_schedule = schedule
         self._populate_start_times(schedule)
 
-    def _populate_start_times(self, schedule: Schedule):
+    def _populate_start_times(self, schedule: Route):
         self.start_times_list.clear()
         times = list(range(schedule.first_train, schedule.last_train + 1, schedule.frequency))
         for t in times:

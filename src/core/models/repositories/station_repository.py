@@ -108,7 +108,7 @@ class StationRepository:
         for platform in station.platforms:
             self._remove_platform(platform)
             
-        self._railway.schedules.remove_station_from_all(station.id)
+        self._railway.routes.remove_station_from_all(station.id)
 
     def remove_platform_at(self, edge: Edge):
         platform_edges = self.get_platform_from_edge(edge)

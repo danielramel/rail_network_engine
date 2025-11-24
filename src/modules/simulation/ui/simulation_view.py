@@ -69,7 +69,7 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
                 action = TRAINDRAWACTION.PREVIEWED
             elif train.id in self._state.selected_trains:
                 action = TRAINDRAWACTION.SELECTED
-            elif train.timetable is not None:
+            elif train.schedule is not None:
                 action = TRAINDRAWACTION.SCHEDULED
             elif train.is_live:
                 action = TRAINDRAWACTION.LIVE

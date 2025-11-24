@@ -22,7 +22,7 @@ def draw_train(screen: pygame.Surface, train: Train, camera: Camera, action: TRA
     elif action == TRAINDRAWACTION.LIVE:
         color = Color.WHITE
     elif action == TRAINDRAWACTION.SCHEDULED:
-        color = train.timetable.color
+        color = train.schedule.color
     elif action == TRAINDRAWACTION.SELECTED:
         color = Color.ORANGE
     elif action == TRAINDRAWACTION.PREVIEWED:
