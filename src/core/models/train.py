@@ -128,7 +128,8 @@ class Train:
         
     def reverse(self) -> None:
         self._path_distance = self.get_distance_until_next_edge()
-        self.path = [rail.reversed() for rail in reversed(self.path)]        
+        self.path = [rail.reversed() for rail in reversed(self.path)]
+        self._routed_to_station_ahead = False
             
     def shutdown(self) -> None:
         self._is_live = False
