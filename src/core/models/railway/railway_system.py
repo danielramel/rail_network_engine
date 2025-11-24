@@ -69,3 +69,4 @@ class RailwaySystem:
         self._station_repository = StationRepository.from_dict(self, data["station_repository"])
         self._signal_repository = SignalRepository.from_dict(self._graph_adapter, data["signal_repository"])
         self._schedule_repository = ScheduleRepository.from_dict(self, data['schedule_repository'])
+        self._train_repository = TrainRepository(self)

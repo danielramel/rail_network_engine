@@ -29,7 +29,7 @@ class SignallingService:
         self._railway.graph.set_edge_attr(edge, 'locked', False)
         self._railway.graph.set_node_attr(edge.a, 'locked', False)
         
-        if self._railway.signals.has_signal_with_pose_at(Pose.from_edge(edge)):
+        if self._railway.signals.has(edge.b):
             self._railway.signals.get(edge.b).train_passed()
 
         
@@ -80,7 +80,7 @@ class SignallingService:
         return None
 
     def disconnect_signal_at(self, a) -> None:
-        raise UserWarning("Not implemented yet")
+        return
         # TODO implement disconnecting signals
     
     def get_path_preview(self, start: Signal, end: Signal) -> list[Edge] | None:

@@ -1,3 +1,4 @@
+from collections import deque
 from core.models.geometry.edge import Edge
 from core.models.geometry.pose import Pose
 from core.config.settings import Config
@@ -16,7 +17,7 @@ INITIAL_DISTANCE_TO_PLATFORM_END = 1.0
 
 class Train:
     id: int = None
-    path : list[Rail] = []
+    path : list[Rail] = None
     _railway: 'RailwaySystem'
     config: TrainConfig
     speed : float = 0.0
@@ -25,11 +26,15 @@ class Train:
     _path_distance : float = 0.0
     _occupied_edge_count_cache : int | None = None
     _unsubscribe: Callable | None = None
+    _cached_max_safe_speed: float | None = None
+    _braking_curve = None
      
     def __init__(self, edges: list[Edge], railway: 'RailwaySystem', config: TrainConfig) -> None:
         self._railway = railway
         self.config = config.copy()
-        self.path = [self._railway.graph.get_rail(edge) for edge in edges[-(int((self.config.total_length + INITIAL_DISTANCE_TO_PLATFORM_END) // Config.SHORT_SEGMENT_LENGTH) + 1):]]
+        self.path = []
+        self._braking_curve = deque()
+        self.extend_path(edges[-(int((self.config.total_length + INITIAL_DISTANCE_TO_PLATFORM_END) // Config.SHORT_SEGMENT_LENGTH) + 1):])
         
         remaining = self.get_distance_to_path_end()
         self._path_distance = remaining - INITIAL_DISTANCE_TO_PLATFORM_END
@@ -42,7 +47,7 @@ class Train:
             return
 
         max_safe_speed = self.get_max_safe_speed()
-        speed_with_acc = self.speed + (self.config.acceleration * DT)
+        speed_with_acc = self.speed + (self.config.acceleration * DT)            
         self.speed = min(max_safe_speed, speed_with_acc)
             
         if self.speed == 0.0:
@@ -98,35 +103,63 @@ class Train:
         self._path_distance = self.get_distance_to_path_end()
         self.path = [rail.reversed() for rail in reversed(self.path)]        
             
-        
-        
     def shutdown(self) -> None:
         self._is_live = False
+        self.path = self.path[:self._occupied_edge_count]
+        self._unsubscribe()
         
     def get_locomotive_pose(self) -> Pose:
         return Pose.from_edge(self.path[self._occupied_edge_count - 1].edge)
     
-    def get_max_safe_speed(self) -> float:
+    def get_max_safe_speed(self) -> float:        
+        def _inner_func():
+            def _get_max_speed(distance: float, speed: float) -> float:
+                if distance <= 1.0:
+                    return speed
+                # FORMULA: V = sqrt(u^2 + 2as)
+                return (speed**2 + (2 * distance * self.config.deceleration)) ** 0.5
+            
+            distance = self.get_distance_to_path_end()
+            braking_speed = float('inf')
+            for rail in self.path[self._occupied_edge_count:]:
+                if self._railway.stations.is_edge_platform(rail.edge):
+                    station_id = self._railway.stations.get_edge_platform(rail.edge)
+                    if self.timetable and station_id == self.timetable.get_next_station().id:
+                        platform = self._railway.stations.get_platform_from_edge(rail.edge)
+                        braking_speed = min(braking_speed, _get_max_speed(distance + len(platform)*Config.SHORT_SEGMENT_LENGTH, 0.0))
+                        braking_speed = min(braking_speed, min(self._railway.graph.get_edge_speed(edge) for edge in platform))
+                        return braking_speed
+                braking_speed = min(braking_speed, _get_max_speed(distance, rail.speed))
+                distance += rail.length
+                
+            braking_speed = min(braking_speed, _get_max_speed(distance, 0.0))
+            return braking_speed
+        
+            
+        return min(self.config.max_speed, min(rail.speed for rail in self.path[:self._occupied_edge_count]), _inner_func())
+    
+    def extend_path(self, extension: list[Edge]):
         def get_max_speed(distance: float, speed: float) -> float:
-            if distance <= 1.0:
-                return speed
             # FORMULA: V = sqrt(u^2 + 2as)
             return (speed**2 + (2 * distance * self.config.deceleration)) ** 0.5
-        
-        distance = self.get_distance_to_path_end()
-        min_speed = min(self.config.max_speed, min(rail.speed for rail in self.path[:self._occupied_edge_count]))
-        for rail in self.path[self._occupied_edge_count:]:
-            platform = self._railway.stations.get_platform_from_edge(rail.edge)
-            if platform is not None:
-                min_speed = min(min_speed, get_max_speed(distance + len(platform)*Config.SHORT_SEGMENT_LENGTH, 0.0))
-                return min_speed
-            min_speed = min(min_speed, get_max_speed(distance, rail.speed))
+        self.path += [self._railway.graph.get_rail(edge) for edge in extension]
+
+        temp = []
+        distance = 0.0
+        speed = 0.0
+        for rail in reversed(self.path[self._occupied_edge_count:]):
             distance += rail.length
+            if rail.speed < get_max_speed(distance, speed):
+                temp.append((distance, speed))
+                distance = 0.0
+                speed = rail.speed
+                
+        temp.append((distance, speed))
+                
+        print(temp)
+                
             
-        min_speed = min(min_speed, get_max_speed(distance, 0.0))
-            
-        return min_speed
-    
+        
     def get_distance_to_path_end(self) -> float:
         remaining = self.config.total_length + self._path_distance
         i = 0
@@ -135,9 +168,6 @@ class Train:
             i += 1
         return self.path[i].length - remaining
             
-    def extend_path(self, extension: list[Edge]):
-        path = [self._railway.graph.get_rail(edge) for edge in extension]
-        self.path += path
                     
     def signal_turned_green_ahead(self, path: list[Edge], signal: Signal) -> bool:
         self.extend_path(path)

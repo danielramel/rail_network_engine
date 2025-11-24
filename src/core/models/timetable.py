@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from core.config.color import Color
+from core.models.station import Station
 if TYPE_CHECKING:
     from core.models.schedule import Schedule
 
@@ -10,7 +11,7 @@ class TimeTable:
     color: Color
     schedule_code: str
     stops: list[dict[str, int]]
-    _station_index: int = 0
+    _station_index: int = 1
     
     
     def __init__(self, schedule: 'Schedule', start_time: int) -> 'TimeTable':
@@ -44,9 +45,8 @@ class TimeTable:
         self.schedule_code = schedule.code
         
         
-    def get_next_stop(self) -> dict[str, int] | None:
-        return self.stops[self._station_index]
-    
+    def get_next_station(self) -> Station:
+        return self.stops[self._station_index]['station']
     
     def get_next_stop_str(self) -> str:
         def format_time(minutes: int) -> str:

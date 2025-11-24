@@ -53,6 +53,7 @@ class OpenButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
             with open(filename, 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 self._railway.from_dict(data)
+                #delete existing trains
 
         except Exception as e:
             messagebox.showerror("Load error", str(e))
