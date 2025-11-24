@@ -16,21 +16,24 @@ class SignallingService:
     def lock_path(self, edges: list[Edge]) -> None:
         for edge in edges:
             self._railway.graph.set_edge_attr(edge, 'locked', True)
-            self._railway.graph.set_node_attr(edge.b, 'locked', True)
+            self._railway.graph.set_node_attr(edge.a, 'locked', True)
             
     def unlock_path(self, edges: list[Edge]) -> None:
         for edge in edges:
             if self._railway.signals.has_signal_with_pose_at(Pose(edge.a, edge.a.direction_to(edge.b))):
                 return
             self._railway.graph.set_edge_attr(edge, 'locked', False)
-            self._railway.graph.set_node_attr(edge.b, 'locked', False)
+            self._railway.graph.set_node_attr(edge.a, 'locked', False)
     
-    def passed(self, edge: Edge):
+    def cleared(self, edge: Edge):
         self._railway.graph.set_edge_attr(edge, 'locked', False)
         self._railway.graph.set_node_attr(edge.a, 'locked', False)
         
-        if self._railway.signals.has(edge.b):
-            self._railway.signals.get(edge.b).train_passed()
+    def passed(self, node: Node):
+        signal = self._railway.signals.get(node)
+        if signal is not None:
+            signal.passed()
+            
 
         
     def is_edge_locked(self, edge: Edge) -> bool:
@@ -53,17 +56,17 @@ class SignallingService:
 
         while priority_queue:
             _, current_pose = heapq.heappop(priority_queue)
-            
-            if current_pose == end:
-                path = [current_pose]
+            for neighbor_pose in self._railway.graph_service.get_turn_neighbors(current_pose):
+                if neighbor_pose == end:
+                    came_from[neighbor_pose] = current_pose
+                    path = [neighbor_pose, current_pose]
 
-                while current_pose in came_from:
-                    current_pose = came_from[current_pose]
-                    path.append(current_pose)
+                    while current_pose in came_from:
+                        current_pose = came_from[current_pose]
+                        path.append(current_pose)
 
-                return tuple(reversed(path))
-
-            for neighbor_pose in self._railway.graph_service.get_turn_neighbors(current_pose):                
+                    return tuple(reversed(path))
+                          
                 if self.is_node_locked(neighbor_pose.node):
                     continue
                 

@@ -29,7 +29,7 @@ class Signal:
     def unsubscribe(self) -> None:
         self._subscriber = None
         
-    def train_passed(self) -> None:
+    def passed(self) -> None:
         self.next_signal = None
         self.path = []
         

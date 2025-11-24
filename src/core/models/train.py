@@ -66,17 +66,19 @@ class Train:
                     self._dwell_time_counter = 0.0
             return
             
-        self._occupied_edge_count_cache = None
         travel_distance = (self.speed * DT - self.config.deceleration * DT * DT / 2)/3.6
         if distance_until_next_edge < travel_distance:
             self._braking_curve.pop()
+            self._railway.signalling.passed(self.path[self._occupied_edge_count - 1].edge.b)
+            
+        self._occupied_edge_count_cache = None
         self._path_distance += travel_distance
         
         first_edge_length = self.path[0].length
         if self._path_distance >= first_edge_length:
             self._path_distance -= first_edge_length
             passed_rail = self.path.pop(0)
-            self._railway.signalling.passed(passed_rail.edge)
+            self._railway.signalling.cleared(passed_rail.edge)
             
     def calculate_braking_curve(self):
         if self._routed_to_station_ahead:

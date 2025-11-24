@@ -21,7 +21,7 @@ from shared.ui.components.input_component import InputComponent
 class AppController(UIController, FullScreenUIComponent):
     def __init__(self, screen: pygame.Surface):
         self._railway = RailwaySystem()
-        filename = self._mock_load()
+        filename = self.load_file()
         self._app_state = AppState(filename)
         alert_component = AlertComponent(screen)
         input_component = InputComponent(screen)
@@ -63,7 +63,7 @@ class AppController(UIController, FullScreenUIComponent):
         super().render(screen_pos)
             
             
-    def _mock_load(self):
+    def load_file(self):
         import sys
         import json
         if len(sys.argv) < 2:
@@ -74,3 +74,17 @@ class AppController(UIController, FullScreenUIComponent):
             self._railway.replace_from_dict(data)
             
         return filename
+    
+    
+    
+    
+    
+    
+    
+    
+# #TODO create main menu
+# train visualization
+# enter exit from map
+# delete schedule
+# ask for save on exit
+# megall megalloban majd visszafordul
