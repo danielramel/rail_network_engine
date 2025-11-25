@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from core.models.geometry.direction import Direction
 from core.models.geometry.node import Node
 from core.models.geometry.position import Position
@@ -48,11 +48,6 @@ class Edge:
         return self.a.x != self.b.x and self.a.y != self.b.y
     
     
-    def to_dict_simple(self) -> dict:
-        return {
-            "a": self.a.to_dict(),
-            "b": self.b.to_dict()
-            }
 
     def sorted(self, reversed: bool = False) -> 'Edge':
         return Edge(*sorted((self.a, self.b), reverse=reversed))
@@ -60,8 +55,9 @@ class Edge:
     def reversed(self) -> 'Edge':
         return Edge(self.b, self.a)
         
+    def to_dict(self) -> dict:
+        return asdict(self)
+    
     @classmethod
-    def from_dict_simple(cls, data: dict) -> 'Edge':
-        a = Node.from_dict(data["a"])
-        b = Node.from_dict(data["b"])
-        return cls(a, b)
+    def from_dict(cls, data: dict) -> 'Edge':
+        return cls(Node.from_dict(data["a"]), Node.from_dict(data["b"]))

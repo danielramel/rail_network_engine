@@ -77,11 +77,3 @@ class Position:
             nx, ny = ax + t * abx, ay + t * aby
 
         return hypot(px - nx, py - ny)
-
-
-    def to_dict(self) -> dict:
-        return asdict(self)
-    
-    @classmethod
-    def from_dict(cls, data: dict) -> 'Node':
-        return cls(**data)
