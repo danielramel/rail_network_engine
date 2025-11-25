@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 
 class UIComponent(ABC):
     def dispatch_event(self, event: Event) -> bool:
-        """Process a pygame event. Return True if consumed."""
         if hasattr(self, 'handled_events') and event.type not in self.handled_events:
             return False
         

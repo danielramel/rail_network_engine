@@ -45,12 +45,7 @@ class AppController(UIController, FullScreenUIComponent):
             ModeStrategy(self._app_state, self._railway, self._graphics)
         ]
     
-    def dispatch_event(self, pygame_event: pygame.event):        
-        if pygame_event.type == pygame.QUIT \
-            or (pygame_event.type == pygame.KEYDOWN and pygame_event.key == pygame.K_ESCAPE):
-            return "quit"
-
-
+    def dispatch_event(self, pygame_event: pygame.event):
         screen_pos = Position(*pygame.mouse.get_pos())
         world_pos = self._graphics.camera.screen_to_world(screen_pos)
         event = Event(pygame_event, screen_pos, world_pos, self._last_mouse_down_pos)

@@ -1,15 +1,22 @@
 import pygame
+from enum import Enum, auto
 from shared.controllers.app_controller import AppController
+from shared.controllers.main_menu_controller import MainMenuController
+from shared.ui.models.ui_controller import UIController
 from core.config.settings import Config
 from PyQt6.QtWidgets import QApplication
 import sys
 
 
-class RailSimulator:
+class Phase(Enum):
+    MENU = auto()
+    SIMULATION = auto()
+
+
+class SimulationManager:
     def __init__(self):
         pygame.init()
         
-        # Initialize QApplication in main thread (required for Qt)
         self.qt_app = QApplication.instance() or QApplication(sys.argv)
         
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -18,29 +25,42 @@ class RailSimulator:
         pygame.display.set_icon(pygame.image.load("src/assets/icons/app.png"))
         self.clock = pygame.time.Clock()
         
-        filepath = None
+        self._current_state = Phase.MENU
+        self._states: dict[Phase, UIController] = {
+            Phase.MENU: MainMenuController(self.screen, self._start_simulation),
+            Phase.SIMULATION: None
+        }
+        
+        # If filepath provided via command line, skip menu
         if len(sys.argv) > 1:
             filepath = sys.argv[1]
-        
-        self.app_controller = AppController(self.screen, filepath)
+            self._start_simulation(filepath)
 
-    # --- Main loop ---
+    def _start_simulation(self, filepath: str | None = None):
+        self._current_state = Phase.SIMULATION
+        self._states[Phase.SIMULATION] = AppController(self.screen, filepath)
+
     def run(self):
         running = True
         while running:
             for event in pygame.event.get():
-                action = self.app_controller.dispatch_event(event)
-                if action == "quit":
+                if event.type == pygame.QUIT:
                     running = False
                     break
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    running = False
+                    break
+                
+                self._states[self._current_state].dispatch_event(event)
             
             # Process Qt events without blocking (allows Qt windows to function)
             self.qt_app.processEvents()
-
-            self.app_controller.render()
+            self._states[self._current_state].render()
 
             pygame.display.flip()
             self.clock.tick(Config.FPS)
-            self.app_controller.tick()
+            
+            if self._current_state == Phase.SIMULATION:
+                self._states[self._current_state].tick()
 
         pygame.quit()
