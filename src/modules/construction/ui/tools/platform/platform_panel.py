@@ -99,7 +99,7 @@ class PlatformPanel(ConstructionToolPanel):
         self._render_small_button(minus_rect, "-", can_decrease)
         self._render_small_button(plus_rect, "+", can_increase)
 
-        value_text = f"{value * Config.SHORT_SEGMENT_LENGTH} m"
+        value_text = f"{value * Config.SHORT_SECTION_LENGTH} m"
         val_screen = self.instruction_font.render(value_text, True, Color.YELLOW)
         self._screen.blit(val_screen, val_screen.get_rect(center=self.length_value_center))
 

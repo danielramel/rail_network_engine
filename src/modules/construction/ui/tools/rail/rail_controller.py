@@ -37,7 +37,7 @@ class RailController(ConstructionToolController):
             self._state.construction_anchor = target.anchor
 
         elif target.kind is RailTargetType.PATH:
-            self._railway.graph_service.add_segment(target.found_path, self._state.track_speed, self._state.track_length)
+            self._railway.graph_service.add_section(target.found_path, self._state.track_speed, self._state.track_length)
             self._state.construction_anchor = Pose(
                 target.node,
                 target.found_path[-2].direction_to(target.node)

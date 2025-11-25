@@ -34,7 +34,7 @@ class ConstructionState:
     tool: ConstructionTool = ConstructionTool.RAIL
     construction_anchor: Pose | None = None
     track_speed: int = 120
-    track_length: int = Config.SHORT_SEGMENT_LENGTH
+    track_length: int = Config.SHORT_SECTION_LENGTH
     moving_station: Optional[Station] = None
     preview: ConstructionPreview = field(default_factory=ConstructionPreview)
     platform_waiting_for_station: bool = False

@@ -36,5 +36,5 @@ class TunnelController(ConstructionToolController):
             self._state.construction_anchor = target.anchor
 
         elif target.kind is TunnelTargetType.PATH:
-            self._railway.graph_service.add_tunnel_segment(target.found_path, self._state.track_speed, self._state.track_length)
+            self._railway.graph_service.add_tunnel_section(target.found_path, self._state.track_speed, self._state.track_length)
             self._state.construction_anchor = None

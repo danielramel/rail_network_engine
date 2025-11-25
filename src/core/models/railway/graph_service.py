@@ -42,7 +42,7 @@ class GraphService:
 
         return tuple(connections)
 
-    def remove_segment(self, edges: list[Edge]) -> None:      
+    def remove_section(self, edges: list[Edge]) -> None:      
         for edge in edges:
             self._railway.graph.remove_edge(edge)
 
@@ -52,11 +52,11 @@ class GraphService:
             elif self._railway.graph.degree_at(node) == 1 and self._railway.signals.has(node):
                 self._railway.signals.set(Pose(node, (self._railway.graph.neighbors(node)[0]).direction_to(node)))
 
-    def add_segment(self, nodes: list[Node], speed: int, length: int) -> None:
+    def add_section(self, nodes: list[Node], speed: int, length: int) -> None:
         for a, b in zip(nodes[:-1], nodes[1:]):
             self._railway.graph.add_edge(a, b, speed=speed, length=length)
             
-    def add_tunnel_segment(self, nodes: list[Node], speed: int, length: int) -> None:
+    def add_tunnel_section(self, nodes: list[Node], speed: int, length: int) -> None:
         for a, b in zip(nodes[:-1], nodes[1:]):
             self._railway.graph.add_edge(a, b, speed=speed, length=length, level=1)
             
@@ -81,7 +81,7 @@ class GraphService:
 
         return min_edge
 
-    def get_segment(self, edge: Edge) -> tuple[frozenset[Node], frozenset[Edge]]:
+    def get_section(self, edge: Edge) -> tuple[frozenset[Node], frozenset[Edge]]:
         def is_node_blocked(node: Node) -> bool:
             if self.is_junction(node):
                 return True
@@ -159,7 +159,7 @@ class GraphService:
         def is_edge_blocked(edge: Edge) -> bool:
             if not self._railway.graph.has_edge(edge):
                 return True
-            if self._railway.graph.get_edge_length(edge) != Config.SHORT_SEGMENT_LENGTH:
+            if self._railway.graph.get_edge_length(edge) != Config.SHORT_SECTION_LENGTH:
                 return True
             if self._railway.stations.is_edge_platform(edge):
                 return True
@@ -207,7 +207,7 @@ class GraphService:
         return False, frozenset(edges)
     
     def calculate_train_preview(self, edge: Edge, total_length: int) -> tuple[bool, frozenset[Edge]]:
-        edge_count = ((total_length + Config.TRAIN_SAFETY_BUFFER) // Config.SHORT_SEGMENT_LENGTH) + 1
+        edge_count = ((total_length + Config.TRAIN_SAFETY_BUFFER) // Config.SHORT_SECTION_LENGTH) + 1
         def is_node_blocked(node: Node) -> bool:
             return self.is_junction(node)
         
@@ -215,7 +215,7 @@ class GraphService:
             if not self._railway.graph.has_edge(edge):
                 return True
             
-            if self._railway.graph.get_edge_length(edge) != Config.SHORT_SEGMENT_LENGTH:
+            if self._railway.graph.get_edge_length(edge) != Config.SHORT_SECTION_LENGTH:
                 return True
             
             if self._railway.trains.get_train_on_edge(edge):

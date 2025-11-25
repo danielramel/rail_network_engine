@@ -36,9 +36,9 @@ def draw_rail(screen: pygame.Surface, edge: Edge, camera: Camera, color: tuple[i
         draw_tunnel(screen, edge, camera, color, length)
         return
     """Draw a track as a dotted line on the screen from edge.a to edge.b."""
-    if length == Config.SHORT_SEGMENT_LENGTH:
+    if length == Config.SHORT_SECTION_LENGTH:
         pygame.draw.aaline(screen, color, tuple(edge.a), tuple(edge.b), max(1, 2*int(camera.scale)))
-    elif length == Config.LONG_SEGMENT_LENGTH:
+    elif length == Config.LONG_SECTION_LENGTH:
         draw_long_track(screen, edge, color=color, width=max(1, 2*int(camera.scale)))
     else:
         raise NotImplementedError("Edge length drawing not implemented for length:", length)

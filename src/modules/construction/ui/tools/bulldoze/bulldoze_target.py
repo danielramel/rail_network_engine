@@ -7,7 +7,7 @@ class BulldozeTargetType:
     SIGNAL = 0
     STATION = 1
     PLATFORM = 2
-    SEGMENT = 3
+    SECTION = 3
     NONE = 4
     
 @dataclass
@@ -35,5 +35,5 @@ def find_bulldoze_target(railway: RailwaySystem, world_pos: Node) -> BulldozeTar
         edges = railway.stations.get_platform_from_edge(closest_edge)
         return BulldozeTarget(kind=BulldozeTargetType.PLATFORM, edge=closest_edge, edges=edges)
 
-    nodes, edges = railway.graph_service.get_segment(closest_edge)
-    return BulldozeTarget(kind=BulldozeTargetType.SEGMENT, edge=closest_edge, edges=edges, nodes=nodes)
+    nodes, edges = railway.graph_service.get_section(closest_edge)
+    return BulldozeTarget(kind=BulldozeTargetType.SECTION, edge=closest_edge, edges=edges, nodes=nodes)

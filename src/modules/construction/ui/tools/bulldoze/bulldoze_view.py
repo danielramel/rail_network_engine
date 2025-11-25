@@ -23,7 +23,7 @@ class BulldozeView(ConstructionView):
         elif target.kind == BulldozeTargetType.PLATFORM:
             self._state.preview.edges = target.edges
             self._state.preview.edge_action = EdgeAction.SPEED
-        elif target.kind == BulldozeTargetType.SEGMENT:
+        elif target.kind == BulldozeTargetType.SECTION:
             self._state.preview.edges = target.edges
             self._state.preview.nodes = target.nodes
             self._state.preview.edge_action = EdgeAction.BULLDOZE
