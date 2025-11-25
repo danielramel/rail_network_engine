@@ -45,6 +45,9 @@ class GraphService:
     def remove_section(self, edges: list[Edge]) -> None:      
         for edge in edges:
             self._railway.graph.remove_edge(edge)
+            train_id = self._railway.trains.get_train_on_edge(edge)
+            if train_id:
+                self._railway.trains.remove(train_id)
 
         for node in list(self._railway.graph.nodes):
             if self._railway.graph.degree_at(node) == 0:
@@ -207,14 +210,8 @@ class GraphService:
         return False, frozenset(edges)
     
     def calculate_train_preview(self, edge: Edge, total_length: int) -> tuple[bool, frozenset[Edge]]:
-        edge_count = ((total_length + Config.TRAIN_SAFETY_BUFFER) // Config.SHORT_SECTION_LENGTH) + 1
-        def is_node_blocked(node: Node) -> bool:
-            return self.is_junction(node)
-        
-        def is_edge_blocked(edge: Edge) -> bool:
-            if not self._railway.graph.has_edge(edge):
-                return True
-            
+        edge_count = ((total_length + Config.TRAIN_SAFETY_BUFFER) // Config.SHORT_SECTION_LENGTH) + 1        
+        def is_edge_blocked(edge: Edge) -> bool:            
             if self._railway.graph.get_edge_length(edge) != Config.SHORT_SECTION_LENGTH:
                 return True
             
@@ -236,30 +233,28 @@ class GraphService:
         pose_to_a = Pose.from_nodes(b, a)
         pose_to_b = Pose.from_nodes(a, b)
 
-        if not is_node_blocked(a):
-            stack.append(pose_to_a)
-
-        if not is_node_blocked(b):
-            stack.append(pose_to_b)
+        stack.append(pose_to_a)
+        stack.append(pose_to_b)
 
         while stack:
             pose = stack.popleft()
             
-            for neighbor_pose in self.get_turn_neighbors(pose):
-                edge = Edge(pose.node, neighbor_pose.node)
+            connections = self.get_turn_neighbors(pose)
+            if not connections:
+                continue
+            neighbor_pose = connections[0]
+            
+            edge = Edge(pose.node, neighbor_pose.node)
 
-                if is_edge_blocked(edge):
-                    continue
-                
-                edges.add(edge)
+            if is_edge_blocked(edge):
+                continue
+            
+            edges.add(edge)
 
-                if len(edges) >= edge_count:
-                    return True, frozenset(edges)
-                
-                if is_node_blocked(neighbor_pose.node):
-                    continue
-                
-                stack.append(neighbor_pose)
+            if len(edges) >= edge_count:
+                return True, frozenset(edges)
+            
+            stack.append(neighbor_pose)
                 
         return False, frozenset(edges)
     

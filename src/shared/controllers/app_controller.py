@@ -68,6 +68,14 @@ class AppController(UIController, FullScreenUIComponent):
             super().dispatch_event(event)
         except Exception as e:
             print(f"Event dispatch error: {e}")
+            print(f"Error type: {type(e).__name__}")
+            print(f"Error details: {str(e)}")
+            print(f"Traceback:")
+            import traceback
+            traceback.print_exc()
+            print(f"Event type: {pygame_event.type if pygame_event else 'None'}")
+            print(f"Screen position: {screen_pos if 'screen_pos' in locals() else 'Not set'}")
+            print(f"World position: {world_pos if 'world_pos' in locals() else 'Not set'}")
             self._graphics.alert_component.show_alert(f"An unexpected error occurred during event handling:\n{e}")
     
     def render(self):
