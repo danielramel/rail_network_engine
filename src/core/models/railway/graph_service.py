@@ -69,7 +69,7 @@ class GraphService:
         return any(n.level != 0 for n in self._railway.graph.neighbors(node))
     
     def get_closest_edge(self, world_pos: Position, only_surface: bool = True) -> Edge | None:
-        min_edge = None
+        closest_edge = None
         min_distance = 1.0
         for edge in world_pos.get_grid_edges(only_surface=only_surface):
             if not self._railway.graph.has_edge(edge):
@@ -77,9 +77,9 @@ class GraphService:
             distance = world_pos.distance_to_edge(edge)
             if distance < min_distance:
                 min_distance = distance
-                min_edge = edge
+                closest_edge = edge
 
-        return min_edge
+        return closest_edge
 
     def get_section(self, edge: Edge) -> tuple[frozenset[Node], frozenset[Edge]]:
         def is_node_blocked(node: Node) -> bool:

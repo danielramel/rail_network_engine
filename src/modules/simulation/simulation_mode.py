@@ -18,14 +18,10 @@ class SimulationMode(UIController, FullScreenUIComponent):
         self._graphics = graphics
         self.elements = ()
 
-        if not self._railway.time:  # requires your time object to expose this flag
-            graphics.input_component.request_input(
-                "Enter simulation start time (HH:MM:SS):",
-                self._on_time_set
-            )
-            return
-
-        self._initialize()
+        graphics.input_component.request_input(
+            "Enter simulation start time (HH:MM:SS):",
+            self._on_time_set
+        )
 
     def _initialize(self):
         self._railway.signals.add_signals_to_dead_ends()
