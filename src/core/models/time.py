@@ -1,7 +1,7 @@
 from math import floor
 
 class Time:
-    current_time: float = 17400.0  # seconds since midnight #TODO change this when submitting thesis
+    current_time: float = None
         
     def get_hms(self) -> tuple[str, str, str]:
         if self.current_time is None:

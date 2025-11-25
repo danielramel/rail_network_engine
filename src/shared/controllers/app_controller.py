@@ -55,22 +55,29 @@ class AppController(UIController, FullScreenUIComponent):
         ]
     
     def dispatch_event(self, pygame_event: pygame.event):
-        screen_pos = Position(*pygame.mouse.get_pos())
-        world_pos = self._graphics.camera.screen_to_world(screen_pos)
-        event = Event(pygame_event, screen_pos, world_pos, self._last_mouse_down_pos)
-        if pygame_event.type == pygame.MOUSEBUTTONDOWN:
-            self._last_mouse_down_pos = screen_pos
-        elif pygame_event.type == pygame.MOUSEBUTTONUP:
-            self._last_mouse_down_pos = None
-        
-        
-        super().dispatch_event(event)
+        try:
+            screen_pos = Position(*pygame.mouse.get_pos())
+            world_pos = self._graphics.camera.screen_to_world(screen_pos)
+            event = Event(pygame_event, screen_pos, world_pos, self._last_mouse_down_pos)
+            if pygame_event.type == pygame.MOUSEBUTTONDOWN:
+                self._last_mouse_down_pos = screen_pos
+            elif pygame_event.type == pygame.MOUSEBUTTONUP:
+                self._last_mouse_down_pos = None
+            
+            
+            super().dispatch_event(event)
+        except Exception as e:
+            print(f"Event dispatch error: {e}")
+            self._graphics.alert_component.show_alert(f"An unexpected error occurred during event handling:\n{e}")
     
     def render(self):
-        self._graphics.screen.fill(Color.BLACK)
-        screen_pos = Position(*pygame.mouse.get_pos())
-        super().render(screen_pos)
-            
+        try:
+            self._graphics.screen.fill(Color.BLACK)
+            screen_pos = Position(*pygame.mouse.get_pos())
+            super().render(screen_pos)
+        except Exception as e:
+            print(f"Render error: {e}")
+            self._graphics.alert_component.show_alert(f"An unexpected error occurred during rendering:\n{e}")
             
     def load_file(self, filepath: str) -> None:
         import json

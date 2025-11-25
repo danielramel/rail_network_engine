@@ -125,7 +125,7 @@ class SignallingService:
             # if multiple connections, pick the first one
             connection = neighbors[0]
             if connection.node in visited:
-                raise ValueError("Loop encountered in railway graph. There should be a signal here.") #TODO handle this
+                raise ValueError("Loop encountered in railway graph.")
             
 
             path.append(Edge(pose.node, connection.node))

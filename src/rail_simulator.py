@@ -51,9 +51,6 @@ class SimulationManager:
                 if event.type == pygame.QUIT:
                     running = False
                     break
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    running = False
-                    break
                 
                 self._states[self._current_state].dispatch_event(event)
             

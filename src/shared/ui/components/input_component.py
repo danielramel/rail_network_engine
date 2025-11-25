@@ -23,7 +23,7 @@ class InputComponent(UIComponent):
                 self._callback(self._input_text)
                 return True
 
-            elif event.key == pygame.K_LCTRL: #TODO when submitting thesis change to K_ESCAPE
+            elif event.key == pygame.K_ESCAPE:
                 self._visible = False
                 self._callback(None)
                 return True
