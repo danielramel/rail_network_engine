@@ -15,12 +15,10 @@ class TrainPlacementController(SetupToolController):
             self._state.switch_tool(None)
             return
         
-        closest_edge = self._railway.graph_service.get_closest_edge(event.world_pos)
-        if closest_edge and self._railway.stations.is_edge_platform(closest_edge) and not self._railway.trains.get_train_on_edge(closest_edge):
-            platform = self._railway.stations.get_platform_from_edge(closest_edge)
-            if self._state.train_config.total_length > len(platform) *  Config.SHORT_SEGMENT_LENGTH:
-                self._graphics.alert_component.show_alert('Train is too long for the selected platform!')
-                return
-            
-            train = self._railway.trains.create_train(platform, self._state.train_config)
-            self._railway.trains.add_to_repository(train)
+        if self._state.preview.invalid_train_placement_edges:
+            self._graphics.alert_component.show_alert('Cannot place train here! The path is blocked or invalid.')
+            return
+        if self._state.preview.train_to_preview is None:
+            self._graphics.alert_component.show_alert('Click on a section of track to place a train.')
+            return
+        self._railway.trains.add_to_repository(self._state.preview.train_to_preview)

@@ -10,11 +10,12 @@ class TrainPlacementView(SetupView):
         if world_pos is None:
             return
         closest_edge = self._railway.graph_service.get_closest_edge(world_pos)
-        if closest_edge and self._railway.stations.is_edge_platform(closest_edge) and not self._railway.trains.get_train_on_edge(closest_edge):
-            platform = self._railway.stations.get_platform_from_edge(closest_edge)
-            if self._state.train_config.total_length > len(platform) *  Config.SHORT_SEGMENT_LENGTH:
-                self._state.preview.invalid_platform_edges = platform
-            else:
-                self._state.preview.train_to_preview = self._railway.trains.create_train(platform, self._state.train_config)
-        else:
+        if closest_edge is None:
             draw_node(self._screen, world_pos, self._camera, Color.YELLOW)
+            return 
+        
+        is_valid, edges = self._railway.graph_service.calculate_train_preview(closest_edge, self._state.train_config.total_length)
+        if not is_valid:
+            self._state.preview.invalid_train_placement_edges = edges
+        else:
+            self._state.preview.train_to_preview = self._railway.trains.create_train(edges, self._state.train_config)

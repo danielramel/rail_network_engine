@@ -11,12 +11,12 @@ class SetupTool(Enum):
 class SetupPreview:
     train_id_to_remove: int | None = None
     train_to_preview: Train | None = None
-    invalid_platform_edges: frozenset = frozenset()
+    invalid_train_placement_edges: frozenset = frozenset()
     
     def clear(self) -> None:
         self.train_to_preview = None
         self.train_id_to_remove = None
-        self.invalid_platform_edges = frozenset()
+        self.invalid_train_placement_edges = frozenset()
 
 class SetupState:
     time: Time

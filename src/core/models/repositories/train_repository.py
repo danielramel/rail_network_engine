@@ -36,9 +36,9 @@ class TrainRepository:
         self._trains[id] = train
         return id
     
-    def create_train(self, platform: frozenset[Edge], config: TrainConfig) -> Train:
-        platform = [edge.sorted() for edge in sorted(platform)]
-        train = Train(platform, self._railway, config)
+    def create_train(self, edges: frozenset[Edge], config: TrainConfig) -> Train:
+        sorted_edges = [edge.sorted() for edge in sorted(edges)]
+        train = Train(sorted_edges, self._railway, config)
         return train
     
     def to_dict(self) -> dict:

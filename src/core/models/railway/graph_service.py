@@ -206,6 +206,60 @@ class GraphService:
                 
         return False, frozenset(edges)
     
+    def calculate_train_preview(self, edge: Edge, total_length: int) -> tuple[bool, frozenset[Edge]]:
+        edge_count = total_length // Config.SHORT_SEGMENT_LENGTH + 1
+        def is_node_blocked(node: Node) -> bool:
+            return self.is_junction(node)
+        
+        def is_edge_blocked(edge: Edge) -> bool:
+            if not self._railway.graph.has_edge(edge):
+                return True
+            
+            if self._railway.graph.get_edge_length(edge) != Config.SHORT_SEGMENT_LENGTH:
+                return True
+            
+            if self._railway.trains.get_train_on_edge(edge):
+                return True
+            return False
+            
+        if is_edge_blocked(edge):
+            return False, frozenset([edge])
+        
+        edges: set[Edge] = set()
+        stack: deque[Pose] = deque()
+        edges.add(edge)
+        
+        a, b = edge
+        pose_to_a = Pose.from_nodes(b, a)
+        pose_to_b = Pose.from_nodes(a, b)
+
+        if not is_node_blocked(a):
+            stack.append(pose_to_a)
+
+        if not is_node_blocked(b):
+            stack.append(pose_to_b)
+
+        while stack:
+            pose = stack.popleft()
+            
+            next_pose = pose.get_next_in_direction()
+            edge = Edge(pose.node, next_pose.node)
+
+            if is_edge_blocked(edge):
+                continue
+            
+            edges.add(edge)
+
+            if len(edges) >= edge_count:
+                return True, frozenset(edges)
+            
+            if is_node_blocked(next_pose.node):
+                continue
+            
+            stack.append(next_pose)
+                
+        return False, frozenset(edges)
+    
     def get_graph_middle(self) -> Position:
         min_x = min((node.x for node in self._railway.graph.nodes), default=0)
         max_x = max((node.x for node in self._railway.graph.nodes), default=0)

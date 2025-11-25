@@ -11,7 +11,7 @@ from shared.ui.services.color_from_speed import color_from_speed
         
 def draw_track(screen: pygame.Surface, world_edge: Edge, camera: Camera, edge_action: EdgeAction, length: int, speed: int = None) -> None:
     screen_edge = camera.world_to_screen(world_edge)
-    if edge_action is EdgeAction.BULLDOZE:
+    if edge_action is EdgeAction.BULLDOZE or edge_action is EdgeAction.INVALID_TRAIN_PLACEMENT:
         draw_rail(screen, screen_edge, camera, color=Color.RED, length=length, level=world_edge.level)
     elif edge_action is EdgeAction.INVALID_PLATFORM:
         draw_platform(screen, screen_edge, camera, color=Color.RED)

@@ -68,7 +68,7 @@ class MainMenuController:
         # Quit button in bottom left corner
         quit_button_width = 120
         quit_button_height = 50
-        quit_margin = 30
+        quit_margin = 20
         self._quit_button_rect = pygame.Rect(
             quit_margin,
             screen_h - quit_button_height - quit_margin,

@@ -52,6 +52,10 @@ class SimulationManager:
                     running = False
                     break
                 
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    running = False
+                    break
+                
                 self._states[self._current_state].dispatch_event(event)
             
             # Process Qt events without blocking (allows Qt windows to function)

@@ -33,7 +33,7 @@ class AppController(UIController, FullScreenUIComponent):
             if not successful:
                 alert_component.show_alert(f"Failed to load file: {filepath}\nCreating new empty simulation.")
             else:
-                self._app_state.switch_mode(ViewMode.SIMULATION)
+                self._app_state.switch_mode(ViewMode.SETUP)
             
                 
         middle_position = self._railway.graph_service.get_graph_middle()
@@ -97,3 +97,4 @@ class AppController(UIController, FullScreenUIComponent):
 # #TODO 
 # enter exit from map
 # ask for save on exit
+# signal routing
