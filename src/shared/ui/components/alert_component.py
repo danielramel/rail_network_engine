@@ -16,12 +16,15 @@ class AlertComponent(UIComponent):
         if not self._visible:
             return False
         
-        if event.type == pygame.MOUSEBUTTONUP:
-            self._visible = False
         if event.type == pygame.KEYDOWN:
+            if event.key not in (pygame.K_RETURN, pygame.K_ESCAPE):
+                return False
             self._visible = False
-            
-        return True
+            return True
+        
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            self._visible = False
+            return True
             
     def show_alert(self, message: str):
         self._visible = True

@@ -66,8 +66,15 @@ class RailwaySystem:
         }
         
     def replace_from_dict(self, data: dict) -> None:
-        self._graph_adapter = GraphAdapter.from_dict(data['graph'])
-        self._station_repository = StationRepository.from_dict(self, data["station_repository"])
-        self._signal_repository = SignalRepository.from_dict(self._graph_adapter, data["signal_repository"])
-        self._route_repository = RouteRepository.from_dict(self, data['route_repository'])
-        self._train_repository = TrainRepository.from_dict(data['train_repository'], self)
+        instance = RailwaySystem()
+        instance._graph_adapter = GraphAdapter.from_dict(data['graph'])
+        instance._station_repository = StationRepository.from_dict(instance, data["station_repository"])
+        instance._signal_repository = SignalRepository.from_dict(instance._graph_adapter, data["signal_repository"])
+        instance._route_repository = RouteRepository.from_dict(instance, data['route_repository'])
+        instance._train_repository = TrainRepository.from_dict(data['train_repository'], instance)
+        
+        self._graph_adapter = instance._graph_adapter
+        self._station_repository = instance._station_repository
+        self._signal_repository = instance._signal_repository
+        self._route_repository = instance._route_repository
+        self._train_repository = instance._train_repository

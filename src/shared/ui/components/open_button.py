@@ -10,13 +10,15 @@ from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.models.rectangle import RectangleUIComponent
 from core.models.event import Event
+from core.graphics.graphics_context import GraphicsContext
 
 
 class OpenButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent):
-    def __init__(self, screen: pygame.Surface, railway: RailwaySystem, app_state: AppState):
+    def __init__(self, railway: RailwaySystem, app_state: AppState, graphics: GraphicsContext):
         rect = pygame.Rect(200+Config.BUTTON_SIZE + Config.BUTTON_SIZE//5, Config.BUTTON_SIZE//5, Config.BUTTON_SIZE, Config.BUTTON_SIZE)
+        super().__init__(rect, graphics.screen)
+        self._graphics = graphics
         self._icon = IconLoader().get_icon(ICON_PATHS["LOAD"], Config.BUTTON_SIZE)
-        super().__init__(rect, screen)
         self._railway = railway
         self._app_state = app_state
         # define shortcut here after method exists
@@ -36,7 +38,7 @@ class OpenButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
 
     def load_game_ui(self):
         import tkinter as tk
-        from tkinter import filedialog, messagebox
+        from tkinter import filedialog
         import json
 
         root = tk.Tk()
@@ -55,7 +57,7 @@ class OpenButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
                 self._railway.replace_from_dict(data)
 
         except Exception as e:
-            messagebox.showerror("Load error", str(e))
+            self._graphics.alert_component.show_alert(f"Failed to load file: {filepath}\nIssue with loading: {str(e)}")
         finally:
             root.destroy()
             self._app_state.filepath = filepath

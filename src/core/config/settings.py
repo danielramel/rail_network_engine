@@ -1,6 +1,7 @@
 from core.config.color import Color
 
 class Config:
+    MAPS_FOLDER = "maps"
     GRID_SIZE = 40
     BUTTON_SIZE = 50
     STATION_RECT_WIDTH = 6

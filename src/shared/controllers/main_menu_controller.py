@@ -1,22 +1,32 @@
 import pygame
+import os
 from core.config.color import Color
+from core.config.settings import Config
 from core.models.geometry.position import Position
 from typing import Callable
 
+MAPS_FOLDER = Config.MAPS_FOLDER
+
 class MainMenuController:
-    """Main menu screen with options to create new railway or load existing one."""
-    
     def __init__(self, screen: pygame.Surface, start_callback: Callable):
         self._screen = screen
         self._start_callback = start_callback
         self._font_title = pygame.font.SysFont("Arial", 72, bold=True)
         self._font_button = pygame.font.SysFont("Arial", 36)
+        self._font_map_button = pygame.font.SysFont("Arial", 28)
+        
+        # Scan maps folder for available map files
+        self._map_files = self._scan_maps_folder()
         
         # Calculate button positions
         screen_w, screen_h = screen.get_size()
         button_width = 400
         button_height = 80
         button_spacing = 40
+        
+        map_button_width = 300
+        map_button_height = 50
+        map_button_spacing = 20
         
         center_x = screen_w // 2
         center_y = screen_h // 2
@@ -35,6 +45,22 @@ class MainMenuController:
             button_height
         )
         
+        # Create map file buttons
+        self._map_buttons: list[tuple[pygame.Rect, str, pygame.Surface]] = []
+        maps_start_y = self._load_button_rect.bottom + button_spacing
+        
+        for i, (filename, filepath) in enumerate(self._map_files):
+            button_rect = pygame.Rect(
+                center_x - map_button_width // 2,
+                maps_start_y + i * (map_button_height + map_button_spacing),
+                map_button_width,
+                map_button_height
+            )
+            # Create display name from filename (remove .json extension)
+            display_name = os.path.splitext(filename)[0].replace("_", " ").title()
+            text_surface = self._font_map_button.render(display_name, True, Color.WHITE)
+            self._map_buttons.append((button_rect, filepath, text_surface))
+        
         self._title_text = self._font_title.render("Rail Simulator", True, Color.WHITE)
         self._new_text = self._font_button.render("Create New Railway", True, Color.WHITE)
         self._load_text = self._font_button.render("Load Existing Railway", True, Color.WHITE)
@@ -42,6 +68,16 @@ class MainMenuController:
         self._hovered_button: str | None = None
         self._selected_action: str | None = None
         self._selected_filepath: str | None = None
+    
+    def _scan_maps_folder(self) -> list[tuple[str, str]]:
+        """Scan the maps folder and return list of (filename, filepath) tuples."""
+        map_files = []
+        if os.path.exists(MAPS_FOLDER) and os.path.isdir(MAPS_FOLDER):
+            for filename in sorted(os.listdir(MAPS_FOLDER)):
+                if filename.endswith(".json"):
+                    filepath = os.path.join(MAPS_FOLDER, filename)
+                    map_files.append((filename, filepath))
+        return map_files
     
     def dispatch_event(self, pygame_event: pygame.event) -> str | None:
         if pygame_event.type == pygame.MOUSEMOTION:
@@ -51,7 +87,12 @@ class MainMenuController:
             elif self._load_button_rect.collidepoint(mouse_pos.x, mouse_pos.y):
                 self._hovered_button = "load"
             else:
+                # Check map buttons
                 self._hovered_button = None
+                for i, (rect, filepath, _) in enumerate(self._map_buttons):
+                    if rect.collidepoint(mouse_pos.x, mouse_pos.y):
+                        self._hovered_button = f"map_{i}"
+                        break
         
         if pygame_event.type == pygame.MOUSEBUTTONUP and pygame_event.button == 1:
             mouse_pos = Position(*pygame.mouse.get_pos())
@@ -62,6 +103,13 @@ class MainMenuController:
                 filepath = self._open_file_dialog()
                 if filepath:
                     self._start_callback(filepath)
+            
+            else:
+                # Check map buttons
+                for rect, filepath, _ in self._map_buttons:
+                    if rect.collidepoint(mouse_pos.x, mouse_pos.y):
+                        self._start_callback(filepath)
+                        break
                     
     
     def _open_file_dialog(self) -> str | None:
@@ -95,6 +143,10 @@ class MainMenuController:
         # Draw buttons
         self._draw_button(self._new_button_rect, self._new_text, self._hovered_button == "new")
         self._draw_button(self._load_button_rect, self._load_text, self._hovered_button == "load")
+        
+        # Draw map file buttons
+        for i, (rect, filepath, text_surface) in enumerate(self._map_buttons):
+            self._draw_button(rect, text_surface, self._hovered_button == f"map_{i}")
     
     def _draw_button(self, rect: pygame.Rect, text_surface: pygame.Surface, hovered: bool):
         """Draw a menu button."""

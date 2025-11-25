@@ -4,6 +4,7 @@ import networkx as nx
 from core.models.rail import Rail
 from core.models.geometry.pose import Pose
 from core.models.geometry.node import Node
+from core.config.settings import Config
 
 class GraphAdapter:
     def __init__(self):
@@ -119,6 +120,8 @@ class GraphAdapter:
         for edge in graph_data['edges']:
             edge['source'] = Node.from_dict(edge['source'])
             edge['target'] = Node.from_dict(edge['target'])
+            if edge["length"] not in (Config.SHORT_SEGMENT_LENGTH, Config.LONG_SEGMENT_LENGTH):
+                edge["length"] = Config.SHORT_SEGMENT_LENGTH
 
         instance._graph = nx.node_link_graph(graph_data, edges="edges")
         

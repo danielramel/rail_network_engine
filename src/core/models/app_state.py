@@ -21,7 +21,6 @@ class AppState:
     def mode(self) -> ViewMode:
         return self._mode
     
-    
     def switch_mode(self, new_mode: ViewMode) -> None:
         if self._mode == new_mode:
             return
