@@ -28,7 +28,7 @@ class ZoomButton(RectangleUIComponent, ClickableUIComponent):
 
     def _get_zoom_box(self, screen: pygame.Surface) -> pygame.Rect:
         w, h = screen.get_size()
-        return pygame.Rect(w - 100, h - 50, 80, 30)
+        return pygame.Rect(w - 90, 10, 80, 30)
     
     def _on_click(self, event: Event) -> bool:        
         if event.is_left_click:

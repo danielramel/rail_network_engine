@@ -20,7 +20,7 @@ class TrainPanel(Panel):
         self._init_buttons()
         
     def change_index(self, index: int):
-        self._rect.y = 20 + index * 270
+        self._rect.y = 100 + index * 270
         self._init_buttons()
 
     def render(self, screen_pos):

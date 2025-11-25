@@ -7,6 +7,7 @@ ICON_CATEGORIES = {
         "SAVE": "save.png",
         "SAVED": "saved.png",
         "LOAD": "load.png",
+        "EXIT": "exit.png"
     },
     "construction/": {
         "RAIL": "rail.png",

@@ -38,7 +38,11 @@ class SimulationManager:
 
     def _start_simulation(self, filepath: str | None = None):
         self._current_state = Phase.SIMULATION
-        self._states[Phase.SIMULATION] = AppController(self.screen, filepath)
+        self._states[Phase.SIMULATION] = AppController(self.screen, self._exit_simulation, filepath)
+        
+    def _exit_simulation(self):
+        self._current_state = Phase.MENU
+        self._states[Phase.SIMULATION] = None
 
     def run(self):
         running = True

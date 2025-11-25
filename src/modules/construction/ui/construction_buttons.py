@@ -57,14 +57,14 @@ class ConstructionButtons(ShortcutUIComponent, ClickableUIComponent):
 
     def _get_buttons(self, screen: pygame.Surface) -> list[tuple[ConstructionTool, pygame.Rect]]:
         button_margin = Config.BUTTON_SIZE // 5
-        _, h = screen.get_size()
+        w, h = screen.get_size()
         buttons = []
         for i, tool in enumerate(ConstructionTool):
             offset = (Config.BUTTON_SIZE + button_margin) * i
             if tool is ConstructionTool.BULLDOZE:
                 offset += (Config.BUTTON_SIZE + button_margin)
             rect = pygame.Rect(
-                button_margin + offset,
+                w - 7 * (Config.BUTTON_SIZE + button_margin) + offset,
                 h - Config.BUTTON_SIZE - button_margin,
                 Config.BUTTON_SIZE,
                 Config.BUTTON_SIZE

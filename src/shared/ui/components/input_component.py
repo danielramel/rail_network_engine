@@ -81,7 +81,7 @@ class InputComponent(UIComponent):
         blur_src = self._screen.copy()
         small = pygame.transform.smoothscale(blur_src, (w // 10, h // 10))
         blur = pygame.transform.smoothscale(small, (w, h))
-        blur.set_alpha(180)
+        blur.set_alpha(130)
         self._screen.blit(blur, (0, 0))
 
         pygame.draw.rect(self._screen, Color.BLACK, box_rect, border_radius=16)

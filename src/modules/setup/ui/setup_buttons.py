@@ -56,11 +56,11 @@ class SetupButtons(ShortcutUIComponent, ClickableUIComponent):
 
     def _get_buttons(self, screen: pygame.Surface) -> list[tuple[SetupTool, pygame.Rect]]:
         button_margin = Config.BUTTON_SIZE // 5
-        _, h = screen.get_size()
+        w, h = screen.get_size()
         buttons = []
         for i, tool in enumerate(SetupTool):
             rect = pygame.Rect(
-                button_margin + (Config.BUTTON_SIZE + button_margin) * i,
+                w - 2 * (Config.BUTTON_SIZE + button_margin) + (Config.BUTTON_SIZE + button_margin) * i,
                 h - Config.BUTTON_SIZE - button_margin,
                 Config.BUTTON_SIZE,
                 Config.BUTTON_SIZE
