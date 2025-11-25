@@ -32,8 +32,6 @@ class AppController(UIController, FullScreenUIComponent):
             successful = self.load_file(filepath)
             if not successful:
                 alert_component.show_alert(f"Failed to load file: {filepath}\nCreating new empty simulation.")
-            else:
-                self._app_state.switch_mode(ViewMode.SETUP)
             
                 
         middle_position = self._railway.graph_service.get_graph_middle()

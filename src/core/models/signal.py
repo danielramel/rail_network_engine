@@ -3,42 +3,53 @@ from core.models.geometry.pose import Pose
 from core.models.geometry.edge import Edge
 from core.models.geometry.direction import Direction
 from core.models.geometry.node import Node
-from typing import Callable
+from typing import Callable, Optional
 
 @dataclass
 class Signal:
     pose: Pose
-    next_signal: 'Signal' = None
+    next_signal: Optional['Signal'] = None
     path: list[Edge] = field(default_factory=list)
-    _subscriber: Callable = None
+    _release_subscriber: Callable = None
+    _drop_subscriber: Callable = None
+    _passed_subscriber: Callable = None
 
-    def connect(self, path: list[Edge], signal: 'Signal') -> None:
+    def release(self, path: list[Edge], signal: 'Signal') -> None:
         self.next_signal = signal
         self.path = path
-        if self._subscriber is not None:
-            func = self._subscriber
-            self._subscriber = None
-            func(self, path, signal)
+        if self._release_subscriber is not None:
+            self._release_subscriber(self)
         
-    def subscribe(self, func: Callable) -> None:
-        self._subscriber = func
-        return self.unsubscribe
+    def subscribe_release(self, func: Callable) -> Callable:
+        self._release_subscriber = func
+        def unsubscribe():
+            self._release_subscriber = None
+        return unsubscribe
     
-    def unsubscribe(self) -> None:
-        self._subscriber = None
+    def passed_subscribe(self, func: Callable) -> Callable:
+        self._passed_subscriber = func
+        def unsubscribe():
+            self._passed_subscriber = None
+        return unsubscribe
+    
+    def subscribe_drop(self, func: Callable) -> None:
+        self._drop_subscriber = func
         
     def reached(self) -> None:
-        self._subscriber = None
+        self._release_subscriber = None
         self.next_signal = None
         self.path = []
+        
+    def passed(self) -> None:
+        self._passed_subscriber()
         
     def drop(self) -> None:
         self.next_signal = None
         self.path = []
 
-        if self._subscriber is not None:
-            func = self._subscriber
-            self._subscriber = None
+        if self._drop_subscriber is not None:
+            func = self._drop_subscriber
+            self._drop_subscriber = None
             func()
         
     @property

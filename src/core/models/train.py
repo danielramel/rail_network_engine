@@ -22,7 +22,7 @@ class Train:
     live : bool = False
     _path_distance : float = 0.0
     _occupied_edge_count_cache : int | None = None
-    _unsubscribe: Callable | None = None
+    _release_unsubscribe: Callable | None = None
     _speed_profile: list[float] = None
     _routed_to_station_ahead: bool = False
     _dwell_time_counter: float = 0.0
@@ -81,23 +81,23 @@ class Train:
         
     def set_initial_path(self) -> None:
         path, signal = self._railway.signalling.get_initial_path(self.get_locomotive_pose())
-        self.extend_path(path, signal)
+        self.path += [self._railway.graph.get_rail(edge) for edge in path]
+        self.extend_path(signal)
         
-    def signal_cleared(self, signal: Signal, path: list[Edge], next_signal: Signal) -> bool:
-        self.extend_path(path, next_signal)
+    def signal_released(self, signal: Signal) -> bool:
+        self._release_unsubscribe()
+        self.extend_path(signal)
         self.compute_speed_profile()
-        signal.subscribe(self.signal_dropped)
         
-    def extend_path(self, extension: list[Edge], signal: Signal) -> None:
-        self.path += [self._railway.graph.get_rail(edge) for edge in extension]
+    def extend_path(self, signal: Signal) -> None:
         while signal.next_signal is not None:
             self.path += [self._railway.graph.get_rail(edge) for edge in signal.path]
-            signal.subscribe(self.signal_dropped)
+            signal.subscribe_drop(self.signal_dropped)
             signal = signal.next_signal
-        self._unsubscribe = signal.subscribe(self.signal_cleared)
+        self._release_unsubscribe = signal.subscribe_release(self.signal_released)
     
     def signal_dropped(self) -> None:
-        self._unsubscribe()
+        self._release_unsubscribe()
         self.path = self.path[:self._occupied_edge_count]
         self._routed_to_station_ahead = False
         self.set_initial_path()
@@ -111,7 +111,7 @@ class Train:
         self.live = False
         self._railway.signalling.release_path([rail.edge for rail in self.path[self._occupied_edge_count:]])
         self.path = self.path[:self._occupied_edge_count]
-        self._unsubscribe()
+        self._release_unsubscribe()
         self._routed_to_station_ahead = False
         
         

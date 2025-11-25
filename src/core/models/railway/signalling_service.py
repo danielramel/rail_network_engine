@@ -103,7 +103,7 @@ class SignallingService:
         for i, pose in enumerate(poses[1:], start=1):
             if self._railway.signals.has_with_pose(pose):
                 signal = self._railway.signals.get(pose.node)
-                current_signal.connect(edges[current_signal_index:i], signal)
+                current_signal.release(edges[current_signal_index:i], signal)
                 current_signal = signal
                 current_signal_index = i
                 
