@@ -2,7 +2,6 @@
 from math import floor
 from core.models.geometry.position import Position
 import pygame
-from core.config.settings import Config
 from core.graphics.camera import Camera
 
 def draw_grid(screen: pygame.Surface, camera: Camera):

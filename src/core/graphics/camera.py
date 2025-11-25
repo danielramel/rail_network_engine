@@ -23,23 +23,23 @@ class Camera:
         """Scale a value according to the current camera scale"""
         return value * self.scale
 
-    def screen_to_world(self, pos: Position | Edge) -> Position | Edge:
+    def screen_to_world(self, pos: Position) -> Position:
         """Convert screen coordinates to world coordinates"""
-        if isinstance(pos, Edge):
-            return Edge(self.screen_to_world(pos.a), self.screen_to_world(pos.b))
-
         world_x = ((pos.x / self.scale) - self.x) / Config.GRID_SIZE
         world_y = ((pos.y / self.scale) - self.y) / Config.GRID_SIZE
         return Position(world_x, world_y)
 
-    def world_to_screen(self, pos: Position | Node | Edge) -> Position | Edge:
+    def world_to_screen(self, pos: Position | Node) -> Position:
         """Convert world coordinates to screen coordinates"""
-        if isinstance(pos, Edge):
-            return Edge(self.world_to_screen(pos.a), self.world_to_screen(pos.b))
-
         screen_x = (pos.x * Config.GRID_SIZE + self.x) * self.scale
         screen_y = (pos.y * Config.GRID_SIZE + self.y) * self.scale
         return Position(screen_x, screen_y)
+    
+    def world_to_screen_edge(self, edge: Edge) -> tuple[Position, Position]:
+        """Convert world edge coordinates to screen coordinates"""
+        a = self.world_to_screen(edge.a)
+        b = self.world_to_screen(edge.b)
+        return (a, b)
 
     
     def start_drag(self, mouse_pos: Position):

@@ -10,36 +10,36 @@ from shared.ui.services.color_from_speed import color_from_speed
 
         
 def draw_track(screen: pygame.Surface, world_edge: Edge, camera: Camera, edge_action: EdgeAction, length: int, speed: int = None) -> None:
-    screen_edge = camera.world_to_screen(world_edge)
+    a, b = camera.world_to_screen_edge(world_edge)
     if edge_action is EdgeAction.BULLDOZE or edge_action is EdgeAction.INVALID_TRAIN_PLACEMENT:
-        draw_rail(screen, screen_edge, camera, color=Color.RED, length=length, level=world_edge.level)
+        draw_rail(screen, (a, b), camera, color=Color.RED, length=length, level=world_edge.level)
     elif edge_action is EdgeAction.INVALID_PLATFORM:
-        draw_platform(screen, screen_edge, camera, color=Color.RED)
+        draw_platform(screen, (a, b), camera, color=Color.RED)
     elif edge_action is EdgeAction.PLATFORM_SELECTED:
-        draw_platform(screen, screen_edge, camera, color=Color.LIGHTBLUE)
+        draw_platform(screen, (a, b), camera, color=Color.LIGHTBLUE)
     elif edge_action is EdgeAction.PLATFORM:
-        draw_platform(screen, screen_edge, camera, color=Color.PURPLE)
+        draw_platform(screen, (a, b), camera, color=Color.PURPLE)
     elif edge_action is EdgeAction.LOCKED_PLATFORM:
-        draw_platform(screen, screen_edge, camera, color=Color.LIME)
+        draw_platform(screen, (a, b), camera, color=Color.LIME)
     elif edge_action is EdgeAction.LOCKED_PREVIEW:
-        draw_rail(screen, screen_edge, camera, color=Color.GREEN, length=length, level=world_edge.level)
+        draw_rail(screen, (a, b), camera, color=Color.GREEN, length=length, level=world_edge.level)
     elif edge_action is EdgeAction.LOCKED:
-        draw_rail(screen, screen_edge, camera, color=Color.LIME, length=length, level=world_edge.level)
+        draw_rail(screen, (a, b), camera, color=Color.LIME, length=length, level=world_edge.level)
     elif edge_action is EdgeAction.NO_SPEED:
-        draw_rail(screen, screen_edge, camera, color=Color.WHITE, length=length, level=world_edge.level)
+        draw_rail(screen, (a, b), camera, color=Color.WHITE, length=length, level=world_edge.level)
     elif edge_action is EdgeAction.SPEED:
         color = color_from_speed(speed)
-        draw_rail(screen, screen_edge, camera, color=color, length=length, level=world_edge.level)
+        draw_rail(screen, (a, b), camera, color=color, length=length, level=world_edge.level)
             
-def draw_rail(screen: pygame.Surface, edge: Edge, camera: Camera, color: tuple[int, int, int], length: int, level: int) -> None:
+def draw_rail(screen: pygame.Surface, screen_edge: tuple[Position, Position], camera: Camera, color: tuple[int, int, int], length: int, level: int) -> None:
     if level == 1:
-        draw_tunnel(screen, edge, camera, color, length)
+        draw_tunnel(screen, screen_edge, color, length)
         return
-    """Draw a track as a dotted line on the screen from edge.a to edge.b."""
     if length == Config.SHORT_SECTION_LENGTH:
-        pygame.draw.aaline(screen, color, tuple(edge.a), tuple(edge.b), max(1, 2*int(camera.scale)))
+        a, b = screen_edge
+        pygame.draw.aaline(screen, color, tuple(a), tuple(b), max(1, 2*int(camera.scale)))
     elif length == Config.LONG_SECTION_LENGTH:
-        draw_long_track(screen, edge, color=color, width=max(1, 2*int(camera.scale)))
+        draw_long_track(screen, screen_edge, color=color, width=max(1, 2*int(camera.scale)))
     else:
         raise NotImplementedError("Edge length drawing not implemented for length:", length)
     
@@ -65,8 +65,8 @@ def draw_long_track(screen: pygame.Surface, screen_edge: Edge, color, width: int
     
     
         
-def draw_platform(screen: pygame.Surface, edge: Edge, camera: Camera, color=Color.PURPLE):
-    a, b = edge
+def draw_platform(screen: pygame.Surface, screen_edge: tuple[Position, Position], camera: Camera, color=Color.PURPLE):
+    a, b = screen_edge
     offset = int(2 * camera.scale)  # pixels of separation
     # Calculate direction vector
     (ax, ay), (bx, by) = a, b
@@ -91,7 +91,7 @@ def draw_platform(screen: pygame.Surface, edge: Edge, camera: Camera, color=Colo
     
     
     
-def draw_tunnel(screen: pygame.Surface, screen_edge: Edge, camera: Camera, color: Color, length: int) -> None:
+def draw_tunnel(screen: pygame.Surface, screen_edge: tuple[Position, Position], color: tuple[int, int, int], length: int) -> None:
     a, b = screen_edge
     if a == b:
         return
