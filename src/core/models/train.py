@@ -177,7 +177,7 @@ class Train:
     def to_dict(self) -> dict:
         return {
             'id': self.id,
-            'path': [rail.edge.to_dict_simple() for rail in self.path],
+            'path': [rail.edge.to_dict() for rail in self.path],
             'config': self.config.to_dict(),
             '_path_distance': self._path_distance
         }

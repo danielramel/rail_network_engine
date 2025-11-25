@@ -15,7 +15,7 @@ class Station:
             "name": self.name,
             "node": self.node.to_dict(),
             "platforms": [
-            [edge.to_dict_simple() for edge in platform]
+            [edge.to_dict() for edge in platform]
             for platform in self.platforms
             ]
         }

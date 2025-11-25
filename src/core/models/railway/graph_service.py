@@ -264,8 +264,6 @@ class GraphService:
         return False, frozenset(edges)
     
     def get_graph_middle(self) -> Position:
-        min_x = min((node.x for node in self._railway.graph.nodes), default=0)
-        max_x = max((node.x for node in self._railway.graph.nodes), default=0)
-        min_y = min((node.y for node in self._railway.graph.nodes), default=0)
-        max_y = max((node.y for node in self._railway.graph.nodes), default=0)
-        return Position((min_x + max_x) / 2, (min_y + max_y) / 2)
+        avg_x = sum(node.x for node in self._railway.graph.nodes) / len(self._railway.graph.nodes) if self._railway.graph.nodes else 0
+        avg_y = sum(node.y for node in self._railway.graph.nodes) / len(self._railway.graph.nodes) if self._railway.graph.nodes else 0
+        return Position(avg_x, avg_y)
