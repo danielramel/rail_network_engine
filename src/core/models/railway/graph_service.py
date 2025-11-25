@@ -245,21 +245,21 @@ class GraphService:
         while stack:
             pose = stack.popleft()
             
-            next_pose = pose.get_next_in_direction()
-            edge = Edge(pose.node, next_pose.node)
+            for neighbor_pose in self.get_turn_neighbors(pose):
+                edge = Edge(pose.node, neighbor_pose.node)
 
-            if is_edge_blocked(edge):
-                continue
-            
-            edges.add(edge)
+                if is_edge_blocked(edge):
+                    continue
+                
+                edges.add(edge)
 
-            if len(edges) >= edge_count:
-                return True, frozenset(edges)
-            
-            if is_node_blocked(next_pose.node):
-                continue
-            
-            stack.append(next_pose)
+                if len(edges) >= edge_count:
+                    return True, frozenset(edges)
+                
+                if is_node_blocked(neighbor_pose.node):
+                    continue
+                
+                stack.append(neighbor_pose)
                 
         return False, frozenset(edges)
     

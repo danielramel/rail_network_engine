@@ -9,7 +9,7 @@ class TrainPlacementView(SetupView):
         self._state.preview.clear()
         if world_pos is None:
             return
-        closest_edge = self._railway.graph_service.get_closest_edge(world_pos)
+        closest_edge = self._railway.graph_service.get_closest_edge(world_pos, only_surface = False)
         if closest_edge is None:
             draw_node(self._screen, world_pos, self._camera, Color.YELLOW)
             return 

@@ -26,6 +26,6 @@ class Station:
             name=data["name"],
             node=Node.from_dict(data["node"]),
             id=data["id"],
-            platforms={frozenset(Edge.from_dict_simple(edge_data) for edge_data in platform_data)
+            platforms={frozenset(Edge.from_dict(edge_data) for edge_data in platform_data)
                        for platform_data in data["platforms"]}
         )

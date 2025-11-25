@@ -184,7 +184,7 @@ class Train:
         
     @classmethod
     def from_dict(cls, data: dict, railway: 'RailwaySystem') -> 'Train':
-        edges = [Edge.from_dict_simple(edge_data) for edge_data in data['path']]
+        edges = [Edge.from_dict(edge_data) for edge_data in data['path']]
         config = TrainConfig.from_dict(data['config'])
         train = cls(edges, railway, config)
         train.id = data['id']

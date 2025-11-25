@@ -88,13 +88,3 @@ class AppController(UIController, FullScreenUIComponent):
                 return True
         except Exception as e:
             return False    
-    
-    
-    
-    
-    
-    
-# #TODO 
-# enter exit from map
-# ask for save on exit
-# signal routing

@@ -92,7 +92,7 @@ class GraphAdapter:
         
         
     def to_dict(self) -> dict:
-        graph_data = nx.node_link_data(self._graph, edges="edges") #TODO deprecated
+        graph_data = nx.node_link_data(self._graph, edges="edges")
         
         for node in graph_data['nodes']:
             node['id'] = node['id'].to_dict()
