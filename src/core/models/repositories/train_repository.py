@@ -48,7 +48,7 @@ class TrainRepository:
         }
         
     @classmethod
-    def from_dict(cls, data: dict, railway: 'RailwaySystem') -> 'TrainRepository':
+    def from_dict(cls, railway: 'RailwaySystem', data: dict) -> 'TrainRepository':
         instance = cls(railway)
         for train_data in data['trains']:
             train = Train.from_dict(train_data, railway)

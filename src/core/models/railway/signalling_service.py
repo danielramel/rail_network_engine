@@ -1,5 +1,4 @@
 import heapq
-from typing import Optional
 from core.models.geometry.edge import Edge
 from core.models.geometry.node import Node
 from core.models.geometry.pose import Pose
@@ -27,6 +26,9 @@ class SignallingService:
     
     def passed(self, edge: Edge):
         self._railway.graph.set_edge_attr(edge, 'locked', False)
+        signal = self._railway.signals.get(edge.b)
+        if signal is not None and signal.direction == edge.direction:
+            signal.passed()
         
     def reached(self, node: Node):
         signal = self._railway.signals.get(node)
@@ -92,7 +94,7 @@ class SignallingService:
         edges = [Edge(poses[i].node, poses[i+1].node) for i in range(len(poses)-1)]
         return edges
             
-    def connect_signals(self, from_signal: Signal, to_signal: Signal) -> None:
+    def connect_signals(self, from_signal: Signal, to_signal: Signal, continuous_connection: bool) -> None:
         poses = self.find_path(from_signal.pose, to_signal.pose)
         if poses is None:
             return None
@@ -103,7 +105,7 @@ class SignallingService:
         for i, pose in enumerate(poses[1:], start=1):
             if self._railway.signals.has_with_pose(pose):
                 signal = self._railway.signals.get(pose.node)
-                current_signal.release(edges[current_signal_index:i], signal)
+                current_signal.connect(edges[current_signal_index:i], signal, continuous_connection)
                 current_signal = signal
                 current_signal_index = i
                 

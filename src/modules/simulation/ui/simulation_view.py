@@ -51,13 +51,14 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
 
         for signal in self._railway.signals.all():
             color = Color.RED
-            if signal.next_signal is not None:
-                color = Color.GREEN
-            if signal == self._state.selected_signal:
+            
+            if signal is self._state.selected_signal:
                 color = Color.LIME
-            elif signal == self._state.preview.signal:
+            elif signal.next_signal is not None:
+                color = Color.GREEN
+            elif signal is self._state.preview.signal:
                 color = Color.LIGHTBLUE
-            draw_signal(self._screen, signal, self._camera, color)
+            draw_signal(self._screen, signal, self._camera, color, automatic=(signal.automatically_reconnect is not None))
         
 
         for station in self._railway.stations.all():

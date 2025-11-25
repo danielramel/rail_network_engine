@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from core.models.geometry.edge import Edge
 from core.models.signal import Signal
-from typing import Callable
+from typing import Callable, Optional
 from enum import Enum
 from core.config.settings import Config
 from core.models.time import Time
@@ -33,8 +33,8 @@ class TimeControlState:
 @dataclass
 class SimulationPreview:
     path: list[Edge] = field(default_factory=list)
-    signal: Signal = None
-    train_id: int = None
+    signal: Optional[Signal] = None
+    train_id: Optional[int] = None
     
     def clear(self) -> None:
         self.path = []
@@ -44,11 +44,11 @@ class SimulationPreview:
 @dataclass
 class SimulationState:
     time: Time
-    selected_signal: Signal = None
+    selected_signal: Optional[Signal] = None
     time_control: TimeControlState = TimeControlState()
     preview: SimulationPreview = field(default_factory=SimulationPreview)
     selected_trains: list[int] = field(default_factory=list)
-    selected_trains_callback: Callable = None
+    selected_trains_callback: Optional[Callable] = None
     
     def tick(self) -> None:
         """Advance the current time by the specified number of seconds."""

@@ -52,7 +52,8 @@ class Pose(NamedTuple):
         return Pose(
             Node(
                 self.node.x - self.direction.x,
-                self.node.y - self.direction.y
+                self.node.y - self.direction.y,
+                self.node.level
                 ),
             self.direction
         )

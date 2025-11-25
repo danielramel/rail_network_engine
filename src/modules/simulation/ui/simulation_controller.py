@@ -33,7 +33,9 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
             signal = self._railway.signals.get(snapped)
                         
             if self._state.selected_signal:
-                self._railway.signalling.connect_signals(self._state.selected_signal, signal)
+                mods = pygame.key.get_mods()
+                shift_pressed = bool(mods & pygame.KMOD_SHIFT)
+                self._railway.signalling.connect_signals(self._state.selected_signal, signal, shift_pressed)
                 self._state.selected_signal = None
             else:
                 self._state.selected_signal = signal

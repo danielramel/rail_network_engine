@@ -18,7 +18,7 @@ ANGLE_MAP = {
 }
 
 
-def draw_signal(screen: pygame.Surface, alignment: Pose, camera: Camera, color=Color.WHITE):
+def draw_signal(screen: pygame.Surface, alignment: Pose, camera: Camera, color=Color.WHITE, automatic: bool = False) -> None:
     """Draw a signal triangle at the given position and orientation."""
     size = int(20 * camera.scale)
 
@@ -49,4 +49,6 @@ def draw_signal(screen: pygame.Surface, alignment: Pose, camera: Camera, color=C
     scr_pts = [(sx + px, sy + py) for px, py in rot_pts]
 
     pygame.draw.polygon(screen, Color.BLACK, scr_pts)
-    pygame.draw.polygon(screen, color, scr_pts, 2)
+    width = 3 if automatic else 1
+    width = max(1, int(camera.scale * width))
+    pygame.draw.polygon(screen, color, scr_pts, width)
