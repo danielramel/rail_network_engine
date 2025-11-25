@@ -12,7 +12,7 @@ class StationRepository:
     """In-memory repository for Station objects with platform management."""
     
     def __init__(self, railway: "RailwaySystem"):
-        self._stations: dict[str, Station] = {}
+        self._stations: dict[int, Station] = {} 
         self._next_id: int = 1
         self._railway = railway
     
@@ -22,14 +22,14 @@ class StationRepository:
         self._next_id += 1
         return station
     
-    def _remove(self, station_id: str) -> Station:
+    def _remove(self, station_id: int) -> Station:
         return self._stations.pop(station_id)
     
-    def move(self, station_id: str, new_node: Node) -> None:
+    def move(self, station_id: int, new_node: Node) -> None:
         station = self._stations[station_id]
         station.node = new_node
     
-    def get(self, station_id: str) -> Station:
+    def get(self, station_id: int) -> Station:
         return self._stations[station_id]
     
     def get_by_node(self, node: Node) -> Station | None:
@@ -50,7 +50,7 @@ class StationRepository:
     def is_within_any(self, node: Node) -> bool:
         return any(node.is_within_station_rect(station.node) for station in self._stations.values())
     
-    def add_platform(self, station_id: str, edges: frozenset[Edge]) -> None:
+    def add_platform(self, station_id: int, edges: frozenset[Edge]) -> None:
         platform = [edge.sorted() for edge in sorted(edges)]
         self._railway.graph.set_edge_attr(platform[0], 'station', station_id)
         for edge in platform[1:]:
@@ -81,7 +81,7 @@ class StationRepository:
             return False
         return self._railway.graph.has_edge_attr(edge, 'station')
     
-    def get_edge_platform(self, edge: Edge) -> str | None:
+    def get_edge_station(self, edge: Edge) -> str | None:
         if not self.is_edge_platform(edge):
             return None
         return self._railway.graph.get_edge_attr(edge, 'station')
@@ -119,7 +119,7 @@ class StationRepository:
     def to_dict(self) -> dict:
         return {
             "next_id": self._next_id,
-            "stations": {station.id: station.to_dict() for station in self._stations.values()},
+            "stations": [station.to_dict() for station in self._stations.values()],
         }
     
     @classmethod
@@ -127,17 +127,7 @@ class StationRepository:
         instance = cls(graph)
         instance._next_id = data["next_id"]
         
-        stations = data["stations"]
-        for id, station_data in stations.items():
-            id = int(id)
-            station = Station(
-                name=station_data["name"],
-                node=Node.from_dict(station_data["node"]),
-                id=id,
-                platforms={frozenset(Edge.from_dict_simple(edge_data) for edge_data in platform_data)
-                           for platform_data in station_data["platforms"]}
-            )
-            instance._stations[id] = station
-            for platform in station.platforms:
-                instance.add_platform(id, platform)
+        for station_data in data["stations"]:
+            station = Station.from_dict(station_data)
+            instance._stations[station.id] = station
         return instance

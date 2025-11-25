@@ -122,7 +122,7 @@ class Train:
         speed = 0.0
         for rail in reversed(self.path[self._occupied_edge_count - 1:]):
             if not self._routed_to_station_ahead and self._railway.stations.is_edge_platform(rail.edge):
-                station_id = self._railway.stations.get_edge_platform(rail.edge)
+                station_id = self._railway.stations.get_edge_station(rail.edge)
                 if self.schedule and station_id == self.schedule.get_next_station().id:
                     self._routed_to_station_ahead = True
                     speed = 0.0
