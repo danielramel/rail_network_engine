@@ -3,8 +3,8 @@ from typing import Callable, Optional
 
 
 class ViewMode(Enum):
-    SETUP = auto()
     CONSTRUCTION = auto()
+    SETUP = auto()
     SIMULATION = auto()
     
 class AppState:

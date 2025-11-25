@@ -1,8 +1,6 @@
 from typing import Callable
 import pygame
 from core.config.paths import ICON_PATHS
-from core.models.app_state import AppState
-from core.models.railway.railway_system import RailwaySystem
 from core.graphics.icon_loader import IconLoader
 from core.models.geometry.position import Position
 from core.config.color import Color

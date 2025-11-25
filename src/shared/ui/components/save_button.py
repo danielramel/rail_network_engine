@@ -16,10 +16,11 @@ import json
 class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent):
     _save_timestamp: int = -5000
     def __init__(self, screen: pygame.Surface, railway: RailwaySystem, app_state: AppState) -> None:
+        w, h = screen.get_size()
+        rect = pygame.Rect(10, h - 2*(Config.BUTTON_SIZE + 10), Config.BUTTON_SIZE, Config.BUTTON_SIZE)
+        super().__init__(rect, screen)
         self._icon = IconLoader().get_icon(ICON_PATHS["SAVE"], Config.BUTTON_SIZE)
         self._saved_icon = IconLoader().get_icon(ICON_PATHS["SAVED"], Config.BUTTON_SIZE)
-        rect = pygame.Rect(200, Config.BUTTON_SIZE//5, Config.BUTTON_SIZE, Config.BUTTON_SIZE)
-        super().__init__(rect, screen)
         self._railway = railway
         self._app_state = app_state
         self._shortcuts = {

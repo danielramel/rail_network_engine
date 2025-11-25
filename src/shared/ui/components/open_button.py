@@ -15,7 +15,8 @@ from core.graphics.graphics_context import GraphicsContext
 
 class OpenButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent):
     def __init__(self, railway: RailwaySystem, app_state: AppState, graphics: GraphicsContext):
-        rect = pygame.Rect(200+Config.BUTTON_SIZE + Config.BUTTON_SIZE//5, Config.BUTTON_SIZE//5, Config.BUTTON_SIZE, Config.BUTTON_SIZE)
+        w, h = graphics.screen.get_size()
+        rect = pygame.Rect(10, h - 3*(Config.BUTTON_SIZE + 10), Config.BUTTON_SIZE, Config.BUTTON_SIZE)
         super().__init__(rect, graphics.screen)
         self._graphics = graphics
         self._icon = IconLoader().get_icon(ICON_PATHS["LOAD"], Config.BUTTON_SIZE)
