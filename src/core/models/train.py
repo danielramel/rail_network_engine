@@ -34,6 +34,9 @@ class Train:
         self.path = [self._railway.graph.get_rail(edge) for edge in edges]
         self._path_distance = self.get_distance_until_next_edge() - Config.TRAIN_SAFETY_BUFFER
         
+        if self._path_distance < 0.0:
+            self._path_distance += self.path[0].length
+        
     def tick(self):
         if not self.live:
             return
