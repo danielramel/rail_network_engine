@@ -5,9 +5,7 @@ from core.models.event import Event
 from modules.setup.models.setup_state import SetupState
 from shared.ui.models.panel import Panel
     
-class TrainPlacementPanel(Panel):
-    """Signal placement panel with instructions."""
-    
+class TrainPlacementPanel(Panel):    
     def __init__(self, screen: pygame.Surface, state: SetupState) -> None:
         super().__init__(screen, height=210)
         self._state = state
@@ -19,13 +17,9 @@ class TrainPlacementPanel(Panel):
             'decel': (0.5, 3.0, 0.1)
         }
         
-        # Pre-render static text
         self.title_screen = self.title_font.render("Train Placement", True, Color.YELLOW)
-        self.instruction1_screen = self.instruction_font.render(
-            "Click on rail to place train.", True, Color.WHITE
-        )
         
-        # Calculate and store all layout rects
+        
         self._init_layout()
        
     def _init_layout(self) -> None:
@@ -34,12 +28,7 @@ class TrainPlacementPanel(Panel):
             top=self._rect.top + self.padding
         )
 
-        self.instruction1_rect = self.instruction1_screen.get_rect(
-            left=self._rect.left + self.padding,
-            top=self.title_rect.bottom + 20
-        )
-
-        controls_y = self.instruction1_rect.bottom + 30
+        controls_y = self.title_rect.bottom + 30
 
         # TOP ROW: max_speed, car_count
         self.max_speed_minus = pygame.Rect(self._rect.x + 20, controls_y, 30, 30)
@@ -67,10 +56,6 @@ class TrainPlacementPanel(Panel):
         # Title
         self._screen.blit(self.title_screen, self.title_rect)
         
-        # Instructions
-        self._screen.blit(self.instruction1_screen, self.instruction1_rect)
-        
-        
         train_config = self._state.train_config
             # TOP ROW
         self._render_param_control(self.max_speed_minus, self.max_speed_plus,
@@ -83,6 +68,12 @@ class TrainPlacementPanel(Panel):
                                 "Accel", train_config.acceleration_in_m_s2, "m/s²", 'accel')
         self._render_param_control(self.decel_minus, self.decel_plus,
                                 "Decel", train_config.deceleration_in_m_s2, "m/s²", 'decel')
+
+        # Total Length
+        total_length_text = f"Total Length: {train_config.total_length} m"
+        total_length_screen = self.instruction_font.render(total_length_text, True, Color.WHITE)
+        total_length_rect = total_length_screen.get_rect(centerx=self._rect.centerx, top=self.total_length_y)
+        self._screen.blit(total_length_screen, total_length_rect)
 
             
     def _on_click(self, event: Event):

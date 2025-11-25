@@ -207,7 +207,7 @@ class GraphService:
         return False, frozenset(edges)
     
     def calculate_train_preview(self, edge: Edge, total_length: int) -> tuple[bool, frozenset[Edge]]:
-        edge_count = total_length // Config.SHORT_SEGMENT_LENGTH + 1
+        edge_count = ((total_length + Config.TRAIN_SAFETY_BUFFER) // Config.SHORT_SEGMENT_LENGTH) + 1
         def is_node_blocked(node: Node) -> bool:
             return self.is_junction(node)
         
@@ -224,6 +224,9 @@ class GraphService:
             
         if is_edge_blocked(edge):
             return False, frozenset([edge])
+        
+        if edge_count == 1:
+            return True, frozenset([edge])
         
         edges: set[Edge] = set()
         stack: deque[Pose] = deque()

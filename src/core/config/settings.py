@@ -16,6 +16,7 @@ class Config:
     MAX_TRAIN_CAR_COUNT = 16
     MAX_PLATFORM_EDGE_COUNT = 12
     MIN_TRAIN_STOP_TIME = 30  #seconds
+    TRAIN_SAFETY_BUFFER = 10  #meters
     
     
     TRAIN_SHUTDOWN_COLOR = Color.DARKGREY

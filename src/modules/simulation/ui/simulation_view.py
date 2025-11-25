@@ -71,7 +71,7 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             else:
                 color = Config.TRAIN_SHUTDOWN_COLOR
             
-            draw_train(self._screen, train, self._camera, color, lighten_flag=self._state.preview.train_id == train.id)
+            draw_train(self._screen, train, self._camera, color, lighten_flag=self._state.preview.train_id == train.id, locomotive_different=True)
 
         
         if self._state.preview.signal is None and world_pos is not None:

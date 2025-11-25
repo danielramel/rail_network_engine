@@ -11,8 +11,6 @@ if TYPE_CHECKING:
     from core.models.railway.railway_system import RailwaySystem
     
 DT = 1 / Config.FPS
-INITIAL_DISTANCE_TO_PLATFORM_END = 1.0
-
 
 class Train:
     id: int = None
@@ -33,8 +31,8 @@ class Train:
         self._railway = railway
         self.config = config.copy()
         self._speed_profile = []
-        self.path = [self._railway.graph.get_rail(edge) for edge in edges[-(int((self.config.total_length + INITIAL_DISTANCE_TO_PLATFORM_END) // Config.SHORT_SEGMENT_LENGTH) + 1):]]
-        self._path_distance = self.get_distance_until_next_edge() - INITIAL_DISTANCE_TO_PLATFORM_END
+        self.path = [self._railway.graph.get_rail(edge) for edge in edges]
+        self._path_distance = self.get_distance_until_next_edge() - Config.TRAIN_SAFETY_BUFFER
         
     def tick(self):
         if not self.live:

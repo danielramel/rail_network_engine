@@ -7,7 +7,7 @@ from core.models.train import Train
 from core.models.geometry.node import Node
 
 
-def draw_train(screen: pygame.Surface, train: Train, camera: Camera, color: Color, lighten_flag: bool = False) -> None:
+def draw_train(screen: pygame.Surface, train: Train, camera: Camera, color: Color, lighten_flag: bool = False, locomotive_different: bool = False) -> None:
     def lighten(rgb: tuple[int, int, int]) -> tuple[int, int, int]:
         factor = 0.8
         r, g, b = rgb
@@ -34,14 +34,14 @@ def draw_train(screen: pygame.Surface, train: Train, camera: Camera, color: Colo
         
         if remainder is not None:
             end = remainder / rail.length
-            draw_train_car(screen, rail.edge.a, rail.edge.b, camera, color, 0.0, end, car_i == train.config.car_count - 1)
+            draw_train_car(screen, rail.edge.a, rail.edge.b, camera, color, 0.0, end, locomotive_different and car_i == train.config.car_count - 1)
             remainder = None
             car_i += 1
             continue
         
         start = distance / rail.length
         end = (distance + Config.TRAIN_CAR_LENGTH) / rail.length
-        draw_train_car(screen, rail.edge.a, rail.edge.b, camera, color, start, end, car_i == train.config.car_count - 1)
+        draw_train_car(screen, rail.edge.a, rail.edge.b, camera, color, start, end, locomotive_different and car_i == train.config.car_count - 1)
         
         
         distance += Config.TRAIN_CAR_LENGTH + Config.TRAIN_CAR_GAP
