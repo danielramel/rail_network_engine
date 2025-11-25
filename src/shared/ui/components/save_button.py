@@ -43,9 +43,9 @@ class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
         pygame.draw.rect(self._screen, Color.WHITE, self._rect, 2, border_radius=10)
         
     def save_game(self):
-        if self._app_state.filename is not None:
+        if self._app_state.filepath is not None:
             data = self._railway.to_dict()
-            with open(self._app_state.filename, 'w') as f:
+            with open(self._app_state.filepath, 'w') as f:
                 json.dump(data, f, indent=4)
             self._save_timestamp = pygame.time.get_ticks()
         else:
@@ -58,19 +58,19 @@ class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
         from tkinter import filedialog
         root = tk.Tk()
         root.withdraw()
-        filename = filedialog.asksaveasfilename(
+        filepath = filedialog.asksaveasfilename(
             defaultextension=".json",
             filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
             title="Save simulation as..."
         )
-        if not filename:
+        if not filepath:
             return None
             
         try:
-            with open(filename, 'w') as f:
+            with open(filepath, 'w') as f:
                 json.dump(data, f, indent=4)
                 
-            self._app_state.filename = filename
+            self._app_state.filepath = filepath
             self._save_timestamp = pygame.time.get_ticks()
 
         finally:

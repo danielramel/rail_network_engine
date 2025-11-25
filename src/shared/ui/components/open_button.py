@@ -42,15 +42,15 @@ class OpenButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
         root = tk.Tk()
         root.withdraw()
         try:
-            filename = filedialog.askopenfilename(
+            filepath = filedialog.askopenfilename(
                 defaultextension=".json",
                 filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
                 title="Load simulation from..."
             )
-            if not filename:
+            if not filepath:
                 return None
 
-            with open(filename, 'r', encoding='utf-8') as f:
+            with open(filepath, 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 self._railway.replace_from_dict(data)
 
@@ -58,4 +58,4 @@ class OpenButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
             messagebox.showerror("Load error", str(e))
         finally:
             root.destroy()
-            self._app_state.filename = filename
+            self._app_state.filepath = filepath

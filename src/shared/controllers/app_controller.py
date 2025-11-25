@@ -20,10 +20,12 @@ from shared.ui.components.alert_component import AlertComponent
 from shared.ui.components.input_component import InputComponent
 
 class AppController(UIController, FullScreenUIComponent):
-    def __init__(self, screen: pygame.Surface):
+    def __init__(self, screen: pygame.Surface, filepath: str | None = None):
         self._railway = RailwaySystem()
-        filename = self.load_file()
-        self._app_state = AppState(filename)
+        if filepath is not None:
+            self.load_file(filepath)
+            
+        self._app_state = AppState(filepath)
         alert_component = AlertComponent(screen)
         input_component = InputComponent(screen)
         middle_position = self._railway.graph_service.get_graph_middle()
@@ -66,18 +68,11 @@ class AppController(UIController, FullScreenUIComponent):
         super().render(screen_pos)
             
             
-    def load_file(self):
-        import sys
+    def load_file(self, filepath: str) -> None:
         import json
-        if len(sys.argv) < 2:
-            return None
-        filename = sys.argv[1]
-        with open(filename, 'r', encoding='utf-8') as f:
+        with open(filepath, 'r', encoding='utf-8') as f:
             data = json.loads(f.read())
-            self._railway.replace_from_dict(data)
-            
-        return filename
-    
+            self._railway.replace_from_dict(data)    
     
     
     
@@ -88,4 +83,3 @@ class AppController(UIController, FullScreenUIComponent):
 # #TODO create main menu
 # enter exit from map
 # ask for save on exit
-# create camera centering method

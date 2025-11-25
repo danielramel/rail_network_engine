@@ -13,11 +13,16 @@ class RailSimulator:
         self.qt_app = QApplication.instance() or QApplication(sys.argv)
         
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-        pygame.key.set_repeat(500, 50)  # 500ms initial delay, 50ms between repeats
+        pygame.key.set_repeat(500, 50)  # 500ms initial delay, 50ms between repeats, important for backspace
         pygame.display.set_caption("Rail Simulator")
+        pygame.display.set_icon(pygame.image.load("src/assets/icons/app.png"))
         self.clock = pygame.time.Clock()
         
-        self.app_controller = AppController(self.screen)
+        filepath = None
+        if len(sys.argv) > 1:
+            filepath = sys.argv[1]
+        
+        self.app_controller = AppController(self.screen, filepath)
 
     # --- Main loop ---
     def run(self):

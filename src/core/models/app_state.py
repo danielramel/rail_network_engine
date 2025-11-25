@@ -9,9 +9,9 @@ class ViewMode(Enum):
     SIMULATION = auto()
     
 class AppState:
-    def __init__(self, filename: Optional[str] = None) -> None:
+    def __init__(self, filepath: Optional[str] = None) -> None:
         self._mode: ViewMode = ViewMode.SIMULATION
-        self.filename: Optional[str] = filename
+        self.filepath: Optional[str] = filepath
         self.callback: Optional[Callable[[ViewMode], None]] = None
     
     def subscribe(self, callback: Callable[[ViewMode], None]) -> None:
