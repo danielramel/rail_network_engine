@@ -2,7 +2,7 @@ from modules.construction.models.construction_tool_controller import Constructio
 from core.models.geometry.direction import Direction
 from core.models.geometry.pose import Pose
 from .tunnel_view import TunnelView
-from .tanel_target import find_tunnel_target, TunnelTargetType
+from .tunnel_target import find_tunnel_target, TunnelTargetType
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from modules.construction.models.construction_state import ConstructionState

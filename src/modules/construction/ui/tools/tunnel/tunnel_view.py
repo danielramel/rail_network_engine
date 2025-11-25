@@ -7,7 +7,7 @@ from shared.ui.enums.edge_action import EdgeAction
 from shared.ui.utils.nodes import draw_node
 from shared.ui.services.color_from_speed import color_from_speed
 from shared.ui.utils.tracks import draw_track
-from .tanel_target import find_tunnel_target, TunnelTargetType
+from .tunnel_target import find_tunnel_target, TunnelTargetType
 
 class TunnelView(ConstructionView):
     def render(self, world_pos: Position | None):

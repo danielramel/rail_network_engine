@@ -68,10 +68,10 @@ class GraphService:
             return False
         return any(n.level != 0 for n in self._railway.graph.neighbors(node))
     
-    def get_closest_edge(self, world_pos: Position, only_surface: bool = True) -> Edge | None:
+    def get_closest_edge(self, world_pos: Position) -> Edge | None:
         closest_edge = None
         min_distance = 1.0
-        for edge in world_pos.get_grid_edges(only_surface=only_surface):
+        for edge in world_pos.get_grid_edges():
             if not self._railway.graph.has_edge(edge):
                 continue
             distance = world_pos.distance_to_edge(edge)

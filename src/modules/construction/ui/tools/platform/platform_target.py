@@ -40,6 +40,10 @@ def find_platform_target(railway: RailwaySystem, world_pos: Position, platform_e
         return PlatformTarget(kind=PlatformTargetType.INVALID, edges=frozenset([closest_edge]), message=f"Only {Config.SHORT_SECTION_LENGTH}m sections are allowed for platforms!")
     
     is_valid, edges = railway.graph_service.calculate_platform_preview(closest_edge, platform_edge_count)
+    
+    if closest_edge.level != 0:
+        return PlatformTarget(kind=PlatformTargetType.INVALID, edges=edges, message="Platforms cannot be built inside tunnels!")
+    
     if is_valid is False:
         return PlatformTarget(kind=PlatformTargetType.INVALID, edges=edges, message=f"Section does not fit {platform_edge_count*Config.SHORT_SECTION_LENGTH}m long platform!")
     

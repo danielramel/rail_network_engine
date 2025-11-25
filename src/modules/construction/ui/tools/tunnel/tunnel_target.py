@@ -30,6 +30,9 @@ def find_tunnel_target(railway: RailwaySystem, world_pos: Position, construction
     if not railway.graph.has_node(snapped):
         return TunnelTarget(kind=TunnelTargetType.BLOCKED, node=snapped, message="Tunnel has to start/end on existing section endpoint!")
     
+    if railway.graph_service.is_tunnel_entry(snapped):
+        return TunnelTarget(kind=TunnelTargetType.BLOCKED, node=snapped, message="Cannot build tunnel on tunnel entry/exit!")
+    
     if railway.graph.degree_at(snapped) != 1:
         return TunnelTarget(kind=TunnelTargetType.BLOCKED, node=snapped, message="Tunnel has to connect to section endpoint!")
     
