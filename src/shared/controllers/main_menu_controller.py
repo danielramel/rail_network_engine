@@ -65,6 +65,18 @@ class MainMenuController:
         self._new_text = self._font_button.render("Create New Railway", True, Color.WHITE)
         self._load_text = self._font_button.render("Load Existing Railway", True, Color.WHITE)
         
+        # Quit button in bottom left corner
+        quit_button_width = 120
+        quit_button_height = 50
+        quit_margin = 30
+        self._quit_button_rect = pygame.Rect(
+            quit_margin,
+            screen_h - quit_button_height - quit_margin,
+            quit_button_width,
+            quit_button_height
+        )
+        self._quit_text = self._font_map_button.render("Quit", True, Color.WHITE)
+        
         self._hovered_button: str | None = None
         self._selected_action: str | None = None
         self._selected_filepath: str | None = None
@@ -86,6 +98,8 @@ class MainMenuController:
                 self._hovered_button = "new"
             elif self._load_button_rect.collidepoint(mouse_pos.x, mouse_pos.y):
                 self._hovered_button = "load"
+            elif self._quit_button_rect.collidepoint(mouse_pos.x, mouse_pos.y):
+                self._hovered_button = "quit"
             else:
                 # Check map buttons
                 self._hovered_button = None
@@ -103,6 +117,10 @@ class MainMenuController:
                 filepath = self._open_file_dialog()
                 if filepath:
                     self._start_callback(filepath)
+            
+            elif self._quit_button_rect.collidepoint(mouse_pos.x, mouse_pos.y):
+                pygame.quit()
+                raise SystemExit()
             
             else:
                 # Check map buttons
@@ -147,6 +165,9 @@ class MainMenuController:
         # Draw map file buttons
         for i, (rect, filepath, text_surface) in enumerate(self._map_buttons):
             self._draw_button(rect, text_surface, self._hovered_button == f"map_{i}")
+        
+        # Draw quit button
+        self._draw_button(self._quit_button_rect, self._quit_text, self._hovered_button == "quit")
     
     def _draw_button(self, rect: pygame.Rect, text_surface: pygame.Surface, hovered: bool):
         """Draw a menu button."""
