@@ -104,7 +104,7 @@ class PathFinder:
     
     def find_tunnel_path(self, start: Pose, end: Pose) -> tuple[Node] | None:
         def _is_node_blocked(node: Node) -> bool:
-            return self._railway.stations.is_within_any(node)
+            return self._railway.stations.is_within_any(node) or self._railway.graph.has_node(node)
         
         def is_edge_blocked(edge: Edge) -> bool:
             return self._railway.graph.has_edge(edge.surface_level())

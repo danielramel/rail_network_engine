@@ -28,10 +28,10 @@ def find_tunnel_target(railway: RailwaySystem, world_pos: Position, construction
         return TunnelTarget(kind=TunnelTargetType.BLOCKED, node=snapped, message="Cannot build tunnel through station!")
 
     if not railway.graph.has_node(snapped):
-        return TunnelTarget(kind=TunnelTargetType.BLOCKED, node=snapped, message="Tunnel has to start/end on existing track!")
+        return TunnelTarget(kind=TunnelTargetType.BLOCKED, node=snapped, message="Tunnel has to start/end on existing section endpoint!")
     
     if railway.graph.degree_at(snapped) != 1:
-        return TunnelTarget(kind=TunnelTargetType.BLOCKED, node=snapped, message="Tunnel has to connect to end of track!")
+        return TunnelTarget(kind=TunnelTargetType.BLOCKED, node=snapped, message="Tunnel has to connect to section endpoint!")
     
     if construction_anchor is not None and snapped == construction_anchor.node:
         return TunnelTarget(kind=TunnelTargetType.ANCHOR_SAME, node=snapped)
