@@ -92,19 +92,16 @@ class GraphAdapter:
         
         
     def to_dict(self) -> dict:
-        graph_data = nx.node_link_data(self._graph, edges="edges")
+        graph_data = nx.node_link_data(self._graph, edges="edges") #TODO deprecated
         
         for node in graph_data['nodes']:
             node['id'] = node['id'].to_dict()
-            for key in list(node.keys()):
-                if key != "id":
-                    del node[key]
-            
+            if "signal" in node:
+                del node["signal"]
+                
         for edge in graph_data['edges']:
             edge["source"] = edge["source"].to_dict()
             edge["target"] = edge["target"].to_dict()
-            if "station" in edge:
-                del edge["station"]
         
         return graph_data
     
