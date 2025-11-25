@@ -4,7 +4,7 @@ from core.config.settings import Config
 from shared.controllers.mode_strategy import ModeStrategy
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.camera import Camera
-from core.models.app_state import AppState
+from core.models.app_state import AppState, ViewMode
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.components.open_button import OpenButton
 from shared.ui.components.save_button import SaveButton
@@ -22,12 +22,18 @@ from shared.ui.components.input_component import InputComponent
 class AppController(UIController, FullScreenUIComponent):
     def __init__(self, screen: pygame.Surface, filepath: str | None = None):
         self._railway = RailwaySystem()
-        if filepath is not None:
-            self.load_file(filepath)
             
         self._app_state = AppState(filepath)
         alert_component = AlertComponent(screen)
         input_component = InputComponent(screen)
+        if filepath is not None:
+            successful = self.load_file(filepath)
+            if not successful:
+                alert_component.show_alert(f"Failed to load file: {filepath}\nCreating new empty simulation.")
+            else:
+                self._app_state.switch_mode(ViewMode.SIMULATION)
+            
+                
         middle_position = self._railway.graph_service.get_graph_middle()
         w, h = screen.get_size()
         self._graphics = GraphicsContext(screen, Camera(middle_position, w, h), alert_component, input_component)
@@ -65,10 +71,13 @@ class AppController(UIController, FullScreenUIComponent):
             
     def load_file(self, filepath: str) -> None:
         import json
-        with open(filepath, 'r', encoding='utf-8') as f:
-            data = json.loads(f.read())
-            self._railway.replace_from_dict(data)    
-    
+        try:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                data = json.loads(f.read())
+                self._railway.replace_from_dict(data)
+                return True
+        except Exception as e:
+            return False    
     
     
     

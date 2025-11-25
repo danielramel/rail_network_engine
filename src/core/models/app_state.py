@@ -1,7 +1,6 @@
 from enum import Enum, auto
 from typing import Callable, Optional
 
-from core.models.time import Time
 
 class ViewMode(Enum):
     SETUP = auto()
@@ -10,7 +9,7 @@ class ViewMode(Enum):
     
 class AppState:
     def __init__(self, filepath: Optional[str] = None) -> None:
-        self._mode: ViewMode = ViewMode.SIMULATION
+        self._mode: ViewMode = ViewMode.CONSTRUCTION
         self.filepath: Optional[str] = filepath
         self.callback: Optional[Callable[[ViewMode], None]] = None
     

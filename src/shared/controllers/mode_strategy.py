@@ -27,7 +27,6 @@ class ModeStrategy(FullScreenUIComponent):
     def switch_to(self, new_mode: ViewMode):
         self._current_mode = self._modes[new_mode]()
         
-        
     def handle_event(self, event) -> bool:
         if self._current_mode is None:
             return False

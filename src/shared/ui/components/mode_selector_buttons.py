@@ -47,7 +47,7 @@ class ModeSelectorButtons(ShortcutUIComponent, ClickableUIComponent):
             icon_rect = icon.get_rect(center=btn_rect.center)
             self._screen.blit(icon, icon_rect)
 
-            if mode == self._state._mode:
+            if mode == self._state.mode:
                 pygame.draw.rect(self._screen, Color.GREEN, btn_rect.inflate(10, 10), 5, border_radius=10)
             else:
                 pygame.draw.rect(self._screen, Color.WHITE, btn_rect.inflate(-2, -2), 1, border_radius=10)
