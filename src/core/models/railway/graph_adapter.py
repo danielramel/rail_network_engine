@@ -39,7 +39,7 @@ class GraphAdapter:
     
     def set_node_attr(self, node: Node, key: str, value) -> None:
         self._graph.nodes[node][key] = value
-        self._on_modified()
+        self._on_modified()   
         
     def remove_node_attr(self, node: Node, key: str) -> None:
         if node in self._graph.nodes and key in self._graph.nodes[node]:
@@ -58,6 +58,10 @@ class GraphAdapter:
     def set_edge_attr(self, edge: Edge, key: str, value) -> None:
         self._graph.edges[edge][key] = value
         self._on_modified()
+        
+    def set_edge_lock(self, edge: Edge, locked: bool) -> None:
+        self._graph.edges[edge]['locked'] = locked
+        # do not modify saved state
         
     def has_edge_attr(self, edge: Edge, key: str) -> bool:
         return key in self._graph.edges[edge]
@@ -107,6 +111,8 @@ class GraphAdapter:
         for edge in graph_data['edges']:
             edge["source"] = edge["source"].to_dict()
             edge["target"] = edge["target"].to_dict()
+            if "locked" in edge:
+                del edge["locked"]
         
         return graph_data
     

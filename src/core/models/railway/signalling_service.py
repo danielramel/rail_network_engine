@@ -15,7 +15,7 @@ class SignallingService:
         
     def lock_path(self, edges: list[Edge]) -> None:
         for edge in edges:
-            self._railway.graph.set_edge_attr(edge, 'locked', True)
+            self._railway.graph.set_edge_lock(edge, True)
             
     def release_path(self, edges: list[Edge]) -> None:
         if not edges:
@@ -23,10 +23,10 @@ class SignallingService:
         for edge in edges:
             if self._railway.signals.has_with_pose(Pose.from_nodes(edge.a, edge.b).get_previous_in_direction()):
                 return
-            self._railway.graph.set_edge_attr(edge, 'locked', False)
+            self._railway.graph.set_edge_lock(edge, False)
     
     def passed(self, edge: Edge):
-        self._railway.graph.set_edge_attr(edge, 'locked', False)
+        self._railway.graph.set_edge_lock(edge, False)
         signal = self._railway.signals.get(edge.b)
         if signal is not None and signal.direction == edge.direction:
             signal.passed()
@@ -45,7 +45,7 @@ class SignallingService:
 
     def drop_signal(self, signal: Signal) -> None:
         for edge in signal.path:
-            self._railway.graph.set_edge_attr(edge, 'locked', False)
+            self._railway.graph.set_edge_lock(edge, False)
         signal.drop()
         if signal.pose in self.auto_signals:
             del self.auto_signals[signal.pose]

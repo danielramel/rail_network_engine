@@ -25,7 +25,6 @@ class SimulationMode(UIController, FullScreenUIComponent):
         self._on_time_set("00:00:00")
 
     def _initialize(self):
-        self._railway.signals.add_signals_to_dead_ends()
         self._state = SimulationState(self._railway.time)
         self.elements = (
             TimeControlButtons(self._state.time_control, self._graphics.screen),
