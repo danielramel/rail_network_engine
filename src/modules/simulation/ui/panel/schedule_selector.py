@@ -69,19 +69,19 @@ class ScheduleSelector(QWidget):
 
     def _populate_schedule_list(self):
         self.route_list.clear()
-        for s in self._routes:
-            if not s.stops:
-                label = f"{s.code} — (no stations)"
+        for route in self._routes:
+            if not route.stops:
+                label = f"{route.code} — (no stations)"
             else:
-                first_station = s.stops[0]["station"].name
-                last_station = s.stops[-1]["station"].name
-                label = f"{s.code} — {first_station} → {last_station}"
+                first_station = route.stops[0]["station"].name
+                last_station = route.stops[-1]["station"].name
+                label = f"{route.code} — {first_station} → {last_station}"
 
             item = QListWidgetItem(label)
-            item.setData(int(Qt.ItemDataRole.UserRole), s)
+            item.setData(int(Qt.ItemDataRole.UserRole), route)
 
             # color row background
-            item.setBackground(QBrush(QColor(*Color[s.color])))
+            item.setBackground(QBrush(QColor(*Color.get(route.color))))
 
             # ensure text contrast
             item.setForeground(Qt.GlobalColor.black)

@@ -59,10 +59,16 @@ class Schedule:
         def format_time(minutes: int) -> str:
             return f"{minutes // 60:02d}:{minutes % 60:02d}"
         
-        if self._station_index == 0:
-            return f"{self.stops[0]['station'].name}: Departure: {format_time(self.stops[0]['departure_time'])}"
+        def format_stop(index: int) -> str:
+            if index == 0:
+                return f"{self.stops[0]['station'].name}: Departure: {format_time(self.stops[0]['departure_time'])}"
+            if index == len(self.stops) - 1:
+                return f"{self.stops[-1]['station'].name}: Arrival: {format_time(self.stops[-1]['arrival_time'])}"
+            return f"{self.stops[index]['station'].name}: {format_time(self.stops[index]['arrival_time'])} - {format_time(self.stops[index]['departure_time'])}"
         
-        if self._station_index == len(self.stops) - 1:
-            return f"{self.stops[-1]['station'].name}: Arrival: {format_time(self.stops[-1]['arrival_time'])}"
+        result = format_stop(self._station_index)
         
-        return f"{self.stops[self._station_index]['station'].name}: {format_time(self.stops[self._station_index]['arrival_time'])} - {format_time(self.stops[self._station_index]['departure_time'])}"
+        if self._station_index + 1 < len(self.stops):
+            result += "\n" + format_stop(self._station_index + 1)
+        
+        return result

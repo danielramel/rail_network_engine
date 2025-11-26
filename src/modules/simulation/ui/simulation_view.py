@@ -85,7 +85,7 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
 
         for train in self._railway.trains.all():
             if train.schedule is not None:
-                color = Color[train.schedule.color]
+                color = Color.get(train.schedule.color)
             elif train.live:
                 color = Config.TRAIN_LIVE_COLOR
             else:

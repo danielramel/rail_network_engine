@@ -79,7 +79,7 @@ class TrainPanel(Panel):
         # Schedule code in top middle
         if self._train.schedule:
             code_text = self._train.schedule.route_code
-            code_color = Color[self._train.schedule.color]
+            code_color = Color.get(self._train.schedule.color)
         else:
             code_text = "No schedule"
             code_color = Color.WHITE
