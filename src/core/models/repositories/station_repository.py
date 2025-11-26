@@ -126,8 +126,8 @@ class StationRepository:
         }
     
     @classmethod
-    def from_dict(cls, graph: GraphAdapter, data: dict) -> 'StationRepository':
-        instance = cls(graph)
+    def from_dict(cls, railway: 'RailwaySystem', data: dict) -> 'StationRepository':
+        instance = cls(railway)
         instance._next_id = data["next_id"]
         
         for station_data in data["stations"]:

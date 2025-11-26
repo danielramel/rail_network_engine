@@ -13,12 +13,16 @@ if TYPE_CHECKING:
 class PathFinder:
     def __init__(self, railway: 'RailwaySystem'):
         self._railway = railway
+        railway.subscribe_to_modifications(self._on_railway_modified)
+        self._edge_blocked_cache: dict[Edge, bool] = {}
         
     def is_node_blocked(self, node: Node) -> bool:
         return self._railway.stations.is_within_any(node) or self._railway.graph_service.is_tunnel_entry(node)
     
-    def find_grid_path(self, start: Pose, end: Node) -> tuple[Node] | None:        
-        edge_blocked_cache: dict[Edge, bool] = {}
+    def _on_railway_modified(self) -> None:
+        self._edge_blocked_cache.clear()
+    
+    def find_grid_path(self, start: Pose, end: Node) -> tuple[Node] | None:       
         def is_edge_blocked(edge: Edge) -> bool:
             def _func(edge: Edge) -> bool:
                 if self._railway.graph.has_edge(edge.toggle_level()):
@@ -50,10 +54,10 @@ class PathFinder:
                     return True
                 return False
             
-            if edge in edge_blocked_cache:
-                return edge_blocked_cache[edge]
+            if edge in self._edge_blocked_cache:
+                return self._edge_blocked_cache[edge]
             blocked = _func(edge)
-            edge_blocked_cache[edge] = blocked
+            self._edge_blocked_cache[edge] = blocked
             return blocked
         
         if self.is_node_blocked(start.node) or self.is_node_blocked(end):
