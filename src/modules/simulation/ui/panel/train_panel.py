@@ -71,13 +71,12 @@ class TrainPanel(Panel):
                 
 
     def _render_speed(self):
-        # Speed on top right
+        # Speed on top left corner
         text = f"{int(self._train.speed)} km/h"
         screen = self.instruction_font.render(text, True, Color.WHITE)
-        x = self._rect.right - self.padding - screen.get_width() - 30  # 30 for close button
-        self._screen.blit(screen, (x, self._rect.y + self.padding))
+        self._screen.blit(screen, (self._rect.x + self.padding, self._rect.y + self.padding))
         
-        # Route code on top left
+        # Schedule code in top middle
         if self._train.schedule:
             code_text = self._train.schedule.route_code
             code_color = Color[self._train.schedule.color]
@@ -85,7 +84,8 @@ class TrainPanel(Panel):
             code_text = "No schedule"
             code_color = Color.WHITE
         code_screen = self.instruction_font.render(code_text, True, code_color)
-        self._screen.blit(code_screen, (self._rect.x + self.padding, self._rect.y + self.padding))
+        code_x = self._rect.centerx - code_screen.get_width() // 2
+        self._screen.blit(code_screen, (code_x, self._rect.y + self.padding))
 
     def _render_next_stop(self):
         if not self._train.schedule:
