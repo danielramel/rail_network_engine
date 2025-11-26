@@ -1,3 +1,4 @@
+import pygame
 from core.config.color import Color
 from core.config.settings import Config
 from modules.simulation.ui.simulation_target import SimulationTargetType, find_simulation_target
@@ -53,10 +54,14 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
         for signal in self._railway.signals.all():            
             automatic = signal.pose in self._railway.signalling.auto_signals
             if signal is self._state.selected_signal:
+                if self._state.preview.automatic_signal:
+                    automatic = True
                 color = Color.LIME
             elif signal.next_signal is not None:
                 color = Color.GREEN
             elif signal is self._state.preview.signal:
+                if self._state.preview.automatic_signal and self._state.selected_signal is None:
+                    automatic = True
                 color = Color.LIGHTBLUE
             elif automatic:
                 color = Color.ORANGE
@@ -89,13 +94,15 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             
     def set_preview(self, world_pos: Position | None):
         self._state.preview.clear()
+        if bool(pygame.key.get_mods() & pygame.KMOD_SHIFT):
+            self._state.preview.automatic_signal = True
+            
         if world_pos is None:
             return
         
         target = find_simulation_target(self._railway, self._camera, world_pos)
         if target.kind == SimulationTargetType.NONE:
             return
-        
         
         if target.kind == SimulationTargetType.TRAIN:
             self._state.preview.train_id = target.train_id

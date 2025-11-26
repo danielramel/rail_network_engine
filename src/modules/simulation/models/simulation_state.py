@@ -34,12 +34,14 @@ class TimeControlState:
 class SimulationPreview:
     path: list[Edge] = field(default_factory=list)
     signal: Optional[Signal] = None
+    automatic_signal: bool = False
     train_id: Optional[int] = None
     
     def clear(self) -> None:
         self.path = []
         self.signal = None
         self.train_id = None
+        self.automatic_signal = False
         
 @dataclass
 class SimulationState:

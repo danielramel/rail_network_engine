@@ -19,7 +19,7 @@ class Train:
     config: TrainConfig
     speed : float = 0.0
     schedule : Schedule = None
-    live : bool = False
+    live: bool = False
     _path_distance : float = 0.0
     _occupied_edge_count_cache : int | None = None
     _release_unsubscribe: Callable | None = None
