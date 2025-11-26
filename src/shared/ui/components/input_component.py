@@ -85,6 +85,6 @@ class InputComponent(UIComponent):
         self._screen.blit(blur, (0, 0))
 
         pygame.draw.rect(self._screen, Color.BLACK, box_rect, border_radius=16)
-        pygame.draw.rect(self._screen, Color.RED, box_rect, 2, border_radius=16)
+        pygame.draw.rect(self._screen, Color.BLUE, box_rect, 2, border_radius=16)
 
         self._screen.blit(text_surf, text_rect)

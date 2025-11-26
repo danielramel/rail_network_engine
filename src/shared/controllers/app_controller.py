@@ -38,16 +38,16 @@ class AppController(UIController, FullScreenUIComponent):
         w, h = screen.get_size()
         self._graphics = GraphicsContext(screen, Camera(middle_position, w, h), alert_component, input_component)
         self._last_mouse_down_pos: Position | None = None
-        
+        save_button = SaveButton(screen, self._railway, self._app_state)
         
         self.elements: list[ClickableUIComponent] = [
             alert_component,
             input_component,
-            ExitButton(self._graphics, self._on_exit),
             RouteButton(screen, self._railway),
             ZoomButton(screen, self._graphics.camera),
             OpenButton(self._railway, self._app_state, self._graphics),
-            SaveButton(screen, self._railway, self._app_state),
+            save_button,
+            ExitButton(self._railway, self._graphics, self._on_exit, save_button),
             ModeSelectorButtons(self._graphics, self._app_state),
             ModeStrategy(self._app_state, self._railway, self._graphics)
         ]
