@@ -8,7 +8,6 @@ from modules.simulation.ui.panel.schedule_selector import ScheduleSelector
 from core.models.repositories.route_repository import RouteRepository
 from core.config.color import Color
 from shared.ui.models.panel import Panel
-from typing import Callable
 
 class TrainPanel(Panel):
     _selected: bool = False
@@ -17,19 +16,20 @@ class TrainPanel(Panel):
         self._schedule_selector = None
         self._schedule_repository = route_repository
         self._state = simulation_state
+        self._index = index
         
-        super().__init__(screen, height=200, x=20 + index * 320, y=-220)
+        super().__init__(screen, height=200, x=100 + index * 420, y=-220)
         self._init_buttons()
-        
-    def change_index(self, index: int):
-        self._rect.x = 100 + index * 420
-        self._init_buttons()
+    
+    @property
+    def index(self) -> int:
+        return self._index
 
     def render(self, screen_pos):
         pygame.draw.rect(self._screen, Color.BLACK, self._rect, border_radius=8)
         border_color = self._train.schedule.color if self._train.schedule else Config.TRAIN_LIVE_COLOR if self._train.live else Config.TRAIN_SHUTDOWN_COLOR
         if self._selected:
-            pygame.draw.rect(self._screen, border_color, self._rect.inflate(15, 15), 10, border_radius=8)
+            pygame.draw.rect(self._screen, border_color, self._rect.inflate(10, 10), 7, border_radius=8)
         else:
             pygame.draw.rect(self._screen, border_color, self._rect, 1, border_radius=8)
         
