@@ -42,12 +42,13 @@ class TrainPanel(Panel):
             color = Color.GREY if self._train.speed == 0.0 else Color.DARKGREY
             self._render_button(self.shut_down_button, "Shut Down", color)
         else:
-            label = "Change Schedule" if self._train.schedule else "Add Schedule"
-            self._render_button(self.set_schedule_button, label, Color.GREY)
             self._render_button(self.startup_button, "Startup", Color.GREY)
             self._render_button(self.reverse_button, "Reverse", Color.GREY)
             if self._train.schedule:
+                self._render_button(self.change_schedule_button, "Change Schedule", Color.GREY)
                 self._render_button(self.remove_schedule_button, "Remove Schedule", Color.GREY)
+            else:
+                self._render_button(self.add_schedule_button, "Add Schedule", Color.GREY)
             
     def _on_click(self, event: Event):
         if self.close_button.collidepoint(*event.screen_pos):
@@ -60,13 +61,17 @@ class TrainPanel(Panel):
             if self.shut_down_button.collidepoint(*event.screen_pos) and self._train.speed == 0.0:
                 self._train.shutdown()
         else:
-            if self.set_schedule_button.collidepoint(*event.screen_pos):
-                self._open_schedule_selector()
-            elif self.remove_schedule_button.collidepoint(*event.screen_pos) and self._train.schedule:
-                self._train.remove_schedule()
-            elif self.startup_button.collidepoint(*event.screen_pos):
+            if self._train.schedule:
+                if self.change_schedule_button.collidepoint(*event.screen_pos):
+                    self._open_schedule_selector()
+                elif self.remove_schedule_button.collidepoint(*event.screen_pos):
+                    self._train.remove_schedule()
+            else:
+                if self.add_schedule_button.collidepoint(*event.screen_pos):
+                    self._open_schedule_selector()
+            if self.startup_button.collidepoint(*event.screen_pos):
                 self._train.start()
-            elif self.reverse_button.collidepoint(*event.screen_pos) and not self._train.live:
+            elif self.reverse_button.collidepoint(*event.screen_pos):
                 self._train.reverse()
                 
 
@@ -118,12 +123,13 @@ class TrainPanel(Panel):
         self._train.set_schedule(schedule.create_schedule(start_time))
 
     def _init_buttons(self):
-        self.close_button = pygame.Rect(self._rect.right - 30, self._rect.top + 10, 20, 20)
-        self.set_schedule_button = pygame.Rect(self._rect.centerx - 60, self._rect.bottom - 125, 140, 30)
-        self.remove_schedule_button = pygame.Rect(self._rect.centerx - 60, self._rect.bottom - 85, 140, 30)
-        self.startup_button = pygame.Rect(self._rect.centerx + 60, self._rect.bottom - 45, 120, 30)
+        self.close_button = pygame.Rect(self._rect.right - 40, self._rect.top + 10, 40, 20)
+        self.add_schedule_button = pygame.Rect(self._rect.centerx - 80, self._rect.bottom - 125, 160, 30)
+        self.change_schedule_button = pygame.Rect(self._rect.centerx - 190, self._rect.bottom - 85, 140, 30)
+        self.remove_schedule_button = pygame.Rect(self._rect.centerx + 50, self._rect.bottom - 85, 140, 30)
+        self.startup_button = pygame.Rect(self._rect.centerx + 50, self._rect.bottom - 45, 140, 30)
         self.shut_down_button = self.startup_button
-        self.reverse_button = pygame.Rect(self._rect.centerx - 180, self._rect.bottom - 45, 120, 30)
+        self.reverse_button = pygame.Rect(self._rect.centerx - 190, self._rect.bottom - 45, 140, 30)
         
     def _center_in_rect(self, screen: pygame.Surface, rect: pygame.Rect) -> tuple[int, int]:
         return (rect.centerx - screen.get_width() // 2,
