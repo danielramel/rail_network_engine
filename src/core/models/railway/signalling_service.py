@@ -31,11 +31,16 @@ class SignallingService:
         if signal is not None and signal.direction == edge.direction:
             signal.passed()
         
-    def reached(self, node: Node):
-        signal = self._railway.signals.get(node)
+    def reached(self, edge: Edge):
+        signal = self._railway.signals.get(edge.a)
         if signal is not None:
             signal.reached()
+        self._railway.graph.set_edge_lock(edge, True)
             
+    def lock_paths_under_trains(self) -> None:
+        for train in self._railway.trains.all():
+            for rail in train.get_occupied_rails():
+                self._railway.graph.set_edge_lock(rail.edge, True)
         
     def is_edge_locked(self, edge: Edge) -> bool:
         return self._railway.graph.get_edge_attr(edge, 'locked') is True

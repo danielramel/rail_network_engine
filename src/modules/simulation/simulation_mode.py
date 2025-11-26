@@ -1,3 +1,4 @@
+from typing import Callable
 from core.graphics.graphics_context import GraphicsContext
 from modules.simulation.ui.panel.train_panel_manager import TrainPanelManager
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
@@ -12,12 +13,11 @@ from modules.simulation.models.simulation_state import SimulationState
 
 class SimulationMode(UIController, FullScreenUIComponent):
     elements: tuple[ClickableUIComponent]
-
-    def __init__(self, railway: RailwaySystem, graphics: GraphicsContext):
+    def __init__(self, railway: RailwaySystem, graphics: GraphicsContext, on_exit_callback: Callable) -> None:
         self._railway = railway
         self._graphics = graphics
         self.elements = ()
-
+        self._on_exit_callback = on_exit_callback
         graphics.input_component.request_input(
             "Enter simulation start time (HH:MM):",
             self._on_time_set
@@ -33,9 +33,13 @@ class SimulationMode(UIController, FullScreenUIComponent):
             CameraController(self._graphics.camera),
             SimulationController(self._railway, self._state, self._graphics),
         )
+        self._railway.signalling.lock_paths_under_trains()
 
     def _on_time_set(self, time_str: str) -> None:
         try:
+            if time_str is None or time_str.strip() == "":
+                self._on_exit_callback()
+                return
             self._railway.time.set_time_from_string(time_str)
         except ValueError:
             self._graphics.alert_component.show_alert("Invalid time format. Use HH:MM.")

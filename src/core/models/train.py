@@ -62,7 +62,7 @@ class Train:
         travel_distance = (self.speed * DT - self.config.deceleration * DT * DT / 2)/3.6
         if distance_until_next_edge < travel_distance:
             self._speed_profile.pop()
-            self._railway.signalling.reached(self.path[self._occupied_edge_count].edge.a)
+            self._railway.signalling.reached(self.path[self._occupied_edge_count].edge)
             
         self._occupied_edge_count_cache = None
         self._path_distance += travel_distance

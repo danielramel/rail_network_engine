@@ -15,6 +15,7 @@ class Color:
     LIME = (0, 255, 0)
     DARKGREY = (100, 100, 100)
     LIGHTGREY = (200, 200, 200)
+    PINK = (255, 192, 203)
     
     def get(color_name: str) -> tuple[int, int, int]:
         return getattr(Color, color_name.upper(), Color.WHITE)

@@ -15,7 +15,7 @@ class RailwaySystem:
         self.time = Time()
         self._graph_adapter = GraphAdapter(on_modified=self.mark_modified)
         self._graph_service = GraphService(self)
-        self._signal_repository = SignalRepository(self._graph_adapter)
+        self._signal_repository = SignalRepository(self)
         self._station_repository = StationRepository(self)
         self._route_repository = RouteRepository(self)
         self._train_repository = TrainRepository(self)

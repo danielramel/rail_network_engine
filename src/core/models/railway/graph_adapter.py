@@ -136,7 +136,7 @@ class GraphAdapter:
             edge['source'] = Node.from_dict(edge['source'])
             edge['target'] = Node.from_dict(edge['target'])
             if edge["length"] not in (Config.SHORT_SECTION_LENGTH, Config.LONG_SECTION_LENGTH):
-                edge["length"] = Config.SHORT_SECTION_LENGTH
+                edge["length"] = Config.LONG_SECTION_LENGTH
 
         instance._graph = nx.node_link_graph(graph_data, edges="edges")
         

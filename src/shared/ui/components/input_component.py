@@ -12,10 +12,16 @@ class InputComponent(UIComponent):
 
     def __init__(self, screen: pygame.Surface):
         self._screen = screen
+        self._box_rect = pygame.Rect(0, 0, 0, 0)
 
     def handle_event(self, event: Event):
         if not self._visible:
             return False
+        
+        if event.type == pygame.MOUSEBUTTONUP and not self._box_rect.collidepoint(*event.screen_pos):
+            self._visible = False
+            self._callback(None)
+            return True
         
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN:
@@ -71,7 +77,7 @@ class InputComponent(UIComponent):
 
         box_w = max(text_rect.width + 60, min_box_w)
         box_h = max(text_rect.height + 60, min_box_h)
-        box_rect = pygame.Rect(
+        self._box_rect = pygame.Rect(
             (w - box_w) // 2,
             (h - box_h) // 2,
             box_w,
@@ -84,7 +90,7 @@ class InputComponent(UIComponent):
         blur.set_alpha(130)
         self._screen.blit(blur, (0, 0))
 
-        pygame.draw.rect(self._screen, Color.BLACK, box_rect, border_radius=16)
-        pygame.draw.rect(self._screen, Color.BLUE, box_rect, 2, border_radius=16)
+        pygame.draw.rect(self._screen, Color.BLACK, self._box_rect, border_radius=16)
+        pygame.draw.rect(self._screen, Color.BLUE, self._box_rect, 2, border_radius=16)
 
         self._screen.blit(text_surf, text_rect)

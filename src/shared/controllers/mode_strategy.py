@@ -19,7 +19,7 @@ class ModeStrategy(FullScreenUIComponent):
         self._modes: dict[ViewMode, lambda: UIController] = {
             ViewMode.CONSTRUCTION: lambda: ConstructionMode(railway, graphics),
             ViewMode.SETUP: lambda: SetupMode(railway, graphics),
-            ViewMode.SIMULATION: lambda: SimulationMode(railway, graphics)
+            ViewMode.SIMULATION: lambda: SimulationMode(railway, graphics, lambda: app_state.switch_mode(ViewMode.SETUP)),
         }
         
         self.switch_to(app_state.mode)

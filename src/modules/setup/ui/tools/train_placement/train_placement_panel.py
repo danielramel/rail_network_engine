@@ -65,9 +65,9 @@ class TrainPlacementPanel(Panel):
 
         # BOTTOM ROW
         self._render_param_control(self.accel_minus, self.accel_plus,
-                                "Accel", train_config.acceleration_in_m_s2, "m/s²", 'accel')
+                                "Acceleration", train_config.acceleration_in_m_s2, "m/s²", 'accel')
         self._render_param_control(self.decel_minus, self.decel_plus,
-                                "Decel", train_config.deceleration_in_m_s2, "m/s²", 'decel')
+                                "Deceleration", train_config.deceleration_in_m_s2, "m/s²", 'decel')
 
         # Total Length
         total_length_text = f"Total Length: {train_config.total_length} m"

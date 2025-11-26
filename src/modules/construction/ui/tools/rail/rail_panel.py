@@ -1,21 +1,11 @@
 import pygame
 from core.config.color import Color
+from core.config.settings import Config
 from modules.construction.models.construction_state import ConstructionState
 from modules.construction.models.construction_panel import ConstructionToolPanel
 from core.models.event import Event
     
-class RailPanel(ConstructionToolPanel):
-    """Rail construction panel with +/- controls for track speed and toggle for track length."""
-    
-    # Speed configuration constants
-    MIN_SPEED = 10
-    MAX_SPEED = 200
-    SPEED_INCREMENT = 10
-    
-    # Length configuration constants
-    SHORT_LENGTH = 50
-    LONG_LENGTH = 500
-    
+class RailPanel(ConstructionToolPanel):    
     def __init__(self, screen: pygame.Surface, state: ConstructionState) -> None:
         super().__init__(screen, state)
         
@@ -34,12 +24,12 @@ class RailPanel(ConstructionToolPanel):
     @property
     def can_decrease_speed(self) -> bool:
         """Check if speed can be decreased."""
-        return self._state.track_speed > self.MIN_SPEED
+        return self._state.track_speed > Config.MIN_TRACK_SPEED
     
     @property
     def can_increase_speed(self) -> bool:
         """Check if speed can be increased."""
-        return self._state.track_speed < self.MAX_SPEED
+        return self._state.track_speed < Config.MAX_TRACK_SPEED
        
     def _init_layout(self) -> None:
         """Compute and persist all rects for layout."""
@@ -109,8 +99,8 @@ class RailPanel(ConstructionToolPanel):
         """Adjust track speed by delta, clamping to valid range."""
         self._state.track_speed += delta
         self._state.track_speed = max(
-            self.MIN_SPEED, 
-            min(self.MAX_SPEED, self._state.track_speed)
+            Config.MIN_TRACK_SPEED, 
+            min(Config.MAX_TRACK_SPEED, self._state.track_speed)
         )
        
     def render(self, screen_pos) -> None:
@@ -136,9 +126,9 @@ class RailPanel(ConstructionToolPanel):
         self._screen.blit(self.length_label_screen, self.length_label_rect)
         
         # Length toggle buttons
-        is_short = self._state.track_length == self.SHORT_LENGTH
-        self._render_toggle_button(self.length_short_rect, "50 m", is_short)
-        self._render_toggle_button(self.length_long_rect, "500 m", not is_short)
+        is_short = self._state.track_length == Config.SHORT_SECTION_LENGTH
+        self._render_toggle_button(self.length_short_rect, f"{Config.SHORT_SECTION_LENGTH} m", is_short)
+        self._render_toggle_button(self.length_long_rect, f"{Config.LONG_SECTION_LENGTH} m", not is_short)
 
     def _on_click(self, event: Event) -> bool:
         """Handle +/- clicks and length toggle; return True if the event was consumed."""     
@@ -147,20 +137,20 @@ class RailPanel(ConstructionToolPanel):
         
         # Speed controls
         if self.speed_minus_rect.collidepoint(*event.screen_pos) and self.can_decrease_speed:
-            self._adjust_speed(-self.SPEED_INCREMENT)
+            self._adjust_speed(-Config.TRACK_SPEED_INCREMENT)
             return True
         
         if self.speed_plus_rect.collidepoint(*event.screen_pos) and self.can_increase_speed:
-            self._adjust_speed(self.SPEED_INCREMENT)
+            self._adjust_speed(Config.TRACK_SPEED_INCREMENT)
             return True
         
         # Length toggle
         if self.length_short_rect.collidepoint(*event.screen_pos):
-            self._state.track_length = self.SHORT_LENGTH
+            self._state.track_length = Config.SHORT_SECTION_LENGTH
             return True
         
         if self.length_long_rect.collidepoint(*event.screen_pos):
-            self._state.track_length = self.LONG_LENGTH
+            self._state.track_length = Config.LONG_SECTION_LENGTH
             return True
         
         return self._rect.collidepoint(*event.screen_pos)

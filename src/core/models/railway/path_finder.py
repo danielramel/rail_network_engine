@@ -15,12 +15,22 @@ class PathFinder:
         self._railway = railway
         railway.subscribe_to_modifications(self._on_railway_modified)
         self._edge_blocked_cache: dict[Edge, bool] = {}
+        self._node_blocked_cache: dict[Node, bool] = {}
+        self._tunnel_edge_blocked_cache: dict[Edge, bool] = {}
+        self._tunnel_node_blocked_cache: dict[Node, bool] = {}
         
     def is_node_blocked(self, node: Node) -> bool:
-        return self._railway.stations.is_within_any(node) or self._railway.graph_service.is_tunnel_entry(node)
+        if node in self._node_blocked_cache:
+            return self._node_blocked_cache[node]
+        blocked = self._railway.stations.is_within_any(node) or self._railway.graph_service.is_tunnel_entry(node)
+        self._node_blocked_cache[node] = blocked
+        return blocked
     
     def _on_railway_modified(self) -> None:
         self._edge_blocked_cache.clear()
+        self._node_blocked_cache.clear()
+        self._tunnel_edge_blocked_cache.clear()
+        self._tunnel_node_blocked_cache.clear()
     
     def find_grid_path(self, start: Pose, end: Node) -> tuple[Node] | None:       
         def is_edge_blocked(edge: Edge) -> bool:
@@ -108,10 +118,18 @@ class PathFinder:
     
     def find_tunnel_path(self, start: Pose, end: Pose) -> tuple[Node] | None:
         def _is_node_blocked(node: Node) -> bool:
-            return self._railway.stations.is_within_any(node) or self._railway.graph.has_node(node)
+            if node in self._tunnel_node_blocked_cache:
+                return self._tunnel_node_blocked_cache[node]
+            blocked = self._railway.stations.is_within_any(node) or self._railway.graph.has_node(node)
+            self._tunnel_node_blocked_cache[node] = blocked
+            return blocked
         
         def is_edge_blocked(edge: Edge) -> bool:
-            return self._railway.graph.has_edge(edge.surface_level())
+            if edge in self._tunnel_edge_blocked_cache:
+                return self._tunnel_edge_blocked_cache[edge]
+            blocked = self._railway.graph.has_edge(edge.surface_level())
+            self._tunnel_edge_blocked_cache[edge] = blocked
+            return blocked
         
         entrance = start.get_next_in_direction().tunnel_level()
         

@@ -7,7 +7,7 @@ class Event:
         self.screen_pos = screen_pos
         self.world_pos = world_pos
         self.is_far_click = pygame_event.type == pygame.MOUSEBUTTONUP and last_mouse_button_down_pos is not None and \
-            last_mouse_button_down_pos.distance_to(screen_pos) > 5
+            last_mouse_button_down_pos.distance_to(screen_pos) > 8
 
 
     def __getattr__(self, name):
