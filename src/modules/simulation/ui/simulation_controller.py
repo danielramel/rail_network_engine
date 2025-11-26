@@ -15,11 +15,11 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
         self.view = SimulationView(railway, simulation_state, graphics)
         self._state = simulation_state
         self._railway = railway
-        self._camera = graphics.camera
+        self._graphics = graphics
 
 
     def _on_click(self, click: Event) -> None:
-        snapped = self._camera.screen_to_world(click.screen_pos).snap_to_grid()
+        snapped = self._graphics.camera.screen_to_world(click.screen_pos).snap_to_grid()
         if click.is_right_click:
             if self._state.selected_signal:
                 self._state.selected_signal = None
@@ -35,7 +35,14 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
             if self._state.selected_signal:
                 mods = pygame.key.get_mods()
                 shift_pressed = bool(mods & pygame.KMOD_SHIFT)
-                self._railway.signalling.connect_signals(self._state.selected_signal, signal, shift_pressed)
+                if shift_pressed:
+                    message = self._railway.signalling.auto_connect_signals(self._state.selected_signal, signal)
+                    if message is not None:
+                        self._graphics.alert_component.show_alert(message)
+                else:
+                    successful = self._railway.signalling.connect_signals(self._state.selected_signal, signal)
+                    if not successful:
+                        self._graphics.alert_component.show_alert("Failed to connect signals: Path is blocked or invalid.")
                 self._state.selected_signal = None
             else:
                 self._state.selected_signal = signal
@@ -51,7 +58,7 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
             
             
     def render(self, screen_pos: Position | None):
-        world_pos = None if screen_pos is None else self._camera.screen_to_world(screen_pos)
+        world_pos = None if screen_pos is None else self._graphics.camera.screen_to_world(screen_pos)
         self.view.render(world_pos)
 
     

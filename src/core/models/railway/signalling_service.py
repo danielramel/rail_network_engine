@@ -3,12 +3,13 @@ from core.models.geometry.edge import Edge
 from core.models.geometry.node import Node
 from core.models.geometry.pose import Pose
 from core.models.signal import Signal
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 if TYPE_CHECKING:
     from core.models.railway.railway_system import RailwaySystem
 
 class SignallingService:
+    auto_signals: dict[Pose, Signal, tuple[Edge]] = {}
     def __init__(self, railway: 'RailwaySystem'):
         self._railway = railway
         
@@ -42,7 +43,97 @@ class SignallingService:
     def is_node_locked(self, node: Node) -> bool:
         return any(self.is_edge_locked(Edge(node, neighbor)) for neighbor in self._railway.graph.neighbors(node))
 
-    def find_path(self, start: Pose, end: Pose) -> list[Pose] | None:
+    def drop_signal(self, signal: Signal) -> None:
+        for edge in signal.path:
+            self._railway.graph.set_edge_attr(edge, 'locked', False)
+        signal.drop()
+        if signal.pose in self.auto_signals:
+            del self.auto_signals[signal.pose]
+    
+    def get_path_preview(self, start: Signal, end: Signal) -> list[Edge] | None:
+        while start.next_signal is not None:
+            start = start.next_signal
+        poses = self.find_path(start.pose, end.pose)
+        if poses is None:
+            return None
+        edges = [Edge(poses[i].node, poses[i+1].node) for i in range(len(poses)-1)]
+        return edges
+            
+    def connect_signals(self, from_signal: Signal, to_signal: Signal) -> bool:
+        while from_signal.next_signal is not None:
+            from_signal = from_signal.next_signal
+        poses = self.find_path(from_signal.pose, to_signal.pose)
+        if poses is None:
+            return False
+        
+        edges = [Edge(poses[i].node, poses[i+1].node) for i in range(len(poses)-1)]
+        current_signal = from_signal
+        current_signal_index = 0
+        for i, pose in enumerate(poses[1:], start=1):
+            if self._railway.signals.has_with_pose(pose):
+                signal = self._railway.signals.get(pose.node)
+                current_signal.connect(edges[current_signal_index:i], signal)
+                current_signal = signal
+                current_signal_index = i
+                
+        self.lock_path(edges)
+        
+        return True
+        
+    def auto_connect_signals(self, from_signal: Signal, to_signal: Signal) -> str | None:
+        poses = self.find_path(from_signal.pose, to_signal.pose, stop_at_locked=False)
+        if poses is None:
+            return "No path found between signals."
+        
+        if any(self._railway.graph_service.is_junction(pose.node) for pose in poses):
+            return "Cannot connect auto-signals through junctions."
+        
+        edges = [Edge(poses[i].node, poses[i+1].node) for i in range(len(poses)-1)]
+        current_signal = from_signal
+        current_signal_index = 0
+        for i, pose in enumerate(poses[1:], start=1):
+            if self._railway.signals.has_with_pose(pose):
+                signal = self._railway.signals.get(pose.node)
+                current_signal.connect(edges[current_signal_index:i], signal)
+                self.auto_signals[current_signal.pose] = (signal, edges[current_signal_index:i])
+                signal.passed_subscribe(self._create_auto_reconnect_callback(current_signal))
+                current_signal = signal
+                current_signal_index = i
+                
+        self.lock_path(edges)
+        
+    def _create_auto_reconnect_callback(self, signal: Signal) -> Callable:
+        def callback():
+            if signal.pose in self.auto_signals:
+                next_signal, path = self.auto_signals[signal.pose]
+                signal.connect(path, next_signal)
+                self.lock_path(path)
+        return callback
+
+    def get_initial_path(self, start_pose: Pose) -> tuple[list[Edge], Signal]:
+        visited = set[Node]()
+        pose = start_pose
+        path = []
+        while True:
+            visited.add(pose.node)
+            if self._railway.signals.has_with_pose(pose):
+                return path, self._railway.signals.get(pose.node)
+                
+            neighbors = self._railway.graph_service.get_turn_neighbors(pose)
+            if len(neighbors) == 0:
+                raise ValueError("Dead-end encountered. There should be a signal here.")
+            
+            # if multiple connections, pick the first one
+            connection = neighbors[0]
+            if connection.node in visited:
+                raise ValueError("Loop encountered in railway graph.")
+            
+
+            path.append(Edge(pose.node, connection.node))
+            pose = connection
+            
+            
+    def find_path(self, start: Pose, end: Pose, stop_at_locked: bool = True) -> list[Pose] | None:
         if start.node == end.node:
             return None
         
@@ -67,7 +158,7 @@ class SignallingService:
 
                     return tuple(reversed(path))
                           
-                if self.is_node_locked(neighbor_pose.node):
+                if stop_at_locked and self.is_node_locked(neighbor_pose.node):
                     continue
                 
                 cost = 1.0 if current_pose.direction == neighbor_pose.direction else 1.01 # slight penalty for turning
@@ -81,54 +172,3 @@ class SignallingService:
                     heapq.heappush(priority_queue, (f_score, neighbor_pose))
 
         return None
-
-    def drop_signal(self, signal: Signal) -> None:
-        for edge in signal.path:
-            self._railway.graph.set_edge_attr(edge, 'locked', False)
-        signal.drop()
-    
-    def get_path_preview(self, start: Signal, end: Signal) -> list[Edge] | None:
-        poses = self.find_path(start.pose, end.pose)
-        if poses is None:
-            return None
-        edges = [Edge(poses[i].node, poses[i+1].node) for i in range(len(poses)-1)]
-        return edges
-            
-    def connect_signals(self, from_signal: Signal, to_signal: Signal, continuous_connection: bool) -> None:
-        poses = self.find_path(from_signal.pose, to_signal.pose)
-        if poses is None:
-            return None
-
-        edges = [Edge(poses[i].node, poses[i+1].node) for i in range(len(poses)-1)]
-        current_signal = from_signal
-        current_signal_index = 0
-        for i, pose in enumerate(poses[1:], start=1):
-            if self._railway.signals.has_with_pose(pose):
-                signal = self._railway.signals.get(pose.node)
-                current_signal.connect(edges[current_signal_index:i], signal, continuous_connection)
-                current_signal = signal
-                current_signal_index = i
-                
-        self.lock_path(edges)
-
-    def get_initial_path(self, start_pose: Pose) -> tuple[list[Edge], Signal]:
-        visited = set[Node]()
-        pose = start_pose
-        path = []
-        while True:
-            visited.add(pose.node)
-            if self._railway.signals.has_with_pose(pose):
-                return path, self._railway.signals.get(pose.node)
-                
-            neighbors = self._railway.graph_service.get_turn_neighbors(pose)
-            if len(neighbors) == 0:
-                raise ValueError("Dead-end encountered. There should be a signal here.")
-            
-            # if multiple connections, pick the first one
-            connection = neighbors[0]
-            if connection.node in visited:
-                raise ValueError("Loop encountered in railway graph.")
-            
-
-            path.append(Edge(pose.node, connection.node))
-            pose = connection

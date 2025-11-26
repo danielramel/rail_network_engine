@@ -49,16 +49,20 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
         for node in self._railway.graph_service.junctions:
             draw_junction_node(self._screen, node, self._camera, Color.WHITE)
 
-        for signal in self._railway.signals.all():
-            color = Color.RED
-            
+        for signal in self._railway.signals.all():            
+            automatic = signal.pose in self._railway.signalling.auto_signals
             if signal is self._state.selected_signal:
                 color = Color.LIME
             elif signal.next_signal is not None:
                 color = Color.GREEN
             elif signal is self._state.preview.signal:
                 color = Color.LIGHTBLUE
-            draw_signal(self._screen, signal, self._camera, color, automatic=(signal.automatically_reconnect is not None))
+            elif automatic:
+                color = Color.ORANGE
+            else:
+                color = Color.RED
+                
+            draw_signal(self._screen, signal, self._camera, color, automatic=automatic)
         
 
         for station in self._railway.stations.all():

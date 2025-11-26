@@ -26,7 +26,7 @@ class SignalRepository:
         return self._railway.graph.get_node_attr(node, 'signal')
 
     def set(self, pose: Pose) -> None:
-        self._railway.graph.set_node_attr(pose.node, 'signal', Signal(pose, self._railway))
+        self._railway.graph.set_node_attr(pose.node, 'signal', Signal(pose))
 
     def remove(self, node: Node) -> None:
         self._railway.graph.remove_node_attr(node, 'signal')
@@ -40,7 +40,6 @@ class SignalRepository:
             if not self.has_with_pose(pose):
                 self.set(pose) # overwrites existing signal if any
         
-    
     def to_dict(self):
         return [signal.pose.to_dict() for signal in self.all()]
     
