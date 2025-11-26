@@ -20,34 +20,19 @@ class MainMenuController:
         
         # Calculate button positions
         screen_w, screen_h = screen.get_size()
-        button_width = 400
-        button_height = 80
-        button_spacing = 40
+        button_width = 300
+        button_height = 60
+        button_spacing = 100
         
         map_button_width = 300
         map_button_height = 50
         map_button_spacing = 20
         
         center_x = screen_w // 2
-        center_y = screen_h // 2
         
-        self._new_button_rect = pygame.Rect(
-            center_x - button_width // 2,
-            center_y - button_height - button_spacing // 2,
-            button_width,
-            button_height
-        )
-        
-        self._load_button_rect = pygame.Rect(
-            center_x - button_width // 2,
-            center_y + button_spacing // 2,
-            button_width,
-            button_height
-        )
-        
-        # Create map file buttons
+        # Create map file buttons at the top (below title)
         self._map_buttons: list[tuple[pygame.Rect, str, pygame.Surface]] = []
-        maps_start_y = self._load_button_rect.bottom + button_spacing
+        maps_start_y = 250  # Start maps closer to the top
         
         for i, (filename, filepath) in enumerate(self._map_files):
             button_rect = pygame.Rect(
@@ -61,9 +46,28 @@ class MainMenuController:
             text_surface = self._font_map_button.render(display_name, True, Color.WHITE)
             self._map_buttons.append((button_rect, filepath, text_surface))
         
+        # Position New and Load buttons at the bottom, side by side
+        bottom_buttons_y = screen_h - button_height - 200
+        
+        self._new_button_rect = pygame.Rect(
+            center_x - button_width - button_spacing // 2,
+            bottom_buttons_y,
+            button_width,
+            button_height
+        )
+        
+        self._load_button_rect = pygame.Rect(
+            center_x + button_spacing // 2,
+            bottom_buttons_y,
+            button_width,
+            button_height
+        )
+        
         self._title_text = self._font_title.render("Rail Simulator", True, Color.WHITE)
         self._new_text = self._font_button.render("Create New Railway", True, Color.WHITE)
-        self._load_text = self._font_button.render("Load Existing Railway", True, Color.WHITE)
+        self._load_text = self._font_button.render("Load Railway", True, Color.WHITE)
+        self._no_maps_text = self._font_map_button.render("No maps found", True, Color.GREY)
+        self._your_maps_text = self._font_button.render("Your Maps:", True, Color.WHITE)
         
         # Quit button in bottom left corner
         quit_button_width = 120
@@ -92,6 +96,9 @@ class MainMenuController:
         return map_files
     
     def dispatch_event(self, pygame_event: pygame.event) -> str | None:
+        if pygame_event.type == pygame.KEYDOWN and pygame_event.key == pygame.K_ESCAPE:
+            pygame.quit()
+            raise SystemExit()
         if pygame_event.type == pygame.MOUSEMOTION:
             mouse_pos = Position(*pygame.mouse.get_pos())
             if self._new_button_rect.collidepoint(mouse_pos.x, mouse_pos.y):
@@ -154,17 +161,27 @@ class MainMenuController:
         
         screen_w, screen_h = self._screen.get_size()
         
-        # Draw title
-        title_rect = self._title_text.get_rect(center=(screen_w // 2, screen_h // 4))
+        # Draw title at the top
+        title_rect = self._title_text.get_rect(center=(screen_w // 2, 70))
         self._screen.blit(self._title_text, title_rect)
         
-        # Draw buttons
+        # Draw "Your Maps:" label above the map buttons
+        your_maps_rect = self._your_maps_text.get_rect(center=(screen_w // 2, 160))
+        self._screen.blit(self._your_maps_text, your_maps_rect)
+        
+        # Draw map file buttons first (at the top) or "No maps found" message
+        if self._map_buttons:
+            for i, (rect, filepath, text_surface) in enumerate(self._map_buttons):
+                self._draw_button(rect, text_surface, self._hovered_button == f"map_{i}")
+                if i == 4:
+                    break  # Limit to first 5 map buttons for display
+        else:
+            no_maps_rect = self._no_maps_text.get_rect(center=(screen_w // 2, 500))
+            self._screen.blit(self._no_maps_text, no_maps_rect)
+        
+        # Draw New and Load buttons at the bottom
         self._draw_button(self._new_button_rect, self._new_text, self._hovered_button == "new")
         self._draw_button(self._load_button_rect, self._load_text, self._hovered_button == "load")
-        
-        # Draw map file buttons
-        for i, (rect, filepath, text_surface) in enumerate(self._map_buttons):
-            self._draw_button(rect, text_surface, self._hovered_button == f"map_{i}")
         
         # Draw quit button
         self._draw_button(self._quit_button_rect, self._quit_text, self._hovered_button == "quit")
