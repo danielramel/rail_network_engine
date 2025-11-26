@@ -1,3 +1,4 @@
+from operator import index
 from typing import TYPE_CHECKING
 
 from core.config.color import Color
@@ -55,20 +56,18 @@ class Schedule:
     def get_next_station(self) -> Station:
         return self.stops[self._station_index]['station']
     
-    def get_next_stop_str(self) -> str:
+    def get_remaining_stops(self) -> list[dict]:
+        """Returns a list of stop info dicts for rendering (current + next 2 stops)."""
         def format_time(minutes: int) -> str:
             return f"{minutes // 60:02d}:{minutes % 60:02d}"
         
-        def format_stop(index: int) -> str:
-            if index == 0:
-                return f"{self.stops[0]['station'].name}: Departure: {format_time(self.stops[0]['departure_time'])}"
-            if index == len(self.stops) - 1:
-                return f"{self.stops[-1]['station'].name}: Arrival: {format_time(self.stops[-1]['arrival_time'])}"
-            return f"{self.stops[index]['station'].name}: {format_time(self.stops[index]['arrival_time'])} - {format_time(self.stops[index]['departure_time'])}"
+        def format_stop(stop: dict) -> dict:
+            station_name = stop['station'].name
+            return {
+                'station': station_name,
+                'type': 'stop',
+                'arrival': format_time(stop['arrival_time']) if stop['arrival_time'] is not None else 'DEP',
+                'departure': format_time(stop['departure_time']) if stop['departure_time'] is not None else 'ARR',
+            }
         
-        result = format_stop(self._station_index)
-        
-        if self._station_index + 1 < len(self.stops):
-            result += "\n" + format_stop(self._station_index + 1)
-        
-        return result
+        return [format_stop(stop) for stop in self.stops[self._station_index:]]

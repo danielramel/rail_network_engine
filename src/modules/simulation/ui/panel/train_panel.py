@@ -18,7 +18,7 @@ class TrainPanel(Panel):
         self._state = simulation_state
         self._index = index
         
-        super().__init__(screen, height=200, x=150 + index * 420, y=-220)
+        super().__init__(screen, height=300, x=150 + index * 420, y=-20)
         self._init_buttons()
     
     @property
@@ -95,10 +95,46 @@ class TrainPanel(Panel):
     def _render_next_stop(self):
         if not self._train.schedule:
             return
+        
+        stops = self._train.schedule.get_remaining_stops()
+        y_offset = self._rect.y + self.padding + 30
+        schedule_color = Color.get(self._train.schedule.color)
+        indicator_x = self._rect.x + self.padding + 6
+        
+        for i, stop in enumerate(stops[:min(3, len(stops) - 1)]):
+            indicator_color = schedule_color if i == 0 else Color.DARKGREY
+            pygame.draw.circle(self._screen, indicator_color, (indicator_x, y_offset + 10), 5)
             
-        next_stop_str = self._train.schedule.get_next_stop_str()
-        screen = self.instruction_font.render(next_stop_str, True, Color.WHITE)
-        self._screen.blit(screen, (self._rect.x + self.padding, self._rect.y + self.padding + 30))
+            if len(stops) <= 4 or i < min(3, len(stops)) - 1:
+                pygame.draw.line(self._screen, Color.DARKGREY, 
+                                (indicator_x, y_offset + 20), 
+                                (indicator_x, y_offset + 45), 2)
+            
+            name_color = Color.WHITE if i == 0 else Color.LIGHTGREY
+            station_text = self.instruction_font.render(stop['station'], True, name_color)
+            self._screen.blit(station_text, (indicator_x + 20, y_offset))
+            
+            time_surface = self.instruction_font.render(f"{stop['arrival']}  -  {stop['departure']}", True, Color.LIGHTGREY)
+            self._screen.blit(time_surface, (indicator_x + 20, y_offset + 20  ))
+            
+            y_offset += 45
+            
+        
+        if len(stops) > 4:
+            pygame.draw.circle(self._screen, Color.DARKGREY, (indicator_x + 2, y_offset - 25), 2)
+            pygame.draw.circle(self._screen, Color.DARKGREY, (indicator_x + 2, y_offset - 15), 2)
+            pygame.draw.circle(self._screen, Color.DARKGREY, (indicator_x + 2, y_offset - 5), 2)
+            
+        indicator_color = schedule_color if len(stops) == 1 else Color.DARKGREY
+        pygame.draw.circle(self._screen, indicator_color, (indicator_x, y_offset + 10), 5)
+        stop = stops[-1]
+        name_color = Color.WHITE if len(stops) == 1 else Color.LIGHTGREY
+        station_text = self.instruction_font.render(stop['station'], True, name_color)
+        self._screen.blit(station_text, (indicator_x + 20, y_offset))
+        
+        time_surface = self.instruction_font.render(f"{stop['arrival']}  -  {stop['departure']}", True, Color.LIGHTGREY)
+        self._screen.blit(time_surface, (indicator_x + 20, y_offset + 20  ))
+        
 
     def _render_button(self, rect, text, color):
         pygame.draw.rect(self._screen, color, rect, border_radius=5)
@@ -124,9 +160,9 @@ class TrainPanel(Panel):
 
     def _init_buttons(self):
         self.close_button = pygame.Rect(self._rect.right - 40, self._rect.top + 10, 40, 20)
-        self.add_schedule_button = pygame.Rect(self._rect.centerx - 80, self._rect.bottom - 125, 160, 30)
-        self.change_schedule_button = pygame.Rect(self._rect.centerx - 190, self._rect.bottom - 85, 140, 30)
-        self.remove_schedule_button = pygame.Rect(self._rect.centerx + 50, self._rect.bottom - 85, 140, 30)
+        self.add_schedule_button = pygame.Rect(self._rect.centerx - 80, self._rect.bottom - 165, 160, 30)
+        self.change_schedule_button = pygame.Rect(self._rect.centerx + 50, self._rect.bottom - 200, 140, 30)
+        self.remove_schedule_button = pygame.Rect(self._rect.centerx + 50, self._rect.bottom - 160, 140, 30)
         self.startup_button = pygame.Rect(self._rect.centerx + 50, self._rect.bottom - 45, 140, 30)
         self.shut_down_button = self.startup_button
         self.reverse_button = pygame.Rect(self._rect.centerx - 190, self._rect.bottom - 45, 140, 30)
