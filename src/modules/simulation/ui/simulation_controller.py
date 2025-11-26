@@ -42,17 +42,13 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
                 self._railway.signalling.drop_signal(target.signal)
                 return
             
-            shift_pressed = bool(pygame.key.get_mods() & pygame.KMOD_SHIFT)
             
             if self._state.selected_signal is None:
-                if shift_pressed:
-                    if self._railway.graph.degree_at(target.signal.node) == 1:
-                        self._graphics.alert_component.show_alert("Cannot auto-connect from a dead-end signal.")
-                        return
                 self._state.selected_signal = target.signal
                 return
             
             
+            shift_pressed = bool(pygame.key.get_mods() & pygame.KMOD_SHIFT)
             if self._state.selected_signal.next_signal is not None and not shift_pressed:
                 self._graphics.alert_component.show_alert("Selected signal is already connected to another signal.")
                 self._state.selected_signal = None

@@ -18,11 +18,11 @@ class SimulationMode(UIController, FullScreenUIComponent):
         self._graphics = graphics
         self.elements = ()
 
-        # graphics.input_component.request_input(
-        #     "Enter simulation start time (HH:MM:SS):",
-        #     self._on_time_set
-        # )
-        self._on_time_set("00:00:00")
+        graphics.input_component.request_input(
+            "Enter simulation start time (HH:MM:SS):",
+            self._on_time_set
+        )
+        # self._on_time_set("00:00:00")
 
     def _initialize(self):
         self._state = SimulationState(self._railway.time)
