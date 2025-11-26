@@ -12,9 +12,7 @@ from modules.setup.models.setup_state import SetupState
 
 class SetupMode(FullScreenUIComponent, UIController):
     elements: tuple[UIComponent]
-    def __init__(self, railway: RailwaySystem, graphics: GraphicsContext):
-        railway.signals.add_signals_to_dead_ends()
-        
+    def __init__(self, railway: RailwaySystem, graphics: GraphicsContext):        
         self.state = SetupState(railway.time)
         self.elements = (
             SetupButtons(graphics.screen, self.state),

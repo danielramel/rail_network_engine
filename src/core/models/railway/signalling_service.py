@@ -91,14 +91,20 @@ class SignallingService:
         edges = [Edge(poses[i].node, poses[i+1].node) for i in range(len(poses)-1)]
         current_signal = from_signal
         current_signal_index = 0
+        is_locked = False
         for i, pose in enumerate(poses[1:], start=1):
+            if self.is_node_locked(pose.node):
+                is_locked = True
             if self._railway.signals.has_with_pose(pose):
                 signal = self._railway.signals.get(pose.node)
-                current_signal.connect(edges[current_signal_index:i], signal)
+                if not is_locked:
+                    #only connect right now if the path is not locked
+                    current_signal.connect(edges[current_signal_index:i], signal)
                 self.auto_signals[current_signal.pose] = (signal, edges[current_signal_index:i])
                 signal.passed_subscribe(self._create_auto_reconnect_callback(current_signal))
                 current_signal = signal
                 current_signal_index = i
+                is_locked = False
                 
         self.lock_path(edges)
         

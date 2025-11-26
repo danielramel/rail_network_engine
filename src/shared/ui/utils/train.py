@@ -80,7 +80,7 @@ def draw_train_car(
     dash_end_x = a_x + dx * end
     dash_end_y = a_y + dy * end
 
-    width = max(4, int(13 * int(camera.scale)))
+    width = max(5, int(13 * int(camera.scale)))
     if is_last:
         pygame.draw.line(screen, Color.BLUE, (dash_start_x, dash_start_y), (dash_end_x, dash_end_y), width)
         return
