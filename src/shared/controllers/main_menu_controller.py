@@ -84,6 +84,20 @@ class MainMenuController:
         self._hovered_button: str | None = None
         self._selected_action: str | None = None
         self._selected_filepath: str | None = None
+        
+        # Alert system
+        self._alert_message: str | None = None
+        self._alert_font = pygame.font.SysFont("Arial", 24)
+        self._alert_title_font = pygame.font.SysFont("Arial", 32, bold=True)
+        alert_width = 500
+        alert_height = 200
+        self._alert_rect = pygame.Rect(
+            center_x - alert_width // 2,
+            screen_h // 2 - alert_height // 2,
+            alert_width,
+            alert_height
+        )
+        self._alert_dismiss_text = self._alert_font.render("Click anywhere to dismiss", True, Color.GREY)
     
     def _scan_maps_folder(self) -> list[tuple[str, str]]:
         """Scan the maps folder and return list of (filename, filepath) tuples."""
@@ -96,6 +110,14 @@ class MainMenuController:
         return map_files
     
     def dispatch_event(self, pygame_event: pygame.event) -> str | None:
+        # If alert is showing, dismiss it on any click
+        if self._alert_message is not None:
+            if pygame_event.type == pygame.MOUSEBUTTONUP and pygame_event.button == 1:
+                self._alert_message = None
+            elif pygame_event.type == pygame.KEYDOWN:
+                self._alert_message = None
+            return None
+        
         if pygame_event.type == pygame.KEYDOWN and pygame_event.key == pygame.K_ESCAPE:
             pygame.quit()
             raise SystemExit()
@@ -185,6 +207,10 @@ class MainMenuController:
         
         # Draw quit button
         self._draw_button(self._quit_button_rect, self._quit_text, self._hovered_button == "quit")
+        
+        # Draw alert overlay if active
+        if self._alert_message:
+            self._draw_alert()
     
     def _draw_button(self, rect: pygame.Rect, text_surface: pygame.Surface, hovered: bool):
         """Draw a menu button."""
@@ -201,7 +227,38 @@ class MainMenuController:
         # Button text
         text_rect = text_surface.get_rect(center=rect.center)
         self._screen.blit(text_surface, text_rect)
+    
+    def _draw_alert(self):
+        """Draw the alert overlay."""
+        screen_w, screen_h = self._screen.get_size()
+        
+        # Draw semi-transparent overlay
+        overlay = pygame.Surface((screen_w, screen_h), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 180))
+        self._screen.blit(overlay, (0, 0))
+        
+        # Draw alert box background
+        pygame.draw.rect(self._screen, Color.BLACK, self._alert_rect, border_radius=15)
+        pygame.draw.rect(self._screen, Color.WHITE, self._alert_rect, 3, border_radius=15)
+        
+        # Draw alert title
+        title_surface = self._alert_title_font.render("Notice", True, Color.WHITE)
+        title_rect = title_surface.get_rect(centerx=self._alert_rect.centerx, top=self._alert_rect.top + 20)
+        self._screen.blit(title_surface, title_rect)
+        
+        # Draw alert message (word wrap if needed)
+        message_surface = self._alert_font.render(self._alert_message, True, Color.WHITE)
+        message_rect = message_surface.get_rect(center=self._alert_rect.center)
+        self._screen.blit(message_surface, message_rect)
+        
+        # Draw dismiss instruction
+        dismiss_rect = self._alert_dismiss_text.get_rect(centerx=self._alert_rect.centerx, bottom=self._alert_rect.bottom - 15)
+        self._screen.blit(self._alert_dismiss_text, dismiss_rect)
         
         
     def tick(self):
         pass
+    
+    def alert(self, message: str):
+        """Display an alert message overlay on the main menu."""
+        self._alert_message = message
