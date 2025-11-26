@@ -25,7 +25,7 @@ class Panel(RectangleUIComponent, ClickableUIComponent):
             y = screen_h - height - 15
             
         elif y < 0:
-            y = screen_h - y
+            y = screen_h + y
                     
         return pygame.Rect(x, y, width, height)
     

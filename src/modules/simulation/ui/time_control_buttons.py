@@ -67,7 +67,7 @@ class TimeControlButtons(ClickableUIComponent, ShortcutUIComponent):
         for i, mode in enumerate(TimeControlMode):
             offset = (Config.BUTTON_SIZE + button_margin) * i
             rect = pygame.Rect(
-                (w - (4*Config.BUTTON_SIZE+3*button_margin))//2 + offset,
+                (w - 4 * (Config.BUTTON_SIZE + button_margin) + offset),
                 h - Config.BUTTON_SIZE - button_margin,
                 Config.BUTTON_SIZE,
                 Config.BUTTON_SIZE

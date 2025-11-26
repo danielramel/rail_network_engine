@@ -18,11 +18,11 @@ class TrainPanel(Panel):
         self._schedule_repository = route_repository
         self._state = simulation_state
         
-        super().__init__(screen, height=200, x=-420, y=20 + index * 270)
+        super().__init__(screen, height=200, x=20 + index * 320, y=-220)
         self._init_buttons()
         
     def change_index(self, index: int):
-        self._rect.y = 100 + index * 270
+        self._rect.x = 100 + index * 420
         self._init_buttons()
 
     def render(self, screen_pos):
