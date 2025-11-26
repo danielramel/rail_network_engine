@@ -121,7 +121,7 @@ class SignallingService:
                 
             neighbors = self._railway.graph_service.get_turn_neighbors(pose)
             if len(neighbors) == 0:
-                raise ValueError("Dead-end encountered. There should be a signal here.")
+                return path, None
             
             # if multiple connections, pick the first one
             connection = neighbors[0]

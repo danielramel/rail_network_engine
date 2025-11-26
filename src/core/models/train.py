@@ -82,6 +82,8 @@ class Train:
     def set_initial_path(self) -> None:
         path, signal = self._railway.signalling.get_initial_path(self.get_locomotive_pose())
         self.path += [self._railway.graph.get_rail(edge) for edge in path]
+        if signal is None:
+            return
         self.extend_path(signal)
         
     def signal_released(self, signal: Signal) -> bool:
@@ -111,8 +113,9 @@ class Train:
         self.live = False
         self._railway.signalling.release_path([rail.edge for rail in self.path[self._occupied_edge_count:]])
         self.path = self.path[:self._occupied_edge_count]
-        self._release_unsubscribe()
         self._routed_to_station_ahead = False
+        if self._release_unsubscribe is not None:
+            self._release_unsubscribe()
         
         
     def compute_speed_profile(self):

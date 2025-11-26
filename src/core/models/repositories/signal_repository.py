@@ -33,12 +33,6 @@ class SignalRepository:
 
     def all(self) -> tuple[Signal]:
         return tuple(self._railway.graph.all_nodes_with_attr('signal').values())
-    
-    def add_signals_to_dead_ends(self) -> None:
-        poses = self._railway.graph.get_dead_end_poses()
-        for pose in poses:
-            if not self.has_with_pose(pose):
-                self.set(pose) # overwrites existing signal if any
         
     def to_dict(self):
         return [signal.pose.to_dict() for signal in self.all()]
