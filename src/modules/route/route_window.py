@@ -211,7 +211,7 @@ class RouteWindow(QMainWindow):
         return f"{minutes // 60:02d}:{minutes % 60:02d}"
 
     def _get_code_color(self, color: str) -> QColor:
-        return QColor(*Color[color])
+        return QColor(*getattr(Color, color))
 
     def _format_route(self, route: Route) -> str:
         stops = route.stops

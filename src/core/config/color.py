@@ -1,6 +1,4 @@
-from enum import Enum
-
-class Color(tuple, Enum):
+class Color:
     WHITE = (255, 255, 255)
     GREY = (180, 180, 180)
     GREEN = (0, 200, 0)
