@@ -10,24 +10,27 @@ if TYPE_CHECKING:
 
 class StationRepository:
     """In-memory repository for Station objects with platform management."""
-    
     def __init__(self, railway: "RailwaySystem"):
         self._stations: dict[int, Station] = {} 
         self._next_id: int = 1
         self._railway = railway
-    
+
     def add(self, node: Node, name: str) -> Station:
         station = Station(name, node, self._next_id)
         self._stations[station.id] = station
         self._next_id += 1
+        self._railway.mark_modified()
         return station
     
     def _remove(self, station_id: int) -> Station:
-        return self._stations.pop(station_id)
+        station = self._stations.pop(station_id)
+        self._railway.mark_modified()
+        return station
     
     def move(self, station_id: int, new_node: Node) -> None:
         station = self._stations[station_id]
         station.node = new_node
+        self._railway.mark_modified()
     
     def get(self, station_id: int) -> Station:
         return self._stations[station_id]

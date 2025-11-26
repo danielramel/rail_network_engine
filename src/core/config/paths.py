@@ -6,6 +6,7 @@ ICON_CATEGORIES = {
         "ROUTE": "route.png",
         "SAVE": "save.png",
         "SAVED": "saved.png",
+        "UNSAVED": "unsaved.png",
         "OPEN": "open.png",
         "EXIT": "exit.png"
     },

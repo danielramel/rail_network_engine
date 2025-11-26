@@ -17,7 +17,8 @@ class TrainRepository:
 
     def remove(self, train_id: int) -> None:
         del self._trains[train_id]
-
+        self._railway.mark_modified()
+        
     def get_train_on_edge(self, edge: Edge) -> int | None:
         for train_id, train in self._trains.items():
             if train.occupies_edge(edge):
@@ -34,6 +35,7 @@ class TrainRepository:
         id = self._generate_id()
         train.id = id
         self._trains[id] = train
+        self._railway.mark_modified()
         return id
     
     def create_train(self, edges: frozenset[Edge], config: TrainConfig) -> Train:

@@ -4,15 +4,18 @@ if TYPE_CHECKING:
     from core.models.railway.railway_system import RailwaySystem
 
 class RouteRepository:
-    def __init__(self):
+    def __init__(self, railway: 'RailwaySystem'):
         self._routes : list[Route] = []
+        self._railway = railway
 
     def add(self, route: Route) -> None:
         self._routes.append(route)
+        self._railway.mark_modified()
 
     def remove(self, route: Route) -> None:
         self._routes.remove(route)
-
+        self._railway.mark_modified()
+        
     def all(self) -> list[Route]:
         return self._routes
 
@@ -28,8 +31,8 @@ class RouteRepository:
     
     @classmethod
     def from_dict(cls, railway: 'RailwaySystem', data: list[dict]) -> 'RouteRepository':
-        repo = cls()
+        repo = cls(railway)
         for route_data in data:
             route = Route.from_dict(route_data, railway)
-            repo.add(route)
+            repo._routes.append(route)  # bypass notification during loading
         return repo

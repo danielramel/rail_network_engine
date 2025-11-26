@@ -21,6 +21,7 @@ class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
         super().__init__(rect, screen)
         self._icon = IconLoader().get_icon(ICON_PATHS["SAVE"], Config.BUTTON_SIZE)
         self._saved_icon = IconLoader().get_icon(ICON_PATHS["SAVED"], Config.BUTTON_SIZE)
+        self._unsaved_icon = IconLoader().get_icon(ICON_PATHS["UNSAVED"], Config.BUTTON_SIZE)
         self._railway = railway
         self._app_state = app_state
         self._shortcuts = {
@@ -35,10 +36,14 @@ class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
         bg_color = Color.DARKGREY if self.contains(screen_pos) else Color.BLACK
         pygame.draw.rect(self._screen, bg_color, self._rect, border_radius=10)
         current_time = pygame.time.get_ticks()
-        if current_time - self._save_timestamp < 3000:  # 3 seconds
+        
+        # Show saved icon briefly after save, then show state-based icon
+        if current_time - self._save_timestamp < 3000:  # 3 seconds after save
             icon = self._saved_icon
-        else:
+        elif self._railway.is_saved:
             icon = self._icon
+        else:
+            icon = self._unsaved_icon
         
         icon_rect = icon.get_rect(center=self._rect.center)
         self._screen.blit(icon, icon_rect)
@@ -49,6 +54,7 @@ class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
             data = self._railway.to_dict()
             with open(self._app_state.filepath, 'w') as f:
                 json.dump(data, f, indent=4)
+            self._railway.mark_as_saved()
             self._save_timestamp = pygame.time.get_ticks()
         else:
             self.save_game_dialog()
@@ -73,6 +79,7 @@ class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
                 json.dump(data, f, indent=4)
                 
             self._app_state.filepath = filepath
+            self._railway.mark_as_saved()
             self._save_timestamp = pygame.time.get_ticks()
 
         finally:

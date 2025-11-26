@@ -10,15 +10,26 @@ from core.models.repositories.signal_repository import SignalRepository
 
 class RailwaySystem:
     def __init__(self):
+        self._is_saved: bool = True
         self.time = Time()
-        self._graph_adapter = GraphAdapter()
+        self._graph_adapter = GraphAdapter(on_modified=self.mark_modified)
         self._graph_service = GraphService(self)
         self._signal_repository = SignalRepository(self._graph_adapter)
         self._station_repository = StationRepository(self)
-        self._route_repository = RouteRepository()
+        self._route_repository = RouteRepository(self)
         self._train_repository = TrainRepository(self)
         self._pathfinder = PathFinder(self)
         self._signalling_service = SignallingService(self)
+    
+    def mark_modified(self) -> None:
+        self._is_saved = False
+    
+    @property
+    def is_saved(self) -> bool:
+        return self._is_saved
+    
+    def mark_as_saved(self) -> None:
+        self._is_saved = True
     
     @property
     def graph(self) -> GraphAdapter:
@@ -67,7 +78,7 @@ class RailwaySystem:
         
     def replace_from_dict(self, data: dict) -> None:
         instance = RailwaySystem()
-        instance._graph_adapter = GraphAdapter.from_dict(data['graph'])
+        instance._graph_adapter = GraphAdapter.from_dict(data['graph'], on_modified=self.mark_modified)
         instance._station_repository = StationRepository.from_dict(instance, data["station_repository"])
         instance._signal_repository = SignalRepository.from_dict(instance, data["signal_repository"])
         instance._route_repository = RouteRepository.from_dict(instance, data['route_repository'])
@@ -78,3 +89,4 @@ class RailwaySystem:
         self._signal_repository = instance._signal_repository
         self._route_repository = instance._route_repository
         self._train_repository = instance._train_repository
+        self.mark_as_saved()

@@ -1,5 +1,6 @@
 from core.models.geometry.edge import Edge
 import networkx as nx
+from typing import Callable
 
 from core.models.rail import Rail
 from core.models.geometry.pose import Pose
@@ -7,8 +8,9 @@ from core.models.geometry.node import Node
 from core.config.settings import Config
 
 class GraphAdapter:
-    def __init__(self):
+    def __init__(self, on_modified: Callable):
         self._graph = nx.Graph()
+        self._on_modified = on_modified
         
     @property
     def nodes(self) -> set[Node]:
@@ -20,12 +22,14 @@ class GraphAdapter:
     
     def add_node(self, node: Node) -> None:
         self._graph.add_node(node)
+        self._on_modified()
         
     def has_node(self, node: Node) -> bool:
         return node in self._graph.nodes
     
     def remove_node(self, node: Node) -> None:
         self._graph.remove_node(node)
+        self._on_modified()
     
     def has_node_attr(self, node: Node, key:str) -> bool:
         return key in self._graph.nodes[node]
@@ -35,10 +39,12 @@ class GraphAdapter:
     
     def set_node_attr(self, node: Node, key: str, value) -> None:
         self._graph.nodes[node][key] = value
+        self._on_modified()
         
     def remove_node_attr(self, node: Node, key: str) -> None:
         if node in self._graph.nodes and key in self._graph.nodes[node]:
             del self._graph.nodes[node][key]
+            self._on_modified()
     
     def all_nodes_with_attr(self, key: str) -> dict[Node, dict]:
         return {n: data[key] for n, data in self._graph.nodes(data=True) if key in data}
@@ -51,6 +57,7 @@ class GraphAdapter:
     
     def set_edge_attr(self, edge: Edge, key: str, value) -> None:
         self._graph.edges[edge][key] = value
+        self._on_modified()
         
     def has_edge_attr(self, edge: Edge, key: str) -> bool:
         return key in self._graph.edges[edge]
@@ -60,6 +67,7 @@ class GraphAdapter:
     
     def remove_edge_attr(self, edge: Edge, key: str) -> None:
         del self._graph.edges[edge][key]
+        self._on_modified()
         
     def get_edge_length(self, edge: Edge) -> int:
         return self._graph.edges[edge]['length']
@@ -83,9 +91,11 @@ class GraphAdapter:
 
     def add_edge(self, a: Node, b: Node, speed: int, length: int, level: int = 0) -> None:
         self._graph.add_edge(a, b, speed=speed, length=length, level=level)
+        self._on_modified()
 
     def remove_edge(self, edge: Edge) -> None:
         self._graph.remove_edge(edge.a, edge.b)
+        self._on_modified()
         
     def get_edges(self, node: Node) -> list[Edge]:
         return self._graph.edges(node)
@@ -106,8 +116,8 @@ class GraphAdapter:
         return graph_data
     
     @classmethod
-    def from_dict(cls, graph_data: dict) -> None:
-        instance = cls()
+    def from_dict(cls, graph_data: dict, on_modified: Callable) -> 'GraphAdapter':
+        instance = cls(on_modified)
         
         for node in graph_data['nodes']:
             node['id'] = Node.from_dict(node['id'])
