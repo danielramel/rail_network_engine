@@ -19,7 +19,7 @@ class SimulationMode(UIController, FullScreenUIComponent):
         self.elements = ()
 
         graphics.input_component.request_input(
-            "Enter simulation start time (HH:MM:SS):",
+            "Enter simulation start time (HH:MM):",
             self._on_time_set
         )
         # self._on_time_set("00:00:00")
@@ -38,9 +38,9 @@ class SimulationMode(UIController, FullScreenUIComponent):
         try:
             self._railway.time.set_time_from_string(time_str)
         except ValueError:
-            self._graphics.alert_component.show_alert("Invalid time format. Use HH:MM:SS.")
+            self._graphics.alert_component.show_alert("Invalid time format. Use HH:MM.")
             self._graphics.input_component.request_input(
-                "Enter simulation start time (HH:MM:SS):",
+                "Enter simulation start time (HH:MM):",
                 self._on_time_set
             )
             return
