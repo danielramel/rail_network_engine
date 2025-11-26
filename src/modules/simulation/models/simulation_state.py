@@ -49,23 +49,27 @@ class SimulationState:
     selected_signal: Optional[Signal] = None
     time_control: TimeControlState = TimeControlState()
     preview: SimulationPreview = field(default_factory=SimulationPreview)
-    selected_trains: list[int] = field(default_factory=list)
-    selected_trains_callback: Optional[Callable] = None
+    selected_trains: set[int] = field(default_factory=set)
+    _train_selected_callback: Optional[Callable] = None
+    _train_deselected_callback: Optional[Callable] = None
     
     def tick(self) -> None:
         """Advance the current time by the specified number of seconds."""
         self.time.add(1 * self.time_control.mode.value / Config.FPS)
         
-
-    
     def select_train(self, train_id: int) -> None:
         if train_id not in self.selected_trains:
-            self.selected_trains.append(train_id)
-        if self.selected_trains_callback:
-            self.selected_trains_callback(train_id, True)
+            self.selected_trains.add(train_id)
+        if self._train_selected_callback:
+            self._train_selected_callback(train_id)
             
     def deselect_train(self, train_id: int) -> None:
-        if train_id in self.selected_trains:
-            self.selected_trains.remove(train_id)
-        if self.selected_trains_callback:
-            self.selected_trains_callback(train_id, False)
+        self.selected_trains.remove(train_id)
+        if self._train_deselected_callback:
+            self._train_deselected_callback(train_id)
+            
+    def subscribe_to_train_selected(self, callback: Callable) -> None:
+        self._train_selected_callback = callback
+        
+    def subscribe_to_train_deselected(self, callback: Callable) -> None:
+        self._train_deselected_callback = callback

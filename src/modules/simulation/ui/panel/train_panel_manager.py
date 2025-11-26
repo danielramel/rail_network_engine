@@ -15,22 +15,24 @@ class TrainPanelManager(UIController):
         self._state = simulation_state
         self._route_repository = route_repository
         self._screen = screen
-        
-        self._state.selected_trains_callback = self.on_selected_trains_changed
+        self._state.subscribe_to_train_selected(self.on_train_selected)
+        self._state.subscribe_to_train_deselected(self.on_train_deselected)
     
-    def on_selected_trains_changed(self, train_id, selected) -> None:
-        if not selected:
-            del self.panels[train_id]
-            
-        else:
+    def on_train_selected(self, train_id: int) -> None:
+        if train_id not in self.panels:
             train = self._railway.trains.get(train_id)
-            self.panels[train_id] = TrainPanel(train, self._screen, len(self.panels), self._route_repository, self.panel_closed)
+            self.panels[train_id] = TrainPanel(train, self._screen, len(self.panels), self._route_repository, self._state)
             
         for index, panel in enumerate(self.panels.values()):
+            panel.deselect()
             panel.change_index(index)
             
-    def panel_closed(self, train_id: int) -> None:
-        self._state.deselect_train(train_id)
+        self.panels[train_id].select()
+            
+    def on_train_deselected(self, train_id: int) -> None:
+        del self.panels[train_id]
+        for index, panel in enumerate(self.panels.values()):
+            panel.change_index(index)
             
     @property
     def elements(self) -> tuple[TrainPanel]:
