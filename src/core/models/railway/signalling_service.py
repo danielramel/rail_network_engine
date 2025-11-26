@@ -140,6 +140,13 @@ class SignallingService:
             
             
     def find_path(self, start: Pose, end: Pose, stop_at_locked: bool = True) -> list[Pose] | None:
+        def is_node_blocked(node: Node) -> bool:
+            if self._railway.graph.get_node_attr(node, "blocked"):
+                return True
+            if stop_at_locked and self.is_node_locked(node):
+                return True
+            return False
+            
         if start.node == end.node:
             return None
         
@@ -164,7 +171,7 @@ class SignallingService:
 
                     return tuple(reversed(path))
                           
-                if stop_at_locked and self.is_node_locked(neighbor_pose.node):
+                if is_node_blocked(neighbor_pose.node):
                     continue
                 
                 cost = 1.0 if current_pose.direction == neighbor_pose.direction else 1.01 # slight penalty for turning

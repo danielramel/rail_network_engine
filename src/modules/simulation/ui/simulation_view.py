@@ -26,15 +26,23 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
         self._camera = graphics.camera
         
     def render(self, world_pos: Position | None) -> None:
-        self.set_preview(world_pos)
+        self._state.preview.clear()
+            
+        target = find_simulation_target(self._railway, world_pos)
         
+        preview_path = []
+        if target.kind == SimulationTargetType.SIGNAL and self._state.selected_signal is not None:
+            path = self._railway.signalling.get_path_preview(self._state.selected_signal, target.signal)
+            if path is not None:
+                preview_path = path
+            
+            
         draw_grid(self._screen, self._camera)
-
         for edge, data in self._railway.graph.all_edges_with_data():
             edge_action = EdgeAction.NO_SPEED
             is_locked = self._railway.signalling.is_edge_locked(edge)
             is_platform = self._railway.stations.is_edge_platform(edge)
-            is_in_preview = edge in self._state.preview.path
+            is_in_preview = edge in preview_path
 
             if is_platform and is_locked:
                 edge_action = EdgeAction.LOCKED_PLATFORM
@@ -50,19 +58,21 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
 
         for node in self._railway.graph_service.junctions:
             draw_junction_node(self._screen, node, self._camera, Color.WHITE)
+            
+        for node in self._railway.graph.all_nodes_with_attr("blocked"):
+            draw_node(self._screen, node, self._camera, color=Color.RED)
 
+        shift_pressed = bool(pygame.key.get_mods() & pygame.KMOD_SHIFT)
         for signal in self._railway.signals.all():            
             automatic = signal.pose in self._railway.signalling.auto_signals
             if signal is self._state.selected_signal:
-                if self._state.preview.automatic_signal:
-                    automatic = True
+                automatic = automatic or shift_pressed
                 color = Color.LIME
+            elif target.signal == signal:
+                automatic = automatic or (shift_pressed and self._state.selected_signal is None)
+                color = Color.LIGHTBLUE
             elif signal.next_signal is not None:
                 color = Color.GREEN
-            elif signal is self._state.preview.signal:
-                if self._state.preview.automatic_signal and self._state.selected_signal is None:
-                    automatic = True
-                color = Color.LIGHTBLUE
             elif automatic:
                 color = Color.ORANGE
             else:
@@ -70,7 +80,6 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
                 
             draw_signal(self._screen, signal, self._camera, color, automatic=automatic)
         
-
         for station in self._railway.stations.all():
             draw_station(self._screen, station, self._camera)
 
@@ -81,39 +90,15 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
                 color = Config.TRAIN_LIVE_COLOR
             else:
                 color = Config.TRAIN_SHUTDOWN_COLOR
-            
-            draw_train(self._screen, train, self._camera, color, lighten_flag=self._state.preview.train_id == train.id, locomotive_different=True)
+                
+            draw_train(self._screen, train, self._camera, color, lighten_flag=target.train_id == train.id, locomotive_different=True)
 
-        
-        if self._state.preview.signal is None and world_pos is not None:
+        if target.kind == SimulationTargetType.NODE:
+            color = Color.GREEN if self._railway.graph.get_node_attr(target.node, "blocked") else Color.RED
+            draw_node(self._screen, target.node, self._camera, color=color)
+            
+        elif target.kind == SimulationTargetType.EMPTY:
             draw_node(self._screen, world_pos, self._camera, color=Color.LIME)
             
             if self._state.selected_signal is not None and len(self._state.preview.path) == 0:
                 draw_dotted_line(self._screen, self._state.selected_signal.node, world_pos, self._camera, color=Color.LIME)
-            
-            
-    def set_preview(self, world_pos: Position | None):
-        self._state.preview.clear()
-        if bool(pygame.key.get_mods() & pygame.KMOD_SHIFT):
-            self._state.preview.automatic_signal = True
-            
-        if world_pos is None:
-            return
-        
-        target = find_simulation_target(self._railway, self._camera, world_pos)
-        if target.kind == SimulationTargetType.NONE:
-            return
-        
-        if target.kind == SimulationTargetType.TRAIN:
-            self._state.preview.train_id = target.train_id
-            return
-        
-        self._state.preview.signal = target.signal
-        if self._state.selected_signal is None:
-            return
-        
-        
-        path = self._railway.signalling.get_path_preview(self._state.selected_signal, target.signal)
-        self._state.preview.path = path if path is not None else []
-        
-                

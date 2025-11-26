@@ -18,7 +18,7 @@ class TrainPanel(Panel):
         self._state = simulation_state
         self._index = index
         
-        super().__init__(screen, height=200, x=100 + index * 420, y=-220)
+        super().__init__(screen, height=200, x=150 + index * 420, y=-220)
         self._init_buttons()
     
     @property

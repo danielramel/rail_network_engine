@@ -41,6 +41,13 @@ class GraphAdapter:
         self._graph.nodes[node][key] = value
         self._on_modified()   
         
+    def block_node(self, node: Node) -> None:
+        self._graph.nodes[node]['blocked'] = True
+        # do not modify saved state
+        
+    def unblock_node(self, node: Node) -> None:
+        del self._graph.nodes[node]['blocked']
+        
     def remove_node_attr(self, node: Node, key: str) -> None:
         if node in self._graph.nodes and key in self._graph.nodes[node]:
             del self._graph.nodes[node][key]
@@ -107,6 +114,8 @@ class GraphAdapter:
             node['id'] = node['id'].to_dict()
             if "signal" in node:
                 del node["signal"]
+            if "blocked" in node:
+                del node["blocked"]
                 
         for edge in graph_data['edges']:
             edge["source"] = edge["source"].to_dict()

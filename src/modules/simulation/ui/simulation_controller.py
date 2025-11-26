@@ -24,35 +24,49 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
             self._state.selected_signal = None
             return
         
-        target = find_simulation_target(self._railway, self._graphics.camera, click.world_pos)
+        target = find_simulation_target(self._railway, click.world_pos)
         
-        if target.kind == SimulationTargetType.NONE:
-            return
+        if target.kind == SimulationTargetType.NODE:
+            is_blocked = bool(self._railway.graph.get_node_attr(target.node, "blocked"))
+            if click.is_right_click and is_blocked:
+                self._railway.graph.unblock_node(target.node)
+            elif click.is_left_click and not is_blocked:
+                self._railway.graph.block_node(target.node)
         
-        if target.kind ==  SimulationTargetType.TRAIN:
+        elif target.kind ==  SimulationTargetType.TRAIN:
             self._state.select_train(target.train_id)
-            return
-                
-        # click on signal
-        if click.is_right_click:
-            self._railway.signalling.drop_signal(target.signal)
-            return
-        
-        if self._state.selected_signal is None:
-            self._state.selected_signal = target.signal
-            return
-        
-        mods = pygame.key.get_mods()
-        shift_pressed = bool(mods & pygame.KMOD_SHIFT)
-        if shift_pressed:
-            message = self._railway.signalling.auto_connect_signals(self._state.selected_signal, target.signal)
-            if message is not None:
-                self._graphics.alert_component.show_alert(message)
-        else:
-            successful = self._railway.signalling.connect_signals(self._state.selected_signal, target.signal)
-            if not successful:
-                self._graphics.alert_component.show_alert("Failed to connect signals: Path is blocked or invalid.")
-        self._state.selected_signal = None
+            
+        elif target.kind == SimulationTargetType.SIGNAL:
+            # click on signal
+            if click.is_right_click:
+                self._railway.signalling.drop_signal(target.signal)
+                return
+            
+            if self._state.selected_signal is None:
+                self._state.selected_signal = target.signal
+                return
+            
+            
+            shift_pressed = bool(pygame.key.get_mods() & pygame.KMOD_SHIFT)
+            if self._state.selected_signal.next_signal is not None and not shift_pressed:
+                self._graphics.alert_component.show_alert("Selected signal is already connected to another signal.")
+                self._state.selected_signal = None
+                return
+            
+            
+            if shift_pressed:
+                message = self._railway.signalling.auto_connect_signals(self._state.selected_signal, target.signal)
+                if message is None:
+                    self._state.selected_signal = None
+                else:
+                    self._graphics.alert_component.show_alert(message)
+            else:
+                successful = self._railway.signalling.connect_signals(self._state.selected_signal, target.signal)
+                if successful:
+                    self._state.selected_signal = None
+                else:
+                    self._graphics.alert_component.show_alert("Failed to connect signals: Path is blocked or invalid.")
+
             
             
     def render(self, screen_pos: Position | None):
