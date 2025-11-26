@@ -20,9 +20,8 @@ class ExitButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
         self._graphics = graphics
         self._icon = IconLoader().get_icon(ICON_PATHS["EXIT"], Config.BUTTON_SIZE)
         self._on_exit = on_exit
-        # define shortcut here after method exists
         self._shortcuts = {
-            (pygame.K_ESCAPE, True): self._on_exit
+            (pygame.K_ESCAPE, False): self._on_exit #delete TODO
         }
 
     def _on_click(self, event: Event) -> None:
@@ -30,7 +29,8 @@ class ExitButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
             self._on_exit()
 
     def render(self, screen_pos: Position) -> None:
-        pygame.draw.rect(self._screen, Color.BLACK, self._rect, border_radius=10)
+        bg_color = Color.DARKGREY if self.contains(screen_pos) else Color.BLACK
+        pygame.draw.rect(self._screen, bg_color, self._rect, border_radius=10)
         icon_rect = self._icon.get_rect(center=self._rect.center)
         self._screen.blit(self._icon, icon_rect)
-        pygame.draw.rect(self._screen, Color.WHITE, self._rect.inflate(-2, -2), 1, border_radius=10)
+        pygame.draw.rect(self._screen, Color.WHITE, self._rect, 2, border_radius=10)

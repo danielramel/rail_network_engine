@@ -1,4 +1,3 @@
-from core.config.settings import Config
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.graphics_context import GraphicsContext
 from modules.setup.models.setup_state import SetupState

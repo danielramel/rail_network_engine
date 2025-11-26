@@ -36,10 +36,10 @@ class ConstructionButtons(ShortcutUIComponent, ClickableUIComponent):
                 return True
         return False
 
-    def render(self, screen_pos: Position) -> None:
+    def render(self, screen_pos: Position | None) -> None:
         for tool, btn_rect in self.buttons:
-        # Draw a solid background for the button (not transparent)
-            pygame.draw.rect(self._screen, Color.BLACK, btn_rect, border_radius=10)
+            bg_color = Color.DARKGREY if screen_pos is not None and btn_rect.collidepoint(*screen_pos) else Color.BLACK
+            pygame.draw.rect(self._screen, bg_color, btn_rect, border_radius=10)
 
             icon = self.icon_cache[tool]
             icon_rect = icon.get_rect(center=btn_rect.center)
@@ -47,9 +47,9 @@ class ConstructionButtons(ShortcutUIComponent, ClickableUIComponent):
 
             if tool == self.construction_state.tool:
                 color = Color.YELLOW if not self.construction_state.tool is ConstructionTool.BULLDOZE else Color.RED
-                pygame.draw.rect(self._screen, color, btn_rect.inflate(10, 10), 5, border_radius=10)
+                pygame.draw.rect(self._screen, color, btn_rect.inflate(5, 5), 5, border_radius=10)
             else:
-                pygame.draw.rect(self._screen, Color.WHITE, btn_rect.inflate(-2, -2), 1, border_radius=10)
+                pygame.draw.rect(self._screen, Color.WHITE, btn_rect, 2, border_radius=10)
 
     def contains(self, screen_pos: Position) -> bool:
         return any(btn.collidepoint(*screen_pos) for _, btn in self.buttons)

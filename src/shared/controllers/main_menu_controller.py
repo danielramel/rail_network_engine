@@ -46,7 +46,7 @@ class MainMenuController:
             text_surface = self._font_map_button.render(display_name, True, Color.WHITE)
             self._map_buttons.append((button_rect, filepath, text_surface))
         
-        # Position New and Load buttons at the bottom, side by side
+        # Position New and Open buttons at the bottom, side by side
         bottom_buttons_y = screen_h - button_height - 200
         
         self._new_button_rect = pygame.Rect(
@@ -56,7 +56,7 @@ class MainMenuController:
             button_height
         )
         
-        self._load_button_rect = pygame.Rect(
+        self._open_button_rect = pygame.Rect(
             center_x + button_spacing // 2,
             bottom_buttons_y,
             button_width,
@@ -65,7 +65,7 @@ class MainMenuController:
         
         self._title_text = self._font_title.render("Rail Simulator", True, Color.WHITE)
         self._new_text = self._font_button.render("Create New Railway", True, Color.WHITE)
-        self._load_text = self._font_button.render("Load Railway", True, Color.WHITE)
+        self._open_text = self._font_button.render("Open Railway", True, Color.WHITE)
         self._no_maps_text = self._font_map_button.render("No maps found", True, Color.GREY)
         self._your_maps_text = self._font_button.render("Your Maps:", True, Color.WHITE)
         
@@ -103,8 +103,8 @@ class MainMenuController:
             mouse_pos = Position(*pygame.mouse.get_pos())
             if self._new_button_rect.collidepoint(mouse_pos.x, mouse_pos.y):
                 self._hovered_button = "new"
-            elif self._load_button_rect.collidepoint(mouse_pos.x, mouse_pos.y):
-                self._hovered_button = "load"
+            elif self._open_button_rect.collidepoint(mouse_pos.x, mouse_pos.y):
+                self._hovered_button = "open"
             elif self._quit_button_rect.collidepoint(mouse_pos.x, mouse_pos.y):
                 self._hovered_button = "quit"
             else:
@@ -120,7 +120,7 @@ class MainMenuController:
             if self._new_button_rect.collidepoint(mouse_pos.x, mouse_pos.y):
                 self._start_callback(None)
                 
-            elif self._load_button_rect.collidepoint(mouse_pos.x, mouse_pos.y):
+            elif self._open_button_rect.collidepoint(mouse_pos.x, mouse_pos.y):
                 filepath = self._open_file_dialog()
                 if filepath:
                     self._start_callback(filepath)
@@ -148,7 +148,7 @@ class MainMenuController:
             filepath = filedialog.askopenfilename(
                 defaultextension=".json",
                 filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
-                title="Load Railway..."
+                title="Open Railway..."
             )
             return filepath if filepath else None
         finally:
@@ -179,9 +179,9 @@ class MainMenuController:
             no_maps_rect = self._no_maps_text.get_rect(center=(screen_w // 2, 500))
             self._screen.blit(self._no_maps_text, no_maps_rect)
         
-        # Draw New and Load buttons at the bottom
+        # Draw New and Open buttons at the bottom
         self._draw_button(self._new_button_rect, self._new_text, self._hovered_button == "new")
-        self._draw_button(self._load_button_rect, self._load_text, self._hovered_button == "load")
+        self._draw_button(self._open_button_rect, self._open_text, self._hovered_button == "open")
         
         # Draw quit button
         self._draw_button(self._quit_button_rect, self._quit_text, self._hovered_button == "quit")

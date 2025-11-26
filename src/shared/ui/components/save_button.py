@@ -32,7 +32,8 @@ class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
             self.save_game_dialog()
 
     def render(self, screen_pos: Position) -> None:
-        pygame.draw.rect(self._screen, Color.BLACK, self._rect, border_radius=10)
+        bg_color = Color.DARKGREY if self.contains(screen_pos) else Color.BLACK
+        pygame.draw.rect(self._screen, bg_color, self._rect, border_radius=10)
         current_time = pygame.time.get_ticks()
         if current_time - self._save_timestamp < 3000:  # 3 seconds
             icon = self._saved_icon

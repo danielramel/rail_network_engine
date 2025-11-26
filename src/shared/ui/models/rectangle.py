@@ -9,5 +9,7 @@ class RectangleUIComponent(UIComponent):
         self._rect = rect
         self._screen = screen
         
-    def contains(self, screen_pos: Position) -> bool:
+    def contains(self, screen_pos: Position | None) -> bool:
+        if screen_pos is None:
+            return False
         return self._rect.collidepoint(*screen_pos)

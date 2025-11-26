@@ -19,7 +19,7 @@ class OpenButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
         rect = pygame.Rect(10, h - 3*(Config.BUTTON_SIZE + 10), Config.BUTTON_SIZE, Config.BUTTON_SIZE)
         super().__init__(rect, graphics.screen)
         self._graphics = graphics
-        self._icon = IconLoader().get_icon(ICON_PATHS["LOAD"], Config.BUTTON_SIZE)
+        self._icon = IconLoader().get_icon(ICON_PATHS["OPEN"], Config.BUTTON_SIZE)
         self._railway = railway
         self._app_state = app_state
         # define shortcut here after method exists
@@ -32,10 +32,11 @@ class OpenButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
             self.load_game_ui()
 
     def render(self, screen_pos: Position) -> None:
-        pygame.draw.rect(self._screen, Color.BLACK, self._rect, border_radius=10)
+        bg_color = Color.DARKGREY if self.contains(screen_pos) else Color.BLACK
+        pygame.draw.rect(self._screen, bg_color, self._rect, border_radius=10)
         icon_rect = self._icon.get_rect(center=self._rect.center)
         self._screen.blit(self._icon, icon_rect)
-        pygame.draw.rect(self._screen, Color.WHITE, self._rect.inflate(-2, -2), 1, border_radius=10)
+        pygame.draw.rect(self._screen, Color.WHITE, self._rect, 2, border_radius=10)
 
     def load_game_ui(self):
         import tkinter as tk

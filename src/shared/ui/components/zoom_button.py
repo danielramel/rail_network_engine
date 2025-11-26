@@ -21,7 +21,8 @@ class ZoomButton(RectangleUIComponent, ClickableUIComponent):
         zoom_font = pygame.font.SysFont(None, 24)
         zoom_screen = zoom_font.render(zoom_text, True, Color.WHITE)
         zoom_box = self._get_zoom_box(self._screen)
-        pygame.draw.rect(self._screen, Color.BLACK, zoom_box, border_radius=4)
+        bg_color = Color.DARKGREY if self.contains(screen_pos) else Color.BLACK
+        pygame.draw.rect(self._screen, bg_color, zoom_box, border_radius=4)
         pygame.draw.rect(self._screen, Color.WHITE, zoom_box, 2, border_radius=4)
         self._screen.blit(zoom_screen, zoom_screen.get_rect(center=zoom_box.center))
         

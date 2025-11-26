@@ -43,7 +43,8 @@ class RouteButton(RectangleUIComponent, ShortcutUIComponent, ClickableUIComponen
             self.route_window = None
 
     def render(self, screen_pos: Position) -> None:
-        pygame.draw.rect(self._screen, Color.BLACK, self._rect, border_radius=10)
+        bg_color = Color.DARKGREY if self.contains(screen_pos) else Color.BLACK
+        pygame.draw.rect(self._screen, bg_color, self._rect, border_radius=10)
         icon_rect = self._icon.get_rect(center=self._rect.center)
         self._screen.blit(self._icon, icon_rect)
         pygame.draw.rect(self._screen, Color.WHITE, self._rect, 2, border_radius=10)
