@@ -100,7 +100,7 @@ def draw_tunnel(screen: pygame.Surface, screen_edge: tuple[Position, Position], 
     dy = y2 - y1
     
     distance = a.distance_to(b)
-    num_dots = max(1, int(distance // 10))
+    num_dots = max(1, int(distance // 30)+3)
     dot_spacing = distance / num_dots
     for i in range(num_dots + 1):
         dot_x = x1 + (dx * (i * dot_spacing) / distance)
