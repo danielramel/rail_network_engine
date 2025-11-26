@@ -1,6 +1,7 @@
 from core.models.geometry.position import Position
 from core.models.railway.railway_system import RailwaySystem
 from modules.simulation.models.simulation_state import SimulationState
+from modules.simulation.ui.simulation_target import SimulationTargetType, find_simulation_target
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from modules.simulation.ui.simulation_view import SimulationView
@@ -19,42 +20,39 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
 
 
     def _on_click(self, click: Event) -> None:
-        snapped = self._graphics.camera.screen_to_world(click.screen_pos).snap_to_grid()
-        if click.is_right_click:
-            if self._state.selected_signal:
-                self._state.selected_signal = None
-            else:
-                signal = self._railway.signals.get(snapped)
-                if signal is not None:
-                    self._railway.signalling.drop_signal(signal)
+        if click.is_right_click and self._state.selected_signal is not None:
+            self._state.selected_signal = None
+            return
+        
+        target = find_simulation_target(self._railway, self._graphics.camera, click.world_pos)
+        
+        if target.kind == SimulationTargetType.NONE:
+            return
+        
+        if target.kind ==  SimulationTargetType.TRAIN:
+            self._state.select_train(target.train_id)
             return
                 
-        if self._railway.signals.has(snapped):
-            signal = self._railway.signals.get(snapped)
-                        
-            if self._state.selected_signal:
-                mods = pygame.key.get_mods()
-                shift_pressed = bool(mods & pygame.KMOD_SHIFT)
-                if shift_pressed:
-                    message = self._railway.signalling.auto_connect_signals(self._state.selected_signal, signal)
-                    if message is not None:
-                        self._graphics.alert_component.show_alert(message)
-                else:
-                    successful = self._railway.signalling.connect_signals(self._state.selected_signal, signal)
-                    if not successful:
-                        self._graphics.alert_component.show_alert("Failed to connect signals: Path is blocked or invalid.")
-                self._state.selected_signal = None
-            else:
-                self._state.selected_signal = signal
+        # click on signal
+        if click.is_right_click:
+            self._railway.signalling.drop_signal(target.signal)
             return
-            
-        closest_edge = self._railway.graph_service.get_closest_edge(click.world_pos)
-        train_id = self._railway.trains.get_train_on_edge(closest_edge)
-        if train_id:
-            if train_id in self._state.selected_trains:
-                self._state.deselect_train(train_id)
-            else:
-                self._state.select_train(train_id)
+        
+        if self._state.selected_signal is None:
+            self._state.selected_signal = target.signal
+            return
+        
+        mods = pygame.key.get_mods()
+        shift_pressed = bool(mods & pygame.KMOD_SHIFT)
+        if shift_pressed:
+            message = self._railway.signalling.auto_connect_signals(self._state.selected_signal, target.signal)
+            if message is not None:
+                self._graphics.alert_component.show_alert(message)
+        else:
+            successful = self._railway.signalling.connect_signals(self._state.selected_signal, target.signal)
+            if not successful:
+                self._graphics.alert_component.show_alert("Failed to connect signals: Path is blocked or invalid.")
+        self._state.selected_signal = None
             
             
     def render(self, screen_pos: Position | None):

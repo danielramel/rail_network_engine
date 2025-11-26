@@ -1,5 +1,6 @@
 from core.config.color import Color
 from core.config.settings import Config
+from modules.simulation.ui.simulation_target import SimulationTargetType, find_simulation_target
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.utils.grid import draw_grid
@@ -91,16 +92,21 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
         if world_pos is None:
             return
         
-        snapped = world_pos.snap_to_grid()
-        if self._railway.signals.has(snapped):
-            signal = self._railway.signals.get(snapped)
-            self._state.preview.signal = signal
-            if self._state.selected_signal is None:
-                return
-            path = self._railway.signalling.get_path_preview(self._state.selected_signal, signal)
-            self._state.preview.path = path if path is not None else []
-            
-        closest_edge = self._railway.graph_service.get_closest_edge(world_pos)
-        train_id = closest_edge is not None and self._railway.trains.get_train_on_edge(closest_edge)
-        if train_id is not None:
-            self._state.preview.train_id = train_id
+        target = find_simulation_target(self._railway, self._camera, world_pos)
+        if target.kind == SimulationTargetType.NONE:
+            return
+        
+        
+        if target.kind == SimulationTargetType.TRAIN:
+            self._state.preview.train_id = target.train_id
+            return
+        
+        self._state.preview.signal = target.signal
+        if self._state.selected_signal is None:
+            return
+        
+        
+        path = self._railway.signalling.get_path_preview(self._state.selected_signal, target.signal)
+        self._state.preview.path = path if path is not None else []
+        
+                

@@ -1,0 +1,30 @@
+from dataclasses import dataclass
+from typing import Optional
+
+from core.graphics.camera import Camera
+from core.models.geometry.position import Position
+from core.models.railway.railway_system import RailwaySystem
+from core.models.signal import Signal
+
+class SimulationTargetType:
+    NONE = 0
+    TRAIN = 1
+    SIGNAL = 2
+
+@dataclass
+class SimulationTarget:
+    kind: SimulationTargetType
+    train_id: Optional[int] = None
+    signal: Optional[Signal] = None
+    
+def find_simulation_target(railway: RailwaySystem, camera: Camera, world_pos: Position):
+    closest_edge = railway.graph_service.get_closest_edge(world_pos)
+    train_id = railway.trains.get_train_on_edge(closest_edge)
+    if train_id:
+        return SimulationTarget(SimulationTargetType.TRAIN, train_id)
+
+    snapped = world_pos.snap_to_grid()
+    if railway.signals.has(snapped):
+        return SimulationTarget(SimulationTargetType.SIGNAL, signal=railway.signals.get(snapped))
+
+    return SimulationTarget(SimulationTargetType.NONE, None)
