@@ -59,7 +59,6 @@ class AppController(UIController, FullScreenUIComponent):
             super().render(screen_pos)
         except Exception as e:
             print(f"Render error: {e}")
-            self._graphics.alert_component.show_alert(f"An unexpected error occurred during rendering:\n{e}")
             
     def load_file(self, filepath: str) -> None:
         import json
