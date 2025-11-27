@@ -26,8 +26,23 @@ class SimulationMode(UIController, FullScreenUIComponent):
             self._on_time_set
         )
         # self._on_time_set("00:00:00")
+        
+        
 
-    def _initialize(self):
+    def _on_time_set(self, time_str: str) -> None:
+        if time_str is None:
+            self._app_state.end_simulation()
+            return
+        
+        time_set = self._railway.time.set_time_from_string(time_str)
+        if not time_set:
+            self._graphics.alert_component.show_alert("Invalid time format. Use HH:MM.")
+            self._graphics.input_component.request_input(
+                "Enter simulation start time (HH:MM):",
+                self._on_time_set
+            )
+            return
+        
         self._state = SimulationState(self._railway.time)
         self.elements = (
             EndSimulationButton(self._graphics.screen, self._app_state.end_simulation),
@@ -40,19 +55,3 @@ class SimulationMode(UIController, FullScreenUIComponent):
         )
         self._railway.trains.save_state()
         self._railway.signalling.lock_paths_under_trains()
-        
-
-    def _on_time_set(self, time_str: str) -> None:
-        try:
-            if time_str is None or time_str.strip() == "":
-                self._app_state.end_simulation()
-                return
-            self._railway.time.set_time_from_string(time_str)
-        except ValueError:
-            self._graphics.alert_component.show_alert("Invalid time format. Use HH:MM.")
-            self._graphics.input_component.request_input(
-                "Enter simulation start time (HH:MM):",
-                self._on_time_set
-            )
-            return
-        self._initialize()
