@@ -1,4 +1,5 @@
 from core.graphics.graphics_context import GraphicsContext
+from core.models.app_state import AppState
 from modules.simulation.end_simulation_button import EndSimulationButton
 from modules.simulation.ui.panel.train_panel_manager import TrainPanelManager
 from shared.ui.components.zoom_button import ZoomButton
@@ -15,11 +16,11 @@ from typing import Callable
 
 class SimulationMode(UIController, FullScreenUIComponent):
     elements: tuple[ClickableUIComponent]
-    def __init__(self, railway: RailwaySystem, graphics: GraphicsContext, on_end_callback: Callable) -> None:
+    def __init__(self, app_state: AppState, railway: RailwaySystem, graphics: GraphicsContext) -> None:
         self._railway = railway
         self._graphics = graphics
         self.elements = ()
-        self._on_end_callback = on_end_callback
+        self._app_state = app_state
         graphics.input_component.request_input(
             "Enter simulation start time (HH:MM):",
             self._on_time_set
@@ -29,7 +30,7 @@ class SimulationMode(UIController, FullScreenUIComponent):
     def _initialize(self):
         self._state = SimulationState(self._railway.time)
         self.elements = (
-            EndSimulationButton(self._graphics.screen, self._on_end_callback),
+            EndSimulationButton(self._graphics.screen, self._app_state.end_simulation),
             TimeControlButtons(self._state.time_control, self._graphics.screen),
             TimeDisplay(self._state.time, self._graphics),
             TrainPanelManager(self._railway, self._state, self._graphics.screen, self._railway.routes),
@@ -44,7 +45,7 @@ class SimulationMode(UIController, FullScreenUIComponent):
     def _on_time_set(self, time_str: str) -> None:
         try:
             if time_str is None or time_str.strip() == "":
-                self._on_end_callback()
+                self._app_state.end_simulation()
                 return
             self._railway.time.set_time_from_string(time_str)
         except ValueError:

@@ -6,13 +6,12 @@ from core.graphics.icon_loader import IconLoader
 from core.models.geometry.position import Position
 from core.config.color import Color
 from core.config.settings import Config
-from shared.ui.models.rectangle_ui_component import RectangleUIComponent
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 from core.models.event import Event
-from shared.ui.models.clickable_ui_component import ClickableUIComponent
+from shared.ui.models.button import Button
 
 
-class SaveButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent):
+class SaveButton(ShortcutUIComponent, Button):
     _save_timestamp: int = -5000
     def __init__(self, screen: pygame.Surface, railway: RailwaySystem, on_save: Callable) -> None:
         w, h = screen.get_size()

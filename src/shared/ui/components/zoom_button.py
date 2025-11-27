@@ -1,14 +1,13 @@
 import pygame
 from core.models.event import Event
 from core.models.geometry.position import Position
-from shared.ui.models.rectangle_ui_component import RectangleUIComponent
-from shared.ui.models.clickable_ui_component import ClickableUIComponent
+from shared.ui.models.button import Button
 
 from core.config.color import Color
 from core.graphics.camera import Camera
 
 
-class ZoomButton(RectangleUIComponent, ClickableUIComponent):
+class ZoomButton(Button):
     def __init__(self, screen: pygame.Surface, camera: Camera):
         self._camera = camera 
         self._rect = self._get_zoom_box(screen)

@@ -21,11 +21,11 @@ class AppState:
         return self._phase
     
     def start_simulation(self) -> None:
-        self.switch_phase(AppPhase.SIMULATION)
-    
-    def switch_phase(self, phase: AppPhase) -> None:
-        if self._phase == phase:
-            return
-        self._phase = phase
+        self._phase = AppPhase.SIMULATION
         if self._switch_phase_callback is not None:
-            self._switch_phase_callback(phase)
+            self._switch_phase_callback(self._phase)
+        
+    def end_simulation(self) -> None:
+        self._phase = AppPhase.SETUP
+        if self._switch_phase_callback is not None:
+            self._switch_phase_callback(self._phase)

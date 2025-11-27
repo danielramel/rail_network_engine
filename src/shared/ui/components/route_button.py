@@ -2,17 +2,16 @@ import pygame
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.icon_loader import IconLoader
 from core.models.geometry.position import Position
-from shared.ui.models.rectangle_ui_component import RectangleUIComponent
 from core.config.color import Color
 from core.config.paths import ICON_PATHS
 from core.config.settings import Config
 from modules.route.route_window import RouteWindow
 from core.models.event import Event
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
-from shared.ui.models.clickable_ui_component import ClickableUIComponent
+from shared.ui.models.button import Button
 
 
-class RouteButton(RectangleUIComponent, ShortcutUIComponent, ClickableUIComponent):
+class RouteButton(Button, ShortcutUIComponent):
     def __init__(self, screen: pygame.Surface, railway: RailwaySystem):
         self._railway = railway
 

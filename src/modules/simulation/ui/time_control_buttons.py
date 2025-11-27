@@ -44,8 +44,8 @@ class TimeControlButtons(ClickableUIComponent, ShortcutUIComponent):
 
     def render(self, screen_pos: Position) -> None:
         for mode, btn_rect in self.buttons:
-        # Draw a solid background for the button (not transparent)
-            pygame.draw.rect(self._screen, Color.BLACK, btn_rect, border_radius=10)
+            bg_color = Color.DARKGREY if screen_pos is not None and btn_rect.collidepoint(*screen_pos) else Color.BLACK
+            pygame.draw.rect(self._screen, bg_color, btn_rect, border_radius=10)
 
             icon = self.icon_cache[mode]
             icon_rect = icon.get_rect(center=btn_rect.center)

@@ -8,12 +8,11 @@ from core.models.geometry.position import Position
 from core.config.color import Color
 from core.config.settings import Config
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
-from shared.ui.models.clickable_ui_component import ClickableUIComponent
-from shared.ui.models.rectangle_ui_component import RectangleUIComponent
+from shared.ui.models.button import Button
 from core.models.event import Event
 
 
-class OpenButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent):
+class OpenButton(ShortcutUIComponent, Button):
     def __init__(self, screen: pygame.Surface, on_load: Callable):
         w, h = screen.get_size()
         rect = pygame.Rect(10, h - 3*(Config.BUTTON_SIZE + 10), Config.BUTTON_SIZE, Config.BUTTON_SIZE)

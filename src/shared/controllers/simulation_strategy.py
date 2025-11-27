@@ -8,19 +8,18 @@ from shared.ui.models.ui_controller import UIController
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from typing import Optional
 
-class SimulationStrategy(FullScreenUIComponent):
+class AppPhaseStrategy(FullScreenUIComponent):
     def __init__(self, app_state: AppState, railway: RailwaySystem, graphics: GraphicsContext):
         self._state = app_state
         app_state.subscribe(self.switch_to)
         
         self._modes: dict[AppPhase, lambda: UIController] = {
             AppPhase.SETUP: lambda: SetupMode(app_state, railway, graphics),
-            AppPhase.SIMULATION: lambda: SimulationMode(railway, graphics, lambda: app_state.switch_phase(AppPhase.SETUP)),
+            AppPhase.SIMULATION: lambda: SimulationMode(app_state, railway, graphics),
             }
         
         self._current_mode: UIController = self._modes[app_state.phase]()
         
-    
     def switch_to(self, phase: AppPhase):
         self._current_mode = self._modes[phase]()
         
