@@ -5,6 +5,8 @@ from shared.ui.models.rectangle_ui_component import RectangleUIComponent
 from core.models.event import Event
 from core.config.color import Color
 import pygame
+import tkinter as tk
+from tkinter import messagebox
 
 class EndSimulationButton(RectangleUIComponent, ClickableUIComponent):
     def __init__(self, screen: pygame.Surface, on_end: Callable):
@@ -21,7 +23,15 @@ class EndSimulationButton(RectangleUIComponent, ClickableUIComponent):
         self._screen.blit(text, text_rect)
 
     def _on_click(self, click: Event) -> None:
-        self._on_end()
+        root = tk.Tk()
+        root.withdraw()
+        result = messagebox.askyesno(
+            "End Simulation",
+            "Are you sure you want to end the simulation?\n\nAll progress will be lost."
+        )
+        root.destroy()
+        if result:
+            self._on_end()
         
     def _get_rect(self, screen: pygame.Surface) -> pygame.Rect:
         width, height = 150, 40
