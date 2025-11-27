@@ -1,3 +1,4 @@
+from typing import Callable
 import pygame
 from core.config.paths import ICON_PATHS
 from core.models.app_state import AppState
@@ -10,26 +11,22 @@ from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.models.rectangle_ui_component import RectangleUIComponent
 from core.models.event import Event
-from core.graphics.graphics_context import GraphicsContext
 
 
 class OpenButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent):
-    def __init__(self, railway: RailwaySystem, app_state: AppState, graphics: GraphicsContext):
-        w, h = graphics.screen.get_size()
+    def __init__(self, screen: pygame.Surface, on_load: Callable):
+        w, h = screen.get_size()
         rect = pygame.Rect(10, h - 3*(Config.BUTTON_SIZE + 10), Config.BUTTON_SIZE, Config.BUTTON_SIZE)
-        super().__init__(rect, graphics.screen)
-        self._graphics = graphics
+        super().__init__(rect, screen)
+        self._on_load = on_load
         self._icon = IconLoader().get_icon(ICON_PATHS["OPEN"], Config.BUTTON_SIZE)
-        self._railway = railway
-        self._app_state = app_state
-        # define shortcut here after method exists
         self._shortcuts = {
-            (pygame.K_o, True): self.load_game_ui
+            (pygame.K_o, True): on_load
         }
 
     def _on_click(self, event: Event) -> None:
         if event.is_left_click:
-            self.load_game_ui()
+            self._on_load()
 
     def render(self, screen_pos: Position) -> None:
         bg_color = Color.DARKGREY if self.contains(screen_pos) else Color.BLACK
@@ -37,29 +34,3 @@ class OpenButton(ShortcutUIComponent, RectangleUIComponent, ClickableUIComponent
         icon_rect = self._icon.get_rect(center=self._rect.center)
         self._screen.blit(self._icon, icon_rect)
         pygame.draw.rect(self._screen, Color.WHITE, self._rect, 2, border_radius=10)
-
-    def load_game_ui(self):
-        import tkinter as tk
-        from tkinter import filedialog
-        import json
-
-        root = tk.Tk()
-        root.withdraw()
-        try:
-            filepath = filedialog.askopenfilename(
-                defaultextension=".json",
-                filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
-                title="Load simulation from..."
-            )
-            if not filepath:
-                return None
-
-            with open(filepath, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-                self._railway.replace_from_dict(data)
-
-        except Exception as e:
-            self._graphics.alert_component.show_alert(f"Failed to load file: {filepath}\nIssue with loading: {str(e)}")
-        finally:
-            root.destroy()
-            self._app_state.filepath = filepath

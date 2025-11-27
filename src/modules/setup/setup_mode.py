@@ -1,5 +1,9 @@
+import json
+from tkinter import messagebox
 from core.graphics.graphics_context import GraphicsContext
-from core.models.app_state import AppPhase, AppState
+from core.models.app_state import AppState
+from tkinter import filedialog
+import tkinter as tk
 from core.models.railway.railway_system import RailwaySystem
 from modules.setup.setup_mode_strategy import SetupModeStrategy
 from modules.setup.setup_state import SetupState
@@ -16,18 +20,96 @@ from modules.setup.setup_mode_selector_buttons import SetupModeSelectorButtons
 
 class SetupMode(UIController, FullScreenUIComponent):
     def __init__(self, app_state: AppState, railway: RailwaySystem, graphics: GraphicsContext):
-        setup_state = SetupState(app_state)
+        self._state = SetupState(app_state)
+        self._railway = railway
+        self._graphics = graphics
         
-        save_button = SaveButton(graphics.screen, railway, app_state)
         self.elements: list[UIComponent] = [
             RouteButton(graphics.screen, railway),
-            save_button,
-            OpenButton(railway, app_state, graphics),
-            ExitButton(railway, graphics, app_state.exit, lambda: save_button.save_game()),
-            StartSimulationButton(graphics.screen, lambda: app_state.switch_phase(AppPhase.SIMULATION)),
-            SetupModeSelectorButtons(graphics, setup_state),
-            SetupModeStrategy(setup_state, railway, graphics)
+            SaveButton(graphics.screen, railway, self._on_save),
+            OpenButton(graphics.screen, self._on_open),
+            ExitButton(graphics.screen, self._on_exit),
+            StartSimulationButton(graphics.screen, app_state.start_simulation),
+            SetupModeSelectorButtons(graphics, self._state),
+            SetupModeStrategy(self._state, railway, graphics)
         ]
         
         railway.trains.load_state()
         railway.signalling.unlock_all_paths()
+
+    def _on_save(self, dialog: bool = False):
+        data = self._railway.to_dict()
+        if dialog is False and self._state.app_state.filepath is not None:
+            with open(self._state.app_state.filepath, 'w') as f:
+                json.dump(data, f, indent=4)
+            self._railway.mark_as_saved()
+            return True
+        
+        root = tk.Tk()
+        root.withdraw()
+        filepath = filedialog.asksaveasfilename(
+            defaultextension=".json",
+            filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
+            title="Save simulation as..."
+        )
+        if not filepath:
+            return False # User cancelled save dialog
+            
+        try:
+            with open(filepath, 'w') as f:
+                json.dump(data, f, indent=4)
+                
+            self._state.app_state.filepath = filepath
+            self._railway.mark_as_saved()
+            return True
+        except Exception as e:
+            self._graphics.alert_component.show_alert(f"Failed to save file: {filepath}\nIssue with saving: {str(e)}")
+            return False
+        finally:
+            root.destroy()
+        
+          
+    def _confirm_unsaved_changes(self) -> bool:
+        if self._railway.is_saved:
+            return True
+        
+        result = messagebox.askyesnocancel("Unsaved Changes", 
+            "You have unsaved changes. Save before proceeding?")
+        if result is True: # Save
+            saved = self._on_save()
+            return saved
+        elif result is False: # Don't Save
+            return True
+        else:
+            return False
+        
+    def _on_exit(self):
+        contin = self._confirm_unsaved_changes()
+        
+        if contin:
+            self._state.app_state.exit()
+        
+    def _on_open(self):
+        contin = self._confirm_unsaved_changes()
+        if not contin:
+            return None
+        root = tk.Tk()
+        root.withdraw()
+        try:
+            filepath = filedialog.askopenfilename(
+                defaultextension=".json",
+                filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
+                title="Open simulation from..."
+            )
+            if not filepath:
+                return None
+
+            with open(filepath, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                self._railway.replace_from_dict(data)
+            self._state.app_state.filepath = filepath
+        except Exception as e:
+            self._graphics.alert_component.show_alert(f"Failed to load file: {filepath}\nIssue with loading: {str(e)}")
+            self._state.app_state.filepath = None
+        finally:
+            root.destroy()

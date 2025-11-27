@@ -20,6 +20,9 @@ class AppState:
     def phase(self) -> AppPhase:
         return self._phase
     
+    def start_simulation(self) -> None:
+        self.switch_phase(AppPhase.SIMULATION)
+    
     def switch_phase(self, phase: AppPhase) -> None:
         if self._phase == phase:
             return
