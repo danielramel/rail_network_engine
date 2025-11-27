@@ -1,7 +1,8 @@
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout,
     QTableWidget, QTableWidgetItem,
-    QPushButton, QDialog, QHBoxLayout, QLabel
+    QPushButton, QDialog, QHBoxLayout, QLabel,
+    QMessageBox
 )
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor
@@ -200,6 +201,18 @@ class RouteWindow(QMainWindow):
 
     def delete_route(self, route_idx):
         route = self._railway.routes.get(route_idx)
+        
+        reply = QMessageBox.warning(
+            self,
+            "Delete Route",
+            f"Are you sure you want to delete route '{route.code}'?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+        
+        if reply != QMessageBox.StandardButton.Yes:
+            return
+            
         self._railway.routes.remove(route)
         self.expanded_rows.discard(route_idx)  # Remove from expanded if it was expanded
         self.refresh_table()
