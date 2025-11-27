@@ -7,7 +7,7 @@ MODE_SELECTION = {
     pygame.K_p: ViewMode.SIMULATION,
 }
 
-from modules.construction.models.construction_state import ConstructionTool
+from modules.setup.construction.models.construction_state import ConstructionTool
 CONSTRUCTION_TOOL_SELECTION = {
     pygame.K_1: ConstructionTool.RAIL,
     pygame.K_2: ConstructionTool.TUNNEL,
@@ -27,7 +27,7 @@ TIME_CONTROL_KEYS = {
     pygame.K_SPACE: "toggle_pause",
 }
 
-from modules.train_placement.models.train_placement_state import TrainPlacementTool
+from modules.setup.train_placement.models.train_placement_state import TrainPlacementTool
 TRAIN_PLACEMENT_TOOL_SELECTION = {
     pygame.K_1: TrainPlacementTool.PLACE_TRAIN,
     pygame.K_2: TrainPlacementTool.REMOVE_TRAIN,

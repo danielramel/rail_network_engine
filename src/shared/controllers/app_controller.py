@@ -1,25 +1,18 @@
 import pygame
 from core.config.color import Color
-from core.config.settings import Config
-from shared.controllers.mode_strategy import ModeStrategy
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.camera import Camera
-from core.models.app_state import AppState, ViewMode
-from shared.ui.components.exit_button import ExitButton
-from shared.ui.models.clickable_ui_component import ClickableUIComponent
-from shared.ui.components.open_button import OpenButton
-from shared.ui.components.save_button import SaveButton
-from shared.ui.components.mode_selector_buttons import ModeSelectorButtons
+from core.models.app_state import AppState
 from core.models.event import Event
-from shared.ui.components.zoom_button import ZoomButton
 from core.models.geometry.position import Position
 from core.graphics.graphics_context import GraphicsContext
+from shared.ui.models.ui_component import UIComponent
 from shared.ui.models.ui_controller import UIController
-from shared.ui.components.route_button import RouteButton
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.components.alert_component import AlertComponent
 from shared.ui.components.input_component import InputComponent
 from typing import Callable
+from modules.setup.setup_mode import SetupMode
 
 class AppController(UIController, FullScreenUIComponent):
     def __init__(self, screen: pygame.Surface, on_exit: Callable, filepath: str | None = None):
@@ -38,18 +31,11 @@ class AppController(UIController, FullScreenUIComponent):
         w, h = screen.get_size()
         self._graphics = GraphicsContext(screen, Camera(middle_position, w, h), alert_component, input_component)
         self._last_mouse_down_pos: Position | None = None
-        save_button = SaveButton(screen, self._railway, self._app_state)
         
-        self.elements: list[ClickableUIComponent] = [
+        self.elements: list[UIComponent] = [
             alert_component,
             input_component,
-            RouteButton(screen, self._railway),
-            ZoomButton(screen, self._graphics.camera),
-            save_button,
-            OpenButton(self._railway, self._app_state, self._graphics),
-            ExitButton(self._railway, self._graphics, self._on_exit, save_button),
-            ModeSelectorButtons(self._graphics, self._app_state),
-            ModeStrategy(self._app_state, self._railway, self._graphics)
+            SetupMode(self._app_state, self._railway, self._graphics),
         ]
     
     def dispatch_event(self, pygame_event: pygame.event):

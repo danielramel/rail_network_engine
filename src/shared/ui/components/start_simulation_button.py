@@ -1,5 +1,5 @@
 from core.models.geometry.position import Position
-from modules.train_placement.models.train_placement_state import TrainPlacementState
+from modules.setup.train_placement.models.train_placement_state import TrainPlacementState
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.models.rectangle_ui_component import RectangleUIComponent
 from core.models.event import Event

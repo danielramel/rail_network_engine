@@ -1,0 +1,38 @@
+import pygame
+from modules.setup.construction.models.construction_panel import ConstructionToolPanel
+from modules.setup.construction.models.construction_state import ConstructionState, ConstructionTool
+from modules.setup.construction.ui.tools.tunnel.tunnel_panel import TunnelPanel
+from shared.ui.models.panel import Panel
+from .tools.rail.rail_panel import RailPanel
+from .tools.signal.signal_panel import SignalPanel
+from .tools.station.station_panel import StationPanel
+from .tools.platform.platform_panel import PlatformPanel
+from .tools.bulldoze.bulldoze_panel import BulldozePanel
+
+
+class ConstructionPanelStrategy(Panel):
+    def __init__(self, screen: pygame.Surface, state: ConstructionState):
+        self._state = state
+        self._panels: dict[ConstructionTool, ConstructionToolPanel] = {
+            ConstructionTool.RAIL: RailPanel(screen, state),
+            ConstructionTool.TUNNEL: TunnelPanel(screen, state),
+            ConstructionTool.SIGNAL: SignalPanel(screen, state),
+            ConstructionTool.STATION: StationPanel(screen, state),
+            ConstructionTool.PLATFORM: PlatformPanel(screen, state),
+            ConstructionTool.BULLDOZE: BulldozePanel(screen, state),
+        }
+
+    def render(self, screen_pos):
+        if self._state.tool is None:
+            return
+        self._panels[self._state.tool].render(screen_pos)
+
+    def _on_click(self, event):
+        if self._state.tool is None:
+            return
+        return self._panels[self._state.tool].dispatch_event(event)
+    
+    def contains(self, screen_pos):
+        if self._state.tool is None:
+            return False
+        return self._panels[self._state.tool].contains(screen_pos)
