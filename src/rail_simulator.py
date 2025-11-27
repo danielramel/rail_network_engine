@@ -8,12 +8,12 @@ from PyQt6.QtWidgets import QApplication
 import sys
 
 
-class Phase(Enum):
+class MenuView(Enum):
     MENU = auto()
-    SIMULATION = auto()
+    MAP = auto()
 
 
-class SimulationManager:
+class MenuManager:
     def __init__(self):
         pygame.init()
         
@@ -25,35 +25,31 @@ class SimulationManager:
         pygame.display.set_icon(pygame.image.load("src/assets/icons/app.png"))
         self.clock = pygame.time.Clock()
         
-        self._current_state = Phase.MENU
-        self._states: dict[Phase, UIController] = {
-            Phase.MENU: MainMenuController(self.screen, self._start_simulation),
-            Phase.SIMULATION: None
+        self._current_state = MenuView.MENU
+        self._states: dict[MenuView, UIController] = {
+            MenuView.MENU: MainMenuController(self.screen, self._load_map),
+            MenuView.MAP: None
         }
         
-        # If filepath provided via command line, skip menu
         if len(sys.argv) > 1:
             filepath = sys.argv[1]
-            self._start_simulation(filepath)
+            self._load_map(filepath)
 
-    def _start_simulation(self, filepath: str | None = None):
-        self._current_state = Phase.SIMULATION
-        self._states[Phase.SIMULATION] = AppController(self.screen, self._exit_simulation, filepath)
+    def _load_map(self, filepath: str | None = None):
+        self._current_state = MenuView.MAP
+        self._states[MenuView.MAP] = AppController(self.screen, self._exit_map, filepath)
         
-    def _exit_simulation(self, message: str = None):
-        self._current_state = Phase.MENU
-        self._states[Phase.SIMULATION] = None
+    def _exit_map(self, message: str = None):
+        self._current_state = MenuView.MENU
+        self._states[MenuView.MAP] = None
         if message:
-            self._states[Phase.MENU].alert(message)
+            self._states[MenuView.MENU].alert(message)
 
     def run(self):
         running = True
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
-                    break
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     running = False
                     break
                 
@@ -66,7 +62,7 @@ class SimulationManager:
             pygame.display.flip()
             self.clock.tick(Config.FPS)
             
-            if self._current_state == Phase.SIMULATION:
+            if self._current_state == MenuView.MAP:
                 self._states[self._current_state].tick()
 
         pygame.quit()

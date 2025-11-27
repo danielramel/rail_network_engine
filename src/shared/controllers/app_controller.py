@@ -17,8 +17,7 @@ from typing import Callable
 class AppController(UIController, FullScreenUIComponent):
     def __init__(self, screen: pygame.Surface, on_exit: Callable, filepath: str | None = None):
         self._railway = RailwaySystem()
-        self._on_exit = on_exit
-        self._app_state = AppState(filepath)
+        self._app_state = AppState(on_exit, filepath)
         alert_component = AlertComponent(screen)
         input_component = InputComponent(screen)
         if filepath is not None:

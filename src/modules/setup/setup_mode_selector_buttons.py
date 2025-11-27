@@ -2,7 +2,7 @@ import pygame
 from core.graphics.graphics_context import GraphicsContext
 from core.graphics.icon_loader import IconLoader
 from core.models.geometry.position import Position
-from core.models.app_state import AppState, SimulationPhase
+from core.models.app_state import AppState, AppPhase
 from modules.setup.setup_state import SetupState, SetupView
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent

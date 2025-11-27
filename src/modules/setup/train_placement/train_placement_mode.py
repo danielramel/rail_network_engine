@@ -2,6 +2,7 @@ from core.graphics.graphics_context import GraphicsContext
 from modules.setup.train_placement.ui.train_placement_buttons import TrainPlacementButtons
 from modules.setup.train_placement.ui.train_placement_panel_strategy import TrainPlacementPanelStrategy
 from modules.setup.train_placement.ui.train_placement_tool_strategy import TrainPlacementToolStrategy
+from modules.setup.ui.start_simulation_button import StartSimulationButton
 from shared.ui.components.zoom_button import ZoomButton
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.ui_component import UIComponent

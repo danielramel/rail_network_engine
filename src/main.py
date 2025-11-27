@@ -1,5 +1,5 @@
-from rail_simulator import SimulationManager
+from rail_simulator import MenuManager
 
 if __name__ == "__main__":
-    simulator = SimulationManager()
+    simulator = MenuManager()
     simulator.run()

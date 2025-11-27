@@ -1,4 +1,4 @@
-from core.models.app_state import AppState, SimulationPhase
+from core.models.app_state import AppState, AppPhase
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.graphics_context import GraphicsContext
 from core.models.geometry.position import Position
@@ -13,15 +13,15 @@ class SimulationStrategy(FullScreenUIComponent):
         self._state = app_state
         app_state.subscribe(self.switch_to)
         
-        self._modes: dict[SimulationPhase, lambda: UIController] = {
-            SimulationPhase.SETUP: lambda: SetupMode(app_state, railway, graphics),
-            SimulationPhase.SIMULATION: lambda:SimulationMode(railway, graphics)
+        self._modes: dict[AppPhase, lambda: UIController] = {
+            AppPhase.SETUP: lambda: SetupMode(app_state, railway, graphics),
+            AppPhase.SIMULATION: lambda: SimulationMode(railway, graphics, lambda: app_state.switch_phase(AppPhase.SETUP)),
             }
         
         self._current_mode: UIController = self._modes[app_state.phase]()
         
     
-    def switch_to(self, phase: SimulationPhase):
+    def switch_to(self, phase: AppPhase):
         self._current_mode = self._modes[phase]()
         
     def handle_event(self, event) -> bool:        

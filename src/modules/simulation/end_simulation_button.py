@@ -1,13 +1,14 @@
+from typing import Callable
 from core.models.geometry.position import Position
-from modules.setup.train_placement.models.train_placement_state import TrainPlacementState
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.models.rectangle_ui_component import RectangleUIComponent
 from core.models.event import Event
 from core.config.color import Color
 import pygame
 
-class StartSimulationButton(RectangleUIComponent, ClickableUIComponent):
-    def __init__(self, screen: pygame.Surface):
+class EndSimulationButton(RectangleUIComponent, ClickableUIComponent):
+    def __init__(self, screen: pygame.Surface, on_end: Callable):
+        self._on_end = on_end
         rect = self._get_rect(screen)
         super().__init__(rect, screen)
 
@@ -20,11 +21,10 @@ class StartSimulationButton(RectangleUIComponent, ClickableUIComponent):
         self._screen.blit(text, text_rect)
 
     def _on_click(self, click: Event) -> None:
-        print("Starting simulation...")
-        
+        self._on_end()
         
     def _get_rect(self, screen: pygame.Surface) -> pygame.Rect:
         width, height = 200, 60
-        x = (screen.get_width() - width) // 2
+        x = (screen.get_width() - width) // 2 - 220
         y = 10
         return pygame.Rect(x, y, width, height)
