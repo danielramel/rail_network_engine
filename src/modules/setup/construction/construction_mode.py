@@ -1,4 +1,5 @@
 from shared.controllers.camera_controller import CameraController
+from shared.ui.components.zoom_button import ZoomButton
 from shared.ui.models.ui_component import UIComponent
 from shared.ui.models.ui_controller import UIController
 from core.models.railway.railway_system import RailwaySystem
@@ -17,6 +18,7 @@ class ConstructionMode(UIController, FullScreenUIComponent):
         self.elements = (
             ConstructionButtons(graphics.screen, self.state),
             ConstructionPanelStrategy(graphics.screen, self.state),
+            ZoomButton(graphics.screen, graphics.camera),
             CameraController(graphics.camera),
             ConstructionToolStrategy(railway, self.state, graphics)
         )

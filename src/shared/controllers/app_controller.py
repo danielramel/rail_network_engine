@@ -6,13 +6,13 @@ from core.models.app_state import AppState
 from core.models.event import Event
 from core.models.geometry.position import Position
 from core.graphics.graphics_context import GraphicsContext
+from shared.controllers.simulation_strategy import SimulationStrategy
 from shared.ui.models.ui_component import UIComponent
 from shared.ui.models.ui_controller import UIController
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.components.alert_component import AlertComponent
 from shared.ui.components.input_component import InputComponent
 from typing import Callable
-from modules.setup.setup_mode import SetupMode
 
 class AppController(UIController, FullScreenUIComponent):
     def __init__(self, screen: pygame.Surface, on_exit: Callable, filepath: str | None = None):
@@ -35,7 +35,7 @@ class AppController(UIController, FullScreenUIComponent):
         self.elements: list[UIComponent] = [
             alert_component,
             input_component,
-            SetupMode(self._app_state, self._railway, self._graphics),
+            SimulationStrategy(self._app_state, self._railway, self._graphics)
         ]
     
     def dispatch_event(self, pygame_event: pygame.event):
@@ -47,7 +47,6 @@ class AppController(UIController, FullScreenUIComponent):
                 self._last_mouse_down_pos = screen_pos
             elif pygame_event.type == pygame.MOUSEBUTTONUP:
                 self._last_mouse_down_pos = None
-            
             
             super().dispatch_event(event)
         except Exception as e:

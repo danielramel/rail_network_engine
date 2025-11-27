@@ -1,10 +1,9 @@
 import pygame
         
-from core.models.app_state import ViewMode
-MODE_SELECTION = {
-    pygame.K_s: ViewMode.TRAIN_PLACEMENT,
-    pygame.K_c: ViewMode.CONSTRUCTION,
-    pygame.K_p: ViewMode.SIMULATION,
+from modules.setup.setup_state import SetupView
+SETUP_MODE_SELECTION = {
+    pygame.K_t: SetupView.TRAIN_PLACEMENT,
+    pygame.K_c: SetupView.CONSTRUCTION,
 }
 
 from modules.setup.construction.models.construction_state import ConstructionTool

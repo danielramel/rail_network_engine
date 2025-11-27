@@ -1,6 +1,7 @@
 from typing import Callable
 from core.graphics.graphics_context import GraphicsContext
 from modules.simulation.ui.panel.train_panel_manager import TrainPanelManager
+from shared.ui.components.zoom_button import ZoomButton
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.models.ui_controller import UIController
@@ -13,11 +14,10 @@ from modules.simulation.models.simulation_state import SimulationState
 
 class SimulationMode(UIController, FullScreenUIComponent):
     elements: tuple[ClickableUIComponent]
-    def __init__(self, railway: RailwaySystem, graphics: GraphicsContext, on_exit_callback: Callable) -> None:
+    def __init__(self, railway: RailwaySystem, graphics: GraphicsContext) -> None:
         self._railway = railway
         self._graphics = graphics
         self.elements = ()
-        self._on_exit_callback = on_exit_callback
         graphics.input_component.request_input(
             "Enter simulation start time (HH:MM):",
             self._on_time_set
@@ -30,6 +30,7 @@ class SimulationMode(UIController, FullScreenUIComponent):
             TimeControlButtons(self._state.time_control, self._graphics.screen),
             TimeDisplay(self._state.time, self._graphics),
             TrainPanelManager(self._railway, self._state, self._graphics.screen, self._railway.routes),
+            ZoomButton(self._graphics.screen, self._graphics.camera),
             CameraController(self._graphics.camera),
             SimulationController(self._railway, self._state, self._graphics),
         )

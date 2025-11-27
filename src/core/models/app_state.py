@@ -2,27 +2,26 @@ from enum import Enum, auto
 from typing import Callable, Optional
 
 
-class ViewMode(Enum):
-    CONSTRUCTION = auto()
-    TRAIN_PLACEMENT = auto()
+class SimulationPhase(Enum):
+    SETUP = auto()
     SIMULATION = auto()
     
 class AppState:
     def __init__(self, filepath: Optional[str] = None) -> None:
-        self._mode: ViewMode = ViewMode.CONSTRUCTION
+        self._phase: SimulationPhase = SimulationPhase.SETUP
         self.filepath: Optional[str] = filepath
-        self.callback: Optional[Callable[[ViewMode], None]] = None
+        self.callback: Optional[Callable[[SimulationPhase], None]] = None
     
-    def subscribe(self, callback: Callable[[ViewMode], None]) -> None:
+    def subscribe(self, callback: Callable[[SimulationPhase], None]) -> None:
         self.callback = callback
 
     @property
-    def mode(self) -> ViewMode:
-        return self._mode
+    def phase(self) -> SimulationPhase:
+        return self._phase
     
-    def switch_mode(self, new_mode: ViewMode) -> None:
-        if self._mode == new_mode:
+    def switch_phase(self, phase: SimulationPhase) -> None:
+        if self._phase == phase:
             return
-        self._mode = new_mode
+        self._phase = phase
         if self.callback is not None:
-            self.callback(new_mode)
+            self.callback(phase)
