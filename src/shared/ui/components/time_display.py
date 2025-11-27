@@ -3,7 +3,7 @@ from core.config.color import Color
 from core.graphics.graphics_context import GraphicsContext
 from core.models.geometry.position import Position
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
-from shared.ui.models.rectangle import RectangleUIComponent
+from shared.ui.models.rectangle_ui_component import RectangleUIComponent
 from core.models.time import Time
 
 class TimeDisplay(RectangleUIComponent):

@@ -2,7 +2,7 @@ import pygame
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.icon_loader import IconLoader
 from core.models.geometry.position import Position
-from shared.ui.models.rectangle import RectangleUIComponent
+from shared.ui.models.rectangle_ui_component import RectangleUIComponent
 from core.config.color import Color
 from core.config.paths import ICON_PATHS
 from core.config.settings import Config

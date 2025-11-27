@@ -1,7 +1,7 @@
 from core.config.color import Color
 from core.models.geometry.position import Position
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
-from shared.ui.models.rectangle import RectangleUIComponent
+from shared.ui.models.rectangle_ui_component import RectangleUIComponent
 import pygame
 
 class Panel(RectangleUIComponent, ClickableUIComponent):

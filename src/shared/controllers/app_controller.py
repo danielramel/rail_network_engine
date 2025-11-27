@@ -45,8 +45,8 @@ class AppController(UIController, FullScreenUIComponent):
             input_component,
             RouteButton(screen, self._railway),
             ZoomButton(screen, self._graphics.camera),
-            OpenButton(self._railway, self._app_state, self._graphics),
             save_button,
+            OpenButton(self._railway, self._app_state, self._graphics),
             ExitButton(self._railway, self._graphics, self._on_exit, save_button),
             ModeSelectorButtons(self._graphics, self._app_state),
             ModeStrategy(self._app_state, self._railway, self._graphics)

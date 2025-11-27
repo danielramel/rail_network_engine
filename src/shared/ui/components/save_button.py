@@ -5,7 +5,7 @@ from core.graphics.icon_loader import IconLoader
 from core.models.geometry.position import Position
 from core.config.color import Color
 from core.config.settings import Config
-from shared.ui.models.rectangle import RectangleUIComponent
+from shared.ui.models.rectangle_ui_component import RectangleUIComponent
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 from core.models.event import Event
 from shared.ui.models.clickable_ui_component import ClickableUIComponent

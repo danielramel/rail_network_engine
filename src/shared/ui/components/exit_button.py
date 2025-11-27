@@ -9,7 +9,7 @@ from core.models.railway.railway_system import RailwaySystem
 from shared.ui.components.save_button import SaveButton
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
-from shared.ui.models.rectangle import RectangleUIComponent
+from shared.ui.models.rectangle_ui_component import RectangleUIComponent
 from core.models.event import Event
 from core.graphics.graphics_context import GraphicsContext
 from tkinter import messagebox

@@ -1,7 +1,7 @@
 import pygame
 from core.models.event import Event
 from core.models.geometry.position import Position
-from shared.ui.models.rectangle import RectangleUIComponent
+from shared.ui.models.rectangle_ui_component import RectangleUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 
 from core.config.color import Color

@@ -9,12 +9,14 @@ from shared.ui.models.ui_controller import UIController
 from shared.controllers.camera_controller import CameraController
 from core.models.railway.railway_system import RailwaySystem
 from modules.setup.models.setup_state import SetupState
+from modules.setup.ui.start_simulation_button import StartSimulationButton
 
 class SetupMode(FullScreenUIComponent, UIController):
     elements: tuple[UIComponent]
     def __init__(self, railway: RailwaySystem, graphics: GraphicsContext):        
         self.state = SetupState(railway.time)
         self.elements = (
+            StartSimulationButton(graphics.screen, self.state),
             SetupButtons(graphics.screen, self.state),
             SetupPanelStrategy(graphics.screen, self.state),
             CameraController(graphics.camera),
