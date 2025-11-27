@@ -15,8 +15,8 @@ class StartSimulationButton(RectangleUIComponent, ClickableUIComponent):
     def render(self, world_pos: Position) -> None:
         pygame.draw.rect(self._screen, Color.BLACK, self._rect, border_radius=8)
         pygame.draw.rect(self._screen, Color.WHITE, self._rect, 2, border_radius=8)
-        font = pygame.font.Font(None, 36)
-        text = font.render("Start Simulation", True, Color.WHITE)
+        font = pygame.font.Font(None, 24)
+        text = font.render("Start", True, Color.WHITE)
         text_rect = text.get_rect(center=self._rect.center)
         self._screen.blit(text, text_rect)
 
@@ -24,7 +24,7 @@ class StartSimulationButton(RectangleUIComponent, ClickableUIComponent):
         self._on_start()
         
     def _get_rect(self, screen: pygame.Surface) -> pygame.Rect:
-        width, height = 200, 60
+        width, height = 150, 40
         x = (screen.get_width() - width) // 2
         y = 10
         return pygame.Rect(x, y, width, height)
