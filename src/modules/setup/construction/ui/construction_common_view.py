@@ -13,7 +13,7 @@ from core.config.color import Color
 from modules.setup.construction.models.construction_view import ConstructionView
 
 class ConstructionCommonView(ConstructionView):
-    def render(self, world_pos: Position | None) -> None:
+    def render(self, screen_pos: Position | None) -> None:
         draw_grid(self._screen, self._camera)
 
         for edge, data in self._railway.graph.all_edges_with_data():
