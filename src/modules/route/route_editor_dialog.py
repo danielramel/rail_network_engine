@@ -1,7 +1,8 @@
 from PyQt6.QtWidgets import (QDialog, QFormLayout, QComboBox, 
                               QTimeEdit, QSpinBox, QLabel, QDialogButtonBox,
                               QVBoxLayout, QHBoxLayout, QPushButton, QWidget,
-                              QTableWidget, QTableWidgetItem, QHeaderView)
+                              QTableWidget, QTableWidgetItem, QHeaderView,
+                              QMessageBox)
 from PyQt6.QtCore import Qt, QTime
 from PyQt6.QtWidgets import QLineEdit
 from PyQt6.QtGui import QIcon, QColor, QBrush
@@ -24,6 +25,13 @@ class RouteEditorDialog(QDialog):
         if route is not None:
             self.set_data(route)
         
+    def accept(self):
+        """Override accept to validate before closing."""
+        if not self.code_edit.text().strip():
+            QMessageBox.warning(self, "Invalid input", "Route code cannot be empty.")
+            return
+        super().accept()
+
     def get_data(self) -> dict:
         """Collect route data from the dialog, ignoring arrival and departure times."""
         route_data = {
@@ -106,8 +114,8 @@ class RouteEditorDialog(QDialog):
         self.refresh_table()
         
     def add_row_clicked(self):
-        row = self.stations_table.rowCount() if self.selected_row is None else self.selected_row
-        self.add_empty_station_row(row)
+        row = self.stations_table.rowCount()-1 if self.selected_row is None else self.selected_row
+        self.add_empty_station_row(row+1)
         self.refresh_table()
         
     def add_empty_station_row(self, row: int):
@@ -128,13 +136,6 @@ class RouteEditorDialog(QDialog):
             station_combo.addItem(station.name, station.id)  # store ID as userData
 
         self.stations_table.setCellWidget(row, 1, station_combo)
-        
-        if row == 0:
-            self._set_empty_item(row, 2)  # Travel time (column 2)
-            self._set_empty_item(row, 3)  # Dwell time (column 3)
-            self._set_empty_item(row, 4)  # Arrival time (column 4)
-            self._set_empty_item(row, 5)  # Departure time (column 5)
-            return
         
         self._set_spin_box_item(row, 2, 5)  # Travel time (column 2)
         self._set_spin_box_item(row, 3, 1)  # Dwell time (column 3)
@@ -157,23 +158,25 @@ class RouteEditorDialog(QDialog):
         self._set_empty_item(0, 4)
         _set_time_item(0, 5, departure)
 
-        for row in range(1, row_count-1):
+        for row in range(1, row_count):
+            if row != self.selected_row:
+                nr_item = self.stations_table.item(row, 0)
+                nr_item.setText(str(row + 1))
+                nr_item.setForeground(QBrush(Qt.GlobalColor.white))
+            
             travel_min = int(self.stations_table.cellWidget(row, 2).value())
 
             arrival = departure.addSecs(travel_min * 60)
             _set_time_item(row, 4, arrival)
-                
+            
+            if row == row_count - 1:
+                self._set_empty_item(row, 3)  # Dwell time (column 3)
+                self._set_empty_item(row, 5)  # Departure time (column 5)
+                continue
             stop_min = int(self.stations_table.cellWidget(row, 3).value())
 
             departure = arrival.addSecs(stop_min * 60)
-            _set_time_item(row, 5, departure)          
-        
-        
-        travel_min = int(self.stations_table.cellWidget(row_count-1, 2).value())
-        
-        self._set_empty_item(row_count-1, 3)  # Dwell time (column 3)
-        _set_time_item(row_count-1, 4, departure.addSecs(travel_min * 60))
-        self._set_empty_item(row_count-1, 5)
+            _set_time_item(row, 5, departure) 
     
 
     def on_cell_clicked(self, row: int, column: int):
@@ -184,19 +187,29 @@ class RouteEditorDialog(QDialog):
             item = self.stations_table.item(self.selected_row, 0)
             item.setText(str(self.selected_row + 1))
             item.setForeground(QBrush(Qt.GlobalColor.white))
-
+            
+        # if self.stations_table.rowCount() <= 2:
+        #     return  # Do not allow selecting when less than 2 rows
+        if self.selected_row == row:
+            self.selected_row = None
+            item = self.stations_table.item(row, 0)
+            item.setText(str(row + 1))
+            item.setForeground(QBrush(Qt.GlobalColor.white))
+            return
         self.selected_row = row
         item = self.stations_table.item(row, 0)
         item.setText("▶")
         item.setForeground(QBrush(Qt.GlobalColor.red))
         
     
-    def remove_selected_station(self):
+    def remove_selected_row(self):
         """Remove the selected station row from the table"""
         if self.selected_row is None:
+            QMessageBox.warning(self, "No selection", "Please select a station row to remove.")
             return
         
         if self.stations_table.rowCount() <= 2:
+            QMessageBox.warning(self, "Cannot remove", "At least two station rows are required.")
             return  # Do not allow removing to less than 2 rows
         
         self.stations_table.removeRow(self.selected_row)
@@ -257,7 +270,7 @@ class RouteEditorDialog(QDialog):
         self.add_row_button = self._create_push_button("＋", "Add station row below", ADD_BUTTON_STYLE, self.add_row_clicked)
         control_layout.addWidget(self.add_row_button)
         
-        self.remove_button = self._create_push_button(QIcon.fromTheme("edit-delete"), "Remove selected station", REMOVE_BUTTON_STYLE, self.remove_selected_station)
+        self.remove_button = self._create_push_button(QIcon.fromTheme("edit-delete"), "Remove selected station", REMOVE_BUTTON_STYLE, self.remove_selected_row)
         control_layout.addWidget(self.remove_button)
         
         control_layout.addStretch()
@@ -280,6 +293,10 @@ class RouteEditorDialog(QDialog):
         layout.addRow(buttons)
 
         self.add_empty_station_row(0)
+        self._set_empty_item(0, 2)  # Travel time (column 2)
+        self._set_empty_item(0, 3)  # Dwell time (column 3)
+        self._set_empty_item(0, 4)  # Arrival time (column 4)
+        self._set_empty_item(0, 5)  # Departure time (column 5)
         self.add_empty_station_row(1)
         self.refresh_table()
 
