@@ -29,3 +29,5 @@ class SetupMode(UIController, FullScreenUIComponent):
             SetupModeStrategy(setup_state, railway, graphics)
         ]
         
+        railway.trains.load_state()
+        railway.signalling.unlock_all_paths()

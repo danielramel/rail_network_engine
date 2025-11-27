@@ -1,5 +1,6 @@
 from core.models.geometry.edge import Edge
 from core.models.train import Train, TrainConfig
+from core.config.settings import Config
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -10,6 +11,7 @@ class TrainRepository:
         self._trains: dict[int, Train] = {}
         self._railway = railway
         self._next_id = 0
+        self._saved_states: dict[int, dict] | None = None
 
     def _generate_id(self) -> int:
         self._next_id += 1
@@ -58,3 +60,22 @@ class TrainRepository:
             
         instance._next_id = data["next_id"]
         return instance
+    
+    def save_state(self) -> None:
+        """Save the current state of all trains to memory."""
+        self._saved_states = {}
+        for train_id, train in self._trains.items():
+            self._saved_states[train_id] = {
+                'edges': [rail.edge for rail in train.path],
+                'config': train.config.copy(),
+            }
+    
+    def load_state(self) -> None:
+        """Load the previously saved state of all trains from memory."""
+        if self._saved_states is None:
+            return
+        self._trains.clear()
+        for train_id, state in self._saved_states.items():
+            train = Train(state['edges'], self._railway, state['config'])
+            train.id = train_id
+            self._trains[train_id] = train

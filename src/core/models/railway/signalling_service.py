@@ -41,6 +41,10 @@ class SignallingService:
         for train in self._railway.trains.all():
             for rail in train.get_occupied_rails():
                 self._railway.graph.set_edge_lock(rail.edge, True)
+                
+    def unlock_all_paths(self) -> None:
+        for edge in self._railway.graph.edges:
+            self._railway.graph.set_edge_lock(edge, False)
         
     def is_edge_locked(self, edge: Edge) -> bool:
         return self._railway.graph.get_edge_attr(edge, 'locked') is True

@@ -37,7 +37,9 @@ class SimulationMode(UIController, FullScreenUIComponent):
             CameraController(self._graphics.camera),
             SimulationController(self._railway, self._state, self._graphics),
         )
+        self._railway.trains.save_state()
         self._railway.signalling.lock_paths_under_trains()
+        
 
     def _on_time_set(self, time_str: str) -> None:
         try:
