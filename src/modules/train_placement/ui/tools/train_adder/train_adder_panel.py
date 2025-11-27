@@ -2,11 +2,11 @@ import pygame
 from core.config.color import Color
 from core.config.settings import Config
 from core.models.event import Event
-from modules.setup.models.setup_state import SetupState
+from modules.train_placement.models.train_placement_state import TrainPlacementState
 from shared.ui.models.panel import Panel
     
-class TrainPlacementPanel(Panel):    
-    def __init__(self, screen: pygame.Surface, state: SetupState) -> None:
+class TrainAdderPanel(Panel):    
+    def __init__(self, screen: pygame.Surface, state: TrainPlacementState) -> None:
         super().__init__(screen, height=210)
         self._state = state
         

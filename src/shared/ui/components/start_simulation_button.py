@@ -1,5 +1,5 @@
 from core.models.geometry.position import Position
-from modules.setup.models.setup_state import SetupState
+from modules.train_placement.models.train_placement_state import TrainPlacementState
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.models.rectangle_ui_component import RectangleUIComponent
 from core.models.event import Event
@@ -7,10 +7,9 @@ from core.config.color import Color
 import pygame
 
 class StartSimulationButton(RectangleUIComponent, ClickableUIComponent):
-    def __init__(self, screen: pygame.Surface, setup_state: SetupState):
+    def __init__(self, screen: pygame.Surface):
         rect = self._get_rect(screen)
         super().__init__(rect, screen)
-        self._state = setup_state
 
     def render(self, world_pos: Position) -> None:
         pygame.draw.rect(self._screen, Color.BLACK, self._rect, border_radius=8)

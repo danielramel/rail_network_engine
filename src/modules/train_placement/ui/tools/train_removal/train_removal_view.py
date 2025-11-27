@@ -1,9 +1,9 @@
 from core.models.geometry.position import Position
-from modules.setup.models.setup_view import SetupView
+from modules.train_placement.models.train_placement_view import TrainPlacementView
 from shared.ui.utils.nodes import draw_node
 from core.config.color import Color
 
-class TrainRemovalView(SetupView):
+class TrainRemovalView(TrainPlacementView):
     def render(self, world_pos: Position | None) -> None:
         self._state.preview.clear()
         if world_pos is None:

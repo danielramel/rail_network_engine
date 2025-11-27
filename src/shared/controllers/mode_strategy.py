@@ -1,5 +1,5 @@
 from modules.construction.construction_mode import ConstructionMode 
-from modules.setup.setup_mode import SetupMode
+from modules.train_placement.train_placement_mode import TrainPlacementMode
 from modules.simulation.simulation_mode import SimulationMode
 from core.models.app_state import AppState, ViewMode
 from core.models.railway.railway_system import RailwaySystem
@@ -18,8 +18,8 @@ class ModeStrategy(FullScreenUIComponent):
         
         self._modes: dict[ViewMode, lambda: UIController] = {
             ViewMode.CONSTRUCTION: lambda: ConstructionMode(railway, graphics),
-            ViewMode.SETUP: lambda: SetupMode(railway, graphics),
-            ViewMode.SIMULATION: lambda: SimulationMode(railway, graphics, lambda: app_state.switch_mode(ViewMode.SETUP)),
+            ViewMode.TRAIN_PLACEMENT: lambda: TrainPlacementMode(railway, graphics),
+            ViewMode.SIMULATION: lambda: SimulationMode(railway, graphics, lambda: app_state.switch_mode(ViewMode.TRAIN_PLACEMENT)),
         }
         
         self.switch_to(app_state.mode)

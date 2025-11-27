@@ -2,7 +2,7 @@ import pygame
         
 from core.models.app_state import ViewMode
 MODE_SELECTION = {
-    pygame.K_s: ViewMode.SETUP,
+    pygame.K_s: ViewMode.TRAIN_PLACEMENT,
     pygame.K_c: ViewMode.CONSTRUCTION,
     pygame.K_p: ViewMode.SIMULATION,
 }
@@ -27,8 +27,8 @@ TIME_CONTROL_KEYS = {
     pygame.K_SPACE: "toggle_pause",
 }
 
-from modules.setup.models.setup_state import SetupTool
-SETUP_TOOL_SELECTION = {
-    pygame.K_1: SetupTool.PLACE_TRAIN,
-    pygame.K_2: SetupTool.REMOVE_TRAIN,
+from modules.train_placement.models.train_placement_state import TrainPlacementTool
+TRAIN_PLACEMENT_TOOL_SELECTION = {
+    pygame.K_1: TrainPlacementTool.PLACE_TRAIN,
+    pygame.K_2: TrainPlacementTool.REMOVE_TRAIN,
 }

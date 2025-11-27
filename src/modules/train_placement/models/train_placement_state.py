@@ -3,12 +3,12 @@ from enum import Enum, auto
 from core.models.time import Time
 from core.models.train import Train, TrainConfig
 
-class SetupTool(Enum):
+class TrainPlacementTool(Enum):
     PLACE_TRAIN = auto()
     REMOVE_TRAIN = auto()
 
 @dataclass
-class SetupPreview:
+class TrainPlacementPreview:
     train_id_to_remove: int | None = None
     train_to_preview: Train | None = None
     invalid_train_placement_edges: frozenset = frozenset()
@@ -18,16 +18,16 @@ class SetupPreview:
         self.train_id_to_remove = None
         self.invalid_train_placement_edges = frozenset()
 
-class SetupState:
+class TrainPlacementState:
     time: Time
-    preview: SetupPreview = SetupPreview()
-    tool: SetupTool = SetupTool.PLACE_TRAIN
+    preview: TrainPlacementPreview = TrainPlacementPreview()
+    tool: TrainPlacementTool = TrainPlacementTool.PLACE_TRAIN
     train_config: TrainConfig = TrainConfig()
     
     def __init__(self, time: Time) -> None:
         self.time = time
     
-    def switch_tool(self, new_tool: SetupTool) -> None:
+    def switch_tool(self, new_tool: TrainPlacementTool) -> None:
         """Switch to a new setup tool, clearing previous state."""
         if new_tool == self.tool:
             return

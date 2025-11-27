@@ -1,16 +1,16 @@
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.graphics_context import GraphicsContext
-from modules.setup.models.setup_state import SetupState
-from modules.setup.models.setup_view import SetupView
+from modules.train_placement.models.train_placement_state import TrainPlacementState
+from modules.train_placement.models.train_placement_view import TrainPlacementView
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from core.models.geometry.position import Position
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 
 
 
-class SetupToolController(ClickableUIComponent, FullScreenUIComponent):
+class TrainPlacementToolController(ClickableUIComponent, FullScreenUIComponent):
     """Base class for controllers that manage setup modes."""
-    def __init__(self, view: SetupView, railway: RailwaySystem, state: SetupState, graphics: GraphicsContext):
+    def __init__(self, view: TrainPlacementView, railway: RailwaySystem, state: TrainPlacementState, graphics: GraphicsContext):
         self._view = view
         self._railway = railway
         self._state = state

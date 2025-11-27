@@ -4,7 +4,7 @@ from typing import Callable, Optional
 
 class ViewMode(Enum):
     CONSTRUCTION = auto()
-    SETUP = auto()
+    TRAIN_PLACEMENT = auto()
     SIMULATION = auto()
     
 class AppState:

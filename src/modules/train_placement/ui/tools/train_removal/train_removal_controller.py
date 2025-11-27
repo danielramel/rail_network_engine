@@ -1,11 +1,11 @@
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.graphics_context import GraphicsContext
-from modules.setup.models.setup_state import SetupState
-from modules.setup.models.setup_tool_controller import SetupToolController
-from modules.setup.ui.tools.train_removal.train_removal_view import TrainRemovalView
+from modules.train_placement.models.train_placement_state import TrainPlacementState
+from modules.train_placement.models.train_placement_tool_controller import TrainPlacementToolController
+from modules.train_placement.ui.tools.train_removal.train_removal_view import TrainRemovalView
 
-class TrainRemovalController(SetupToolController):
-    def __init__(self, railway: RailwaySystem, state: SetupState, graphics: GraphicsContext):
+class TrainRemovalController(TrainPlacementToolController):
+    def __init__(self, railway: RailwaySystem, state: TrainPlacementState, graphics: GraphicsContext):
         view = TrainRemovalView(railway, state, graphics)
         super().__init__(view, railway, state, graphics)
 

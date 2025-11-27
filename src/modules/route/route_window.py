@@ -23,7 +23,6 @@ class RouteWindow(QMainWindow):
         self._init_layout()
         self.refresh_table()
 
-    # ------------------------------ UI setup ------------------------------
     def _init_layout(self):
         self.setWindowTitle("Route Management")
         self.setStyleSheet(ROUTE_STYLESHEET)

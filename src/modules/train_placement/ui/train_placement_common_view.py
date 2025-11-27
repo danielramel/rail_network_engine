@@ -11,16 +11,16 @@ from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from shared.ui.enums.edge_action import EdgeAction
 from core.models.geometry.position import Position
-from modules.setup.models.setup_state import SetupState
+from modules.train_placement.models.train_placement_state import TrainPlacementState
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 
 
-class SetupCommonView(ClickableUIComponent, FullScreenUIComponent):
-    def __init__(self, railway: RailwaySystem, setup_state: SetupState, graphics: GraphicsContext):
+class TrainPlacementCommonView(ClickableUIComponent, FullScreenUIComponent):
+    def __init__(self, railway: RailwaySystem, state: TrainPlacementState, graphics: GraphicsContext):
         self._railway = railway
         self._screen = graphics.screen
         self._camera = graphics.camera
-        self._state = setup_state
+        self._state = state
 
     def render(self, screen_pos: Position | None) -> None:        
         draw_grid(self._screen, self._camera)

@@ -2,28 +2,28 @@ import pygame
 from core.graphics.icon_loader import IconLoader
 from core.models.event import Event
 from core.models.geometry.position import Position
-from modules.setup.models.setup_state import SetupTool, SetupState
+from modules.train_placement.models.train_placement_state import TrainPlacementTool, TrainPlacementState
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from core.config.color import Color
 from core.config.paths import ICON_PATHS
 from core.config.settings import Config
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
-from core.config.keyboard_shortcuts import SETUP_TOOL_SELECTION
+from core.config.keyboard_shortcuts import TRAIN_PLACEMENT_TOOL_SELECTION
 
 
-class SetupButtons(ShortcutUIComponent, ClickableUIComponent):
-    def __init__(self, screen: pygame.Surface, setup_state: SetupState):
+class TrainPlacementButtons(ShortcutUIComponent, ClickableUIComponent):
+    def __init__(self, screen: pygame.Surface, state: TrainPlacementState):
         self.icon_cache = {
             tool: IconLoader().get_icon(ICON_PATHS[tool.name], Config.BUTTON_SIZE)
-            for tool in SetupTool
+            for tool in TrainPlacementTool
         }
         self.buttons = self._get_buttons(screen)
-        self._state = setup_state
+        self._state = state
         self._screen = screen
         
         self._shortcuts = {
             (key, False): lambda tool=tool: self._state.switch_tool(tool)
-            for key, tool in SETUP_TOOL_SELECTION.items()
+            for key, tool in TRAIN_PLACEMENT_TOOL_SELECTION.items()
         }
         
     def _on_click(self, event: Event) -> bool:
@@ -45,7 +45,7 @@ class SetupButtons(ShortcutUIComponent, ClickableUIComponent):
             self._screen.blit(icon, icon_rect)
 
             if tool == self._state.tool:
-                color = Color.YELLOW if not self._state.tool is SetupTool.REMOVE_TRAIN else Color.RED
+                color = Color.YELLOW if not self._state.tool is TrainPlacementTool.REMOVE_TRAIN else Color.RED
                 pygame.draw.rect(self._screen, color, btn_rect.inflate(5, 5), 5, border_radius=10)
             else:
                 pygame.draw.rect(self._screen, Color.WHITE, btn_rect, 2, border_radius=10)
@@ -54,11 +54,11 @@ class SetupButtons(ShortcutUIComponent, ClickableUIComponent):
         return any(btn.collidepoint(*screen_pos) for _, btn in self.buttons)
 
 
-    def _get_buttons(self, screen: pygame.Surface) -> list[tuple[SetupTool, pygame.Rect]]:
+    def _get_buttons(self, screen: pygame.Surface) -> list[tuple[TrainPlacementTool, pygame.Rect]]:
         button_margin = Config.BUTTON_SIZE // 5
         w, h = screen.get_size()
         buttons = []
-        for i, tool in enumerate(SetupTool):
+        for i, tool in enumerate(TrainPlacementTool):
             rect = pygame.Rect(
                 w - 2 * (Config.BUTTON_SIZE + button_margin) + (Config.BUTTON_SIZE + button_margin) * i,
                 h - Config.BUTTON_SIZE - button_margin,

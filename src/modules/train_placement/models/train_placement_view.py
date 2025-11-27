@@ -1,11 +1,11 @@
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
-from modules.setup.models.setup_state import SetupState
+from modules.train_placement.models.train_placement_state import TrainPlacementState
 from core.models.geometry.position import Position
 
 
-class SetupView:
-    def __init__(self, railway: RailwaySystem, state: SetupState, graphics: GraphicsContext):
+class TrainPlacementView:
+    def __init__(self, railway: RailwaySystem, state: TrainPlacementState, graphics: GraphicsContext):
         self._railway = railway
         self._state = state
         self._screen = graphics.screen

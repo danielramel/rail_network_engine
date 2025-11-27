@@ -2,7 +2,7 @@ ICON_CATEGORIES = {
     "": {
         "CONSTRUCTION": "construction.png",
         "SIMULATION": "simulation.png",
-        "SETUP": "setup.png",
+        "TRAIN_PLACEMENT": "train_placement.png",
         "ROUTE": "route.png",
         "SAVE": "save.png",
         "SAVED": "saved.png",
@@ -19,13 +19,12 @@ ICON_CATEGORIES = {
         "PLATFORM": "platform.png",
     },
     "simulation/": {
-        "TRAIN_PLACEMENT": "train_placement.png",
         "PLAY": "play.png",
         "PAUSE": "pause.png",
         "FAST_FORWARD": "3x.png",
         "SUPER_FAST_FORWARD": "10x.png",
     },
-    "setup/": {
+    "train_placement/": {
         "PLACE_TRAIN": "place_train.png",
         "REMOVE_TRAIN": "remove_train.png",
     }
