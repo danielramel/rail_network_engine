@@ -26,18 +26,17 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
         
         target = find_simulation_target(self._railway, click.world_pos)
         
-        if target.kind == SimulationTargetType.NODE:
+        if target.kind is SimulationTargetType.NODE and self._state.selected_signal is not None:
             is_blocked = bool(self._railway.graph.get_node_attr(target.node, "blocked"))
-            if click.is_right_click and is_blocked:
+            if is_blocked:
                 self._railway.graph.unblock_node(target.node)
-            elif click.is_left_click and not is_blocked:
+            else:
                 self._railway.graph.block_node(target.node)
         
-        elif target.kind ==  SimulationTargetType.TRAIN:
+        elif target.kind is SimulationTargetType.TRAIN:
             self._state.select_train(target.train_id)
             
-        elif target.kind == SimulationTargetType.SIGNAL:
-            # click on signal
+        elif target.kind is SimulationTargetType.SIGNAL:
             if click.is_right_click:
                 self._railway.signalling.drop_signal(target.signal)
                 return
@@ -59,12 +58,14 @@ class SimulationController(ClickableUIComponent, FullScreenUIComponent):
                 message = self._railway.signalling.auto_connect_signals(self._state.selected_signal, target.signal)
                 if message is None:
                     self._state.selected_signal = None
+                    self._railway.graph.remove_blocked_nodes()
                 else:
                     self._graphics.alert_component.show_alert(message)
             else:
                 successful = self._railway.signalling.connect_signals(self._state.selected_signal, target.signal)
                 if successful:
                     self._state.selected_signal = None
+                    self._railway.graph.remove_blocked_nodes()
                 else:
                     self._graphics.alert_component.show_alert("Failed to connect signals: Path is blocked or invalid.")
 

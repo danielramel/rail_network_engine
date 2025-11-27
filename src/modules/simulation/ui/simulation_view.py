@@ -31,7 +31,7 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
         target = find_simulation_target(self._railway, world_pos)
         
         preview_path = []
-        if target.kind == SimulationTargetType.SIGNAL and self._state.selected_signal is not None:
+        if target.kind is SimulationTargetType.SIGNAL and self._state.selected_signal is not None:
             path = self._railway.signalling.get_path_preview(self._state.selected_signal, target.signal)
             if path is not None:
                 preview_path = path
@@ -93,12 +93,12 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
                 
             draw_train(self._screen, train, self._camera, color, lighten_flag=target.train_id == train.id, locomotive_different=True)
 
-        if target.kind == SimulationTargetType.NODE:
+        if target.kind is SimulationTargetType.NODE and self._state.selected_signal is not None:
             color = Color.GREEN if self._railway.graph.get_node_attr(target.node, "blocked") else Color.RED
             draw_node(self._screen, target.node, self._camera, color=color)
             
-        elif target.kind == SimulationTargetType.EMPTY:
-            draw_node(self._screen, world_pos, self._camera, color=Color.LIME)
+        elif target.kind is SimulationTargetType.NONE or target.kind is SimulationTargetType.NODE:
+            draw_node(self._screen, target.node, self._camera, color=Color.LIME)
             
             if self._state.selected_signal is not None and len(self._state.preview.path) == 0:
-                draw_dotted_line(self._screen, self._state.selected_signal.node, world_pos, self._camera, color=Color.LIME)
+                draw_dotted_line(self._screen, self._state.selected_signal.node, target.node, self._camera, color=Color.LIME)

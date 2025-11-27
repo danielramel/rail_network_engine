@@ -11,8 +11,8 @@ class SimulationTargetType(Enum):
     NODE = auto()
     TRAIN = auto()
     SIGNAL = auto()
+    OUT_OF_BOUNDS = auto()
     NONE = auto()
-    EMPTY = auto()
 
 @dataclass
 class SimulationTarget:
@@ -21,9 +21,9 @@ class SimulationTarget:
     signal: Optional[Signal] = None
     node: Optional[Position] = None
     
-def find_simulation_target(railway: RailwaySystem, world_pos: Position):
+def find_simulation_target(railway: RailwaySystem, world_pos: Position) -> SimulationTarget:
     if world_pos is None:
-        return SimulationTarget(SimulationTargetType.NONE)
+        return SimulationTarget(SimulationTargetType.OUT_OF_BOUNDS)
     closest_edge = railway.graph_service.get_closest_edge(world_pos)
     train_id = railway.trains.get_train_on_edge(closest_edge)
     if train_id:
@@ -36,4 +36,4 @@ def find_simulation_target(railway: RailwaySystem, world_pos: Position):
     if railway.graph.has_node(snapped):
         return SimulationTarget(SimulationTargetType.NODE, node=snapped)
 
-    return SimulationTarget(SimulationTargetType.EMPTY)
+    return SimulationTarget(SimulationTargetType.NONE, node=snapped)

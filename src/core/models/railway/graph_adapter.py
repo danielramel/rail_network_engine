@@ -48,6 +48,11 @@ class GraphAdapter:
     def unblock_node(self, node: Node) -> None:
         del self._graph.nodes[node]['blocked']
         
+    def remove_blocked_nodes(self) -> None:
+        blocked_nodes = [n for n, data in self._graph.nodes(data=True) if 'blocked' in data]
+        for node in blocked_nodes:
+            del self._graph.nodes[node]['blocked']
+        
     def remove_node_attr(self, node: Node, key: str) -> None:
         if node in self._graph.nodes and key in self._graph.nodes[node]:
             del self._graph.nodes[node][key]
