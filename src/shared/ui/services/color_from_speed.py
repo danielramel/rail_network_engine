@@ -6,7 +6,7 @@ def color_from_speed(speed: int) -> tuple[int, int, int]:
     gradient = [
         (10,  Color.BLUE),
         (80,  Color.CYAN),
-        (120, Color.BROWN),
+        (120, Color.ORANGE),
         (150, Color.YELLOW),
         (200,   Color.PINK),
     ]
