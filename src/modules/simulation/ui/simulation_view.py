@@ -31,12 +31,10 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
         target = find_simulation_target(self._railway, world_pos)
         
         preview_path = []
-        preview_path_occupied = False
         if target.kind is SimulationTargetType.SIGNAL and self._state.selected_signal is not None:
-            path, occupied = self._railway.signalling.get_path_preview(self._state.selected_signal, target.signal)
+            path = self._railway.signalling.get_path_preview(self._state.selected_signal, target.signal)
             if path is not None:
                 preview_path = path
-                preview_path_occupied = occupied
             
             
         draw_grid(self._screen, self._camera)
@@ -47,18 +45,14 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             is_in_preview = edge in preview_path
 
             if is_platform:
-                if is_in_preview and preview_path_occupied:
-                    edge_action = EdgeAction.PLATFORM_OCCUPIED
-                elif is_in_preview:
+                if is_in_preview:
                     edge_action = EdgeAction.PLATFORM_PREVIEW
                 elif is_locked:
                     edge_action = EdgeAction.LOCKED_PLATFORM
                 else:
                     edge_action = EdgeAction.PLATFORM
             else:
-                if is_in_preview and preview_path_occupied:
-                    edge_action = EdgeAction.OCCUPIED_PREVIEW
-                elif is_in_preview:
+                if is_in_preview:
                     edge_action = EdgeAction.LOCKED_PREVIEW
                 elif is_locked:
                     edge_action = EdgeAction.LOCKED

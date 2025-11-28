@@ -17,8 +17,6 @@ def draw_track(screen: pygame.Surface, world_edge: Edge, camera: Camera, edge_ac
         draw_platform(screen, (a, b), camera, color=Color.RED)
     elif edge_action is EdgeAction.PLATFORM_SELECTED:
         draw_platform(screen, (a, b), camera, color=Color.LIGHTBLUE)
-    elif edge_action is EdgeAction.PLATFORM_OCCUPIED:
-        draw_platform(screen, (a, b), camera, color=Color.ORANGE)
     elif edge_action is EdgeAction.PLATFORM_PREVIEW:
         draw_platform(screen, (a, b), camera, color=Color.GREEN)
     elif edge_action is EdgeAction.PLATFORM:
@@ -29,8 +27,6 @@ def draw_track(screen: pygame.Surface, world_edge: Edge, camera: Camera, edge_ac
         draw_rail(screen, (a, b), camera, color=Color.GREEN, length=length, level=world_edge.level)
     elif edge_action is EdgeAction.LOCKED:
         draw_rail(screen, (a, b), camera, color=Color.LIME, length=length, level=world_edge.level)
-    elif edge_action is EdgeAction.OCCUPIED_PREVIEW:
-        draw_rail(screen, (a, b), camera, color=Color.ORANGE, length=length, level=world_edge.level)
     elif edge_action is EdgeAction.NO_SPEED:
         draw_rail(screen, (a, b), camera, color=Color.WHITE, length=length, level=world_edge.level)
     elif edge_action is EdgeAction.SPEED:
