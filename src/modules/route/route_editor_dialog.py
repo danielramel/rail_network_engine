@@ -30,12 +30,17 @@ class RouteEditorDialog(QDialog):
         if not self.code_edit.text().strip():
             QMessageBox.warning(self, "Invalid input", "Route code cannot be empty.")
             return
+        if self.code_edit.text().strip() != self._editing_route.code if self._editing_route else True:
+            for existing_route in self._railway.routes.all():
+                if existing_route.code == self.code_edit.text().strip():
+                    QMessageBox.warning(self, "Invalid input", "Route code must be unique.")
+                    return
         super().accept()
 
     def get_data(self) -> dict:
         """Collect route data from the dialog, ignoring arrival and departure times."""
         route_data = {
-            "code": self.code_edit.text(),
+            "code": self.code_edit.text().strip(),
             "color": self.color_combo.currentText(),
             "first_train_time": self.first_train_time_edit.time().toString("HH:mm"),
             "last_train_time": self.last_train_time_edit.time().toString("HH:mm"),

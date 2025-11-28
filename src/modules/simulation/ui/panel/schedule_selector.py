@@ -103,7 +103,11 @@ class ScheduleSelector(QWidget):
 
     def _populate_start_times(self, route: Route):
         self.start_times_list.clear()
-        for t in route.start_times:
+        start_times = route.start_times
+        if not start_times:
+            self.start_times_list.addItem("(No available start times)")
+            
+        for t in start_times:
             item = QListWidgetItem(self._fmt_time(t))
             item.setData(int(Qt.ItemDataRole.UserRole), t)
             self.start_times_list.addItem(item)
