@@ -12,6 +12,7 @@ from modules.route.stylesheets.route_editor_stylesheet import (
 )
 from core.models.railway.railway_system import RailwaySystem
 from core.models.route import Route
+from core.config.color import Color
 
 class RouteEditorDialog(QDialog):
     def __init__(self, parent, railway: RailwaySystem, route: Route = None):
@@ -238,7 +239,7 @@ class RouteEditorDialog(QDialog):
         # Code and Color on same row
         self.code_edit = QLineEdit()
         self.code_edit.setPlaceholderText("Enter route code")
-        self.color_combo = self._create_combo_box(("RED", "BLUE", "GREEN", "YELLOW", "ORANGE", "PURPLE"))
+        self.color_combo = self._create_combo_box(Color.all())
         
         code_color_layout = QHBoxLayout()
         code_color_layout.addWidget(self.code_edit)

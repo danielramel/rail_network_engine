@@ -19,3 +19,6 @@ class Color:
     
     def get(color_name: str) -> tuple[int, int, int]:
         return getattr(Color, color_name.upper(), Color.WHITE)
+    
+    def all() -> list[str]:
+        return [attr for attr in dir(Color) if not attr.startswith("__") and attr.isupper()]
