@@ -33,6 +33,10 @@ class SignalRepository:
 
     def all(self) -> tuple[Signal]:
         return tuple(self._railway.graph.all_nodes_with_attr('signal').values())
+    
+    def reset_all(self) -> None:
+        for signal in self.all():
+            signal.reset()
         
     def to_dict(self):
         return [signal.pose.to_dict() for signal in self.all()]

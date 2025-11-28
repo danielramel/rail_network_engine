@@ -105,6 +105,7 @@ class Train:
     
     def signal_dropped(self) -> None:
         self._release_unsubscribe()
+        self._railway.signalling.release_path([rail.edge for rail in self.path[self._occupied_edge_count:]])
         self.path = self.path[:self._occupied_edge_count]
         self._routed_to_station_ahead = False
         self.set_initial_path()

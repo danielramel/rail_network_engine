@@ -31,10 +31,12 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
         target = find_simulation_target(self._railway, world_pos)
         
         preview_path = []
+        preview_path_occupied = False
         if target.kind is SimulationTargetType.SIGNAL and self._state.selected_signal is not None:
-            path = self._railway.signalling.get_path_preview(self._state.selected_signal, target.signal)
+            path, occupied = self._railway.signalling.get_path_preview(self._state.selected_signal, target.signal)
             if path is not None:
                 preview_path = path
+                preview_path_occupied = occupied
             
             
         draw_grid(self._screen, self._camera)
@@ -44,16 +46,25 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             is_platform = self._railway.stations.is_edge_platform(edge)
             is_in_preview = edge in preview_path
 
-            if is_platform and is_locked:
-                edge_action = EdgeAction.LOCKED_PLATFORM
-            elif is_platform:
-                edge_action = EdgeAction.PLATFORM
-            elif is_in_preview:
-                edge_action = EdgeAction.LOCKED_PREVIEW
-            elif is_locked:
-                edge_action = EdgeAction.LOCKED
-            elif self._railway.stations.is_edge_platform(edge):
-                edge_action = EdgeAction.PLATFORM
+            if is_platform:
+                if is_in_preview and preview_path_occupied:
+                    edge_action = EdgeAction.PLATFORM_OCCUPIED
+                elif is_in_preview:
+                    edge_action = EdgeAction.PLATFORM_PREVIEW
+                elif is_locked:
+                    edge_action = EdgeAction.LOCKED_PLATFORM
+                else:
+                    edge_action = EdgeAction.PLATFORM
+            else:
+                if is_in_preview and preview_path_occupied:
+                    edge_action = EdgeAction.OCCUPIED_PREVIEW
+                elif is_in_preview:
+                    edge_action = EdgeAction.LOCKED_PREVIEW
+                elif is_locked:
+                    edge_action = EdgeAction.LOCKED
+                else:
+                    edge_action = EdgeAction.NO_SPEED
+                    
             draw_track(self._screen, edge, self._camera, edge_action, data["length"])
 
         for node in self._railway.graph_service.junctions:

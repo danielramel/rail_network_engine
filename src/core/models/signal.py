@@ -55,6 +55,13 @@ class Signal:
             self._drop_subscriber = None
             func()
             
+    def reset(self) -> None:
+        self.next_signal = None
+        self.path = []
+        self._release_subscriber = None
+        self._passed_subscriber = None
+        self._drop_subscriber = None
+            
     @property
     def direction(self) -> Direction:
         return self.pose.direction

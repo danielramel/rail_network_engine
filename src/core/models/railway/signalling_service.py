@@ -10,8 +10,13 @@ if TYPE_CHECKING:
 
 class SignallingService:
     auto_signals: dict[Pose, Signal, tuple[Edge]] = {}
+    loaded_signals: dict[Signal, set[Edge]] = {}
     def __init__(self, railway: 'RailwaySystem'):
         self._railway = railway
+        
+    def reset(self) -> None:
+        self.auto_signals.clear()
+        self.loaded_signals.clear()
         
     def lock_path(self, edges: list[Edge]) -> None:
         for edge in edges:
@@ -30,12 +35,17 @@ class SignallingService:
         signal = self._railway.signals.get(edge.b)
         if signal is not None and signal.direction == edge.direction:
             signal.passed()
+        for signal, path in self.loaded_signals.items():
+            if True:
+                #TODO
+                signal.connect(path, signal.next_signal)
+                self.lock_path(path)
+                del self.loaded_signals[signal]
         
     def reached(self, edge: Edge):
         signal = self._railway.signals.get(edge.a)
         if signal is not None:
             signal.reached()
-        self._railway.graph.set_edge_lock(edge, True)
             
     def lock_paths_under_trains(self) -> None:
         for train in self._railway.trains.all():
@@ -59,14 +69,14 @@ class SignallingService:
         if signal.pose in self.auto_signals:
             del self.auto_signals[signal.pose]
     
-    def get_path_preview(self, start: Signal, end: Signal) -> list[Edge] | None:
+    def get_path_preview(self, start: Signal, end: Signal) -> tuple[list[Edge], bool]:
         while start.next_signal is not None:
             start = start.next_signal
         poses = self.find_path(start.pose, end.pose)
         if poses is None:
-            return None
+            return [], False
         edges = [Edge(poses[i].node, poses[i+1].node) for i in range(len(poses)-1)]
-        return edges
+        return edges, any(self.is_node_locked(pose.node) for pose in poses[1:-1])
             
     def connect_signals(self, from_signal: Signal, to_signal: Signal) -> bool:
         while from_signal.next_signal is not None:
@@ -78,10 +88,17 @@ class SignallingService:
         edges = [Edge(poses[i].node, poses[i+1].node) for i in range(len(poses)-1)]
         current_signal = from_signal
         current_signal_index = 0
+        is_occupied = False
         for i, pose in enumerate(poses[1:], start=1):
+            if self.is_node_locked(pose.node):
+                is_occupied = True
             if self._railway.signals.has_with_pose(pose):
                 signal = self._railway.signals.get(pose.node)
-                current_signal.connect(edges[current_signal_index:i], signal)
+                if not is_occupied:
+                    #only connect right now if the path is not locked
+                    current_signal.connect(edges[current_signal_index:i], signal)
+                else:
+                    self.loaded_signals[current_signal] = set(edges[current_signal_index:i])
                 current_signal = signal
                 current_signal_index = i
                 
@@ -90,7 +107,7 @@ class SignallingService:
         return True
         
     def auto_connect_signals(self, from_signal: Signal, to_signal: Signal) -> str | None:
-        poses = self.find_path(from_signal.pose, to_signal.pose, stop_at_locked=False)
+        poses = self.find_path(from_signal.pose, to_signal.pose)
         if poses is None:
             return "No path found between signals."
         
@@ -100,20 +117,20 @@ class SignallingService:
         edges = [Edge(poses[i].node, poses[i+1].node) for i in range(len(poses)-1)]
         current_signal = from_signal
         current_signal_index = 0
-        is_locked = False
+        is_occupied = False
         for i, pose in enumerate(poses[1:], start=1):
             if self.is_node_locked(pose.node):
-                is_locked = True
+                is_occupied = True
             if self._railway.signals.has_with_pose(pose):
                 signal = self._railway.signals.get(pose.node)
-                if not is_locked:
+                if not is_occupied:
                     #only connect right now if the path is not locked
                     current_signal.connect(edges[current_signal_index:i], signal)
                 self.auto_signals[current_signal.pose] = (signal, edges[current_signal_index:i])
                 signal.passed_subscribe(self._create_auto_reconnect_callback(current_signal))
                 current_signal = signal
                 current_signal_index = i
-                is_locked = False
+                is_occupied = False
                 
         self.lock_path(edges)
         
@@ -149,6 +166,7 @@ class SignallingService:
                     return path, None
                 path.append(edge)
                 pose = connection
+                
         path, signal = get_initial_path(train_pose)
         self.lock_path(path)
         return path, signal
@@ -156,11 +174,9 @@ class SignallingService:
     
             
             
-    def find_path(self, start: Pose, end: Pose, stop_at_locked: bool = True) -> list[Pose] | None:
+    def find_path(self, start: Pose, end: Pose) -> list[Pose] | None:
         def is_node_blocked(node: Node) -> bool:
             if self._railway.graph.get_node_attr(node, "blocked"):
-                return True
-            if stop_at_locked and self.is_node_locked(node):
                 return True
             return False
             
