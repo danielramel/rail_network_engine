@@ -17,6 +17,7 @@ class TrainPanel(Panel):
         self._schedule_repository = route_repository
         self._state = simulation_state
         self._index = index
+        self._hovered_rect: pygame.Rect | None = None
         
         super().__init__(screen, height=300, x=150 + index * 420, y=-20)
         self._init_buttons()
@@ -24,8 +25,21 @@ class TrainPanel(Panel):
     @property
     def index(self) -> int:
         return self._index
+    
+    def _update_hover_state(self, screen_pos) -> None:
+        """Update which button is currently hovered."""
+        self._hovered_rect = None
+        if screen_pos is None:
+            return
+        for rect in [self.close_button, self.add_schedule_button, self.change_schedule_button,
+                     self.remove_schedule_button, self.startup_button, self.reverse_button]:
+            if rect.collidepoint(*screen_pos):
+                self._hovered_rect = rect
+                break
 
     def render(self, screen_pos):
+        self._update_hover_state(screen_pos)
+        
         pygame.draw.rect(self._screen, Color.BLACK, self._rect, border_radius=8)
         border_color = self._train.schedule.color if self._train.schedule else Config.TRAIN_LIVE_COLOR if self._train.live else Config.TRAIN_SHUTDOWN_COLOR
         if self._selected:
@@ -137,7 +151,9 @@ class TrainPanel(Panel):
         
 
     def _render_button(self, rect, text, color):
-        pygame.draw.rect(self._screen, color, rect, border_radius=5)
+        is_hovered = self._hovered_rect == rect
+        bg_color = Color.WHITE if is_hovered else color
+        pygame.draw.rect(self._screen, bg_color, rect, border_radius=5)
         text_screen = self.instruction_font.render(text, True, Color.BLACK)
         self._screen.blit(text_screen, self._center_in_rect(text_screen, rect))
 
