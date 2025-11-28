@@ -5,14 +5,12 @@ from core.config.color import Color
 from core.models.station import Station
 if TYPE_CHECKING:
     from core.models.route import Route
-
     
-
 class Schedule:
     color: Color
     route_code: str
     stops: list[dict[str, int]]
-    _station_index: int = 0
+    index: int = 0
     
     
     def __init__(self, route: 'Route', start_time: int) -> 'Schedule':
@@ -45,16 +43,21 @@ class Schedule:
         
         self.route_code = route.code
         
-    def get_departure_time(self) -> int | None:
-        if self._station_index >= len(self.stops):
+    def get_arrival_time(self) -> int | None:
+        if self.index == 0:
             return None
-        return self.stops[self._station_index]['departure_time']
+        return self.stops[self.index]['arrival_time']
+        
+    def get_departure_time(self) -> int | None:
+        if self.index >= len(self.stops):
+            return None
+        return self.stops[self.index]['departure_time']
     
     def depart_station(self) -> None:
-        self._station_index += 1
+        self.index += 1
         
     def get_next_station(self) -> Station:
-        return self.stops[self._station_index]['station']
+        return self.stops[self.index]['station']
     
     def get_remaining_stops(self) -> list[dict]:
         """Returns a list of stop info dicts for rendering (current + next 2 stops)."""
@@ -70,4 +73,4 @@ class Schedule:
                 'departure': format_time(stop['departure_time']) if stop['departure_time'] is not None else 'ARR',
             }
         
-        return [format_stop(stop) for stop in self.stops[self._station_index:]]
+        return [format_stop(stop) for stop in self.stops[self.index:]]

@@ -52,7 +52,12 @@ class Train:
                 #train is stopped at station
                 self._dwell_time_counter += DT
                 dep_time = self.schedule.get_departure_time()
+                if dep_time is None:
+                    self.shutdown()
                 if dep_time is not None and dep_time <= self._railway.time.in_minutes() and self._dwell_time_counter >= Config.MIN_TRAIN_STOP_TIME:
+                    if len(self.path) == self._occupied_edge_count:
+                        #no more path ahead, stay stopped
+                        return
                     self._routed_to_station_ahead = False
                     self.schedule.depart_station()
                     self.compute_speed_profile()
@@ -176,6 +181,14 @@ class Train:
             remaining -= self.path[i].length
             i += 1
         return self.path[i].length - remaining
+    
+    def is_late(self) -> bool:
+        if not self.schedule:
+            return False
+        if self._dwell_time_counter > 0.0 or self.schedule.index == 0:
+            return self.schedule.get_departure_time() <= self._railway.time.in_minutes()
+        arrival_time = self.schedule.get_arrival_time()
+        return arrival_time <= self._railway.time.in_minutes()
         
     def to_dict(self) -> dict:
         return {

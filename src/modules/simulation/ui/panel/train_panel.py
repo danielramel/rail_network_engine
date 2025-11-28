@@ -45,7 +45,7 @@ class TrainPanel(Panel):
         if self._selected:
             pygame.draw.rect(self._screen, border_color, self._rect.inflate(10, 10), 7, border_radius=8)
         else:
-            pygame.draw.rect(self._screen, border_color, self._rect, 1, border_radius=8)
+            pygame.draw.rect(self._screen, border_color, self._rect, 4, border_radius=8)
         
         x_screen = self.instruction_font.render("X", True, Color.WHITE)
         self._screen.blit(x_screen, self._center_in_rect(x_screen, self.close_button))
@@ -53,14 +53,14 @@ class TrainPanel(Panel):
         self._render_speed()
         
         if self._train.live:
-            color = Color.GREY if self._train.speed == 0.0 else Color.DARKGREY
+            color = Color.RED if self._train.speed == 0.0 else Color.DARKGREY
             self._render_button(self.shut_down_button, "Shut Down", color)
         else:
-            self._render_button(self.startup_button, "Startup", Color.GREY)
-            self._render_button(self.reverse_button, "Reverse", Color.GREY)
+            self._render_button(self.startup_button, "Startup", Color.GREEN)
+            self._render_button(self.reverse_button, "Reverse", Color.YELLOW)
             if self._train.schedule:
                 self._render_button(self.change_schedule_button, "Change Schedule", Color.GREY)
-                self._render_button(self.remove_schedule_button, "Remove Schedule", Color.GREY)
+                self._render_button(self.remove_schedule_button, "Remove Schedule", Color.RED)
             else:
                 self._render_button(self.add_schedule_button, "Add Schedule", Color.GREY)
             
@@ -112,20 +112,23 @@ class TrainPanel(Panel):
         
         stops = self._train.schedule.get_remaining_stops()
         y_offset = self._rect.y + self.padding + 30
-        schedule_color = Color.get(self._train.schedule.color)
+        first_station_color = Color.GREEN if not self._train.is_late() else Color.RED
         indicator_x = self._rect.x + self.padding + 6
         
         for i, stop in enumerate(stops[:min(3, len(stops) - 1)]):
-            indicator_color = schedule_color if i == 0 else Color.DARKGREY
-            pygame.draw.circle(self._screen, indicator_color, (indicator_x, y_offset + 10), 5)
+            if i == 0:
+                color = first_station_color
+            else:
+                color = Color.DARKGREY
+                
+            pygame.draw.circle(self._screen, color, (indicator_x, y_offset + 10), 5)
             
             if len(stops) <= 4 or i < min(3, len(stops)) - 1:
                 pygame.draw.line(self._screen, Color.DARKGREY, 
                                 (indicator_x, y_offset + 20), 
                                 (indicator_x, y_offset + 45), 2)
             
-            name_color = Color.WHITE if i == 0 else Color.LIGHTGREY
-            station_text = self.instruction_font.render(stop['station'], True, name_color)
+            station_text = self.instruction_font.render(stop['station'], True, color)
             self._screen.blit(station_text, (indicator_x + 20, y_offset))
             
             time_surface = self.instruction_font.render(f"{stop['arrival']}  -  {stop['departure']}", True, Color.LIGHTGREY)
@@ -139,7 +142,7 @@ class TrainPanel(Panel):
             pygame.draw.circle(self._screen, Color.DARKGREY, (indicator_x + 2, y_offset - 15), 2)
             pygame.draw.circle(self._screen, Color.DARKGREY, (indicator_x + 2, y_offset - 5), 2)
             
-        indicator_color = schedule_color if len(stops) == 1 else Color.DARKGREY
+        indicator_color = first_station_color if len(stops) == 1 else Color.DARKGREY
         pygame.draw.circle(self._screen, indicator_color, (indicator_x, y_offset + 10), 5)
         stop = stops[-1]
         name_color = Color.WHITE if len(stops) == 1 else Color.LIGHTGREY
@@ -152,7 +155,7 @@ class TrainPanel(Panel):
 
     def _render_button(self, rect, text, color):
         is_hovered = self._hovered_rect == rect
-        bg_color = Color.WHITE if is_hovered else color
+        bg_color = Color.WHITE if is_hovered and color != Color.DARKGREY else color
         pygame.draw.rect(self._screen, bg_color, rect, border_radius=5)
         text_screen = self.instruction_font.render(text, True, Color.BLACK)
         self._screen.blit(text_screen, self._center_in_rect(text_screen, rect))

@@ -47,7 +47,7 @@ class SimulationPreview:
 class SimulationState:
     time: Time
     selected_signal: Optional[Signal] = None
-    time_control: TimeControlState = TimeControlState()
+    time_control: TimeControlState = field(default_factory=TimeControlState)
     preview: SimulationPreview = field(default_factory=SimulationPreview)
     selected_trains: set[int] = field(default_factory=set)
     _train_selected_callback: Optional[Callable] = None
