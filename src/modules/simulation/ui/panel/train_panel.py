@@ -173,9 +173,9 @@ class TrainPanel(Panel):
             
         self._schedule_selector.window_closed.connect(lambda: setattr(self, '_schedule_selector', None))
 
-    def _on_schedule_chosen(self, schedule: Route, start_time: int):
+    def _on_schedule_chosen(self, route: Route, start_time: int):
         self._schedule_selector = None
-        self._train.set_schedule(schedule.create_schedule(start_time))
+        self._train.set_schedule(route.create_schedule(start_time))
 
     def _init_buttons(self):
         self.close_button = pygame.Rect(self._rect.right - 40, self._rect.top + 10, 40, 20)

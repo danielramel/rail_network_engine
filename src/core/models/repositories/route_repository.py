@@ -25,6 +25,17 @@ class RouteRepository:
     def remove_station_from_all(self, station_id):
         for route in self._routes:
             route.remove_station_from_stops(station_id)
+            
+    def calculate_start_times(self) -> None:
+        for route in self._routes:
+            route.calculate_start_times()
+            
+    def return_start_time(self, route_code: str, start_time: int) -> None:
+        for route in self._routes:
+            if route.code == route_code:
+                route.start_times.append(start_time)
+                route.start_times.sort()
+                return
     
     def to_dict(self) -> list[dict]:
         return [route.to_dict() for route in self._routes]

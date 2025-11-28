@@ -101,15 +101,15 @@ class ScheduleSelector(QWidget):
         self._selected_route = schedule
         self._populate_start_times(schedule)
 
-    def _populate_start_times(self, schedule: Route):
+    def _populate_start_times(self, route: Route):
         self.start_times_list.clear()
-        times = list(range(schedule.first_train, schedule.last_train + 1, schedule.frequency))
-        for t in times:
+        for t in route.start_times:
             item = QListWidgetItem(self._fmt_time(t))
             item.setData(int(Qt.ItemDataRole.UserRole), t)
             self.start_times_list.addItem(item)
-        self.select_btn.setEnabled(bool(times))
-
+            
+        self.select_btn.setEnabled(bool(route.start_times))
+        
     def _on_confirm(self):
         route_item = self.route_list.currentItem()
         time_item = self.start_times_list.currentItem()

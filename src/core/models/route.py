@@ -12,7 +12,14 @@ class Route:
     first_train: int
     last_train: int
     frequency: int
+    start_times: list[int] = field(default_factory=list)
     stops: list[dict[str, Station | int]] = field(default_factory=list)
+    
+    def calculate_start_times(self) -> None:
+        current_time = self.first_train
+        while current_time <= self.last_train:
+            self.start_times.append(current_time)
+            current_time += self.frequency
 
     def remove_station_from_stops(self, station_id: int):
         for stop in self.stops[:]:
@@ -20,6 +27,7 @@ class Route:
                 self.stops.remove(stop)
                 
     def create_schedule(self, start_time: int) -> Schedule:
+        self.start_times.remove(start_time)
         return Schedule(self, start_time)
 
     def to_dict(self) -> dict:
