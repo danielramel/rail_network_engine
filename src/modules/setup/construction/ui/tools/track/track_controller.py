@@ -1,16 +1,16 @@
 from modules.setup.construction.models.construction_tool_controller import ConstructionToolController
 from core.models.geometry.direction import Direction
-from .rail_target import find_rail_target, RailTargetType
+from .track_target import find_track_target, TrackTargetType
 from core.models.geometry.pose import Pose
-from .rail_view import RailView
+from .track_view import TrackView
 from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from modules.setup.construction.models.construction_state import ConstructionState
 from core.models.event import Event
 
-class RailController(ConstructionToolController):
+class TrackController(ConstructionToolController):
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
-        view = RailView(railway, state, graphics)
+        view = TrackView(railway, state, graphics)
         super().__init__(view, railway, state, graphics)
         
         
@@ -22,21 +22,21 @@ class RailController(ConstructionToolController):
                 self._state.switch_tool(None)
             return
         
-        target = find_rail_target(self._railway, event.world_pos, self._state.construction_anchor)
+        target = find_track_target(self._railway, event.world_pos, self._state.construction_anchor)
         
-        if target.kind is RailTargetType.BLOCKED:
+        if target.kind is TrackTargetType.BLOCKED:
             self._graphics.alert_component.show_alert("Position blocked!")
         
-        elif target.kind is RailTargetType.NO_PATH:
+        elif target.kind is TrackTargetType.NO_PATH:
             self._graphics.alert_component.show_alert("No path found!")
         
-        elif target.kind is RailTargetType.ANCHOR_SAME:
+        elif target.kind is TrackTargetType.ANCHOR_SAME:
             self._state.construction_anchor = None
 
-        elif target.kind is RailTargetType.ANCHOR:
+        elif target.kind is TrackTargetType.ANCHOR:
             self._state.construction_anchor = target.anchor
 
-        elif target.kind is RailTargetType.PATH:
+        elif target.kind is TrackTargetType.PATH:
             self._railway.graph_service.add_section(target.found_path, self._state.track_speed, self._state.track_length)
             self._state.construction_anchor = Pose(
                 target.node,

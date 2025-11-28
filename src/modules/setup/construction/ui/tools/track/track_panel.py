@@ -5,7 +5,7 @@ from modules.setup.construction.models.construction_state import ConstructionSta
 from modules.setup.construction.models.construction_panel import ConstructionToolPanel
 from core.models.event import Event
     
-class RailPanel(ConstructionToolPanel):    
+class TrackPanel(ConstructionToolPanel):    
     def __init__(self, screen: pygame.Surface, state: ConstructionState) -> None:
         super().__init__(screen, state)
         
