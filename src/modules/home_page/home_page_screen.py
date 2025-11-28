@@ -13,31 +13,45 @@ class HomePageScreen:
         self._start_callback = start_callback
         self._font_title = pygame.font.SysFont("Arial", 72, bold=True)
         self._font_button = pygame.font.SysFont("Arial", 36)
-        self._font_map_button = pygame.font.SysFont("Arial", 28)
+        self._font_map_button = pygame.font.SysFont("Arial", 34)
         
         # Scan maps folder for available map files
         self._map_files = self._scan_maps_folder()
         
         # Calculate button positions
         screen_w, screen_h = screen.get_size()
-        button_width = 300
-        button_height = 60
+        # Bottom action buttons (bigger)
+        button_width = 420
+        button_height = 80
         button_spacing = 100
         
-        map_button_width = 300
-        map_button_height = 50
-        map_button_spacing = 20
+        # Map buttons (wider with more inter-column spacing)
+        map_button_height = 90
+        map_button_h_spacing = max(80, screen_w // 18)  # increase space between columns
+        available_width = int(screen_w * 0.92)
+        map_button_width = (available_width - map_button_h_spacing) // 2
+        map_button_width = max(420, min(map_button_width, 640))  # keep sensible bounds
+        map_button_v_spacing = 30
         
         center_x = screen_w // 2
         
-        # Create map file buttons at the top (below title)
+        # Create map file buttons at the top (below title) in a 2x3 grid
         self._map_buttons: list[tuple[pygame.Rect, str, pygame.Surface]] = []
-        maps_start_y = 250  # Start maps closer to the top
-        
-        for i, (filename, filepath) in enumerate(self._map_files):
+        maps_start_y = 220  # Start maps above the fold
+        columns = 2
+        rows = 4
+        max_buttons = columns * rows
+        grid_total_width = columns * map_button_width + (columns - 1) * map_button_h_spacing
+        grid_start_x = center_x - grid_total_width // 2
+
+        for i, (filename, filepath) in enumerate(self._map_files[:max_buttons]):
+            row = i // columns
+            col = i % columns
+            x = grid_start_x + col * (map_button_width + map_button_h_spacing)
+            y = maps_start_y + row * (map_button_height + map_button_v_spacing)
             button_rect = pygame.Rect(
-                center_x - map_button_width // 2,
-                maps_start_y + i * (map_button_height + map_button_spacing),
+                x,
+                y,
                 map_button_width,
                 map_button_height
             )
@@ -195,13 +209,11 @@ class HomePageScreen:
         if self._map_buttons:
             for i, (rect, filepath, text_surface) in enumerate(self._map_buttons):
                 self._draw_button(rect, text_surface, self._hovered_button == f"map_{i}")
-                if i == 4:
-                    break  # Limit to first 5 map buttons for display
         else:
             no_maps_rect = self._no_maps_text.get_rect(center=(screen_w // 2, 500))
             self._screen.blit(self._no_maps_text, no_maps_rect)
         
-        # Draw New and Open buttons at the bottom
+        # Draw New and Open buttons at the bottom (neutral style)
         self._draw_button(self._new_button_rect, self._new_text, self._hovered_button == "new")
         self._draw_button(self._open_button_rect, self._open_text, self._hovered_button == "open")
         
@@ -212,21 +224,30 @@ class HomePageScreen:
         if self._alert_message:
             self._draw_alert()
     
-    def _draw_button(self, rect: pygame.Rect, text_surface: pygame.Surface, hovered: bool):
+    def _draw_button(self, rect: pygame.Rect, text_surface: pygame.Surface, hovered: bool, bg_color: tuple[int, int, int] | None = None, border_color: tuple[int, int, int] | None = None):
         """Draw a menu button."""
-        # Button background
-        if hovered:
-            pygame.draw.rect(self._screen, Color.DARKGREY, rect, border_radius=15)
+        # Button background (supports custom color)
+        if bg_color is None:
+            fill_color = Color.DARKGREY if hovered else Color.BLACK
         else:
-            pygame.draw.rect(self._screen, Color.BLACK, rect, border_radius=15)
+            fill_color = self._adjust_color(bg_color, 1.1) if hovered else bg_color
+        pygame.draw.rect(self._screen, fill_color, rect, border_radius=15)
         
         # Button border
-        border_color = Color.WHITE if hovered else Color.GREY
-        pygame.draw.rect(self._screen, border_color, rect, 3, border_radius=15)
+        bcolor = border_color if border_color is not None else (Color.WHITE if hovered else Color.GREY)
+        pygame.draw.rect(self._screen, bcolor, rect, 3, border_radius=15)
         
         # Button text
         text_rect = text_surface.get_rect(center=rect.center)
         self._screen.blit(text_surface, text_rect)
+
+    @staticmethod
+    def _adjust_color(color: tuple[int, int, int], factor: float) -> tuple[int, int, int]:
+        r, g, b = color
+        r = max(0, min(255, int(r * factor)))
+        g = max(0, min(255, int(g * factor)))
+        b = max(0, min(255, int(b * factor)))
+        return (r, g, b)
     
     def _draw_alert(self):
         """Draw the alert overlay."""
