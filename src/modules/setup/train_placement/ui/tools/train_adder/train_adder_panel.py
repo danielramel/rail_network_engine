@@ -9,6 +9,7 @@ class TrainAdderPanel(Panel):
     def __init__(self, screen: pygame.Surface, state: TrainPlacementState) -> None:
         super().__init__(screen, height=210)
         self._state = state
+        self._hovered_rect: pygame.Rect | None = None
         
         self._param_ranges = {
             'car_count': (1, Config.MAX_TRAIN_CAR_COUNT, 1),
@@ -47,11 +48,27 @@ class TrainAdderPanel(Panel):
         self.decel_plus  = pygame.Rect(self._rect.x + 280, controls_y, 30, 30)
 
         self.total_length_y = controls_y + 50
+    
+    def _update_hover_state(self, screen_pos) -> None:
+        """Update which button is currently hovered."""
+        self._hovered_rect = None
+        if screen_pos is None:
+            return
+        for rect in [self.max_speed_minus, self.max_speed_plus,
+                     self.car_count_minus, self.car_count_plus,
+                     self.accel_minus, self.accel_plus,
+                     self.decel_minus, self.decel_plus]:
+            if rect.collidepoint(*screen_pos):
+                self._hovered_rect = rect
+                break
 
        
     def render(self, screen_pos) -> None:
         """Render panel with instructions."""
         super().render(screen_pos)  # background and border
+        
+        # Update hover state
+        self._update_hover_state(screen_pos)
         
         # Title
         self._screen.blit(self.title_screen, self.title_rect)
@@ -116,7 +133,9 @@ class TrainAdderPanel(Panel):
 
     def _render_small_button(self, rect, text, enabled):
         if enabled:
-            pygame.draw.rect(self._screen, Color.BLACK, rect, border_radius=4)
+            is_hovered = self._hovered_rect == rect
+            bg_color = Color.DARKGREY if is_hovered else Color.BLACK
+            pygame.draw.rect(self._screen, bg_color, rect, border_radius=4)
             pygame.draw.rect(self._screen, Color.WHITE, rect, width=2, border_radius=4)
             text_screen = self.instruction_font.render(text, True, Color.WHITE)
         else:

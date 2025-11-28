@@ -20,7 +20,7 @@ class RouteButton(Button, ShortcutUIComponent):
         super().__init__(rect, screen)
         self.route_window = None  # Store window reference
         self._shortcuts = {
-            (pygame.K_t, False): self.open_route_window
+            (pygame.K_r, False): self.open_route_window
         }
 
     def _on_click(self, event: Event) -> bool:
