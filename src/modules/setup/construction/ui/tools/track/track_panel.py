@@ -10,11 +10,12 @@ class TrackPanel(ConstructionToolPanel):
         super().__init__(screen, state)
         
         self.button_size: int = 32
+        self._hovered_rect: pygame.Rect | None = None
         
         # Pre-render static text
-        self.title_screen = self.title_font.render("Rail Construction", True, Color.YELLOW)
-        self.speed_label_screen = self.instruction_font.render("Track speed:", True, Color.WHITE)
-        self.length_label_screen = self.instruction_font.render("Track length:", True, Color.WHITE)
+        self.title_screen = self.title_font.render("Track Construction", True, Color.YELLOW)
+        self.speed_label_screen = self.instruction_font.render("Max speed:", True, Color.WHITE)
+        self.length_label_screen = self.instruction_font.render("Length:", True, Color.WHITE)
         self.minus_text = self.instruction_font.render("-", True, Color.WHITE)
         self.plus_text = self.instruction_font.render("+", True, Color.WHITE)
         
@@ -79,17 +80,22 @@ class TrackPanel(ConstructionToolPanel):
     def _render_button(self, rect: pygame.Rect, text_screen: pygame.Surface, enabled: bool) -> None:
         """Render a button with consistent styling."""
         if enabled:
-            pygame.draw.rect(self._screen, Color.BLACK, rect, border_radius=6)
+            is_hovered = self._hovered_rect == rect
+            bg_color = Color.DARKGREY if is_hovered else Color.BLACK
+            pygame.draw.rect(self._screen, bg_color, rect, border_radius=6)
             pygame.draw.rect(self._screen, Color.WHITE, rect, width=2, border_radius=6)
             self._screen.blit(text_screen, text_screen.get_rect(center=rect.center))
     
     def _render_toggle_button(self, rect: pygame.Rect, text: str, is_selected: bool) -> None:
         """Render a toggle button with selected/unselected states."""
+        is_hovered = self._hovered_rect == rect
         if is_selected:
-            pygame.draw.rect(self._screen, Color.WHITE, rect, border_radius=6)
+            bg_color = Color.LIGHTGREY if is_hovered else Color.WHITE
+            pygame.draw.rect(self._screen, bg_color, rect, border_radius=6)
             text_screen = self.instruction_font.render(text, True, Color.BLACK)
         else:
-            pygame.draw.rect(self._screen, Color.BLACK, rect, border_radius=6)
+            bg_color = Color.DARKGREY if is_hovered else Color.BLACK
+            pygame.draw.rect(self._screen, bg_color, rect, border_radius=6)
             pygame.draw.rect(self._screen, Color.WHITE, rect, width=2, border_radius=6)
             text_screen = self.instruction_font.render(text, True, Color.WHITE)
         
@@ -102,10 +108,22 @@ class TrackPanel(ConstructionToolPanel):
             Config.MIN_TRACK_SPEED, 
             min(Config.MAX_TRACK_SPEED, self._state.track_speed)
         )
+    
+    def _update_hover_state(self, screen_pos) -> None:
+        """Update which button is currently hovered."""
+        self._hovered_rect = None
+        for rect in [self.speed_minus_rect, self.speed_plus_rect, 
+                     self.length_short_rect, self.length_long_rect]:
+            if rect.collidepoint(*screen_pos):
+                self._hovered_rect = rect
+                break
        
     def render(self, screen_pos) -> None:
         """Minimal render method - just blit pre-computed screens."""
         super().render(screen_pos)  # background and border
+        
+        # Update hover state
+        self._update_hover_state(screen_pos)
 
         # Title
         self._screen.blit(self.title_screen, self.title_rect)

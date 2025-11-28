@@ -3,7 +3,7 @@ from modules.setup.construction.models.construction_panel import ConstructionToo
 from modules.setup.construction.models.construction_state import ConstructionState, ConstructionTool
 from modules.setup.construction.ui.tools.tunnel.tunnel_panel import TunnelPanel
 from shared.ui.models.panel import Panel
-from .tools.rail.rail_panel import RailPanel
+from .tools.track.track_panel import TrackPanel
 from .tools.signal.signal_panel import SignalPanel
 from .tools.station.station_panel import StationPanel
 from .tools.platform.platform_panel import PlatformPanel
@@ -14,7 +14,7 @@ class ConstructionPanelStrategy(Panel):
     def __init__(self, screen: pygame.Surface, state: ConstructionState):
         self._state = state
         self._panels: dict[ConstructionTool, ConstructionToolPanel] = {
-            ConstructionTool.RAIL: RailPanel(screen, state),
+            ConstructionTool.RAIL: TrackPanel(screen, state),
             ConstructionTool.TUNNEL: TunnelPanel(screen, state),
             ConstructionTool.SIGNAL: SignalPanel(screen, state),
             ConstructionTool.STATION: StationPanel(screen, state),

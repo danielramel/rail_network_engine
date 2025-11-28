@@ -6,7 +6,7 @@ from modules.setup.construction.ui.tools.tunnel.tunnel_controller import TunnelC
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from modules.setup.construction.models.construction_state import ConstructionTool
 from core.models.geometry.position import Position
-from .tools.rail.rail_controller import RailController
+from .tools.track.track_controller import TrackController
 from .tools.platform.platform_controller import PlatformController
 from .tools.signal.signal_controller import SignalController
 from .tools.station.station_controller import StationController
@@ -23,7 +23,7 @@ class ConstructionToolStrategy(ClickableUIComponent, FullScreenUIComponent):
         self._graphics = graphics
 
         self._controllers: dict[ConstructionTool, ConstructionToolController] = {
-            ConstructionTool.RAIL: RailController(railway, state, graphics),
+            ConstructionTool.RAIL: TrackController(railway, state, graphics),
             ConstructionTool.TUNNEL: TunnelController(railway, state, graphics),
             ConstructionTool.SIGNAL: SignalController(railway, state, graphics),
             ConstructionTool.STATION: StationController(railway, state, graphics),
