@@ -14,7 +14,7 @@ class TimeControlMode(Enum):
     
 
 class TimeControlState:
-    mode: TimeControlMode = TimeControlMode.PAUSE    
+    mode: TimeControlMode = TimeControlMode.PAUSE
     def reset(self) -> None:
         """Reset the time control state to its initial values."""
         self.mode = TimeControlMode.PAUSE

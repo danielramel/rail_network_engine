@@ -85,7 +85,7 @@ class Train:
         self.compute_speed_profile()
         
     def set_initial_path(self) -> None:
-        path, signal = self._railway.signalling.get_initial_path(self.get_locomotive_pose())
+        path, signal = self._railway.signalling.set_initial_path(self.get_locomotive_pose())
         self.path += [self._railway.graph.get_rail(edge) for edge in path]
         if signal is None:
             return

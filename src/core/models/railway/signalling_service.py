@@ -125,27 +125,35 @@ class SignallingService:
                 self.lock_path(path)
         return callback
 
-    def get_initial_path(self, start_pose: Pose) -> tuple[list[Edge], Signal]:
-        visited = set[Node]()
-        pose = start_pose
-        path = []
-        while True:
-            visited.add(pose.node)
-            if self._railway.signals.has_with_pose(pose):
-                return path, self._railway.signals.get(pose.node)
+    def set_initial_path(self, train_pose: Pose) -> tuple[list[Edge], Signal]:
+        def get_initial_path(start_pose: Pose) -> tuple[list[Edge], Signal]:
+            visited = set[Node]()
+            pose = start_pose
+            path = []
+            while True:
+                visited.add(pose.node)
+                if self._railway.signals.has_with_pose(pose):
+                    return path, self._railway.signals.get(pose.node)
+                    
+                neighbors = self._railway.graph_service.get_turn_neighbors(pose)
+                if len(neighbors) == 0:
+                    return path, None
                 
-            neighbors = self._railway.graph_service.get_turn_neighbors(pose)
-            if len(neighbors) == 0:
-                return path, None
-            
-            # if multiple connections, pick the first one
-            connection = neighbors[0]
-            if connection.node in visited:
-                raise ValueError("Loop encountered in railway graph.")
-            
+                # if multiple connections, pick the first one
+                connection = neighbors[0]
+                if connection.node in visited:
+                    raise ValueError("Loop encountered in railway graph.")
 
-            path.append(Edge(pose.node, connection.node))
-            pose = connection
+                edge = Edge(pose.node, connection.node)
+                if self.is_edge_locked(edge):
+                    return path, None
+                path.append(edge)
+                pose = connection
+        path, signal = get_initial_path(train_pose)
+        self.lock_path(path)
+        return path, signal
+    
+    
             
             
     def find_path(self, start: Pose, end: Pose, stop_at_locked: bool = True) -> list[Pose] | None:
