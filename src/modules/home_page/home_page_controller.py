@@ -7,7 +7,7 @@ from typing import Callable
 
 MAPS_FOLDER = Config.MAPS_FOLDER
 
-class MainMenuController:
+class HomePageScreen:
     def __init__(self, screen: pygame.Surface, start_callback: Callable):
         self._screen = screen
         self._start_callback = start_callback

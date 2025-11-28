@@ -1,7 +1,7 @@
 import pygame
 from enum import Enum, auto
 from shared.controllers.app_controller import AppController
-from shared.controllers.main_menu_controller import MainMenuController
+from modules.home_page.home_page_controller import HomePageScreen
 from shared.ui.models.ui_controller import UIController
 from core.config.settings import Config
 from PyQt6.QtWidgets import QApplication
@@ -9,8 +9,8 @@ import sys
 
 
 class MenuView(Enum):
-    MENU = auto()
-    MAP = auto()
+    HOME_PAGE = auto()
+    SIMULATION_PAGE = auto()
 
 
 class MenuManager:
@@ -25,10 +25,10 @@ class MenuManager:
         pygame.display.set_icon(pygame.image.load("src/assets/icons/app.png"))
         self.clock = pygame.time.Clock()
         
-        self._current_state = MenuView.MENU
+        self._current_state = MenuView.HOME_PAGE
         self._states: dict[MenuView, UIController] = {
-            MenuView.MENU: MainMenuController(self.screen, self._load_map),
-            MenuView.MAP: None
+            MenuView.HOME_PAGE: HomePageScreen(self.screen, self._load_map),
+            MenuView.SIMULATION_PAGE: None
         }
         
         if len(sys.argv) > 1:
@@ -36,14 +36,14 @@ class MenuManager:
             self._load_map(filepath)
 
     def _load_map(self, filepath: str | None = None):
-        self._current_state = MenuView.MAP
-        self._states[MenuView.MAP] = AppController(self.screen, self._exit_map, filepath)
+        self._current_state = MenuView.SIMULATION_PAGE
+        self._states[MenuView.SIMULATION_PAGE] = AppController(self.screen, self._exit_map, filepath)
         
     def _exit_map(self, message: str = None):
-        self._current_state = MenuView.MENU
-        self._states[MenuView.MAP] = None
+        self._current_state = MenuView.HOME_PAGE
+        self._states[MenuView.SIMULATION_PAGE] = None
         if message:
-            self._states[MenuView.MENU].alert(message)
+            self._states[MenuView.HOME_PAGE].alert(message)
 
     def run(self):
         running = True
@@ -66,7 +66,7 @@ class MenuManager:
             pygame.display.flip()
             self.clock.tick(Config.FPS)
             
-            if self._current_state == MenuView.MAP:
+            if self._current_state == MenuView.SIMULATION_PAGE:
                 self._states[self._current_state].tick()
 
         pygame.quit()
