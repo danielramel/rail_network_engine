@@ -14,8 +14,8 @@ class TrackPanel(ConstructionToolPanel):
         
         # Pre-render static text
         self.title_screen = self.title_font.render("Track Construction", True, Color.YELLOW)
-        self.speed_label_screen = self.instruction_font.render("Max speed:", True, Color.WHITE)
-        self.length_label_screen = self.instruction_font.render("Length:", True, Color.WHITE)
+        self.speed_label_screen = self.instruction_font.render("Track speed:", True, Color.WHITE)
+        self.length_label_screen = self.instruction_font.render("Track length:", True, Color.WHITE)
         self.minus_text = self.instruction_font.render("-", True, Color.WHITE)
         self.plus_text = self.instruction_font.render("+", True, Color.WHITE)
         
@@ -112,6 +112,8 @@ class TrackPanel(ConstructionToolPanel):
     def _update_hover_state(self, screen_pos) -> None:
         """Update which button is currently hovered."""
         self._hovered_rect = None
+        if screen_pos is None:
+            return
         for rect in [self.speed_minus_rect, self.speed_plus_rect, 
                      self.length_short_rect, self.length_long_rect]:
             if rect.collidepoint(*screen_pos):

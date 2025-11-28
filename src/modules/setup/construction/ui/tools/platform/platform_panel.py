@@ -9,6 +9,8 @@ from core.models.event import Event
 class PlatformPanel(ConstructionToolPanel):
     def __init__(self, screen: pygame.Surface, state: ConstructionState) -> None:
         super().__init__(screen, state)
+        
+        self._hovered_rect: pygame.Rect | None = None
 
         self._param_ranges = {
             'platform_length': (2, Config.MAX_PLATFORM_EDGE_COUNT, 1)
@@ -77,7 +79,9 @@ class PlatformPanel(ConstructionToolPanel):
 
     def _render_small_button(self, rect, text, enabled):
         if enabled:
-            pygame.draw.rect(self._screen, Color.BLACK, rect, border_radius=4)
+            is_hovered = self._hovered_rect == rect
+            bg_color = Color.DARKGREY if is_hovered else Color.BLACK
+            pygame.draw.rect(self._screen, bg_color, rect, border_radius=4)
             pygame.draw.rect(self._screen, Color.WHITE, rect, width=2, border_radius=4)
             txt = self.instruction_font.render(text, True, Color.WHITE)
         else:
@@ -102,9 +106,22 @@ class PlatformPanel(ConstructionToolPanel):
         value_text = f"{value * Config.SHORT_SECTION_LENGTH} m"
         val_screen = self.instruction_font.render(value_text, True, Color.YELLOW)
         self._screen.blit(val_screen, val_screen.get_rect(center=self.length_value_center))
+    
+    def _update_hover_state(self, screen_pos) -> None:
+        """Update which button is currently hovered."""
+        self._hovered_rect = None
+        if screen_pos is None:
+            return
+        for rect in [self.length_minus_rect, self.length_plus_rect]:
+            if rect.collidepoint(*screen_pos):
+                self._hovered_rect = rect
+                break
 
     def render(self, screen_pos):
         super().render(screen_pos)
+        
+        # Update hover state
+        self._update_hover_state(screen_pos)
 
         self._screen.blit(self.title_screen, self.title_rect)
         self._screen.blit(self.instruction1_screen, self.instruction1_rect)
