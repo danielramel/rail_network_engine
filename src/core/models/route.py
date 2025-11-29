@@ -16,6 +16,7 @@ class Route:
     stops: list[dict[str, Station | int]] = field(default_factory=list)
     
     def calculate_start_times(self) -> None:
+        self.start_times.clear()
         current_time = self.first_train
         while current_time <= self.last_train:
             self.start_times.append(current_time)
