@@ -144,7 +144,7 @@ class RouteEditorDialog(QDialog):
         self.stations_table.setCellWidget(row, 1, station_combo)
         
         self._set_spin_box_item(row, 2, 5)  # Travel time (column 2)
-        self._set_spin_box_item(row, 3, 1)  # Dwell time (column 3)
+        self._set_spin_box_item(row, 3, 1)  # Stop time (column 3)
         self._set_empty_item(row, 4)  # Arrival time (column 4)
         self._set_empty_item(row, 5)  # Departure time (column 5)
         
@@ -160,7 +160,7 @@ class RouteEditorDialog(QDialog):
 
         departure = self.first_train_time_edit.time()
         self._set_empty_item(0, 2)  # Travel time (column 2)
-        self._set_empty_item(0, 3)  # Dwell time (column 3)
+        self._set_empty_item(0, 3)  # Stop time (column 3)
         self._set_empty_item(0, 4)
         _set_time_item(0, 5, departure)
 
@@ -176,7 +176,7 @@ class RouteEditorDialog(QDialog):
             _set_time_item(row, 4, arrival)
             
             if row == row_count - 1:
-                self._set_empty_item(row, 3)  # Dwell time (column 3)
+                self._set_empty_item(row, 3)  # Stop time (column 3)
                 self._set_empty_item(row, 5)  # Departure time (column 5)
                 continue
             stop_min = int(self.stations_table.cellWidget(row, 3).value())
@@ -300,7 +300,7 @@ class RouteEditorDialog(QDialog):
 
         self.add_empty_station_row(0)
         self._set_empty_item(0, 2)  # Travel time (column 2)
-        self._set_empty_item(0, 3)  # Dwell time (column 3)
+        self._set_empty_item(0, 3)  # Stop time (column 3)
         self._set_empty_item(0, 4)  # Arrival time (column 4)
         self._set_empty_item(0, 5)  # Departure time (column 5)
         self.add_empty_station_row(1)
@@ -317,7 +317,7 @@ class RouteEditorDialog(QDialog):
     def _create_stations_table(self):
         table = QTableWidget()
         table.setColumnCount(6)
-        table.setHorizontalHeaderLabels(["#", "Station", "Travel time", "Dwell time", "Arrival Time", "Departure Time"])
+        table.setHorizontalHeaderLabels(["#", "Station", "Travel time", "Stop time", "Arrival Time", "Departure Time"])
         table.verticalHeader().setVisible(False)
         header = table.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)

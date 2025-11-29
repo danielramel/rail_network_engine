@@ -9,9 +9,6 @@ QTableWidget {
 QTableWidget::item { 
     padding: 10px;
 }
-QTableWidget::item:hover {
-    background-color: #3d3d3d;
-}
 QHeaderView::section { 
     background-color: #404040; 
     color: white; 

@@ -129,7 +129,7 @@ class RouteWindow(QMainWindow):
                 self._set_table_widget_item(current_row+1, 2, "Arrival", bold=True)
                 self._set_table_widget_item(current_row+1, 3, "Departure", bold=True)
                 self._set_table_widget_item(current_row+1, 4, "Travel", bold=True)
-                self._set_table_widget_item(current_row+1, 5, "Dwell", bold=True)
+                self._set_table_widget_item(current_row+1, 5, "Stop", bold=True)
                 arrivals, departures = self._compute_times(route)
                 for i, stop in enumerate(route.stops):
                     self._set_table_widget_item(current_row + i+2, 1, stop['station'].name, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)

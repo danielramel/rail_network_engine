@@ -25,7 +25,7 @@ class Train:
     _release_unsubscribe: Callable | None = None
     _speed_profile: list[float] = None
     _routed_to_station_ahead: bool = False
-    _dwell_time_counter: float = 0.0
+    _stop_time_counter: float = 0.0
      
     def __init__(self, edges: list[Edge], railway: 'RailwaySystem', config: TrainConfig) -> None:
         self._railway = railway
@@ -50,18 +50,18 @@ class Train:
         if self.speed == 0.0:
             if self._routed_to_station_ahead:
                 #train is stopped at station
-                self._dwell_time_counter += DT
+                self._stop_time_counter += DT
                 dep_time = self.schedule.get_departure_time()
                 if dep_time is None:
                     self.shutdown()
-                if dep_time is not None and dep_time <= self._railway.time.in_minutes() and self._dwell_time_counter >= Config.MIN_TRAIN_STOP_TIME:
+                if dep_time is not None and dep_time <= self._railway.time.in_minutes() and self._stop_time_counter >= Config.MIN_TRAIN_STOP_TIME:
                     if len(self.path) == self._occupied_edge_count:
                         #no more path ahead, stay stopped
                         return
                     self._routed_to_station_ahead = False
                     self.schedule.depart_station()
                     self.compute_speed_profile()
-                    self._dwell_time_counter = 0.0
+                    self._stop_time_counter = 0.0
             return
             
         travel_distance = (self.speed * DT - self.config.deceleration * DT * DT / 2)/3.6
@@ -190,7 +190,7 @@ class Train:
     def is_late(self) -> bool:
         if not self.schedule:
             return False
-        if self._dwell_time_counter > 0.0 or self.schedule.index == 0:
+        if self._stop_time_counter > 0.0 or self.schedule.index == 0:
             return self.schedule.get_departure_time() <= self._railway.time.in_minutes()
         arrival_time = self.schedule.get_arrival_time()
         return arrival_time <= self._railway.time.in_minutes()
