@@ -5,6 +5,7 @@ from core.config.color import Color
 from typing import Callable
 
 class InputComponent(UIComponent):
+    handled_events = (pygame.KEYDOWN, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN)
     _visible: bool = False
     _hint: str = ""
     _input_text: str = ""

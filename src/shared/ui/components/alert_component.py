@@ -4,6 +4,7 @@ from core.models.event import Event
 from core.config.color import Color
 
 class AlertComponent(UIComponent):
+    handled_events = (pygame.KEYDOWN, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN)
     _visible: bool = False
     def __init__(self, screen: pygame.Surface):
         self._screen = screen

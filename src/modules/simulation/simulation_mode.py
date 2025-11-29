@@ -21,11 +21,11 @@ class SimulationMode(UIController, FullScreenUIComponent):
         self._graphics = graphics
         self.elements = ()
         self._app_state = app_state
-        # graphics.input_component.request_input(
-        #     "Enter simulation start time (HH:MM):",
-        #     self._on_time_set
-        # )
-        self._on_time_set("04:49")
+        graphics.input_component.request_input(
+            "Enter simulation start time (HH:MM):",
+            self._on_time_set
+        )
+        # self._on_time_set("04:49")
         
         
 
