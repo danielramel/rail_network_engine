@@ -98,7 +98,7 @@ class RouteEditorDialog(QDialog):
         # Add rows for each stop in the route
         for i, stop in enumerate(route.stops):
             self.add_empty_station_row(i)
-            
+        for i, stop in enumerate(route.stops):
             # Set the station
             station_combo = self.stations_table.cellWidget(i, 1)
             station_index = station_combo.findData(stop['station'].id)

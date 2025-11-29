@@ -16,6 +16,8 @@ class StationRepository:
         self._railway = railway
 
     def add(self, node: Node, name: str) -> Station:
+        if name in (station.name for station in self._stations.values()):
+            return None
         station = Station(name, node, self._next_id)
         self._stations[station.id] = station
         self._next_id += 1

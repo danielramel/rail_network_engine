@@ -40,4 +40,6 @@ class StationController(ConstructionToolController):
     def _on_station_name_entered(self, name: str | None, pos: Position) -> None:
         if name is None or name.strip() == "":
             return
-        self._railway.stations.add(pos, name)
+        success = self._railway.stations.add(pos, name)
+        if success is None:
+            self._graphics.alert_component.show_alert("Station name already exists!")

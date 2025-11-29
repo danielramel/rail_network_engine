@@ -23,7 +23,7 @@ class SaveButton(ShortcutUIComponent, Button):
         self._on_save = on_save
         self._railway = railway
         self._shortcuts = {
-            (pygame.K_s, True): self._on_save
+            (pygame.K_s, True): self._on_shortcut
         }
         
     def _on_click(self, event: Event) -> bool:        
@@ -31,6 +31,11 @@ class SaveButton(ShortcutUIComponent, Button):
             saved =self._on_save(dialog=True)
             if saved:
                 self._save_timestamp = pygame.time.get_ticks()
+                
+    def _on_shortcut(self) -> bool:
+        saved = self._on_save(dialog=False)
+        if saved:
+            self._save_timestamp = pygame.time.get_ticks()
             
 
     def render(self, screen_pos: Position) -> None:
