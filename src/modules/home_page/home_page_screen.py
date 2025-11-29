@@ -78,10 +78,10 @@ class HomePageScreen:
         )
         
         self._title_text = self._font_title.render("Rail Simulator", True, Color.WHITE)
-        self._new_text = self._font_button.render("Create New Railway", True, Color.WHITE)
-        self._open_text = self._font_button.render("Open Railway", True, Color.WHITE)
-        self._no_maps_text = self._font_map_button.render("No maps found", True, Color.GREY)
-        self._your_maps_text = self._font_button.render("Your Maps:", True, Color.WHITE)
+        self._new_text = self._font_button.render("Create New Project", True, Color.WHITE)
+        self._open_text = self._font_button.render("Open Project", True, Color.WHITE)
+        self._no_maps_text = self._font_map_button.render("No projects found", True, Color.GREY)
+        self._your_maps_text = self._font_button.render("Your projects:", True, Color.WHITE)
         
         # Quit button in bottom left corner
         quit_button_width = 120
@@ -201,7 +201,6 @@ class HomePageScreen:
         title_rect = self._title_text.get_rect(center=(screen_w // 2, 70))
         self._screen.blit(self._title_text, title_rect)
         
-        # Draw "Your Maps:" label above the map buttons
         your_maps_rect = self._your_maps_text.get_rect(center=(screen_w // 2, 160))
         self._screen.blit(self._your_maps_text, your_maps_rect)
         
