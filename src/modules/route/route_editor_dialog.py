@@ -230,15 +230,15 @@ class RouteEditorDialog(QDialog):
     # Layout and UI initialization
 
     def _init_layout(self):
-        title = "Edit route" if self._editing_route else "Add route"
+        title = "Edit timetable" if self._editing_route else "Add timetable"
         self.setWindowTitle(title)
-        self.setMinimumSize(600, 800)
+        self.setMinimumSize(600, 400)
         
         layout = QFormLayout()
         
         # Code and Color on same row
         self.code_edit = QLineEdit()
-        self.code_edit.setPlaceholderText("Enter route code")
+        self.code_edit.setPlaceholderText("Enter timetable code")
         self.color_combo = self._create_combo_box(Color.all())
         
         code_color_layout = QHBoxLayout()

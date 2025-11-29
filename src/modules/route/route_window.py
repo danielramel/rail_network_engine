@@ -25,7 +25,7 @@ class RouteWindow(QMainWindow):
         self.refresh_table()
 
     def _init_layout(self):
-        self.setWindowTitle("Route Management")
+        self.setWindowTitle("Timetables")
         self.setStyleSheet(ROUTE_STYLESHEET)
         self.setMinimumSize(1150, 400)
 
@@ -35,9 +35,9 @@ class RouteWindow(QMainWindow):
 
         # Top bar with actions
         top_bar = QHBoxLayout()
-        top_bar.addWidget(QLabel("Routes"))
+        top_bar.addWidget(QLabel("Timetables"))
         top_bar.addStretch()
-        add_btn = QPushButton("Add Route")
+        add_btn = QPushButton("Add Timetable")
         add_btn.clicked.connect(self.add_route)
         top_bar.addWidget(add_btn)
         root.addLayout(top_bar)

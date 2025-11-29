@@ -48,7 +48,9 @@ def draw_signal(screen: pygame.Surface, alignment: Pose, camera: Camera, color=C
     sx, sy = camera.world_to_screen(alignment.node)
     scr_pts = [(sx + px, sy + py) for px, py in rot_pts]
 
-    pygame.draw.polygon(screen, Color.BLACK, scr_pts)
-    width = 3 if automatic else 1
-    width = max(1, int(camera.scale * width))
-    pygame.draw.polygon(screen, color, scr_pts, width)
+    if not automatic:
+        pygame.draw.polygon(screen, Color.BLACK, scr_pts)
+        width = max(1, int(camera.scale))
+        pygame.draw.polygon(screen, color, scr_pts, width)
+    else:
+        pygame.draw.polygon(screen, color, scr_pts)
