@@ -50,6 +50,7 @@ class SimulationState:
     time_control: TimeControlState = field(default_factory=TimeControlState)
     preview: SimulationPreview = field(default_factory=SimulationPreview)
     selected_trains: set[int] = field(default_factory=set)
+    _selected_train: Optional[int] = None
     _train_selected_callback: Optional[Callable] = None
     _train_deselected_callback: Optional[Callable] = None
     
@@ -60,10 +61,13 @@ class SimulationState:
     def select_train(self, train_id: int) -> None:
         if train_id not in self.selected_trains:
             self.selected_trains.add(train_id)
+        self._selected_train = train_id
         if self._train_selected_callback:
             self._train_selected_callback(train_id)
             
     def deselect_train(self, train_id: int) -> None:
+        if self._selected_train == train_id:
+            self._selected_train = None
         self.selected_trains.remove(train_id)
         if self._train_deselected_callback:
             self._train_deselected_callback(train_id)

@@ -38,7 +38,7 @@ class EndSimulationButton(Button):
             self._on_end()
 
     def _get_rect(self, screen: pygame.Surface) -> pygame.Rect:
-        width, height = 150, 40
-        x = (screen.get_width() - width) // 2 - 400
-        y = 10
+        width, height = 80, 40
+        x = 10
+        y = screen.get_height() - height - 10
         return pygame.Rect(x, y, width, height)

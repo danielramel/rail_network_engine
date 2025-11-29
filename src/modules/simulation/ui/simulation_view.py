@@ -96,7 +96,9 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             else:
                 color = Config.TRAIN_SHUTDOWN_COLOR
                 
-            draw_train(self._screen, train, self._camera, color, lighten_flag=target.train_id == train.id, locomotive_different=True)
+            lighten_flag = target.train_id == train.id or self._state._selected_train == train.id
+                
+            draw_train(self._screen, train, self._camera, color, lighten_flag=lighten_flag, locomotive_different=True)
 
         if target.kind is SimulationTargetType.NODE and self._state.selected_signal is not None:
             color = Color.GREEN if self._railway.graph.get_node_attr(target.node, "blocked") else Color.RED
