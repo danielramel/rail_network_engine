@@ -6,7 +6,7 @@ from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from core.config.color import Color
 from modules.setup.construction.models.construction_state import ConstructionTool, ConstructionState
 from core.config.paths import ICON_PATHS
-from core.config.settings import Config
+from core.config.config import Config
 from core.config.keyboard_shortcuts import CONSTRUCTION_TOOL_SELECTION
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 

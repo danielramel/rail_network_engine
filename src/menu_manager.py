@@ -3,7 +3,7 @@ from enum import Enum, auto
 from shared.controllers.app_controller import AppController
 from modules.home_page.home_page_screen import HomePageScreen
 from shared.ui.models.ui_controller import UIController
-from core.config.settings import Config
+from core.config.config import Config
 from PyQt6.QtWidgets import QApplication
 import sys
 
@@ -52,10 +52,10 @@ class MenuManager:
                 if event.type == pygame.QUIT:
                     running = False
                     break
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        running = False
-                        break
+                # if event.type == pygame.KEYDOWN:
+                #     if event.key == pygame.K_ESCAPE:
+                #         running = False
+                #         break
                 
                 self._states[self._current_state].dispatch_event(event)
             

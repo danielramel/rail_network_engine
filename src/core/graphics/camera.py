@@ -1,4 +1,4 @@
-from core.config.settings import Config
+from core.config.config import Config
 from core.models.geometry.node import Node
 from core.models.geometry.position import Position
 from core.models.geometry.edge import Edge

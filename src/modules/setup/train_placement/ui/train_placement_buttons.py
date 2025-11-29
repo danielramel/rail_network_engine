@@ -6,7 +6,7 @@ from modules.setup.train_placement.models.train_placement_state import TrainPlac
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from core.config.color import Color
 from core.config.paths import ICON_PATHS
-from core.config.settings import Config
+from core.config.config import Config
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 from core.config.keyboard_shortcuts import TRAIN_PLACEMENT_TOOL_SELECTION
 

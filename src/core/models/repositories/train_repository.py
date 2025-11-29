@@ -1,6 +1,6 @@
 from core.models.geometry.edge import Edge
 from core.models.train import Train, TrainConfig
-from core.config.settings import Config
+from core.config.config import Config
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

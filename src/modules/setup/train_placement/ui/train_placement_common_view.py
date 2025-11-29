@@ -1,5 +1,5 @@
 from core.config.color import Color
-from core.config.settings import Config
+from core.config.config import Config
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.utils.nodes import draw_junction_node
 from shared.ui.utils.tracks import draw_track
@@ -54,7 +54,7 @@ class TrainPlacementCommonView(ClickableUIComponent, FullScreenUIComponent):
             if self._state.preview.train_id_to_remove == train.id:
                 draw_train(self._screen, train, self._camera, Color.RED)
                 continue
-            draw_train(self._screen, train, self._camera, Config.TRAIN_SHUTDOWN_COLOR)
+            draw_train(self._screen, train, self._camera, Color.DARKGREY)
 
         if self._state.preview.train_to_preview is not None:
-            draw_train(self._screen, self._state.preview.train_to_preview, self._camera, Config.TRAIN_LIVE_COLOR)
+            draw_train(self._screen, self._state.preview.train_to_preview, self._camera, Color.GREY)

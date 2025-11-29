@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Optional, Set, Any
-from core.config.settings import Config
+from core.config.config import Config
 from core.models import station
 from core.models.geometry.node import Node
 from core.models.geometry.position import Position

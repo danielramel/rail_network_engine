@@ -1,5 +1,5 @@
 from dataclasses import asdict, dataclass, replace
-from core.config.settings import Config
+from core.config.config import Config
 
 @dataclass
 class TrainConfig:

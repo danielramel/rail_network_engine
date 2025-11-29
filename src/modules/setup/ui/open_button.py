@@ -6,7 +6,7 @@ from core.models.railway.railway_system import RailwaySystem
 from core.graphics.icon_loader import IconLoader
 from core.models.geometry.position import Position
 from core.config.color import Color
-from core.config.settings import Config
+from core.config.config import Config
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 from shared.ui.models.button import Button
 from core.models.event import Event

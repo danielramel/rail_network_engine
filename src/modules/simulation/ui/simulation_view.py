@@ -1,6 +1,6 @@
 import pygame
 from core.config.color import Color
-from core.config.settings import Config
+from core.config.config import Config
 from modules.simulation.ui.simulation_target import SimulationTargetType, find_simulation_target
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
@@ -92,9 +92,9 @@ class SimulationView(ClickableUIComponent, FullScreenUIComponent):
             if train.schedule is not None:
                 color = Color.get(train.schedule.color)
             elif train.live:
-                color = Config.TRAIN_LIVE_COLOR
+                color = Color.GREY
             else:
-                color = Config.TRAIN_SHUTDOWN_COLOR
+                color = Color.DARKGREY
                 
             lighten_flag = target.train_id == train.id or self._state._selected_train == train.id
                 

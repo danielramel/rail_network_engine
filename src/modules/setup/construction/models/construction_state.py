@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from typing import Optional
-from core.config.settings import Config
+from core.config.config import Config
 from core.models.geometry.node import Node
 from core.models.geometry.edge import Edge
 from core.models.geometry.pose import Pose

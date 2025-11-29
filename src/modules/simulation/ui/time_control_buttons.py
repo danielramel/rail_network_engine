@@ -4,7 +4,7 @@ from core.models.geometry.position import Position
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from core.config.color import Color
 from core.config.paths import ICON_PATHS
-from core.config.settings import Config
+from core.config.config import Config
 from core.config.keyboard_shortcuts import TIME_CONTROL_KEYS
 from modules.simulation.models.simulation_state import TimeControlMode, TimeControlState
 from core.models.event import Event

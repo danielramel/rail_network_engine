@@ -1,7 +1,7 @@
 import pygame
 import os
 from core.config.color import Color
-from core.config.settings import Config
+from core.config.config import Config
 from core.models.geometry.position import Position
 from typing import Callable
 

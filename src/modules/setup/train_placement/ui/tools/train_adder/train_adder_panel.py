@@ -1,6 +1,6 @@
 import pygame
 from core.config.color import Color
-from core.config.settings import Config
+from core.config.config import Config
 from core.models.event import Event
 from modules.setup.train_placement.models.train_placement_state import TrainPlacementState
 from shared.ui.models.panel import Panel

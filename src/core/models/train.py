@@ -1,6 +1,6 @@
 from core.models.geometry.edge import Edge
 from core.models.geometry.pose import Pose
-from core.config.settings import Config
+from core.config.config import Config
 from core.models.rail import Rail
 from core.models.signal import Signal
 from core.models.schedule import Schedule

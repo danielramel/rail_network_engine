@@ -1,4 +1,4 @@
-from core.config.settings import Config
+from core.config.config import Config
 from core.models.geometry.position import Position
 from modules.setup.train_placement.models.train_placement_view import TrainPlacementView
 from shared.ui.utils.nodes import draw_node

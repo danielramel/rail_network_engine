@@ -1,6 +1,6 @@
 import pygame
 
-from core.config.settings import Config
+from core.config.config import Config
 from core.graphics.camera import Camera
 from core.config.color import Color
 from core.models.train import Train

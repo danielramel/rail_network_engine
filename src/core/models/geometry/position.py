@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict
-from core.config.settings import Config
+from core.config.config import Config
 from math import hypot, floor
 
 from typing import TYPE_CHECKING

@@ -2,7 +2,7 @@ from core.config.color import Color
 from core.graphics.camera import Camera
 from core.models.station import Station
 import pygame
-from core.config.settings import Config
+from core.config.config import Config
 
 def draw_station(screen: pygame.Surface, station: Station, camera: Camera, color=Color.PURPLE):
     width = max(1, round(3 * camera.scale))

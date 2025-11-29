@@ -4,7 +4,7 @@ from core.graphics.icon_loader import IconLoader
 from core.models.geometry.position import Position
 from core.config.color import Color
 from core.config.paths import ICON_PATHS
-from core.config.settings import Config
+from core.config.config import Config
 from modules.route.route_window import RouteWindow
 from core.models.event import Event
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent

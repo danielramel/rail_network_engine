@@ -1,7 +1,7 @@
 import pygame
 from core.config.color import Color
 
-from core.config.settings import Config
+from core.config.config import Config
 from core.graphics.camera import Camera
 from core.models.geometry.edge import Edge
 from core.models.geometry.position import Position

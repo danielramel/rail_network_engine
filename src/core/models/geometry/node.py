@@ -1,6 +1,6 @@
 from dataclasses import dataclass, asdict
 from math import hypot
-from core.config.settings import Config
+from core.config.config import Config
 from core.models.geometry.direction import Direction
 
 @dataclass(frozen=True, order=True)

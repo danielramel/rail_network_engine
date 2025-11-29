@@ -1,10 +1,10 @@
-from core.config.settings import Config
+from core.config.config import Config
 from core.models.geometry.node import Node
 from core.models.geometry.position import Position
 from core.models.geometry.pose import Pose
 from collections import deque
 from core.models.geometry.edge import Edge
-from core.config.settings import Config
+from core.config.config import Config
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from core.models.railway.railway_system import RailwaySystem

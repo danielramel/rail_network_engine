@@ -5,7 +5,7 @@ from typing import Callable
 from core.models.rail import Rail
 from core.models.geometry.pose import Pose
 from core.models.geometry.node import Node
-from core.config.settings import Config
+from core.config.config import Config
 
 class GraphAdapter:
     def __init__(self, on_modified: Callable):

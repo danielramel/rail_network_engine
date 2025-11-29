@@ -8,7 +8,7 @@ from shared.ui.models.clickable_ui_component import ClickableUIComponent
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 from core.config.color import Color
 from core.config.paths import ICON_PATHS
-from core.config.settings import Config
+from core.config.config import Config
 from core.models.event import Event
 from core.config.keyboard_shortcuts import SETUP_MODE_SELECTION
 

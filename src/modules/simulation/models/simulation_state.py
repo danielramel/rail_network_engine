@@ -3,7 +3,7 @@ from core.models.geometry.edge import Edge
 from core.models.signal import Signal
 from typing import Callable, Optional
 from enum import Enum
-from core.config.settings import Config
+from core.config.config import Config
 from core.models.time import Time
 
 class TimeControlMode(Enum):

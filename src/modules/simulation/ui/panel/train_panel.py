@@ -1,4 +1,4 @@
-from core.config.settings import Config
+from core.config.config import Config
 from core.models.route import Route
 import pygame
 from core.models.train import Train
@@ -41,7 +41,7 @@ class TrainPanel(Panel):
         self._update_hover_state(screen_pos)
         
         pygame.draw.rect(self._screen, Color.BLACK, self._rect, border_radius=8)
-        border_color = self._train.schedule.color if self._train.schedule else Config.TRAIN_LIVE_COLOR if self._train.live else Config.TRAIN_SHUTDOWN_COLOR
+        border_color = self._train.schedule.color if self._train.schedule else Color.GREY if self._train.live else Color.DARKGREY
         if self._selected:
             pygame.draw.rect(self._screen, border_color, self._rect.inflate(10, 10), 7, border_radius=8)
         else:
