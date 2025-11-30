@@ -1,0 +1,23 @@
+\subsection{Timetable (Menetrend) Modul}
+\label{subsec:timetable-module}
+
+A \texttt{timetable} modul biztosítja a vonatmenetrendek teljes körű kezelését, beleértve azok grafikus megjelenítését és. Technológiai szempontból ez a modul elkülönül a projekt többi részétől: a grafikus felhasználói felület (GUI) a \texttt{PyQt6} keretrendszer natív widgetjeire épül, kihasználva annak fejlett ablakkezelési és eseményvezérlési képességeit a komplex adatbeviteli feladatokhoz.
+
+\subsubsection{Ablakok és Dialógusok}
+
+\begin{description}
+    \item[\texttt{timetable\_window.py}] 
+    Egy \texttt{QDialog} (PyQt6) alapú osztály, amely a menetrend-kezelés belépési pontjaként szolgál. Feladata a rendszerben tárolt menetrendek listázása, rendszerezése és a kezelési műveletek (létrehozás, törlés, módosítás) koordinálása.
+
+    \item[\texttt{timetable\_editor\_dialog.py}] 
+    Egy \texttt{QMainWindow} (PyQt6) alapú összetett szerkesztőfelület. Ez az osztály valósítja meg a menetrendek részletes szerkesztéséhez szükséges logikát, lehetővé téve az állomások, megállási idők és indulási feltételek precíz konfigurálását.
+\end{description}
+
+\subsubsection{Stílusdefiníciók (\texttt{stylesheets})}
+
+A felületek vizuális stílusát az alábbi fájlok definiálják:
+
+\begin{itemize}
+    \item \texttt{timetable\_editor\_stylesheet.py}: A szerkesztőablak komponenseinek vizuális szabálykészlete.
+    \item \texttt{timetable\_window\_stylesheet.py}: A menetrend-választó ablak stílusleírója.
+\end{itemize}

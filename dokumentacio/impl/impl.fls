@@ -1,0 +1,15 @@
+PWD C:\Users\lemar\elte\szakdolgozat\simulator\dokumentacio\impl
+INPUT C:\Users\lemar\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
+INPUT c:\Users\lemar\elte\szakdolgozat\simulator\dokumentacio\impl\impl.tex
+OUTPUT impl.log
+INPUT C:\Users\lemar\AppData\Local\MiKTeX\fonts\tfm\public\cm\cmbx10.tfm
+INPUT C:\Users\lemar\AppData\Local\MiKTeX\fonts\tfm\public\cm\cmtt10.tfm
+OUTPUT impl.pdf
+INPUT C:\Users\lemar\AppData\Local\MiKTeX\fonts\map\pdftex\pdftex.map
+INPUT .\testing.tex
+INPUT .\testing.tex
+INPUT .\testing.tex
+INPUT .\testing.tex
+INPUT .\testing.tex
+INPUT .\testing.tex
+INPUT testing.tex

@@ -1,0 +1,19 @@
+\section{Szoftverarchitektúra és rendszerfelépítés}
+
+Az alkalmazás fejlesztése során moduláris, rétegelt architektúrát alakítottam ki, amely elősegíti a kód átláthatóságát és a későbbi bővíthetőséget. A projekt forráskódja a \texttt{src} könyvtárban található, amely a felelősségi körök (Separation of Concerns) alapján az alábbi fő rétegekre és komponensekre tagolódik.
+
+\subsection{Belépési pontok és vezérlés}
+Az alkalmazás indításáért és az életciklus-kezelésért felelős fájlok:
+\begin{itemize}
+    \item \texttt{main.py}: A program belépési pontja. Feladata az alkalmazás indítása és a \texttt{MenuManager} inicializálása.
+    \item \texttt{menu\_manager.py}: Az alkalmazás központi állapotkezelője. Feladata az alkalmazás inicializálása, valamint a beérkező események (billentyűzet, egér) továbbítása a megfelelő vezérlő felé.
+    \item \texttt{home\_page\_screen.py}: A kezdőképernyő megjelenítéséért és interakcióiért felelős osztály. Lehetővé teszi új projektek létrehozását, meglévők betöltését, valamint a legutóbbi projektek gyors elérését.
+\end{itemize}
+
+\input{impl/app_architecture/core.tex}
+\input{impl/app_architecture/shared.tex}
+\input{impl/app_architecture/setup_module.tex}
+\input{impl/app_architecture/construction_module.tex}
+\input{impl/app_architecture/train_placement_module.tex}
+\input{impl/app_architecture/simulation_module.tex}
+\input{impl/app_architecture/timetable_module.tex}

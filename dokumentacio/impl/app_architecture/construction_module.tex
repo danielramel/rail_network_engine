@@ -1,0 +1,47 @@
+\subsection{Construction (Pályaszerkesztő) Modul}
+\label{subsec:construction-module}
+
+A Construction modul a Setup fázison belül a pályaszerkesztési és infrastruktúra-építési funkciókat valósítja meg. A modul architektúrája szigorúan szétválasztja a megjelenítést, az állapotkezelést és a vezérlést.
+
+\begin{description}
+    \item[\texttt{construction\_mode.py}]
+    A modul központi vezérlője. Feladata a szerkesztési nézet inicializálása, az eszközök példányosítása és a fő eseményhurok kezelése a szerkesztés alatt.
+\end{description}
+
+\subparagraph{Modellek és Absztrakciók (\texttt{models})}
+A \texttt{models} könyvtár tartalmazza a szerkesztőeszközök működéséhez szükséges ősosztályokat és a közös állapotkezelőt:
+
+\begin{itemize}
+    \item \textbf{construction\_state.py}: A szerkesztési mód állapotkezelője. Ez az osztály tárolja az aktuálisan kiválasztott eszközt, valamint a szerkesztési előnézetek (\textit{previews}) állapotát (pl. egy platform elhelyezésének vizualizációját).
+    \item \textbf{construction\_tool\_panel.py}: Az egyes eszközökhöz (\textit{Tools}) tartozó információs és beállító panelek absztrakt ősosztálya.
+    \item \textbf{construction\_tool\_controller.py}: Az egyes szerkesztőeszközök vezérlőinek közös ősosztálya.
+    \item \textbf{construction\_tool\_view.py}: Az egyes eszközök nézeti logikájának absztrakt ősosztálya.
+\end{itemize}
+
+\subparagraph{Felhasználói Felület (\texttt{ui})}
+A felhasználói felület elemei a közös keretrendszerre és a specifikus eszköz-implementációkra tagolódnak.
+
+\begin{description}
+    \item[\texttt{construction\_buttons.py}] A különböző szerkesztőeszközök közötti váltást biztosító gombsor.
+    \item[\texttt{construction\_common\_view.py}] A szerkesztőnézet alaprétege. Felelős a statikus elemek (koordináta-rendszer, meglévő vágányok, jelzők, állomások, peronok) kirajzolásáért. Az aktív eszközök erre a rétegre rajzolják rá a saját dinamikus előnézeteiket, emellett bizonyos előnézeti logikákat is ez az osztály kezel.
+    \item[\texttt{construction\_panel\_strategy.py}] A \textit{Strategy} tervezési minta alapján kezeli a dinamikus panelváltást, biztosítva, hogy mindig a kiválasztott eszközhöz (pl. váltóépítés) tartozó beállítások jelenjenek meg.
+    \item[\texttt{construction\_tool\_strategy.py}] A \textit{Strategy} tervezési minta alapján kezeli az eszközök közötti váltást, biztosítva, hogy mindig a kiválasztott eszköz vezérlője és nézete legyen aktív.
+\end{description}
+
+\textbf{Szerkesztőeszközök (\textit{Tools}) felépítése:}
+A rendszerben minden szerkesztőeszköz (pl. vágányépítő, jelzőlerakó) egységes, négy komponensből álló architektúrát követ:
+\begin{enumerate}
+    \item \textbf{Controller:} Kezeli a felhasználói interakciókat (kattintás, billentyűzet) és frissíti az eszköz belső állapotát.
+    \item \textbf{View:} Megvalósítja a vizuális logikát, kirajzolja az eszköz-specifikus előnézeteket, és manipulálja a \texttt{construction\_state} előnézeti állapotait.
+    \item \textbf{Panel:} Az eszközhöz tartozó specifikus beállításokat és a felhasználói instrukciókat megjelenítő felületi elem.
+    \item \textbf{Target:} A nézet és a vezérlő közös geometriai logikáját tömörítő segédosztály. Feladata, hogy a kurzor pozíciója alapján azonosítsa a pályán végezhető lehetséges akciókat (pl. vágányvéghez való csatlakozás detektálása).
+\end{enumerate}
+
+A Construction modul és a benne található eszközök strukturális felépítését az \ref{fig:construction-ui-models-uml}. ábra szemlélteti.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{impl/app_architecture/construction_module_uml.png}
+    \caption{A Construction modul és az eszközök UML osztálydiagramja}
+    \label{fig:construction-ui-models-uml}
+\end{figure}

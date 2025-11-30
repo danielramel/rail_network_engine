@@ -1,0 +1,122 @@
+@startuml
+title Train Placement Module
+
+package "train_placement" {
+  class TrainPlacementMode {
+    - state: TrainPlacementState
+  }
+
+  package models {
+    enum TrainPlacementTool {
+      PLACE_TRAIN
+      REMOVE_TRAIN
+    }
+
+    class TrainPlacementPreview {
+      - train_id_to_remove
+      - train_to_preview
+      + clear()
+    }
+
+    class TrainPlacementState {
+      - preview: TrainPlacementPreview
+      - tool: TrainPlacementTool
+      + switch_tool(new_tool)
+    }
+
+    abstract class TrainPlacementToolView {
+      - _state
+      + render(world_pos)
+    }
+
+    abstract class TrainPlacementToolController {
+      - _view: TrainPlacementToolView
+      - _state: TrainPlacementState
+      + render(screen_pos)
+      + _on_click(event)
+    }
+  }
+
+  package ui {
+    class TrainPlacementButtons {
+      - _state: TrainPlacementState
+      + render(screen_pos)
+    }
+
+    class TrainPlacementPanelStrategy {
+      - _state: TrainPlacementState
+      + render(screen_pos)
+    }
+
+    class TrainPlacementToolStrategy {
+      - view: TrainPlacementCommonView
+      - _controllers: dict<TrainPlacementTool, TrainPlacementToolController>
+      + render(screen_pos)
+      + _on_click(event)
+    }
+
+    class TrainPlacementCommonView {
+      - _state: TrainPlacementState
+      + render(screen_pos)
+    }
+
+    package tools {
+      package train_adder {
+        class TrainAdderView extends TrainPlacementToolView {
+          + render(world_pos)
+        }
+
+        class TrainAdderController extends TrainPlacementToolController {
+          + _on_click(event)
+        }
+
+        class TrainAdderPanel {
+          + render(screen_pos)
+        }
+      }
+
+      package train_removal {
+        class TrainRemovalView extends TrainPlacementToolView {
+          + render(world_pos)
+        }
+
+        class TrainRemovalController extends TrainPlacementToolController {
+          + _on_click(event)
+        }
+
+        class TrainRemovalPanel {
+          + render(screen_pos)
+        }
+      }
+    }
+  }
+
+  TrainPlacementMode --> TrainPlacementState
+  TrainPlacementMode --> TrainPlacementButtons
+  TrainPlacementMode --> TrainPlacementPanelStrategy
+  TrainPlacementMode --> TrainPlacementToolStrategy
+
+  TrainPlacementButtons --> TrainPlacementState : switch_tool()
+
+  TrainPlacementPanelStrategy --> TrainPlacementState
+  TrainPlacementPanelStrategy --> TrainAdderPanel
+  TrainPlacementPanelStrategy --> TrainRemovalPanel
+
+  TrainPlacementToolStrategy --> TrainPlacementCommonView
+  TrainPlacementToolStrategy --> ui.tools.train_adder.TrainAdderController
+  TrainPlacementToolStrategy --> ui.tools.train_removal.TrainRemovalController
+
+  ui.tools.train_adder.TrainAdderController ..> ui.tools.train_adder.TrainAdderView : «creates»
+  ui.tools.train_removal.TrainRemovalController ..> ui.tools.train_removal.TrainRemovalView : «creates»
+  models.TrainPlacementToolController ..> models.TrainPlacementToolView : «creates»
+
+  ui.tools.train_adder.TrainAdderView -|> models.TrainPlacementToolView
+  ui.tools.train_removal.TrainRemovalView -|> models.TrainPlacementToolView
+  ui.tools.train_adder.TrainAdderController -|> models.TrainPlacementToolController
+  ui.tools.train_removal.TrainRemovalController -|> models.TrainPlacementToolController
+
+  TrainPlacementState --> TrainPlacementPreview
+  TrainPlacementState --> TrainPlacementTool
+}
+
+@enduml

@@ -1,0 +1,19 @@
+\chapter{Bevezetés}
+\label{ch:intro}
+
+\section{Háttér}
+A nagy volumenű kötött pályás infrastrukturális beruházások tervezése és kivitelezése a közlekedésfejlesztés legköltségesebb és legkomplexebb feladatai közé tartozik. A modern vasúti és elővárosi közlekedés fejlesztésében paradigmaváltás figyelhető meg: a hangsúly a puszta infrastruktúra-építésről áttevődik a szolgáltatás-orientált, úgynevezett menetrend-alapú tervezésre. A dolgozatomban bemutatott alkalmazás célja, hogy ezt a tervezési folyamatot támogassa egy olyan iteratív szimulációs környezet biztosításával, amely lehetővé teszi a menetrendi koncepció és a pályageometria együttes optimalizálását.
+
+A hagyományos megközelítésben gyakran először valósul meg az infrastruktúra fejlesztése, és a szolgáltatást (menetrendet) a már megépült fizikai korlátokhoz igazítják. Ezzel szemben a fejlesztett szoftver alapvetése, hogy a legjobb költség-haszon arányú ráfordításhoz folyamatos iteráció szükséges a tervezési fázisban. Az alkalmazás módot ad arra, hogy a felhasználó párhuzamosan módosítsa a menetrendi struktúrát és a szükséges infrastruktúra elemeit (például kitérők, jelzők elhelyezése, sebességkorlátozások), egészen addig, amíg a rendszer el nem éri a kívánt egyensúlyi állapotot.
+
+Kiemelt tervezési szempont volt, hogy az alkalmazás specifikusan támogassa az ütemes menetrendek (ITF - Integrált Ütemes Menetrend) létrehozását és vizsgálatát. A hazai és nemzetközi tapasztalatok azt mutatják, hogy az utasok számára kiszámíthatóbb, rendszeres időközönként ismétlődő, csatlakozásokra épülő menetrendi struktúrák válnak be a legjobban, mivel ezek növelik a rendszer vonzerejét és átláthatóságát. A szoftver segítségével pontosan modellezhető, hogy egy adott ütemes struktúra bevezetéséhez milyen minimális, de elégséges infrastrukturális beavatkozások szükségesek \cite{itf_integrated}.
+
+Ennek a megközelítésnek a létjogosultságát a gazdasági tényezők is alátámasztják. A menetrend-alapú tervezés bizonyítottan erőforrás-hatékonyabb: a módszer alkalmazásával elkerülhető a felesleges vágányok, jelzők és kereszteződések kiépítése. Beruházás csak ott történik, ahol a célzott immáron ütemes menetrendi struktúra azt valóban megkívánja. Továbbá ez a tervezési mód segíti a stabil, megbízható szolgáltatás biztosítását, optimalizálja a hálózat kihasználását, és minimalizálja a késések, valamint a torlódások kockázatát.
+
+Hosszú távon az alkalmazás által támogatott módszertan lehetővé teszi a szisztematikus, hálózati szintű beruházásokat. A fejlesztések így nem szigetszerűen, egymástól függetlenül valósulnak meg, hanem összhangban vannak a vonalak hálózati szerepével és a szolgáltatási igények valós képével.
+
+Ugyanakkor a szoftver fejlesztése során figyelembe kellett venni ezen tervezési filozófia korlátait is. A menetrend, a hálózat és az infrastruktúra integrált tervezése rendkívül komplex feladat, amely sok szereplő operátorok, infrastruktúra-gazdák, finanszírozók összehangolt munkáját igényli. Kritikus szempont a rendszer rugalmassága is: ha a tervezett menetrend túl feszes, a valós utas- és forgalmi igények változását nehéz lekövetni, ami túlszabályozáshoz vagy az infrastruktúra alulkihasználtságához vezethet.
+Ezért a dolgozat keretében bemutatott alkalmazás olyan egyensúlyt keres, amely egyesíti a menetrend-központú tervezés előnyeit a gyakorlati megvalósíthatósággal és a rendszer adaptivitásával.
+Összességében a fejlesztett alkalmazás nem helyettesíti az infrastruktúra-beruházást - hiszen a kapacitási vagy sebességi problémák fizikai beavatkozást igényelnek –, hanem célzottabbá és optimalizáltabbá teszi azt. A cél egy olyan eszköz biztosítása, amely támogatja a „menetrend az első” elvet, de teret enged a szükséges infrastrukturális korrekciók szimulációjának is, így biztosítva a leghatékonyabb megoldást a modern közlekedésfejlesztésben.
+
+\section{Célkitűzések}

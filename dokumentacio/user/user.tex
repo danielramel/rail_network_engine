@@ -1,0 +1,114 @@
+\chapter{Felhasználói kézikönyv}
+\label{ch:user}
+
+Jelen fejezet célja, hogy átfogó útmutatást nyújtson az alkalmazás telepítéséhez és kezeléséhez. A dokumentáció részletesen bemutatja a szoftver rendszerigényét, a telepítés lépéseit, a felhasználói felületet, valamint a hatékony tervezéshez és forgalomirányításhoz szükséges munkafolyamatokat.
+
+\section{Rendszerkövetelmények és Telepítés}
+
+\subsection{Rendszerkövetelmények}
+\label{sec:requirements}
+A szimulációs szoftver zökkenőmentes futtatásához az alábbi hardver- és szoftverkonfiguráció szükséges. Bár az alkalmazás 2D megjelenítést használ, a komplex útvonalkeresési algoritmusok és a szimulációs logika miatt a processzor teljesítménye meghatározó.
+
+\begin{center}
+\begin{tabular}{|l|p{6cm}|p{6cm}|}
+\hline
+\textbf{Komponens} & \textbf{Minimális követelmény} & \textbf{Ajánlott konfiguráció} \\
+\hline
+\textbf{Operációs rendszer} & Windows 10, macOS 10.13+, vagy modern Linux disztribúció & Windows 10/11 (64-bit) \\
+\hline
+\textbf{Processzor (CPU)} & Dual-core processzor (pl. Intel Core i3 / AMD Ryzen 3) & Quad-core processzor, 3.0 GHz+ (pl. Intel Core i5 / AMD Ryzen 5) \\
+\hline
+\textbf{Memória (RAM)} & 4 GB & 8 GB vagy több \\
+\hline
+\textbf{Kijelző} & 1280x720 felbontás & 1920x1080 (Full HD) felbontás \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Az alkalmazás telepítése}
+\label{sec:installation}
+A szoftver Python alapú, így futtatásához a Python környezet és a szükséges könyvtárak telepítése elengedhetetlen.
+
+\textbf{1. Python környezet telepítése:}
+Töltse le és telepítse a Python3 legfrissebb stabil verzióját a hivatalos \texttt{python.org} weboldalról. A telepítés során ügyeljen arra, hogy a "Add Python to PATH" opciót jelölje be.
+
+\textbf{2. Függőségek telepítése:}
+Az alkalmazás grafikus megjelenítéséhez és hálózatkezeléséhez külső könyvtárak szükségesek. Nyissa meg a parancssort (Command Prompt / Terminal), és futtassa az alábbi parancsot:
+
+\begin{verbatim}
+pip install pygame networkx PyQt6
+\end{verbatim}
+
+A parancs automatikusan letölti és telepíti a \texttt{pygame} (megjelenítés), \texttt{networkx} (gráfkezelés) és \texttt{PyQt6} (felhasználói interfész) modulokat. A telepítés sikeressége a verziószámok megjelenésével ellenőrizhető.
+
+\section{Működési környezet és jogosultságok}
+\label{sec:users}
+
+Az alkalmazás architektúrája egyfelhasználós (single-user), lokális működésre lett optimalizálva. A rendszer nem igényel központi szerverkapcsolatot vagy felhasználói azonosítást (autentikációt).
+
+Ez a kialakítás a következő előnyökkel jár a felhasználó számára:
+\begin{itemize}
+    \item \textbf{Azonnali hozzáférés:} Nincs beléptetési procedúra vagy szerepkör alapú korlátozás; a szoftver indítása után minden tervezési és szimulációs funkció azonnal, teljeskörűen elérhető.
+    \item \textbf{Egyszerűsített fájlkezelés:} A rendszer nem alkalmaz fájlzárolást vagy konkurrens hozzáférés-kezelést, így a projektfájlok kezelése (másolás, mozgatás) az operációs rendszer szintjén szabadon elvégezhető.
+\end{itemize}
+A szoftver struktúrája a gyors prototípuskészítést és az önálló mérnöki munkavégzést támogatja, felesleges adminisztrációs terhek nélkül.
+
+\section{Hardverkövetelmények és ergonómia}
+\label{sec:supported-devices}
+
+A szoftver tervezésekor elsődleges szempont volt a vasúti menetrend-tervezés és a hálózatszerkesztés komplexitása. A diszpécseri és mérnöki munkaállomások ergonómiájához igazodva a támogatott környezet a következő:
+
+\begin{itemize}
+    \item \textbf{Platform:} Asztali számítógép vagy laptop.
+    \item \textbf{Beviteli eszközök:} A precíz pályaszerkesztés (pl. vágánygeometria, jelzők elhelyezése) miatt az egér és billentyűzet kombinációjának használata erősen ajánlott. Érintőképernyős vezérlés nem támogatott.
+\end{itemize}
+
+A fentiek miatt a mobil eszközök (okostelefonok, táblagépek) támogatása nem került implementálásra, mivel azok kijelzőmérete és beviteli módszerei nem teszik lehetővé a szoftver funkcióinak kompromisszummentes használatát.
+
+\section{Az alkalmazás funkcióinak részletes ismertetése}
+\label{sec:detailed-functions}
+
+Az alábbiakban részletesen ismertetem az alkalmazás menürendszerét, a pályaszerkesztés lépéseit és a szimulációs nézet funkcióit.
+
+\input{user/pages.tex}
+
+\subsection{Projektkezelés (Mentés és betöltés)}
+\label{subsec:save-load}
+
+A projektfájlok kezelése az alkalmazás kulcsfontosságú funkciója, amely biztosítja a munkafolyamatok folytonosságát. A projektek tárolása szabványos \texttt{.json} formátumban történik, amely biztosítja az adatok hordozhatóságát.
+A fájlkezelő műveletek a képernyő bal alsó sarkában található funkciógombokkal, illetve gyorsbillentyűkkel érhetők el.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.4\textwidth]{user/images/save_open_exit.png}
+        \caption{Mentés, Betöltés és Kilépés gombok}
+        \label{fig:save-load-buttons}
+    \end{figure}
+\subsubsection{Mentés (Save)}
+A mentés állapota vizuálisan követhető a mentés ikon változásain keresztül:
+\begin{itemize}
+    \item \textbf{Szinkronban:} A "floppy" ikon alapállapotban jelzi, hogy a projekt mentve van.
+    \item \textbf{Módosítva:} Ha a projektben változtatás történt az utolsó mentés óta, az ikon mellett egy 'x' jelzés, vagy módosult állapotjelző tűnik fel.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.1\textwidth]{user/images/unsaved.png}
+        \caption{Módosított állapotjelző}
+        \label{fig:unsaved-icon}
+    \end{figure}
+    \item \textbf{Visszajelzés:} Sikeres mentés esetén a program rövid ideig egy pipa megjelenítésével nyugtázza a műveletet.
+\end{itemize}
+
+\textbf{Mentési opciók:}
+\begin{itemize}
+    \item \textbf{Gyorsmentés:} A \textbf{CTRL + S} kombinációval a módosítások azonnal felülírják az aktuális fájlt.
+    \item \textbf{Mentés másként:} A mentés gombra kattintva felugró ablakban lehetőség van a projekt új néven történő elmentésére.
+\end{itemize}
+
+\textit{Biztonsági funkció:} Amennyiben a felhasználó mentés nélkül próbál kilépni vagy új projektet nyitni, a rendszer figyelmeztető ablakban ajánlja fel a változtatások rögzítését.
+
+\subsubsection{Betöltés (Load)}
+Korábbi munkamenetek visszaállítása a \textbf{CTRL + O} billentyűkombinációval, vagy a mappát ábrázoló 'Betöltés' ikonnal kezdeményezhető.
+A megjelenő fájlkezelő ablakban tallózható be a kívánt \texttt{.json} állomány.
+A rendszer beépített validációval rendelkezik: kizárólag érvényes struktúrájú projektfájlok betöltését engedélyezi. Sérült vagy inkompatibilis fájl esetén hibaüzenet tájékoztatja a felhasználót.
+
+\subsubsection{Visszalépés a főmenübe}
+A szerkesztési felületről való kilépéshez és a Kezdőoldalra való visszatéréshez a bal alsó sarokban található 'Kilépés' (Exit) gomb szolgál. Ezzel a művelettel a jelenlegi projekt bezárul (mentési figyelmeztetéssel), és a felhasználó visszakerül a projektválasztó képernyőre.

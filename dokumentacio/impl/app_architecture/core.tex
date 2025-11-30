@@ -1,0 +1,96 @@
+\subsection{Core (Mag) réteg}
+
+A \texttt{core} réteg képezi az alkalmazás gerincét; ez a modul kapszulázza az üzleti logikát, a domain modelleket, a konfigurációs állományokat és az alapvető infrastrukturális szolgáltatásokat. A réteg feladata biztosítani a rendszer belső konzisztenciáját, függetlenül a felhasználói felület (UI) aktuális megvalósításától.
+
+\subsubsection{Config modul}
+A konfigurációs modul felelős az alkalmazás globális paramétereinek, állandóinak és erőforrás-hivatkozásainak központosított tárolásáért.
+
+\begin{description}
+    \item[\texttt{color.py}:] A színpaletta definícióit tartalmazza, biztosítva a konzisztens vizuális megjelenést az egész alkalmazásban.
+    \item[\texttt{keyboard\_shortcuts.py}:] A beviteli vezérlés absztrakciója; itt kerülnek definiálásra a módváltásokhoz és funkciókhoz rendelt gyorsbillentyűk.
+    \item[\texttt{paths.py}:] Az erőforrás-kezelés segédosztálya, amely dinamikusan kezeli az ikonok és adatfájlok relatív és abszolút elérési útvonalait.
+    \item[\texttt{config.py}:] Az alkalmazás központi konfigurációs osztálya. Tartalmazza a szimulációs és megjelenítési paramétereket (pl. rácsméret, sebességhatárok, fizikai állandók). A fájl tartalma a \ref{lst:config_class} kódrészleten látható.
+\end{description}
+
+\begin{lstlisting}[language=Python, caption={A Config osztály részlete, amely a szimuláció változtatható paramétereit definiálja}, label={lst:config_class}, inputencoding=utf8, extendedchars=true]
+class Config:
+    MAPS_FOLDER = "maps"
+    GRID_SIZE = 40          # Pixel
+    BUTTON_SIZE = 50
+    STATION_RECT_WIDTH = 6
+    STATION_RECT_HEIGHT = 1
+    FPS = 20
+    
+    MIN_TRACK_SPEED = 10
+    MAX_TRACK_SPEED = 200
+    TRACK_SPEED_INCREMENT = 10
+    
+    SHORT_SECTION_LENGTH = 50
+    LONG_SECTION_LENGTH = 250
+    
+    TRAIN_CAR_LENGTH = 25
+    TRAIN_CAR_GAP = 5
+    MAX_TRAIN_CAR_COUNT = 16
+    MIN_TRAIN_STOP_TIME = 30  # mp
+    TRAIN_SAFETY_BUFFER = 0   # m
+\end{lstlisting}
+
+\subsubsection{Graphics modul}
+\begin{itemize}
+    \item \textbf{\texttt{icon\_loader.py}:} Az erőforrások (sprite-ok, textúrák) betöltéséért és gyorsítótárazásáért felelős.
+    \item \textbf{\texttt{camera.py}:} A felhasználói nézet transzformációit (eltolás, nagyítás/kicsinyítés) végző osztály. Lehetővé teszi a virtuális tér és a képernyő koordinátarendszere közötti konverziót.
+    \item \textbf{\texttt{graphics\_context.py}:} Egy \textit{Context Object}, amely összefogja a rajzoláshoz szükséges függőségeket (pl. a Pygame felületét és a kamera objektumot), és továbbítja azokat a kirajzolást végző entitásoknak.
+\end{itemize}
+
+\subsubsection{Models csomag}
+A \texttt{models} csomag tartalmazza a rendszer összes domain entitását, logikailag elkülönített alcsomagokba szervezve.
+
+\paragraph{Geometry (Geometria és Térinformatika)}
+A térbeli reprezentációért és a gráf-alapú koordinátákért felelős osztályok.
+\begin{itemize}
+    \item \textbf{\texttt{node.py}:} A diszkrét rácspontokat reprezentáló osztály. A gráf csomópontjaként funkcionál, tárolja a koordinátákat és a magassági szintet (pl. alagút kezeléséhez).
+    \item \textbf{\texttt{position.py}:} A folytonos (Euclideszi) tér egy pontját reprezentálja lebegőpontos koordinátákkal. Míg a \texttt{Node} a gráf csomópontjait jelöli, a \texttt{Position} a képpontok és a kurzor finommozgását írja le.
+    \item \textbf{\texttt{edge.py}:} A gráf éleinek absztrakciója, amely két \texttt{Node} közötti kapcsolatot definiál.
+    \item \textbf{\texttt{direction.py}:} A vektorirányok kezelését végző segédosztály. Kulcsszerepe van a gráfbejárás során a lehetséges haladási irányok meghatározásában.
+    \item \textbf{\texttt{pose.py}:} A \textit{Position} és \textit{Direction} kombinációja (pozíció és orientáció). Nélkülözhetetlen a jelzők és vonatok állapotának leírásához, ahol a térbeli elhelyezkedés mellett az irány is meghatározó.
+\end{itemize}
+
+\begin{lstlisting}[language=Python, caption={A Pose osztály \texttt{get\_connecting\_poses} metódusa, amely azokat a pozíciókat adja vissza, amelyek a vonatok által bevehető pályageometriájú szakaszokat reprezentálják}, label={lst:pose_get_connecting_poses}, inputencoding=utf8, extendedchars=true]
+    def get_connecting_poses(self, other_level: bool = False) -> list['Pose']:
+        neighbors = []
+        for dir in self.direction.get_valid_turns():
+            nx = self.node.x + dir.x
+            ny = self.node.y + dir.y
+            new_state = Pose(Node(nx, ny, self.node.level), dir)
+
+            neighbors.append(new_state)
+            if other_level:
+                neighbors.append(new_state.toggle_level())
+        return neighbors
+\end{lstlisting}
+
+\paragraph{Railway (Vasúti Logika)}
+A különböző vasúti entitások és algoritmusait összekötő réteg.
+\begin{itemize}
+    \item \textbf{\texttt{railway\_system.py}:} Egy \textbf{Facade (Homlokzat)} tervezési mintát megvalósító osztály. Ez az egyetlen belépési pont a külvilág számára a vasúti alrendszer felé; összefogja és koordinálja az állomások, vonatok, jelzők és a biztosítóberendezés működését.
+    \item \textbf{\texttt{graph\_adapter.py}:} Egy \textbf{Adapter} mintát követő osztály, amely elszigeteli a \textit{NetworkX} könyvtárat a rendszer többi részétől. Ez biztosítja, hogy a gráf-implementáció cseréje esetén csak ezt az osztályt kelljen módosítani.
+    \item \textbf{\texttt{graph\_service.py}:} Magas szintű gráfműveleteket és a gráfon végzett keresési algoritmusokat (pl. szekciókeresés, peron-validáció) biztosító szolgáltatás.
+    \item \textbf{\texttt{signalling\_service.py}:} A biztosítóberendezés logikáját implementálja. Feladata a jelzők aspektusának (szabad/tilos) dinamikus frissítése és a vágányutak foglaltságának ellenőrzése.
+    \item \textbf{\texttt{path\_finder.py}:} A nem gráfon végzett útvonalkeresést megvalósító osztály. A \texttt{A*} algoritmust alkalmazza két pont közötti legrövidebb vágány építésének meghatározására.
+\end{itemize}
+\paragraph{Repositories (Adattárolók)}
+A \textbf{Repository} tervezési minta alkalmazása az entitások életciklusának kezelésére. Ezek az osztályok felelősek az objektumok (vonatok, állomások, menetrendek) memóriában történő tárolásáért, lekérdezéséért és módosításáért.
+\begin{itemize}
+    \item \texttt{station\_repository.py}, \texttt{signal\_repository.py}, \texttt{train\_repository.py}, \texttt{timetable\_repository.py}
+\end{itemize}
+
+\paragraph{Domain Entities (Entitások)}
+A rendszer alapvető építőkövei:
+\begin{itemize}
+    \item \textbf{\texttt{rail.py}:} A fizikai vágány modellje, amely kiterjeszti az \texttt{Edge} osztályt olyan tulajdonságokkal, mint a sebességkorlát és a pályahossz.
+    \item \textbf{\texttt{signal.py}:} A vasúti jelzőberendezés modellje. Tárolja a pozíciót (\texttt{Pose}), a következő jelző referenciáját és a fedezett vágányutat.
+    \item \textbf{\texttt{train.py}:} A vonat modellje. Az osztály kezeli a jármű fizikai paramétereit (sebesség, gyorsulás, fékezés), követi a menetrendet és interakcióba lép a pályával.
+    \item \textbf{\texttt{timetable.py} és \texttt{schedule.py}:} A \texttt{Timetable} a statikus útvonaltervet (megállók sorrendje, és időkülönbsége), míg a \texttt{Schedule} egy konkrét, időponthoz kötött járatot reprezentál, amely alapján a szimuláció elindítja a vonatot.
+    \item \textbf{\texttt{app\_state.py}:} Az alkalmazás globális állapotát (pl. Szerkesztő mód vs. Szimulációs mód) tároló modell.
+\end{itemize}
+

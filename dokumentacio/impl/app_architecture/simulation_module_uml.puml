@@ -1,0 +1,125 @@
+@startuml Simulation Module
+skinparam classAttributeIconSize 0
+skinparam arrowColor #888
+skinparam classFontSize 12
+skinparam packageTitleFontSize 14
+
+package "Simulation Module" {
+  class SimulationMode {
+    +SimulationMode(...)
+    -_on_time_set(time_str: str)
+  }
+
+  class SimulationController {
+    +render(screen_pos: Position | None)
+    +tick()
+    -_on_click(click: Event)
+  }
+
+  class SimulationView {
+    +render(world_pos: Position | None)
+  }
+
+  class EndSimulationButton {
+    +render(screen_pos: Position)
+    -_on_click(click: Event)
+  }
+
+  class TimeDisplay {
+    +render(screen_pos: Position)
+  }
+
+  class TimeControlButtons {
+    +set_time_control_mode(mode: TimeControlMode | str)
+    +render(screen_pos: Position)
+    +contains(screen_pos: Position): bool
+  }
+
+  enum TimeControlMode {
+    PLAY
+    PAUSE
+    FAST_FORWARD
+    STEP
+  }
+
+  class TimeControlState {
+    +reset()
+    +paused(): bool
+    +switch_mode(mode: TimeControlMode)
+    +toggle_pause()
+    -mode: TimeControlMode
+  }
+
+  class SimulationPreview {
+    +clear()
+    -hover_train_id: int
+    -hover_signal_id: int
+  }
+
+  class SimulationState {
+    +tick()
+    +select_train(train_id: int)
+    +deselect_train(train_id: int)
+    +subscribe_to_train_selected(callback: Callable)
+    +subscribe_to_train_deselected(callback: Callable)
+    -time_control: TimeControlState
+    -preview: SimulationPreview
+    -selected_train_ids: Set<int>
+  }
+
+  enum SimulationTargetType {
+    TRAIN
+    SIGNAL
+    STATION
+    NONE
+  }
+
+  class SimulationTarget {
+    -type: SimulationTargetType
+    -id: int
+  }
+
+  class TrainPanelManager {
+    +on_train_selected(train_id: int)
+    +on_train_deselected(train_id: int)
+    +elements(): Tuple<TrainPanel>
+  }
+
+  class TrainPanel {
+    +index(): int
+    +render(screen_pos: Position)
+    +select()
+    +deselect()
+  }
+
+  class ScheduleSelector {
+    +closeEvent(event)
+  }
+}
+
+' Internal relationships only
+SimulationMode o-- SimulationState
+SimulationMode o-- SimulationController
+SimulationMode o-- SimulationView
+SimulationMode o-- TimeDisplay
+SimulationMode o-- TimeControlButtons
+SimulationMode o-- EndSimulationButton
+SimulationMode o-- TrainPanelManager
+
+SimulationController --> SimulationState
+SimulationView --> SimulationState
+
+TimeControlButtons --> TimeControlState
+TimeControlButtons --> TimeControlMode
+
+SimulationState o-- TimeControlState
+SimulationState o-- SimulationPreview
+
+TrainPanelManager o-- TrainPanel
+TrainPanel --> ScheduleSelector
+
+SimulationController --> SimulationTarget
+SimulationView --> SimulationTarget
+SimulationTarget --> SimulationTargetType
+
+@enduml

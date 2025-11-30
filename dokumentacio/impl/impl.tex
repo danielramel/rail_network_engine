@@ -1,0 +1,42 @@
+\chapter{Fejlesztői dokumentáció}
+\label{ch:impl}
+
+\include{impl/decisions.tex}
+
+\section{Alkalmazott technológiák és fejlesztői környezet}
+\label{sec:technologies}
+A projekt implementációja \textbf{Python} programozási nyelven készült. A Python magas szintű absztrakciós képessége, valamint az elérhető könyvtárak és eszközök széles választéka lehetővé tette a gyors prototípus-fejlesztést és a komplex funkcionalitás hatékony megvalósítását.
+
+\subsection{Felhasznált könyvtárak}
+\label{sec:used_libraries}
+A fejlesztés során számos külső könyvtár került integrálásra, amelyek specifikus feladatokat látnak el a rendszer különböző rétegeiben:
+
+\begin{description}
+    \item[Pygame:] A szimulációs tér vizualizációjáért és a grafikus felhasználói felület megjelenítéséért felelős könyvtár. Ez a modul az alkalmazás grafikus felületének mintegy 80\%-át adja. A Pygame multimédiás alkalmazások és játékok fejlesztésére tervezett keretrendszer, amely felelős a 2D grafikus elemek (sprite-ok) rendereléséért, a képfrissítési ciklus kezeléséért, valamint a felhasználói interakciók (billentyűzet- és egéresemények) valós idejű feldolgozásáért.
+
+    \item[NetworkX:] A vasúti hálózat topológiájának reprezentálására és kezelésére szolgáló könyvtár. A NetworkX komplex hálózatok és gráfok elemzésére specializálódott eszköz, amely gráf alapú adatszerkezetet (csomópontok és élek) biztosít. Alkalmazása jelentősen egyszerűsítette a hálózati topológia implementálását és a kapcsolati viszonyok kezelését.
+
+    \item[PyQt6:] Míg a szimuláció megjelenítése Pygame alapú, a menetrendek szerkesztése PyQt6 keretrendszer segítségével valósult meg. A Qt könyvtár Python implementációja professzionális, eseményvezérelt GUI komponenseket (gombok, táblázatok, legördülő menük) nyújt, amelyek ergonómikusabb felhasználói élményt biztosítanak az adminisztratív műveletek során.
+
+    \item[Tkinter:] A Python standard könyvtárának grafikus eszközkészlete. Az alkalmazásban kizárólag modális párbeszédablakok (pl. hibaüzenetek, figyelmeztetések, megerősítő dialógusok) megjelenítésére kerül felhasználásra (\texttt{messagebox} modul). Használatát az indokolta, hogy natív rendszerintegrációt biztosít további külső függőségek nélkül.
+\end{description}
+
+
+\subsection{Adattárolás és perzisztencia}
+\label{sec:data_storage}
+A projektek állapotának mentése és betöltése \textbf{JSON} (JavaScript Object Notation) formátumban történik. A JSON formátum választását több tényező motiválta: emberek által is könnyen olvasható, szöveges reprezentációja biztosítja a verziókezelés egyszerűségét, ugyanakkor strukturált adatmodellt nyújt a komplex objektumok szerializálásához.
+
+A mentett JSON struktúra a következő főbb komponenseket tartalmazza:
+
+\begin{description}
+    \item[graph:] A vasúti pályahálózat topológiai reprezentációja NetworkX gráf formátumban, beleértve a vágányok kapcsolatait és térbeli pozícióit.
+    \item[station\_repository:] Az állomások és az azokhoz tartozó peronok adatainak gyűjteménye.
+    \item[signal\_repository:] A jelzők térbeli elhelyezkedése és irányítási tulajdonságai.
+    \item[timetable\_repository:] A menetrendi útvonalak és időzítések definíciója.
+    \item[train\_repository:] A járművek kezdeti pozíciója és paraméterezett tulajdonságai.
+\end{description}
+
+\include{impl/app_architecture/app_architecture.tex}
+
+\section{Tesztelés}
+\label{sec:testing}

@@ -1,0 +1,180 @@
+\subsection{Shared (Megosztott) réteg}
+\label{subsec:shared-layer}
+
+A \texttt{shared} réteg alapvető célja a kód újrafelhasználhatóságának biztosítása a különböző modulok között. Ez a réteg tartalmazza az alapvető UI osztályokat, a vezérlő logikákat (controllers), valamint a rajzolást és egyéb segédfunkciókat megvalósító könyvtárakat.
+
+\subsubsection{UI Modellek és Alaposztályok}
+\label{subsubsec:ui-models}
+
+Az \texttt{ui/models} könyvtár definiálja az összes felhasználói felület (UI) komponenst és azok absztrakt ősosztályait.
+
+\begin{description}
+    \item[\texttt{ui\_component.py}] 
+    Az összes UI komponens absztrakt ősosztálya (\textit{Abstract Base Class}). Ez az osztály definiálja a komponensek alapvető viselkedését és interfészét.
+    
+    \begin{lstlisting}[language=Python, caption={Az UIComponent absztrakt osztály}, label={lst:ui_component}, inputencoding=utf8, extendedchars=true]
+from core.models.geometry.position import Position
+from core.models.event import Event
+from abc import ABC, abstractmethod
+
+class UIComponent(ABC):
+    def dispatch_event(self, event: Event) -> bool:
+        if hasattr(self, 'handled_events') and event.type not in self.handled_events:
+            return False
+        
+        return self.handle_event(event)
+    
+    def handle_event(self, event: Event) -> bool:
+        """Process an event that has already been filtered by type. Return True if consumed."""
+        return False
+
+    @abstractmethod
+    def render(self, screen_pos: Position) -> None:
+        """Render the UI component."""
+        pass
+    
+    @abstractmethod
+    def contains(self, screen_pos: Position) -> bool:
+        """Check if a position is within the component's area."""
+        return False
+    
+    def tick(self) -> None:
+        """Advance the component's state by one tick."""
+        pass
+    \end{lstlisting}
+
+    \item[\texttt{rectangle\_ui\_component.py}] 
+    Téglalap alakú UI elemeket valósít meg. Az inicializáció során megadott befoglaló téglalapot elmenti az osztály állapotába, és implementálja a \texttt{contains} függvényt a geometriai vizsgálathoz.
+
+    \item[\texttt{full\_screen\_ui\_component.py}] 
+    A teljes képernyőt elfoglaló UI komponens. A \texttt{contains} metódusa minden esetben \texttt{True} értéket ad vissza, biztosítva, hogy minden eseményt érzékeljen a képernyőn.
+
+    \item[\texttt{shortcut\_ui\_component.py}] 
+    Billentyűparancsok kezelésére szolgáló komponens. A konstruktorban megadott billentyűkombináció figyelését végzi, és lenyomás esetén meghívja a hozzárendelt visszahívó (callback) függvényt.
+
+    \item[\texttt{clickable\_ui\_component.py}] 
+    Kattintható UI komponensek osztálya. Kiszűri a "húzott egér" (\textit{drag}) eseményeket, és valid kattintás esetén meghívja az \texttt{on\_click} metódust. A származtatott osztályoknak így csupán az \texttt{on\_click} logikát kell implementálniuk.
+
+    \item[\texttt{button\_component.py}] 
+    Összetett komponens, amely egyesíti a \texttt{shortcut} és a \texttt{clickable} osztályok funkcionalitását.
+
+    \item[\texttt{panel.py}] 
+    A \texttt{rectangle} és \texttt{clickable} osztályok leszármazottja. Alapértelmezetten definiál egy panelt a képernyő alsó középső részén. A konstruktor paraméterei lehetővé teszik a pozíció és méret testreszabását, valamint segédfunkciókat biztosít a betűtípusok kezeléséhez. A \texttt{render} metódus felelős a háttér és a keret kirajzolásáért, így a származtatott osztályok kizárólag a tartalom megjelenítésére koncentrálhatnak.
+
+    \item[\texttt{ui\_controller.py}] 
+    Az UI komponensek központi gyűjtője és kezelője. 
+    \begin{itemize}
+        \item \textbf{Eseménykezelés:} Az eseményeket a komponensek definiált sorrendjében továbbítja. Amennyiben egy komponens lekezeli az eseményt, a továbbítás megáll (chain of responsibility minta).
+        \item \textbf{Kurzorkezelés:} Érzékeli, melyik komponens felett tartózkodik a kurzor. A takart komponensek felé nem továbbítja a kurzor pozícióját, így azok nem rajzolnak feleslegesen előnézetet (\textit{preview}).
+        \item \textbf{Kirajzolás:} Felelős az összes regisztrált komponens \texttt{render} és \texttt{tick} metódusainak hívásáért.
+    \end{itemize}
+    \begin{lstlisting}[language=Python, caption={Az UIController osztály}, label={lst:ui_controller}, inputencoding=utf8, extendedchars=true]
+from shared.ui.models.ui_component import UIComponent
+from core.models.event import Event
+
+class UIController(UIComponent):
+    elements: tuple[UIComponent]
+    
+    def dispatch_event(self, event: Event):
+        for element in self.elements:
+            if element.dispatch_event(event):
+                return True
+            
+        return False
+    
+    def render(self, screen_pos):
+        elements_above_cursor = []
+        if screen_pos is not None:
+            for element in self.elements:
+                elements_above_cursor.append(element)
+                if element.contains(screen_pos):
+                    break
+
+        for element in reversed(self.elements):
+            if element in elements_above_cursor:
+                element.render(screen_pos)
+            else:
+                element.render(None)
+                
+    def tick(self):
+        for element in self.elements:
+            element.tick()
+            
+    def contains(self, screen_pos):
+        return any(element.contains(screen_pos) for element in self.elements)
+    \end{lstlisting}
+
+\end{description}
+
+A UI modellek közötti öröklődési és kapcsolati viszonyokat az \ref{fig:ui-models-uml}. ábra szemlélteti.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{impl/app_architecture/ui_models_uml.png}
+    \caption{Az UI komponensek UML osztálydiagramja}
+    \label{fig:ui-models-uml}
+\end{figure}
+
+\subsubsection{Modellek (Models)}
+\label{subsubsec:models}
+\begin{description}
+    \item[app\_state.py] Az alkalmazás állapotát reprenzentáló osztály. Tárolja az aktuális projektet, a mentési állapotot, valamint az alkalmazás fázisát (pl. \textit{Setup}, \textit{Simulation}).
+\end{description}
+
+
+\subsubsection{Vezérlők (Controllers)}
+\label{subsubsec:controllers}
+
+A \texttt{controllers} könyvtár tartalmazza az alkalmazás logikai vezérlőit.
+
+\begin{description}
+    \item[\texttt{app\_controller.py} (szülő: \texttt{ui\_controller})] 
+    A projekt nézet belépési pontja. Feladatai közé tartozik:
+    \begin{itemize}
+        \item A projekt inicializálása vagy betöltése.
+        \item A beérkező nyers események átalakítása az \texttt{event.py}-ban definiált belső eseménytípusokká.
+        \item Hibák vizuális kezelése.
+        \item Események továbbítása az UI komponensek felé.
+    \end{itemize}
+
+    \item[\texttt{app\_phase\_strategy.py} (szülő: \texttt{full\_screen\_ui\_component})] 
+    Stratégia osztály, amely a projekt különböző fázisainak (pl. \textit{Setup}, \textit{Simulation}) állapotát kezeli és továbbítja a megfelelő modulok felé.
+
+    \item[\texttt{camera\_controller.py}] 
+    A nézet transzformációjáért felelős osztály. Kezeli a kamera pozícióját (pan) és nagyítási szintjét (zoom), valamint feldolgozza a vezérléshez kapcsolódó felhasználói bemeneteket.
+\end{description}
+
+\subsubsection{Megosztott UI Komponensek}
+\label{subsubsec:shared-components}
+
+A \texttt{components} könyvtárban találhatóak azok az általános elemek, amelyeket több projekt modul is felhasznál:
+
+\begin{itemize}
+    \item \textbf{alert\_component.py}: Általános figyelmeztető üzenetek és modális ablakok megjelenítésére szolgáló komponens.
+    \item \textbf{input\_component.py}: Általános szövegbeviteli mező.
+    \item \textbf{zoom\_button.py}: A nézet alaphelyzetbe állításáért és a jelenlegi nagyítás megjelenítéséért felelős gomb.
+\end{itemize}
+
+\subsubsection{Segédfunkciók és Szolgáltatások}
+\label{subsubsec:utils-services}
+
+A rendszer működését támogató egyéb osztályok és függvények.
+
+\paragraph{Utils (Rajzolási segédfunkciók)}
+A \texttt{utils} könyvtár tartalmazza a grafikus megjelenítéshez szükséges alacsony szintű függvényeket:
+\begin{itemize}
+    \item \textbf{grid.py}: A háttérrács kirajzolása.
+    \item \textbf{lines.py}: Vonalak rajzolása, beleértve a szaggatott (\texttt{draw\_dashed\_line}) és pontozott (\texttt{draw\_dotted\_line}) stílusokat.
+    \item \textbf{nodes.py}: Csomópontok (\texttt{draw\_node}) és elágazások (\texttt{draw\_junction\_node}) megjelenítése.
+    \item \textbf{signal.py}: Vasúti jelzők rajzolása (\texttt{draw\_signal}).
+    \item \textbf{draw\_station.py}: Állomások vizuális megjelenítése(\texttt{draw\_station}).
+    \item \textbf{tracks.py}: Vágányok kirajzolása (\texttt{draw\_track}).
+\end{itemize}
+
+\paragraph{Services és Enums}
+\begin{description}
+    \item[\texttt{services/color\_from\_speed.py}] 
+    Segédfunkció, amely a vágány sebessége alapján meghatározza annak megjelenítési színét, vizuális visszajelzést adva a sebességkorlátozásokról.
+    \item[\texttt{enums/edge\_action.py}] 
+    Enumeráció, amely a vágányokkal kapcsolatos kirajzolási és szerkesztési módokat definiálja.
+\end{description}

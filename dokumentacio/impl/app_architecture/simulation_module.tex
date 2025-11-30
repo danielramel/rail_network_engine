@@ -1,0 +1,60 @@
+\subsection{Simulation (Szimulációs) Modul}
+\label{subsec:simulation-module}
+
+A Simulation modul a rendszer végrehajtó egysége, amely a vonatok valós idejű irányítását, a biztosítóberendezési logika (jelzők, vágányutak) érvényesítését és a fizikai szimuláció futtatását végzi. A modul architektúrája következetesen alkalmazza a modell-nézet-vezérlő (MVC) mintát, szigorúan szétválasztva az állapotkezelést, a megjelenítést és a vezérlési logikát.
+
+\begin{description}
+    \item[\texttt{simulation\_mode.py}]
+    A szimulációs környezet belépési pontja és fő vezérlője (\textit{Main Controller}). Feladata a futtatókörnyezet inicializálásáért, beleértve a biztosítóberendezés (interlocking) logikájának példányosítását, valamint a központi eseményhurok felügyeletét.
+\end{description}
+
+\paragraph{Modellek (\texttt{models})}
+Az üzleti logikát és az adatszerkezeteket tároló réteg:
+\begin{description}
+    \item[\texttt{simulation\_state.py}] 
+    A szimuláció központi állapotkezelő entitása. Feladata a szimulációs idő szinkronizációja, az aktívan kijelölt járművek nyilvántartása, valamint a vágányút-beállítások vizuális előnézetének (\textit{preview}) menedzselése.
+\end{description}
+
+\subsubsection{Felhasználói Felület (\texttt{ui})}
+A \texttt{ui} könyvtár tartalmazza a szimuláció vezérlését és a vizuális visszajelzést biztosító grafikus komponenseket.
+
+\paragraph{Általános UI elemek}
+\begin{description}
+    \item[\texttt{simulation\_controller.py}] 
+    A modul interakciós logikáját megvalósító osztály. Közvetít a felhasználói bemenetek (egér, billentyűzet) és a szimulációs modell között, biztosítva az állapotváltozások propagálását.
+    
+    \item[\texttt{simulation\_view.py}] 
+    A grafikus megjelenítésért felelős osztály. Feladata a dinamikus objektumok (vonatok), a statikus infrastruktúra (jelzők, vágányok) és az aktív vágányutak valós idejű renderelése a képernyőre.
+    
+    \item[\texttt{time\_control\_buttons.py}] 
+    A szimulációs idő manipulálását lehetővé tevő vezérlőfelület, amely funkciókat biztosít a szimuláció gyorsítására, lassítására vagy szüneteltetésére.
+    
+    \item[\texttt{time\_display.py}] 
+    A szimulált rendszeridő digitális kijelzője.
+    
+    \item[\texttt{end\_simulation\_button.py}] 
+    A szimulációs folyamat terminálására és a szerkesztő (Setup) módba való visszatérésre szolgáló vezérlőelem.
+\end{description}
+
+\paragraph{Vonatvezérlő Panelek (\texttt{ui/panel})}
+A járműirányítás funkcionalitásának komplexitása indokolta, hogy a vonatvezérléssel kapcsolatos komponensek egy dedikált \texttt{panel} csomagba kerüljenek.
+
+\begin{description}
+    \item[\texttt{train\_panel\_manager.py}] 
+    A járműpanelek életciklus-kezelője. Dinamikusan menedzseli a felhasználó által kijelölt vonatokhoz tartozó vezérlőfelületek példányosítását, megjelenítését és frissítését.
+    
+    \item[\texttt{train\_panel.py}] 
+    Járműspecifikus irányítópult. Interfészt biztosít a mozdonyvezérléshez (indítás, irányváltás), továbbá valós időben megjeleníti a vonat telemetriai adatait (pl. aktuális sebesség) és a hozzárendelt menetrend státuszát.
+    
+    \item[\texttt{schedule\_selector.py}] 
+    Menetrend-kiválasztó komponens (Qt widget integrációval). Lehetővé teszi, hogy a felhasználó az adatbázisban rendelkezésre álló menetrendek közül egyet hozzárendeljen az adott szerelvényhez.
+\end{description}
+
+A Simulation modul felépítését és az osztályok közötti kapcsolatokat a \ref{fig:simulation-module-uml}. ábra szemlélteti.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{impl/app_architecture/simulation_module_uml.png}
+    \caption{A Simulation modul és komponenseinek UML osztálydiagramja}
+    \label{fig:simulation-module-uml}
+\end{figure}

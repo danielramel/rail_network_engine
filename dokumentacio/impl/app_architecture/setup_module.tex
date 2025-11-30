@@ -1,0 +1,43 @@
+\subsection{Setup Modul}
+\label{subsubsec:setup-module}
+
+Az alkalmazás alapértelmezett állapota; ez a modul töltődik be új projekt létrehozásakor vagy egy meglévő betöltésekor. A Setup modul két almodult foglal magában:
+\begin{itemize}
+    \item \textbf{Construction modul:} Pályaszerkesztési funkciók.
+    \item \textbf{Train Placement modul:} Vonatok elhelyezése a pályán.
+\end{itemize}
+
+Architektúrális szempontból ezek az almodulok szándékosan nem a globális \texttt{shared} rétegben kaptak helyet, mivel funkcionalitásuk kizárólag a Setup fázisra korlátozódik. Ezzel a megoldással csökkenthető a globális névterek szennyezése és a felesleges függőségek kialakulása.
+
+\paragraph{Vezérlők (Controllers)}
+A modul működéséért felelős vezérlő osztályok:
+
+\begin{description}
+    \item[\texttt{setup\_mode.py}] 
+    A Setup modul fő vezérlője. Felelős a két szerkesztési mód (építés és elhelyezés) közös funkcióinak vezérléséért, valamint a szimuláció indítása előtti inicializálási lépésekért (pl. vonatok alaphelyzetbe állítása).
+    
+    \item[\texttt{setup\_state.py}] 
+    Állapotkezelő osztály, amely nyilvántartja az éppen aktív szerkesztési módot.
+    
+    \item[\texttt{setup\_mode\_strategy.py}] 
+    A Strategy tervezési mintát megvalósító osztály, amely a Construction és Train Placement módok közötti dinamikus váltást és az azokhoz tartozó specifikus logikák cseréjét kezeli.
+\end{description}
+
+\paragraph{UI Komponensek}
+A \texttt{ui} könyvtár tartalmazza mindkét Setup almodul által közösen használt felületi elemeket:
+
+\begin{itemize}
+    \item \textbf{Módválasztó és Vezérlés:}
+    \begin{itemize}
+        \item \texttt{setup\_mode\_selector\_buttons.py}: A két szerkesztési mód közötti váltást lehetővé tevő gombsor.
+        \item \texttt{start\_simulation\_button.py}: A szerkesztés lezárását és a szimuláció indítását kezdeményező gomb.
+        \item \texttt{timetable\_button.py}: A menetrend-szerkesztő felület megnyitására szolgáló gomb.
+    \end{itemize}
+    
+    \item \textbf{Fájl- és Rendszerműveletek:}
+    \begin{itemize}
+        \item \texttt{save\_button.py}: A projekt aktuális állapotának mentése.
+        \item \texttt{open\_button.py}: Meglévő projektfájl betöltése.
+        \item \texttt{exit\_button.py}: Kilépés a Setup módból vissza a főmenübe (\textit{Home Page}).
+    \end{itemize}
+\end{itemize}

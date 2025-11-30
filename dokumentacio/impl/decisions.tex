@@ -1,0 +1,80 @@
+\section{Technológiai döntések és alternatívák elemzése}
+Az alábbiakban bemutatom a mérlegelt alternatívákat és a választott megoldás melletti érveket.
+
+\subsection{Programozási nyelv: Python vs. C++ / C\#}
+A hasonló 2d szimuláció területén a leggyakoribb alternatívák a C++ vagy a C\# (Unity környezetben).
+
+\begin{itemize}
+    \item \textbf{C++ / C\# alternatívák:}
+    Előnyük a magas futási teljesítmény és a szigorú típusosság, amely nagy számításigényű 3D grafikánál elengedhetetlen.
+    Hátrányuk azonban a hosszabb fejlesztési idő (boilerplate kódok).
+    
+    \item \textbf{A választott Python előnyei:}
+    Jelen projekt esetében - a 2D-s megjelenítés révén a kritikus tényező nem a nyers grafikus teljesítmény, hanem a \textit{fejlesztési sebesség} és az \textit{adatstruktúrák rugalmas kezelése} volt.
+    A Python dinamikus típusossága és tömör szintaxisa lehetővé tette a komplex logika (vonatok mozgása, jelzők állapota) gyors implementálását.
+\end{itemize}
+
+\subsection{Szimulációs környezet: Pygame vs. Game Engines (Unity/Unreal)}
+A grafikus megjelenítés és a szimulációs ciklus (game loop) megvalósítására két fő irányvonal létezik: egy kész játékmotor (pl. Unity) használata vagy egy keretrendszer (framework) alkalmazása.
+
+\begin{itemize}
+    \item \textbf{Játékmotorok (Unity, Godot):}
+    Ezek az eszközök "dobozos" megoldásokat kínálnak fizikára és renderelésre.
+    Bár látványos eredményt adnak, a projekt szempontjából túlzott komplexitást (overhead) jelentenek.
+    Egy Unity projekt esetén a fejlesztő kénytelen a motor logikájához igazodni, ami megnehezíti a saját, egyedi gráf-alapú mozgási logika implementálását.
+    
+    \item \textbf{A választott Pygame előnyei:}
+    A Pygame nem egy motor, hanem egy könyvtár, amely közvetlen hozzáférést ad a rajzolási felülethez (canvas) és az eseményhurokhoz.
+    Ez a "code-first" megközelítés ideális a szakdolgozathoz, mivel:
+    \begin{enumerate}
+        \item Teljes kontrollt biztosít a szimulációs ciklus felett (nincs rejtett motor-logika).
+        \item A megjelenítés szorosan integrálható a Python adatmodelljeivel (nem kell adatokat átkonvertálni C\# objektumokká).
+        \item Alacsony erőforrásigényű és könnyen hordozható.
+    \end{enumerate}
+\end{itemize}
+
+Fontos megjegyezni, hogy a Python stack – és specifikusan a Pygame – legnagyobb hátránya a frontend teljesítménye.
+A Pygame szoftveres renderelése nem versenyképes a GPU-gyorsított motorokkal.
+A választás mégis erre esett, mivel ennél a szimulációnál nem a pixelpontos megjelenítés, a nagy felbontás vagy a magas FPS (képkockaszám) a cél, hanem a logikai komplexitás kezelése.
+A rendszer lényege a jelzők állítása, a dinamikus útvonalkeresés, valamint a vonatok és a pálya közötti kommunikáció szimulálása, így ezen funkciók mellett a nyers grafikus performance másodlagos tényező.
+
+\subsection{Gráfkezelés és algoritmusok: NetworkX}
+A vasúti hálózat és a pályaelemek modellezéséhez a \textbf{NetworkX} könyvtár mellett döntöttem.
+A szimuláció során a programnak rengetegszer kell különféle gráfalgoritmusokat meghívnia a pálya állapotának kiértékeléséhez.
+A NetworkX használata mellett szólt, hogy a könyvtárból elérhető rengeteg extra feature és optimalizált függvény (pl. \texttt{EdgeView}, \texttt{neighbors}, \texttt{degree}, stb.) jelentősen megkönnyíti a fejlesztést, kiváltva a saját, potenciálisan lassabb gráfkezelő algoritmusok írását.
+
+\subsection{A felhasználói felület kihívásai: A hibrid architektúra indoklása}
+A fejlesztés egyik kritikus pontja a menetrend-szerkesztő modul kialakítása volt.
+Itt ütközött ki a Pygame, mint grafikus könyvtár korlátja, és vált szükségessé egy hibrid megoldás bevezetése.
+
+\textbf{A probléma: Pygame korlátai UI téren}
+
+A Pygame egy úgynevezett \textit{framebuffer-alapú} megjelenítő.
+Minden képkockát pixelről pixelre rajzol újra, és nem rendelkezik beépített, magas szintű UI komponensekkel.
+
+\begin{itemize}
+    \item Egy menetrend táblázatos megjelenítése (sorok, oszlopok, görgetés, szerkeszthető cellák) Pygame-ben rendkívül erőforrás-igényes feladat.
+    \item A menetrendek megjelenítése a térképpel, a jelzőkkel és vonatokkal ellentétben standard UI elemeket igényel, mint például táblázatok, legördülő menük és szövegbeviteli mezők.
+    \item Ezekre a komponensekre nincsenek natív megoldások beépítve a Pygame-be.
+    \item Ezen komponensek nulláról történő lefejlesztése aránytalanul sok időt vett volna el a vasúti szimuláció fejlesztésétől, és az eredmény ergonómiailag és esztétikailag is elmaradt volna a szabványos megoldásoktól.
+\end{itemize}
+
+\textbf{A megoldás: PyQt6 integrációja}
+
+Ezen hiányosságok áthidalására választottam a \textbf{PyQt6} keretrendszert a menetrend-kezelő modulhoz.
+A PyQt6 (a Qt keretrendszer Python portja) ipari szabványos, professzionális nézetet biztosít a menetrendek számára.
+
+\begin{itemize}
+    \item \textbf{Táblázatkezelés:}
+    A \texttt{QTableWidget} komponens azonnal biztosítja a cellaszerkesztést, görgetést és legördülő menüket, amit Pygame-ben hetekig tartott volna implementálni.
+    
+    \item \textbf{Ergonómia:}
+    A felhasználó a megszokott operációs rendszer szintű vezérlőkkel találkozik, ami növeli a szoftver használhatóságát.
+    
+    \item \textbf{Szétválasztás:}
+    Ez a döntés tisztább architektúrát eredményezett.
+    A \textit{vizualizáció} (térkép, vonatok) a Pygame felelőssége, míg az \textit{adminisztráció} (adatbevitel, konfiguráció) a PyQt-é.
+    Ez a "megfelelő eszközt a megfelelő feladatra" elv gyakorlati alkalmazása.
+\end{itemize}
+
+Összegzésként elmondható, hogy a Python, Pygame, NetworkX és PyQt6 kombinációja egy olyan optimális technológiai elegyet (stack) alkot, amely egyesíti a gyors fejlesztést, a komplex algoritmusok kezelését, a teljes kontrollt a szimuláció felett, valamint a professzionális adatkezelő felületet.

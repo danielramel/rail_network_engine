@@ -1,0 +1,44 @@
+\subsection{Train Placement (Vonatelhelyező) Modul}
+\label{subsec:train-placement-module}
+
+A Train Placement modul a Setup fázison belül a vonatelhelyezési funkciókat valósítja meg. A modul architektúrája hasonló a construction modul-éhoz. A megjelenítés, az állapotkezelés és a vezérlés itt is szétválasztásra került.
+
+\begin{description}
+    \item[\texttt{train\_placement\_mode.py}]
+    A modul központi vezérlője. Feladata a vonatelhelyezési nézet inicializálása, az eszközök példányosítása és a fő eseményhurok kezelése a vonatelhelyezés alatt.
+\end{description}
+
+
+subparagraph{Modellek és Absztrakciók (\texttt{models})}
+A \texttt{models} könyvtár tartalmazza a vonatelhelyező eszközök működéséhez szükséges ősosztályokat és a közös állapotkezelőt:
+\begin{itemize}
+    \item \textbf{train\_placement\_state.py}: A vonatelhelyezési mód állapotkezelője. Ez az osztály tárolja az aktuálisan kiválasztott eszközt, valamint a vonatelhelyezési előnézetek (\textit{previews}) állapotát (pl. egy törlendő vonat azonosítóját).
+    \item \textbf{train\_placement\_tool\_controller.py}: Az egyes vonatelhelyező eszközök vezérlőinek közös ősosztálya.
+    \item \textbf{train\_placement\_tool\_view.py}: Az egyes eszközök nézeti logikájának absztrakt ősosztálya.
+\end{itemize}
+
+\subparagraph{Felhasználói Felület (\texttt{ui})}
+A felhasználói felület elemei a közös keretrendszerre és a specifikus eszköz-implementációkra tagolódnak.
+
+\begin{description}
+    \item[\texttt{train\_placement\_buttons.py}] A különböző vonatelhelyező eszközök közötti váltást biztosító gombsor.
+    \item[\texttt{train\_placement\_common\_view.py}] A vonatelhelyezési nézet alaprétege. Felelős a statikus elemek (koordináta-rendszer, meglévő vágányok, jelzők, állomások, peronok) kirajzolásáért. Az aktív eszközök erre a rétegre rajzolják rá a saját dinamikus előnézeteiket, emellett bizonyos előnézeti logikákat is ez az osztály kezel.
+    \item[\texttt{train\_placement\_panel\_strategy.py}] A \textit{Strategy} tervezési minta alapján kezeli a dinamikus panelváltást, biztosítva, hogy mindig a kiválasztott eszközhöz (pl. vonat elhelyezése) tartozó beállítások jelenjenek meg.
+    \item[\texttt{train\_placement\_tool\_strategy.py}] A \textit{Strategy} tervezési minta alapján kezeli az eszközök közötti váltást, biztosítva, hogy mindig a kiválasztott eszköz vezérlője és nézete legyen aktív.
+\end{description}
+
+\textbf{Vonatelhelyező eszközök (\textit{Tools}) felépítése:}
+A rendszerben minden vonatelhelyező eszköz (pl. vonat elhelyezése, vonat törlése) egységes, három komponensből álló architektúrát követ:
+\begin{enumerate}
+    \item \textbf{Controller:} Kezeli a felhasználói interakciókat (kattintás, billentyűzet) és frissíti az eszköz belső állapotát.
+    \item \textbf{View:} Megvalósítja a vizuális logikát, kirajzolja az eszköz-specifikus előnézeteket, és manipulálja a \texttt{train\_placement\_state} előnézeti állapotait.
+    \item \textbf{Panel:} Az eszközhöz tartozó specifikus beállításokat és a felhasználói instrukciókat megjelenítő felületi elem.
+\end{enumerate}
+A Train Placement modul és a benne található eszközök strukturális felépítését az \ref{fig:train-placement-ui-models-uml}. ábra szemlélteti.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{impl/app_architecture/train_placement_module_uml.png}
+    \caption{A Train Placement modul és az eszközök UML osztálydiagramja}
+    \label{fig:train-placement-ui-models-uml}
+\end{figure}

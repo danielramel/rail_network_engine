@@ -1,0 +1,329 @@
+\subsection{Kezdőoldal}
+\label{subsec:home-page}
+Az alkalmazás indításakor a Kezdőoldal fogadja a felhasználót. A felület felső szekciója automatikusan listázza az alapértelmezett munkakönyvtárban detektált, korábban mentett szimulációkat.
+
+A képernyő alsó sávjában elhelyezkedő vezérlőgombokkal új projekt hozható létre, illetve lehetőség nyílik a külső könyvtárban tárolt állományok tallózására és megnyitására.
+A programból való kilépés a bal alsó sarokban található 'Quit' gombbal kezdeményezhető.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{user/images/home_page.png}
+    \caption{A program kezdőoldala a projektválasztóval}
+    \label{fig:home-page}
+\end{figure}
+
+\subsection{Projekt nézet és navigáció}
+\label{subsec:map-menu}
+Egy szimulációs állomány betöltése után a központi Projekt nézet válik aktívvá. Innen érhető el az összes szerkesztési és szimulációs funkció.
+\newline
+\subsubsection{Interakciók és hibakezelés:}
+A projekt szerkesztése közben a felhasználói interakciók során a következő visszajelzési mechanizmusok segítik a felhasználót:
+\begin{itemize}
+    \item \textit{Szövegbevitel:} Amennyiben egy művelet szöveg megadását igényli (pl. név, paraméter), azt a felhasználó a felugró ablakban (popup) teheti meg.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.4\textwidth]{user/images/input_simulation_time.png}
+        \caption{Példa szöveges adatbevitelre}
+        \label{fig:input-popup}
+    \end{figure}
+    \item \textit{Vizuális visszajelzés:} Ha egy elem az adott pozícióban nem helyezhető el (pl. ütközés vagy érvénytelen geometria), a kurzor alatt a terület piros színre vált.
+    \item \textit{Hibaüzenetek:} Amennyiben a felhasználó érvénytelen helyre kattint, vagy szabálytalan műveletet kísérel meg, a program \textbf{felugró értesítésben (popup)} jelzi a hiba tényét és részletezi annak okát.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.4\textwidth]{user/images/alert.png}
+        \caption{Figyelmeztető hibaüzenet}
+        \label{fig:alert-popup}
+    \end{figure}
+\end{itemize}
+
+\textbf{Megjelenítés és geometria:}
+A munkaterület egy izometrikus rácshálóra illeszkedik.
+\textit{Megjegyzés:} Bár a perspektivikus torzítás miatt a rács átlója vizuálisan hosszabbnak tűnik az oldalaknál, a szimulációs logika szerint a rácsátlók és a rácsélek hossza megegyezik.
+
+\textbf{Menürendszer:}
+A nézet felső sarkában található menüsor biztosítja a váltást a különböző szerkesztési üzemmódok között. Az aktív funkciót a gomb körüli vastag keret jelzi.
+A különböző nézetek gyorsbillentyűkkel is elérhetők:
+\begin{itemize}
+    \item \textbf{C} - Pályaszerkesztés (Construction)
+    \item \textbf{T} - Vonatok elhelyezése (Train placement)
+    \item \textbf{R} - Menetrendek kezelése (Timetables)
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{user/images/project_view.png}
+    \caption{A projekt nézet és a felső menüsor}
+    \label{fig:project-view}
+\end{figure}
+
+A menetrendek adminisztrációja - funkcionális elkülönülése miatt - egy dedikált ablakban történik (lásd: \ref{subsubsec:timetables} fejezet).
+
+
+\subsubsection{Navigáció a munkaterületen}
+\label{subsubsec:map-move-zoom}
+A projekt területe szabadon bejárható:
+\begin{itemize}
+    \item \textbf{Mozgatás:} Bármely egérgomb lenyomva tartása mellett az egér húzásával (pan).
+    \item \textbf{Nagyítás/Kicsinyítés (Zoom):} Az egérgörgő használatával. A nagyítás középpontja mindig az egérmutató aktuális pozíciója.
+\end{itemize}
+
+Amennyiben a nézetpozíció vagy a nagyítás mértéke eltér az alapértelmezettől, a jobb felső sarokban megjelenik egy navigációs információs ablak. Erre kattintva a nézet azonnal visszaállítható a pálya geometriai középpontjára és a minimális nagyítási szintre. Projekt megnyitásakor a program alapértelmezetten ezt a nézetet tölti be.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{user/images/zoomed_in.png}
+    \caption{Navigációs információs ablak nagyításkor}
+    \label{fig:zoom-info}
+\end{figure}
+
+\subsubsection{Infrastruktúra építése (Pályaszerkesztés)}
+\label{subsubsec:construction}
+Ebben a módban végezhető el a vasúti hálózat topológiájának kialakítása. A képernyő jobb alsó sarkában található eszköztáron hat különböző elemtípus választható ki.
+Gyorsbillentyűk az elemek kiválasztásához:
+\begin{itemize}
+    \item \textbf{1} - Vágány
+    \item \textbf{2} - Alagút
+    \item \textbf{3} - Jelzőberendezés
+    \item \textbf{4} - Állomásépület
+    \item \textbf{5} - Peron
+    \item \textbf{0} - Törlés
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{user/images/construction_buttons.png}
+    \caption{Az építési mód eszköztára}
+    \label{fig:construction-toolbar}
+\end{figure}
+
+\subsubsection{Vágány fektetése}
+\label{subsubsec:track}
+A vágányhálózat a projekt alapja. Az építés menete:
+\begin{enumerate}
+    \item Kattintással jelölje ki a szakasz kezdőpontját.
+    \item Húzza az egeret a kívánt végpont felé. A program automatikusan generálja a legrövidebb, fizikailag kivitelezhető nyomvonalat.
+    \item Újabb kattintással véglegesítse a szakaszt.
+\end{enumerate}
+
+\textbf{Láncolt építés:} A véglegesítés után az eszköz aktív marad, és az előző szakasz végpontja válik az új szakasz kezdőpontjává, lehetővé téve a folyamatos építést. A rendszer automatikusan tiltja a járművek számára járhatatlanul szűk ívek létrehozását.
+A művelet megszakítása vagy az előnézet törlése a \textbf{jobb egérgombbal} lehetséges.
+
+\textbf{Paraméterek:}
+Az alsó panelen definiálható a vágány sebességhatára (színkódolással jelölve) és megjelenítési típusa (folyamatos vagy szaggatott vonal).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{user/images/track_placement_anchor.png} \\[0.5em]
+    \includegraphics[width=0.6\textwidth]{user/images/track_construction_different_speeds.png} \\[0.5em]
+    \includegraphics[width=0.6\textwidth]{user/images/track_construction_long.png}
+    \caption{Vágányépítés folyamata és a különböző sebességek és hosszak megjelenítése}
+    \label{fig:track-construction}
+\end{figure}
+
+\subsubsection{Alagút}
+\label{subsubsec:tunnel}
+Az alagút funkció a vágányok különszintű keresztezését teszi lehetővé. Ez nem földrajzi alagút-szimuláció, hanem logikai eszköz a vágányok különszintű átvezetésére.
+
+\textit{Telepítési feltételek:}
+\begin{itemize}
+    \item Kizárólag meglévő vágányvégek közé illeszthető.
+    \item Alagutak keresztezése nem engedélyezett.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{user/images/tunnel_placement.png}
+    \caption{Alagút elhelyezése két vágányvég között}
+    \label{fig:tunnel-placement}
+\end{figure}
+
+\subsubsection{Állomások és Peronok}
+\label{subsubsec:station}
+Az utasforgalmi létesítmények definiálása hierarchikus:
+\begin{enumerate}
+    \item \textbf{Állomásépület:} A vágányok melletti szabad területre helyezendő.
+    \item \textbf{Peron:} Közvetlenül a vágányra illeszkedik, és logikailag a legközelebbi állomásépülethez kapcsolódik (ezt pontozott vonal jelzi).
+\end{enumerate}
+
+Peron nem létesíthető váltókörzetben (kereszteződés) vagy íves pályaszakaszon. Az állomásépület pozíciója utólagosan módosítható.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{user/images/station_placement.png} \\[0.5em]
+    \includegraphics[width=0.6\textwidth]{user/images/platform_placement.png} \\[0.5em]
+    \includegraphics[width=0.6\textwidth]{user/images/station_movement.png}
+    \caption{Állomások és peronok elhelyezése, illetve mozgatása}
+    \label{fig:stations-platforms}
+\end{figure}
+
+\subsubsection{Jelzőberendezések}
+\label{subsubsec:signal}
+A forgalomszabályozó jelzők a vágányok mentén helyezkednek el, irányultságuk a vágánytengelyhez kötött (kattintással megfordítható).
+
+\textit{Tiltott zónák:} A jobb átláthatóság érdekében nem telepíthető jelző váltókra, ívekre, peronokra vagy alagutakba.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{user/images/signal_placement.png} \\[0.5em]
+    \includegraphics[width=0.6\textwidth]{user/images/signal_rotation.png}
+    \caption{Jelző elhelyezése és irányának megfordítása}
+    \label{fig:signal-placement}
+\end{figure}
+
+\subsubsection{Elemek törlése}
+\label{subsubsec:delete}
+A törlés funkcióval az infrastruktúra elemei eltávolíthatók. A kurzor alatt a törlendő objektum piros kiemelést kap.
+\begin{itemize}
+    \item \textbf{Vágány:} A rendszer igyekszik a logikailag egybe tartozó pályaszakaszokat egyben kijelölni.
+    \item \textbf{Állomás:} Az épület törlése a hozzárendelt peronok automatikus eltávolítását is maga után vonja.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{user/images/deleting_track.png} \\[0.5em]
+    \includegraphics[width=0.6\textwidth]{user/images/deleting_signal.png}
+    \caption{Vágány és jelző törlésének kijelölése}
+    \label{fig:deletion}
+\end{figure}
+
+
+\subsection{Vonatok elhelyezése}
+
+\subsubsection{Gördülőállomány elhelyezése}
+\label{subsubsec:train-placement}
+A szimuláció kezdőállapotának beállításához a vonatokat a pályára kell helyezni.
+A \textit{Vonat hozzáadása} eszközzel a vágányra kattintva jön létre az új szerelvény. A vonat fizikai paraméterei (kocsik száma, maximális sebesség, gyorsulás/lassulás) az alsó panelen konfigurálhatók.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{user/images/train_placement.png}
+    \caption{Új szerelvény elhelyezése a pályán}
+    \label{fig:train-placement}
+\end{figure}
+
+A \textit{Vonat törlése} eszközzel a pályán elhelyezett járművek távolíthatók el.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{user/images/train_deletion.png}
+    \caption{Vonat eltávolítása}
+    \label{fig:train-deletion}
+\end{figure}
+
+\subsubsection{Menetrendi tervezés}
+\label{subsubsec:timetables}
+A menetrendek definiálják a járművek útvonalát és időzítését. A funkció egy külön ablakot használ a jobb áttekinthetőség érdekében.
+A menetrendek előszőr listanézetben jelennek meg, az egyes viszonylatok kattintással lenyithatók.
+A lista elemeit kibontva láthatóvá válnak a részletes adatok: állomások sorrendje, érkezési-, indulási-, várakozási- és menetidők.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{user/images/timetable_list.png}
+    \caption{Menetrendek listanézete}
+    \label{fig:timetable-list}
+\end{figure}
+
+\textbf{Szerkesztési műveletek:}
+Az 'Add Timetable' gomb új viszonylatot hoz létre. A felugró ablakban a viszonylat neve, színe, gyakorisága és a megállók időzítése állítható be.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{user/images/timetable_editor.png}
+    \caption{Új menetrend létrehozása}
+    \label{fig:timetable-editor}
+\end{figure}
+
+A menetrend szerkesztő felületén a következő műveletek végezhetők el:
+\begin{itemize}
+    \item \textbf{Állomás beszúrása:} A '+' gombbal. (Kijelölés hiányában a lista végére kerül).
+    \item \textbf{Időzítés számítása:} A felhasználó által megadott várakozási és utazási idők alapján a szoftver automatikusan kalkulálja az abszolút indulási és érkezési időpontokat.
+    \item \textbf{Törlés:} A 'kuka' ikonnal.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{user/images/timetable_editor_selected_station.png}
+    \caption{Állomás kiválasztása a menetrend szerkesztőben}
+    \label{fig:timetable-station-select}
+\end{figure}
+
+
+\subsection{Szimulációs üzemmód}
+\label{subsec:simulation}
+A projekt futtatása a 'Start Simulation' gombbal és a kezdő időpont megadásával indítható.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{user/images/simulation_page.png}
+    \caption{Aktív szimulációs nézet}
+    \label{fig:simulation-view}
+\end{figure}
+
+\subsubsection{Idővezérlés}
+A szimuláció sebessége a vezérlőpulton vagy billentyűzettel szabályozható:
+\begin{itemize}
+    \item \textbf{SPACE} - Szünet / Folytatás
+    \item \textbf{0} - Szünet
+    \item \textbf{1} - Normál sebesség (1x)
+    \item \textbf{2} - Gyorsított (5x)
+    \item \textbf{3} - Maximális sebesség (25x)
+\end{itemize}
+
+\subsubsection{Forgalomirányítás (Vágányutak kezelése)}
+A vonatok biztonságos közlekedése vágányutak beállításával történik.
+
+\textbf{Vágányút kijelölése:}
+\begin{enumerate}
+    \item Kattintson a kezdő jelzőre (Start).
+    \item Vigye a kurzort a céljelző (Cél) fölé az útvonal-előnézet megjelenítéséhez.
+    \item Kattintson a céljelzőre a beállításhoz.
+\end{enumerate}
+Sikeres beállítás esetén a start és a köztes jelzők 'Szabad' állásba kerülnek. Visszavonáshoz kattintson jobb gombbal a jelzőre.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{user/images/route_preview.png}
+    \caption{Vágányút előnézete (zöld vonal)}
+    \label{fig:route-preview}
+\end{figure}
+
+\textbf{Útvonal-kényszerítés (Blokkolás):}
+Alternatív útvonalak esetén a felhasználó kizárhat csomópontokat a keresésből. A Start jelző kijelölése után kattintson a térképen a kerülendő pontra (piros kör jelzi), majd jelölje ki a Cél jelzőt.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{user/images/route_before_blockers.png} \\[0.5em]
+    \includegraphics[width=0.7\textwidth]{user/images/route_after_blockers.png}
+    \caption{Útvonal tervezése tiltott pont (blocker) alkalmazásával. Fent: alapútvonal, lent: blokkolt pont után.}
+    \label{fig:route-blockers}
+\end{figure}
+
+\textbf{Automata térközbiztosítás:}
+Hosszú, elágazásmentes szakaszokon lehetőség van láncolt kijelölésre. A céljelző kijelölésekor tartsa nyomva a \textbf{SHIFT} billentyűt. Ekkor a rendszer az összes köztes jelzőt automata térközjelzővé alakítja (töltött háromszög szimbólum), melyek a vonat áthaladása után automatikusan kezelik a foglaltságot.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{user/images/auto_signal.png} \\[0.5em]
+    \includegraphics[width=0.6\textwidth]{user/images/auto_signal_multiple.png} \\[0.5em]
+    \includegraphics[width=0.6\textwidth]{user/images/auto_signal_occupied.png}
+    \caption{Automata térközjelzők működése és foglaltságjelzése}
+    \label{fig:auto-signal}
+\end{figure}
+
+\subsubsection{Járműfelügyelet}
+A vonatokra kattintva megjelenik a vezérlőpanel (max. 4 panel egyidejűleg).
+\begin{itemize}
+    \item \textbf{Operatív beavatkozás:} Menetrend hozzárendelése, kézi indítás/megállítás, irányváltás.
+    \item \textbf{Státuszmonitor:} Sebesség, menetrendi pontosság (késés kijelzése) és következő célállomás nyomon követése.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{user/images/train_panels_late_on_time.png}
+    \caption{Vonatok információs panelei (késés és pontos haladás jelzése)}
+    \label{fig:train-panels}
+\end{figure}
+
+
+\subsubsection{Szimuláció leállítása}
+A 'Stop Simulation' gomb megnyomásával a rendszer visszaáll szerkesztő módba, és a szimulációs állapot törlődik.
