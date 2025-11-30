@@ -4,8 +4,6 @@ from core.models.geometry.edge import Edge
 from core.models.geometry.direction import Direction
 from core.models.geometry.node import Node
 from typing import Callable, Optional, TYPE_CHECKING
-if TYPE_CHECKING:
-    from core.models.railway.railway_system import RailwaySystem
 
 @dataclass
 class Signal:

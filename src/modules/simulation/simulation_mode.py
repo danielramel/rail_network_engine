@@ -1,5 +1,5 @@
 from core.graphics.graphics_context import GraphicsContext
-from core.models.app_state import AppState
+from shared.models.app_state import AppState
 from modules.simulation.ui.end_simulation_button import EndSimulationButton
 from modules.simulation.ui.panel.train_panel_manager import TrainPanelManager
 from shared.ui.components.zoom_button import ZoomButton

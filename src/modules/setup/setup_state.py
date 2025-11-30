@@ -1,5 +1,5 @@
 from enum import Enum, auto
-from core.models.app_state import AppState
+from shared.models.app_state import AppState
 
 class SetupView(Enum):
     CONSTRUCTION = auto()

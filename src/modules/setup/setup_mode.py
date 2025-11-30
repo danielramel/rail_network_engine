@@ -1,7 +1,7 @@
 import json
 from tkinter import messagebox
 from core.graphics.graphics_context import GraphicsContext
-from core.models.app_state import AppState
+from shared.models.app_state import AppState
 from tkinter import filedialog
 import tkinter as tk
 from core.models.railway.railway_system import RailwaySystem

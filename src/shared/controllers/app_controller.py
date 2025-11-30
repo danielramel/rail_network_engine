@@ -2,7 +2,7 @@ import pygame
 from core.config.color import Color
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.camera import Camera
-from core.models.app_state import AppState
+from shared.models.app_state import AppState
 from core.models.event import Event
 from core.models.geometry.position import Position
 from core.graphics.graphics_context import GraphicsContext

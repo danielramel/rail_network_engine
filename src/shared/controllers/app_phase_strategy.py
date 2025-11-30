@@ -1,4 +1,4 @@
-from core.models.app_state import AppState, AppPhase
+from shared.models.app_state import AppState, AppPhase
 from core.models.railway.railway_system import RailwaySystem
 from core.graphics.graphics_context import GraphicsContext
 from core.models.geometry.position import Position
