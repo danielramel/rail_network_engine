@@ -1,7 +1,7 @@
 import pygame
 from enum import Enum, auto
 from shared.controllers.app_controller import AppController
-from modules.home_page.home_page_screen import HomePageScreen
+from home_page_screen import HomePageScreen
 from shared.ui.models.ui_controller import UIController
 from core.config.config import Config
 from PyQt6.QtWidgets import QApplication

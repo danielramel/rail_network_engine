@@ -10,7 +10,7 @@ class UIComponent(ABC):
         return self.handle_event(event)
     
     def handle_event(self, event: Event) -> bool:
-        """Process a pygame event that has already been filtered by type. Return True if consumed."""
+        """Process an event that has already been filtered by type. Return True if consumed."""
         return False
 
     @abstractmethod

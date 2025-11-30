@@ -15,29 +15,24 @@ class HomePageScreen:
         self._font_button = pygame.font.SysFont("Arial", 36)
         self._font_map_button = pygame.font.SysFont("Arial", 34)
         
-        # Scan maps folder for available map files
         self._map_files = self._scan_maps_folder()
         
-        # Calculate button positions
         screen_w, screen_h = screen.get_size()
-        # Bottom action buttons (bigger)
         button_width = 420
         button_height = 80
         button_spacing = 100
         
-        # Map buttons (wider with more inter-column spacing)
         map_button_height = 90
-        map_button_h_spacing = max(80, screen_w // 18)  # increase space between columns
+        map_button_h_spacing = max(80, screen_w // 18)
         available_width = int(screen_w * 0.92)
         map_button_width = (available_width - map_button_h_spacing) // 2
-        map_button_width = max(420, min(map_button_width, 640))  # keep sensible bounds
+        map_button_width = max(420, min(map_button_width, 640))
         map_button_v_spacing = 30
         
         center_x = screen_w // 2
         
-        # Create map file buttons at the top (below title) in a 2x3 grid
         self._map_buttons: list[tuple[pygame.Rect, str, pygame.Surface]] = []
-        maps_start_y = 220  # Start maps above the fold
+        maps_start_y = 220 
         columns = 2
         rows = 4
         max_buttons = columns * rows
@@ -55,12 +50,10 @@ class HomePageScreen:
                 map_button_width,
                 map_button_height
             )
-            # Create display name from filename (remove .json extension)
             display_name = os.path.splitext(filename)[0].replace("_", " ").title()
             text_surface = self._font_map_button.render(display_name, True, Color.WHITE)
             self._map_buttons.append((button_rect, filepath, text_surface))
         
-        # Position New and Open buttons at the bottom, side by side
         bottom_buttons_y = screen_h - button_height - 200
         
         self._new_button_rect = pygame.Rect(
@@ -83,7 +76,6 @@ class HomePageScreen:
         self._no_maps_text = self._font_map_button.render("No projects found", True, Color.GREY)
         self._your_maps_text = self._font_button.render("Your projects:", True, Color.WHITE)
         
-        # Quit button in bottom left corner
         quit_button_width = 120
         quit_button_height = 50
         quit_margin = 20
@@ -99,7 +91,6 @@ class HomePageScreen:
         self._selected_action: str | None = None
         self._selected_filepath: str | None = None
         
-        # Alert system
         self._alert_message: str | None = None
         self._alert_font = pygame.font.SysFont("Arial", 24)
         self._alert_title_font = pygame.font.SysFont("Arial", 32, bold=True)
@@ -124,7 +115,6 @@ class HomePageScreen:
         return map_files
     
     def dispatch_event(self, pygame_event: pygame.event) -> str | None:
-        # If alert is showing, dismiss it on any click
         if self._alert_message is not None:
             if pygame_event.type == pygame.MOUSEBUTTONUP and pygame_event.button == 1:
                 self._alert_message = None
@@ -144,7 +134,6 @@ class HomePageScreen:
             elif self._quit_button_rect.collidepoint(mouse_pos.x, mouse_pos.y):
                 self._hovered_button = "quit"
             else:
-                # Check map buttons
                 self._hovered_button = None
                 for i, (rect, filepath, _) in enumerate(self._map_buttons):
                     if rect.collidepoint(mouse_pos.x, mouse_pos.y):
@@ -166,7 +155,6 @@ class HomePageScreen:
                 raise SystemExit()
             
             else:
-                # Check map buttons
                 for rect, filepath, _ in self._map_buttons:
                     if rect.collidepoint(mouse_pos.x, mouse_pos.y):
                         self._start_callback(filepath)
@@ -197,14 +185,12 @@ class HomePageScreen:
         
         screen_w, screen_h = self._screen.get_size()
         
-        # Draw title at the top
         title_rect = self._title_text.get_rect(center=(screen_w // 2, 70))
         self._screen.blit(self._title_text, title_rect)
         
         your_maps_rect = self._your_maps_text.get_rect(center=(screen_w // 2, 160))
         self._screen.blit(self._your_maps_text, your_maps_rect)
         
-        # Draw map file buttons first (at the top) or "No maps found" message
         if self._map_buttons:
             for i, (rect, filepath, text_surface) in enumerate(self._map_buttons):
                 self._draw_button(rect, text_surface, self._hovered_button == f"map_{i}")
@@ -212,31 +198,25 @@ class HomePageScreen:
             no_maps_rect = self._no_maps_text.get_rect(center=(screen_w // 2, 500))
             self._screen.blit(self._no_maps_text, no_maps_rect)
         
-        # Draw New and Open buttons at the bottom (neutral style)
         self._draw_button(self._new_button_rect, self._new_text, self._hovered_button == "new")
         self._draw_button(self._open_button_rect, self._open_text, self._hovered_button == "open")
         
-        # Draw quit button
         self._draw_button(self._quit_button_rect, self._quit_text, self._hovered_button == "quit")
         
-        # Draw alert overlay if active
         if self._alert_message:
             self._draw_alert()
     
     def _draw_button(self, rect: pygame.Rect, text_surface: pygame.Surface, hovered: bool, bg_color: tuple[int, int, int] | None = None, border_color: tuple[int, int, int] | None = None):
         """Draw a menu button."""
-        # Button background (supports custom color)
         if bg_color is None:
             fill_color = Color.DARKGREY if hovered else Color.BLACK
         else:
             fill_color = self._adjust_color(bg_color, 1.1) if hovered else bg_color
         pygame.draw.rect(self._screen, fill_color, rect, border_radius=15)
         
-        # Button border
         bcolor = border_color if border_color is not None else (Color.WHITE if hovered else Color.GREY)
         pygame.draw.rect(self._screen, bcolor, rect, 3, border_radius=15)
         
-        # Button text
         text_rect = text_surface.get_rect(center=rect.center)
         self._screen.blit(text_surface, text_rect)
 
@@ -252,26 +232,21 @@ class HomePageScreen:
         """Draw the alert overlay."""
         screen_w, screen_h = self._screen.get_size()
         
-        # Draw semi-transparent overlay
         overlay = pygame.Surface((screen_w, screen_h), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 180))
         self._screen.blit(overlay, (0, 0))
         
-        # Draw alert box background
         pygame.draw.rect(self._screen, Color.BLACK, self._alert_rect, border_radius=15)
         pygame.draw.rect(self._screen, Color.WHITE, self._alert_rect, 3, border_radius=15)
         
-        # Draw alert title
         title_surface = self._alert_title_font.render("Notice", True, Color.WHITE)
         title_rect = title_surface.get_rect(centerx=self._alert_rect.centerx, top=self._alert_rect.top + 20)
         self._screen.blit(title_surface, title_rect)
         
-        # Draw alert message (word wrap if needed)
         message_surface = self._alert_font.render(self._alert_message, True, Color.WHITE)
         message_rect = message_surface.get_rect(center=self._alert_rect.center)
         self._screen.blit(message_surface, message_rect)
         
-        # Draw dismiss instruction
         dismiss_rect = self._alert_dismiss_text.get_rect(centerx=self._alert_rect.centerx, bottom=self._alert_rect.bottom - 15)
         self._screen.blit(self._alert_dismiss_text, dismiss_rect)
         
