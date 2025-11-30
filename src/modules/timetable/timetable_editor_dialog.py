@@ -6,41 +6,41 @@ from PyQt6.QtWidgets import (QDialog, QFormLayout, QComboBox,
 from PyQt6.QtCore import Qt, QTime
 from PyQt6.QtWidgets import QLineEdit
 from PyQt6.QtGui import QIcon, QColor, QBrush
-from modules.route.stylesheets.route_editor_stylesheet import (
+from modules.timetable.stylesheets.timetable_editor_stylesheet import (
     TABLE_STYLE, MOVE_BUTTON_STYLE,
     ADD_BUTTON_STYLE, REMOVE_BUTTON_STYLE
 )
 from core.models.railway.railway_system import RailwaySystem
-from core.models.route import Route
+from core.models.timetable import Timetable
 from core.config.color import Color
 
-class RouteEditorDialog(QDialog):
-    def __init__(self, parent, railway: RailwaySystem, route: Route = None):
+class TimetableEditorDialog(QDialog):
+    def __init__(self, parent, railway: RailwaySystem, timetable: Timetable = None):
         self.selected_row = None
         self._railway = railway
-        self._editing_route = route
+        self._editing_timetable = timetable
         super().__init__(parent)
         self._init_layout()
         
-        # If editing an existing route, populate the fields
-        if route is not None:
-            self.set_data(route)
+        # If editing an existing timetable, populate the fields
+        if timetable is not None:
+            self.set_data(timetable)
         
     def accept(self):
         """Override accept to validate before closing."""
         if not self.code_edit.text().strip():
-            QMessageBox.warning(self, "Invalid input", "Route code cannot be empty.")
+            QMessageBox.warning(self, "Invalid input", "timetable code cannot be empty.")
             return
-        if self.code_edit.text().strip() != self._editing_route.code if self._editing_route else True:
-            for existing_route in self._railway.routes.all():
-                if existing_route.code == self.code_edit.text().strip():
-                    QMessageBox.warning(self, "Invalid input", "Route code must be unique.")
+        if self.code_edit.text().strip() != self._editing_timetable.code if self._editing_timetable else True:
+            for existing_timetable in self._railway.timetables.all():
+                if existing_timetable.code == self.code_edit.text().strip():
+                    QMessageBox.warning(self, "Invalid input", "timetable code must be unique.")
                     return
         super().accept()
 
     def get_data(self) -> dict:
-        """Collect route data from the dialog, ignoring arrival and departure times."""
-        route_data = {
+        """Collect timetable data from the dialog, ignoring arrival and departure times."""
+        timetable_data = {
             "code": self.code_edit.text().strip(),
             "color": self.color_combo.currentText(),
             "first_train_time": self.first_train_time_edit.time().toString("HH:mm"),
@@ -67,27 +67,27 @@ class RouteEditorDialog(QDialog):
                 ] if self.stations_table.rowCount() > 1 else []
                     }
 
-        return route_data
+        return timetable_data
 
-    def set_data(self, route: Route):
-        """Populate the dialog fields from an existing route."""
+    def set_data(self, timetable: Timetable):
+        """Populate the dialog fields from an existing timetable."""
         # Set basic fields
-        self.code_edit.setText(route.code)
-        color_index = self.color_combo.findText(route.color)
+        self.code_edit.setText(timetable.code)
+        color_index = self.color_combo.findText(timetable.color)
         if color_index >= 0:
             self.color_combo.setCurrentIndex(color_index)
         
         # Set time fields
-        first_hours = route.first_train // 60
-        first_mins = route.first_train % 60
+        first_hours = timetable.first_train // 60
+        first_mins = timetable.first_train % 60
         self.first_train_time_edit.setTime(QTime(first_hours, first_mins))
         
-        last_hours = route.last_train // 60
-        last_mins = route.last_train % 60
+        last_hours = timetable.last_train // 60
+        last_mins = timetable.last_train % 60
         self.last_train_time_edit.setTime(QTime(last_hours, last_mins))
         
         # Set frequency
-        freq_index = self.freq_combo.findText(str(route.frequency))
+        freq_index = self.freq_combo.findText(str(timetable.frequency))
         if freq_index >= 0:
             self.freq_combo.setCurrentIndex(freq_index)
         
@@ -95,10 +95,10 @@ class RouteEditorDialog(QDialog):
         while self.stations_table.rowCount() > 0:
             self.stations_table.removeRow(0)
         
-        # Add rows for each stop in the route
-        for i, stop in enumerate(route.stops):
+        # Add rows for each stop in the timetable
+        for i, stop in enumerate(timetable.stops):
             self.add_empty_station_row(i)
-        for i, stop in enumerate(route.stops):
+        for i, stop in enumerate(timetable.stops):
             # Set the station
             station_combo = self.stations_table.cellWidget(i, 1)
             station_index = station_combo.findData(stop['station'].id)
@@ -112,7 +112,7 @@ class RouteEditorDialog(QDialog):
                     travel_spinbox.setValue(stop['travel_time'])
             
             # Set stop time (skip last station)
-            if i < len(route.stops) - 1 and stop.get('stop_time') is not None:
+            if i < len(timetable.stops) - 1 and stop.get('stop_time') is not None:
                 stop_spinbox = self.stations_table.cellWidget(i, 3)
                 if stop_spinbox:
                     stop_spinbox.setValue(stop['stop_time'])
@@ -230,7 +230,7 @@ class RouteEditorDialog(QDialog):
     # Layout and UI initialization
 
     def _init_layout(self):
-        title = "Edit timetable" if self._editing_route else "Add timetable"
+        title = "Edit timetable" if self._editing_timetable else "Add timetable"
         self.setWindowTitle(title)
         self.setMinimumSize(600, 400)
         

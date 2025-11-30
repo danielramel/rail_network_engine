@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from core.models.railway.railway_system import RailwaySystem
 
 @dataclass
-class Route:
+class Timetable:
     code: str
     color: str
     first_train: int
@@ -52,7 +52,7 @@ class Route:
         return sum(stop['travel_time']+stop['stop_time'] for stop in self.stops[1:-1]) + self.stops[-1]['travel_time']
 
     @classmethod
-    def from_dict(cls, data: dict, railway: 'RailwaySystem') -> 'Route':
+    def from_dict(cls, data: dict, railway: 'RailwaySystem') -> 'Timetable':
         
         stops: list[dict[str, Station | int]] = []
 

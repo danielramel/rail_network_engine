@@ -10,18 +10,18 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtGui import QColor, QBrush
-from core.models.route import Route
+from core.models.timetable import Timetable
 from core.config.color import Color
 
 
 class ScheduleSelector(QWidget):
-    schedule_chosen = pyqtSignal(Route, int)
+    schedule_chosen = pyqtSignal(Timetable, int)
     window_closed = pyqtSignal()
 
-    def __init__(self, routes: list[Route], parent=None):
+    def __init__(self, timetables: list[Timetable], parent=None):
         super().__init__(parent)
-        self._routes = routes
-        self._selected_route: Route | None = None
+        self._timetables = timetables
+        self._selected_timetable: Timetable | None = None
         self.setWindowTitle("Select Schedule")
         self.setGeometry(300, 200, 600, 400)
 
@@ -38,10 +38,10 @@ class ScheduleSelector(QWidget):
         # Horizontal layout for the two panels
         panels_layout = QHBoxLayout()
 
-        self.route_list = QListWidget()
-        self.route_list.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
-        self.route_list.itemSelectionChanged.connect(self._on_route_selected)
-        panels_layout.addWidget(self.route_list)
+        self.timetable_list = QListWidget()
+        self.timetable_list.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
+        self.timetable_list.itemSelectionChanged.connect(self._on_timetable_selected)
+        panels_layout.addWidget(self.timetable_list)
 
         self.start_times_list = QListWidget()
         self.start_times_list.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
@@ -68,42 +68,42 @@ class ScheduleSelector(QWidget):
         return f"{h:02d}:{m:02d}"
 
     def _populate_schedule_list(self):
-        self.route_list.clear()
-        for route in self._routes:
-            if not route.stops:
-                label = f"{route.code} — (no stations)"
+        self.timetable_list.clear()
+        for timetable in self._timetables:
+            if not timetable.stops:
+                label = f"{timetable.code} — (no stations)"
             else:
-                first_station = route.stops[0]["station"].name
-                last_station = route.stops[-1]["station"].name
-                label = f"{route.code} — {first_station} → {last_station}"
+                first_station = timetable.stops[0]["station"].name
+                last_station = timetable.stops[-1]["station"].name
+                label = f"{timetable.code} — {first_station} → {last_station}"
 
             item = QListWidgetItem(label)
-            item.setData(int(Qt.ItemDataRole.UserRole), route)
+            item.setData(int(Qt.ItemDataRole.UserRole), timetable)
 
             # color row background
-            item.setBackground(QBrush(QColor(*Color.get(route.color))))
+            item.setBackground(QBrush(QColor(*Color.get(timetable.color))))
 
             # ensure text contrast
             item.setForeground(Qt.GlobalColor.black)
 
-            self.route_list.addItem(item)
+            self.timetable_list.addItem(item)
 
-    def _on_route_selected(self):
-        selected_items = self.route_list.selectedItems()
+    def _on_timetable_selected(self):
+        selected_items = self.timetable_list.selectedItems()
         if not selected_items:
-            self._selected_route = None
+            self._selected_timetable = None
             self.start_times_list.clear()
             self.select_btn.setEnabled(False)
             return
 
         item = selected_items[0]
         schedule = item.data(int(Qt.ItemDataRole.UserRole))
-        self._selected_route = schedule
+        self._selected_timetable = schedule
         self._populate_start_times(schedule)
 
-    def _populate_start_times(self, route: Route):
+    def _populate_start_times(self, timetable: Timetable):
         self.start_times_list.clear()
-        start_times = route.start_times
+        start_times = timetable.start_times
         if not start_times:
             self.start_times_list.addItem("(No available start times)")
             
@@ -112,19 +112,19 @@ class ScheduleSelector(QWidget):
             item.setData(int(Qt.ItemDataRole.UserRole), t)
             self.start_times_list.addItem(item)
             
-        self.select_btn.setEnabled(bool(route.start_times))
+        self.select_btn.setEnabled(bool(timetable.start_times))
         
     def _on_confirm(self):
-        route_item = self.route_list.currentItem()
+        timetable_item = self.timetable_list.currentItem()
         time_item = self.start_times_list.currentItem()
 
-        if not route_item or not time_item:
-            QMessageBox.warning(self, "Incomplete selection", "Select both route and start time.")
+        if not timetable_item or not time_item:
+            QMessageBox.warning(self, "Incomplete selection", "Select both timetable and start time.")
             return
 
-        route = route_item.data(int(Qt.ItemDataRole.UserRole))
+        timetable = timetable_item.data(int(Qt.ItemDataRole.UserRole))
         start_time = time_item.data(int(Qt.ItemDataRole.UserRole))
-        self.schedule_chosen.emit(route, start_time)
+        self.schedule_chosen.emit(timetable, start_time)
         super().close()
         
     def closeEvent(self, event) -> None:

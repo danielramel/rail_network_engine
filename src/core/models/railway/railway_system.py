@@ -4,7 +4,7 @@ from core.models.railway.graph_service import GraphService
 from core.models.railway.path_finder import PathFinder
 from core.models.railway.signalling_service import SignallingService
 from core.models.repositories.station_repository import StationRepository
-from core.models.repositories.route_repository import RouteRepository
+from core.models.repositories.timetable_repository import TimetableRepository
 from core.models.repositories.train_repository import TrainRepository
 from core.models.repositories.signal_repository import SignalRepository
 
@@ -17,7 +17,7 @@ class RailwaySystem:
         self._graph_service = GraphService(self)
         self._signal_repository = SignalRepository(self)
         self._station_repository = StationRepository(self)
-        self._route_repository = RouteRepository(self)
+        self._timetable_repository = TimetableRepository(self)
         self._train_repository = TrainRepository(self)
         self._pathfinder = PathFinder(self)
         self._signalling_service = SignallingService(self)
@@ -50,8 +50,8 @@ class RailwaySystem:
         return self._signal_repository
     
     @property
-    def routes(self) -> RouteRepository:
-        return self._route_repository
+    def timetables(self) -> TimetableRepository:
+        return self._timetable_repository
             
     @property
     def stations(self) -> StationRepository:
@@ -78,7 +78,7 @@ class RailwaySystem:
             'graph': self._graph_adapter.to_dict(),
             'station_repository': self._station_repository.to_dict(),
             'signal_repository': self._signal_repository.to_dict(),
-            'route_repository': self._route_repository.to_dict(),
+            'timetable_repository': self._timetable_repository.to_dict(),
             'train_repository': self._train_repository.to_dict()
         }
     def replace_from_dict(self, data: dict) -> None:
@@ -86,14 +86,14 @@ class RailwaySystem:
             self._graph_adapter = GraphAdapter.from_dict(data['graph'], on_modified=self.mark_modified)
             self._station_repository = StationRepository.from_dict(self, data["station_repository"])
             self._signal_repository = SignalRepository.from_dict(self, data["signal_repository"])
-            self._route_repository = RouteRepository.from_dict(self, data['route_repository'])
+            self._timetable_repository = TimetableRepository.from_dict(self, data['timetable_repository'])
             self._train_repository = TrainRepository.from_dict(self, data['train_repository'])
         except Exception as e:
             # All repositories reset if any one fails
             self._graph_adapter = GraphAdapter(on_modified=self.mark_modified)
             self._station_repository = StationRepository(self)
             self._signal_repository = SignalRepository(self)
-            self._route_repository = RouteRepository(self)
+            self._timetable_repository = TimetableRepository(self)
             self._train_repository = TrainRepository(self)
             raise e
         

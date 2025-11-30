@@ -151,12 +151,12 @@ class Train:
             
     def set_schedule(self, schedule: Schedule) -> None:
         if self.schedule is not None:
-            self._railway.routes.return_start_time(self.schedule.route_code, schedule.stops[0]['departure_time'])
+            self._railway.routes.return_start_time(self.schedule.timetable_code, schedule.stops[0]['departure_time'])
         self.schedule = schedule
         
     def remove_schedule(self) -> None:
         if self.schedule is not None:
-            self._railway.routes.return_start_time(self.schedule.route_code, self.schedule.stops[0]['departure_time'])
+            self._railway.timetables.return_start_time(self.schedule.timetable_code, self.schedule.stops[0]['departure_time'])
         self.schedule = None
     
     @property

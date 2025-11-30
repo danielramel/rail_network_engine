@@ -4,7 +4,7 @@ from modules.setup.train_placement.models.train_placement_state import TrainPlac
 from core.models.geometry.position import Position
 
 
-class TrainPlacementView:
+class TrainPlacementToolView:
     def __init__(self, railway: RailwaySystem, state: TrainPlacementState, graphics: GraphicsContext):
         self._railway = railway
         self._state = state

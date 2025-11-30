@@ -1,7 +1,7 @@
 from shared.ui.models.ui_controller import UIController
 from modules.simulation.ui.panel.train_panel import TrainPanel
 from modules.simulation.models.simulation_state import SimulationState
-from core.models.repositories.route_repository import RouteRepository
+from core.models.repositories.timetable_repository import TimetableRepository
 import pygame
 import time
 from core.models.railway.railway_system import RailwaySystem
@@ -11,12 +11,12 @@ class TrainPanelManager(UIController):
     panels : dict[int, 'TrainPanel']
     _panel_selected_at: dict[int, float]
     
-    def __init__(self, railway: RailwaySystem, simulation_state: SimulationState, screen: pygame.Surface, route_repository: RouteRepository):
+    def __init__(self, railway: RailwaySystem, simulation_state: SimulationState, screen: pygame.Surface, timetable_repository: TimetableRepository):
         self.panels = {}
         self._panel_selected_at = {}
         self._railway = railway
         self._state = simulation_state
-        self._route_repository = route_repository
+        self._timetable_repository = timetable_repository
         self._screen = screen
         self._state.subscribe_to_train_selected(self.on_train_selected)
         self._state.subscribe_to_train_deselected(self.on_train_deselected)
@@ -32,7 +32,7 @@ class TrainPanelManager(UIController):
                 new_index = self.panels[oldest_train_id].index
                 self._state.deselect_train(oldest_train_id)
             
-            self.panels[train_id] = TrainPanel(train, self._screen, new_index, self._route_repository, self._state)
+            self.panels[train_id] = TrainPanel(train, self._screen, new_index, self._timetable_repository, self._state)
         
         # Update timestamp so this train becomes the youngest
         self._panel_selected_at[train_id] = time.time()

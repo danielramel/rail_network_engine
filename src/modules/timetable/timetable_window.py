@@ -8,14 +8,14 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor
 from core.config.color import Color
 from core.models.station import Station
-from core.models.route import Route
-from modules.route.route_editor_dialog import RouteEditorDialog
-from modules.route.stylesheets.route_stylesheet import ROUTE_STYLESHEET
+from core.models.timetable import Timetable
+from modules.timetable.timetable_editor_dialog import TimetableEditorDialog
+from modules.timetable.stylesheets.timetable_window_stylesheet import TIMETABLE_STYLESHEET
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QHeaderView
 from core.models.railway.railway_system import RailwaySystem
 
-class RouteWindow(QMainWindow):
+class TimeTableWindow(QMainWindow):
     window_closed = pyqtSignal()
     def __init__(self, railway: RailwaySystem):
         super().__init__()
@@ -26,7 +26,7 @@ class RouteWindow(QMainWindow):
 
     def _init_layout(self):
         self.setWindowTitle("Timetables")
-        self.setStyleSheet(ROUTE_STYLESHEET)
+        self.setStyleSheet(TIMETABLE_STYLESHEET)
         self.setMinimumSize(1150, 400)
 
 
@@ -38,7 +38,7 @@ class RouteWindow(QMainWindow):
         top_bar.addWidget(QLabel("Timetables"))
         top_bar.addStretch()
         add_btn = QPushButton("Add Timetable")
-        add_btn.clicked.connect(self.add_route)
+        add_btn.clicked.connect(self.add_timetable)
         top_bar.addWidget(add_btn)
         root.addLayout(top_bar)
 
@@ -46,7 +46,7 @@ class RouteWindow(QMainWindow):
         table = QTableWidget()
         table.setColumnCount(11)
         table.setHorizontalHeaderLabels([
-            "Code", "Route", "", "", "", "", "First", "Last", "Freq", "Edit", "Delete"
+            "Code", "timetable", "", "", "", "", "First", "Last", "Freq", "Edit", "Delete"
         ])
 
         header = table.horizontalHeader()
@@ -66,38 +66,38 @@ class RouteWindow(QMainWindow):
         self.setCentralWidget(central)
             
     def refresh_table(self):
-        """Rebuild route view based on repository contents."""
-        routes = self._railway.routes.all()
+        """Rebuild timetable view based on repository contents."""
+        timetables = self._railway.timetables.all()
         total_rows = 0
-        for index, route in enumerate(routes):
+        for index, timetable in enumerate(timetables):
             total_rows += 1
             if index in self.expanded_rows:
-                total_rows += len(route.stops)+1  # +1 for header row
+                total_rows += len(timetable.stops)+1  # +1 for header row
 
         self.table.setRowCount(total_rows)
         self.table.clearSpans()
 
         current_row = 0
-        for idx, route in enumerate(routes):
-            route_text = self._format_route(route)
+        for idx, timetable in enumerate(timetables):
+            timetable_text = self._format_timetable(timetable)
             row_items = [
-                QTableWidgetItem(route.code),
-                QTableWidgetItem(route_text),
+                QTableWidgetItem(timetable.code),
+                QTableWidgetItem(timetable_text),
                 QTableWidgetItem(""),  # arrival placeholder
                 QTableWidgetItem(""),  # departure placeholder
                 QTableWidgetItem(""),  # travel placeholder
                 QTableWidgetItem(""),  # stop placeholder
-                QTableWidgetItem(self._format_time(route.first_train)),
-                QTableWidgetItem(self._format_time(route.last_train)),
-                QTableWidgetItem(f"{route.frequency} min"),
+                QTableWidgetItem(self._format_time(timetable.first_train)),
+                QTableWidgetItem(self._format_time(timetable.last_train)),
+                QTableWidgetItem(f"{timetable.frequency} min"),
             ]
 
-            # Styling for code cell using route color if provided
-            row_items[0].setBackground(self._get_code_color(route.color))
+            # Styling for code cell using timetable color if provided
+            row_items[0].setBackground(self._get_code_color(timetable.color))
             row_items[0].setForeground(QColor(*Color.BLACK))
             row_items[0].setTextAlignment(Qt.AlignmentFlag.AlignCenter)
 
-            # Route item metadata
+            # timetable item metadata
             row_items[1].setData(Qt.ItemDataRole.UserRole, idx)
             row_items[1].setToolTip("Click to expand/collapse stations")
             row_items[1].setTextAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
@@ -112,16 +112,16 @@ class RouteWindow(QMainWindow):
 
             # Action buttons
             edit_btn = QPushButton()
-            edit_btn.clicked.connect(lambda _=False, i=idx: self.edit_route(i))
+            edit_btn.clicked.connect(lambda _=False, i=idx: self.edit_timetable(i))
             self.table.setCellWidget(current_row, 9, edit_btn)
 
             delete_btn = QPushButton()
             delete_btn.setStyleSheet("background-color:#802020;color:white;")
-            delete_btn.clicked.connect(lambda _=False, i=idx: self.delete_route(i))
+            delete_btn.clicked.connect(lambda _=False, i=idx: self.delete_timetable(i))
             self.table.setCellWidget(current_row, 10, delete_btn)
 
             if idx in self.expanded_rows:
-                span = len(route.stops) + 2
+                span = len(timetable.stops) + 2
                 for col in (0, 6, 7, 8, 9, 10):
                     self.table.setSpan(current_row, col, span, 1)
                 # Pre-compute arrival/departure times from travel/stop chain
@@ -130,8 +130,8 @@ class RouteWindow(QMainWindow):
                 self._set_table_widget_item(current_row+1, 3, "Departure", bold=True)
                 self._set_table_widget_item(current_row+1, 4, "Travel", bold=True)
                 self._set_table_widget_item(current_row+1, 5, "Stop", bold=True)
-                arrivals, departures = self._compute_times(route)
-                for i, stop in enumerate(route.stops):
+                arrivals, departures = self._compute_times(timetable)
+                for i, stop in enumerate(timetable.stops):
                     self._set_table_widget_item(current_row + i+2, 1, stop['station'].name, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
 
                     self._set_table_widget_item(current_row + i+2, 2, self._format_time(arrivals[i]))
@@ -151,61 +151,61 @@ class RouteWindow(QMainWindow):
         if col != 1:
             return
         item = self.table.item(row, 1)
-        route_idx = item.data(Qt.ItemDataRole.UserRole)
+        timetable_idx = item.data(Qt.ItemDataRole.UserRole)
         
-        if route_idx is None: # Clicked on an expanded station row
+        if timetable_idx is None: # Clicked on an expanded station row
             return
         
-        if route_idx in self.expanded_rows:
-            self.expanded_rows.remove(route_idx)
+        if timetable_idx in self.expanded_rows:
+            self.expanded_rows.remove(timetable_idx)
         else:
-            self.expanded_rows.add(route_idx)
+            self.expanded_rows.add(timetable_idx)
         
         self.refresh_table()
         
 
-    def add_route(self):
-        dialog = RouteEditorDialog(self, self._railway)
+    def add_timetable(self):
+        dialog = TimetableEditorDialog(self, self._railway)
 
         def _on_finished(res: int):
             if res == QDialog.DialogCode.Rejected:
                 return
             data = dialog.get_data()
-            route = self._build_route_from_dialog(data)
-            self._railway.routes.add(route)
+            timetable = self._build_timetable_from_dialog(data)
+            self._railway.timetables.add(timetable)
             self.refresh_table()
 
         dialog.finished.connect(_on_finished)
         dialog.setModal(False)
         dialog.show()
 
-    def edit_route(self, route_idx):
-        route = self._railway.routes.get(route_idx)
-        dialog = RouteEditorDialog(self, self._railway, route)
+    def edit_timetable(self, timetable_idx):
+        timetable = self._railway.timetables.get(timetable_idx)
+        dialog = TimetableEditorDialog(self, self._railway, timetable)
 
         def _on_finished(res: int):
             if res == QDialog.DialogCode.Rejected:
                 return
             data = dialog.get_data()
-            updated = self._build_route_from_dialog(data)
-            # Replace route in repository (preserve index ordering)
-            self._railway.routes.remove(route)
-            self._railway.routes.add(updated)
-            if route_idx in self.expanded_rows:
-                self.expanded_rows.remove(route_idx)
+            updated = self._build_timetable_from_dialog(data)
+            # Replace timetable in repository (preserve index ordering)
+            self._railway.timetables.remove(timetable)
+            self._railway.timetables.add(updated)
+            if timetable_idx in self.expanded_rows:
+                self.expanded_rows.remove(timetable_idx)
             self.refresh_table()
 
         dialog.finished.connect(_on_finished)
         dialog.setModal(False)
         dialog.show()
 
-    def delete_route(self, route_idx):
-        route = self._railway.routes.get(route_idx)
+    def delete_timetable(self, timetable_idx):
+        timetable = self._railway.timetables.get(timetable_idx)
         
         reply = QMessageBox.warning(
             self,
-            "Delete Route",
-            f"Are you sure you want to delete route '{route.code}'?",
+            "Delete timetable",
+            f"Are you sure you want to delete timetable '{timetable.code}'?",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             QMessageBox.StandardButton.No
         )
@@ -213,8 +213,8 @@ class RouteWindow(QMainWindow):
         if reply != QMessageBox.StandardButton.Yes:
             return
             
-        self._railway.routes.remove(route)
-        self.expanded_rows.discard(route_idx)  # Remove from expanded if it was expanded
+        self._railway.timetables.remove(timetable)
+        self.expanded_rows.discard(timetable_idx)  # Remove from expanded if it was expanded
         self.refresh_table()
 
     def _format_time(self, minutes: int | None) -> str:
@@ -225,18 +225,18 @@ class RouteWindow(QMainWindow):
     def _get_code_color(self, color: str) -> QColor:
         return QColor(*Color.get(color))
 
-    def _format_route(self, route: Route) -> str:
-        stops = route.stops
+    def _format_timetable(self, timetable: Timetable) -> str:
+        stops = timetable.stops
         if not stops:
             return 'No stations'
         names = [stop['station'].name for stop in stops[:3]]  # take first 3 stations
         if len(stops) > 3:
-            return ' → '.join(names) + ' → ...' + ' → ' + stops[-1]['station'].name + f" ({route.get_full_travel_time()} min)"
-        return ' → '.join(names) + f" ({route.get_full_travel_time()} min)"
+            return ' → '.join(names) + ' → ...' + ' → ' + stops[-1]['station'].name + f" ({timetable.get_full_travel_time()} min)"
+        return ' → '.join(names) + f" ({timetable.get_full_travel_time()} min)"
 
 
     # ------------------------ Dialog data conversion ---------------------
-    def _build_route_from_dialog(self, data: dict) -> Route:
+    def _build_timetable_from_dialog(self, data: dict) -> Timetable:
         first_dep = self._hhmm_to_minutes(data['first_train_time'])
         last_dep = self._hhmm_to_minutes(data['last_train_time'])
 
@@ -250,7 +250,7 @@ class RouteWindow(QMainWindow):
                 'travel_time': travel if travel is not None else None,
                 'stop_time': stop if stop is not None else None
             })
-        route = Route(
+        timetable = Timetable(
             code=data['code'],
             color=data.get('color', 'RED'),
             first_train=first_dep,
@@ -258,12 +258,12 @@ class RouteWindow(QMainWindow):
             frequency=data['frequency'],
             stops=computed_stops
         )
-        return route
-    def _compute_times(self, route: Route) -> tuple[list[int | None], list[int | None]]:
+        return timetable
+    def _compute_times(self, timetable: Timetable) -> tuple[list[int | None], list[int | None]]:
         arrivals: list[int | None] = []
         departures: list[int | None] = []
-        current_dep = route.first_train
-        for i, stop in enumerate(route.stops):
+        current_dep = timetable.first_train
+        for i, stop in enumerate(timetable.stops):
             if i == 0:
                 arrivals.append(None)
                 departures.append(current_dep)
@@ -272,7 +272,7 @@ class RouteWindow(QMainWindow):
             arr = current_dep + travel
             arrivals.append(arr)
             stop = int(stop['stop_time']) if stop['stop_time'] is not None else 0
-            if i == len(route.stops) - 1:
+            if i == len(timetable.stops) - 1:
                 departures.append(None)
             else:
                 current_dep = arr + stop

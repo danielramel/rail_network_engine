@@ -5,41 +5,41 @@ from core.models.geometry.position import Position
 from core.config.color import Color
 from core.config.paths import ICON_PATHS
 from core.config.config import Config
-from modules.route.route_window import RouteWindow
+from modules.timetable.timetable_window import TimeTableWindow
 from core.models.event import Event
 from shared.ui.models.shortcut_ui_component import ShortcutUIComponent
 from shared.ui.models.button import Button
 
 
-class RouteButton(Button, ShortcutUIComponent):
+class TimetableButton(Button, ShortcutUIComponent):
     def __init__(self, screen: pygame.Surface, railway: RailwaySystem):
         self._railway = railway
 
-        self._icon = IconLoader().get_icon(ICON_PATHS["ROUTE"], Config.BUTTON_SIZE)
+        self._icon = IconLoader().get_icon(ICON_PATHS["timetable"], Config.BUTTON_SIZE)
         rect = pygame.Rect(Config.BUTTON_SIZE//5, 300, Config.BUTTON_SIZE, Config.BUTTON_SIZE)
         super().__init__(rect, screen)
-        self.route_window = None  # Store window reference
+        self.timetable_window = None  # Store window reference
         self._shortcuts = {
-            (pygame.K_r, False): self.open_route_window
+            (pygame.K_r, False): self.open_timetable_window
         }
 
     def _on_click(self, event: Event) -> bool:
         if event.is_left_click:
-            self.open_route_window()
+            self.open_timetable_window()
     
-    def open_route_window(self):
-        if self.route_window is None:
-            self.route_window = RouteWindow(self._railway)
-            self.route_window.window_closed.connect(self._on_route_window_closed)
-            self.route_window.show()
+    def open_timetable_window(self):
+        if self.timetable_window is None:
+            self.timetable_window = TimeTableWindow(self._railway)
+            self.timetable_window.window_closed.connect(self._on_timetable_window_closed)
+            self.timetable_window.show()
         else:
-            if self.route_window.isMinimized():
-                self.route_window.showNormal()
-            self.route_window.raise_()
-            self.route_window.activateWindow()
+            if self.timetable_window.isMinimized():
+                self.timetable_window.showNormal()
+            self.timetable_window.raise_()
+            self.timetable_window.activateWindow()
     
-    def _on_route_window_closed(self, *args, **kwargs):
-            self.route_window = None
+    def _on_timetable_window_closed(self, *args, **kwargs):
+            self.timetable_window = None
 
     def render(self, screen_pos: Position) -> None:
         bg_color = Color.DARKGREY if self.contains(screen_pos) else Color.BLACK

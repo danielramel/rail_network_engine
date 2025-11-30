@@ -4,26 +4,26 @@ from typing import TYPE_CHECKING
 from core.config.color import Color
 from core.models.station import Station
 if TYPE_CHECKING:
-    from core.models.route import Route
+    from core.models.timetable import Timetable
     
 class Schedule:
     color: Color
-    route_code: str
+    timetable_code: str
     stops: list[dict[str, int]]
     index: int = 0
     
     
-    def __init__(self, route: 'Route', start_time: int) -> 'Schedule':
-        self.route_code = route.code
-        self.color = route.color
+    def __init__(self, timetable: 'Timetable', start_time: int) -> 'Schedule':
+        self.timetable_code = timetable.code
+        self.color = timetable.color
         current_time = start_time
         self.stops: list[dict[str, int | None]] = [{
-                    'station': route.stops[0]['station'],
+                    'station': timetable.stops[0]['station'],
                     'arrival_time': None,
                     'departure_time': start_time
                 }]
         
-        for stop in route.stops[1:-1]:
+        for stop in timetable.stops[1:-1]:
             travel_time = stop['travel_time']
             stop_time = stop['stop_time']
             arrival_time = current_time + travel_time
@@ -36,12 +36,12 @@ class Schedule:
             current_time = departure_time
             
         self.stops.append({
-            'station': route.stops[-1]['station'],
-            'arrival_time': current_time + route.stops[-1]['travel_time'],
+            'station': timetable.stops[-1]['station'],
+            'arrival_time': current_time + timetable.stops[-1]['travel_time'],
             'departure_time': None
         })
         
-        self.route_code = route.code
+        self.timetable_code = timetable.code
         
     def get_arrival_time(self) -> int | None:
         if self.index == 0:

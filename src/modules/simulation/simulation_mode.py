@@ -1,6 +1,6 @@
 from core.graphics.graphics_context import GraphicsContext
 from core.models.app_state import AppState
-from modules.simulation.end_simulation_button import EndSimulationButton
+from modules.simulation.ui.end_simulation_button import EndSimulationButton
 from modules.simulation.ui.panel.train_panel_manager import TrainPanelManager
 from shared.ui.components.zoom_button import ZoomButton
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
@@ -48,7 +48,7 @@ class SimulationMode(UIController, FullScreenUIComponent):
             EndSimulationButton(self._graphics.screen, self._app_state.end_simulation),
             TimeControlButtons(self._state.time_control, self._graphics.screen),
             TimeDisplay(self._state.time, self._graphics),
-            TrainPanelManager(self._railway, self._state, self._graphics.screen, self._railway.routes),
+            TrainPanelManager(self._railway, self._state, self._graphics.screen, self._railway.timetables),
             ZoomButton(self._graphics.screen, self._graphics.camera),
             CameraController(self._graphics.camera),
             SimulationController(self._railway, self._state, self._graphics),
@@ -57,7 +57,7 @@ class SimulationMode(UIController, FullScreenUIComponent):
         self._railway.signalling.unlock_all_paths()
         self._railway.signalling.lock_paths_under_trains()
         
-        self._railway.routes.calculate_start_times()
+        self._railway.timetables.calculate_start_times()
         self._railway.signalling.reset()
         self._railway.signals.reset_all()
         

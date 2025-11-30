@@ -1,20 +1,20 @@
 from core.config.config import Config
-from core.models.route import Route
+from core.models.timetable import Timetable
 import pygame
 from core.models.train import Train
 from core.models.event import Event
 from modules.simulation.models.simulation_state import SimulationState
 from modules.simulation.ui.panel.schedule_selector import ScheduleSelector
-from core.models.repositories.route_repository import RouteRepository
+from core.models.repositories.timetable_repository import TimetableRepository
 from core.config.color import Color
 from shared.ui.models.panel import Panel
 
 class TrainPanel(Panel):
     _selected: bool = False
-    def __init__(self, train: Train, screen: pygame.Surface, index: int, route_repository: RouteRepository, simulation_state: SimulationState):
+    def __init__(self, train: Train, screen: pygame.Surface, index: int, timetable_repository: TimetableRepository, simulation_state: SimulationState):
         self._train = train
         self._schedule_selector = None
-        self._schedule_repository = route_repository
+        self._schedule_repository = timetable_repository
         self._state = simulation_state
         self._index = index
         self._hovered_rect: pygame.Rect | None = None
@@ -97,7 +97,7 @@ class TrainPanel(Panel):
         
         # Schedule code in top middle
         if self._train.schedule:
-            code_text = self._train.schedule.route_code
+            code_text = self._train.schedule.timetable_code
             code_color = Color.get(self._train.schedule.color)
         else:
             code_text = "No schedule"
@@ -173,9 +173,9 @@ class TrainPanel(Panel):
             
         self._schedule_selector.window_closed.connect(lambda: setattr(self, '_schedule_selector', None))
 
-    def _on_schedule_chosen(self, route: Route, start_time: int):
+    def _on_schedule_chosen(self, timetable: Timetable, start_time: int):
         self._schedule_selector = None
-        self._train.set_schedule(route.create_schedule(start_time))
+        self._train.set_schedule(timetable.create_schedule(start_time))
 
     def _init_buttons(self):
         self.close_button = pygame.Rect(self._rect.right - 40, self._rect.top + 10, 40, 20)
