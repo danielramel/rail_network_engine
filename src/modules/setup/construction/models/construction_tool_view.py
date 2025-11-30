@@ -3,7 +3,7 @@ from core.models.railway.railway_system import RailwaySystem
 from modules.setup.construction.models.construction_state import ConstructionState
 from core.models.geometry.position import Position
 
-class ConstructionView:
+class ConstructionToolView:
     def __init__(self, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
         self._railway = railway
         self._state = state

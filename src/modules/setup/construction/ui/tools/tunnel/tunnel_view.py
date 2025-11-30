@@ -1,6 +1,6 @@
 from core.models.geometry.edge import Edge
 from core.models.geometry.position import Position
-from modules.setup.construction.models.construction_view import ConstructionView
+from modules.setup.construction.models.construction_tool_view import ConstructionToolView
 from core.models.geometry.position import Position
 from core.config.color import Color
 from shared.ui.enums.edge_action import EdgeAction
@@ -9,7 +9,7 @@ from shared.ui.services.color_from_speed import color_from_speed
 from shared.ui.utils.tracks import draw_track
 from .tunnel_target import find_tunnel_target, TunnelTargetType
 
-class TunnelView(ConstructionView):
+class TunnelView(ConstructionToolView):
     def render(self, world_pos: Position | None):
         if world_pos is None:
             if self._state.construction_anchor is not None:

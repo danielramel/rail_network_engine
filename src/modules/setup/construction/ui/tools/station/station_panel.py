@@ -1,7 +1,7 @@
 import pygame
 from core.config.color import Color
 from modules.setup.construction.models.construction_state import ConstructionState
-from modules.setup.construction.models.construction_panel import ConstructionToolPanel
+from modules.setup.construction.models.construction_tool_panel import ConstructionToolPanel
     
 class StationPanel(ConstructionToolPanel):
     """Station placement panel with instructions."""

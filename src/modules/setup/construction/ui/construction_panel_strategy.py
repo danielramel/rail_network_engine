@@ -1,5 +1,5 @@
 import pygame
-from modules.setup.construction.models.construction_panel import ConstructionToolPanel
+from modules.setup.construction.models.construction_tool_panel import ConstructionToolPanel
 from modules.setup.construction.models.construction_state import ConstructionState, ConstructionTool
 from modules.setup.construction.ui.tools.tunnel.tunnel_panel import TunnelPanel
 from shared.ui.models.panel import Panel

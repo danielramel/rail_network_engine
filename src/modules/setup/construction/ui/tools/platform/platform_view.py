@@ -1,5 +1,5 @@
 from shared.ui.enums.edge_action import EdgeAction
-from modules.setup.construction.models.construction_view import ConstructionView
+from modules.setup.construction.models.construction_tool_view import ConstructionToolView
 from core.models.geometry.position import Position
 from core.config.color import Color
 from shared.ui.utils.lines import draw_dotted_line
@@ -7,7 +7,7 @@ from shared.ui.utils.station import draw_station
 from shared.ui.utils.nodes import draw_node
 from .platform_target import PlatformTargetType, find_platform_target
 
-class PlatformView(ConstructionView):
+class PlatformView(ConstructionToolView):
     def render(self, world_pos: Position | None):
         if world_pos is None:
             return

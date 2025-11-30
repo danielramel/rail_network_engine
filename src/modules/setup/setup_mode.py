@@ -15,7 +15,7 @@ from shared.ui.models.ui_controller import UIController
 from modules.setup.ui.exit_button import ExitButton
 from modules.setup.ui.open_button import OpenButton
 from modules.setup.ui.save_button import SaveButton
-from modules.setup.setup_mode_selector_buttons import SetupModeSelectorButtons
+from modules.setup.ui.setup_mode_selector_buttons import SetupModeSelectorButtons
     
 
 class SetupMode(UIController, FullScreenUIComponent):
@@ -35,7 +35,6 @@ class SetupMode(UIController, FullScreenUIComponent):
         ]
         
         railway.trains.load_state()
-        railway.signalling.unlock_all_paths()
 
     def _on_save(self, dialog: bool = False):
         data = self._railway.to_dict()

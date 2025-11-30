@@ -54,7 +54,9 @@ class SimulationMode(UIController, FullScreenUIComponent):
             SimulationController(self._railway, self._state, self._graphics),
         )
         self._railway.trains.save_state()
+        self._railway.signalling.unlock_all_paths()
         self._railway.signalling.lock_paths_under_trains()
+        
         self._railway.routes.calculate_start_times()
         self._railway.signalling.reset()
         self._railway.signals.reset_all()

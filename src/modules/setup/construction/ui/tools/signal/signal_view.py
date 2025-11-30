@@ -1,10 +1,10 @@
-from modules.setup.construction.models.construction_view import ConstructionView
+from modules.setup.construction.models.construction_tool_view import ConstructionToolView
 from core.models.geometry.position import Position
 from core.config.color import Color
 from shared.ui.utils.signal import draw_signal
 from .signal_target import find_signal_target, SignalTargetType
 
-class SignalView(ConstructionView):
+class SignalView(ConstructionToolView):
     def render(self, world_pos: Position | None):
         if world_pos is None:
             return

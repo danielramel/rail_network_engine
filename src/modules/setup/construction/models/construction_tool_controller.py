@@ -2,14 +2,14 @@ from core.graphics.graphics_context import GraphicsContext
 from core.models.railway.railway_system import RailwaySystem
 from modules.setup.construction.models.construction_state import ConstructionState
 from shared.ui.models.clickable_ui_component import ClickableUIComponent
-from modules.setup.construction.models.construction_view import ConstructionView
+from modules.setup.construction.models.construction_tool_view import ConstructionToolView
 from core.models.geometry.position import Position
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 
 
 class ConstructionToolController(ClickableUIComponent, FullScreenUIComponent):
     """Base class for controllers that manage construction modes."""
-    def __init__(self, view: ConstructionView, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
+    def __init__(self, view: ConstructionToolView, railway: RailwaySystem, state: ConstructionState, graphics: GraphicsContext):
         self.view = view
         self._railway = railway
         self._state = state

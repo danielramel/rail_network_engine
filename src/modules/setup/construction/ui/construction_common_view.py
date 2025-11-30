@@ -10,9 +10,9 @@ from core.config.color import Color
 
 
 from core.config.color import Color
-from modules.setup.construction.models.construction_view import ConstructionView
+from modules.setup.construction.models.construction_tool_view import ConstructionToolView
 
-class ConstructionCommonView(ConstructionView):
+class ConstructionCommonView(ConstructionToolView):
     def render(self, screen_pos: Position | None) -> None:
         draw_grid(self._screen, self._camera)
 

@@ -1,12 +1,12 @@
 from shared.ui.enums.edge_action import EdgeAction
 from .bulldoze_target import BulldozeTargetType, find_bulldoze_target
-from modules.setup.construction.models.construction_view import ConstructionView
+from modules.setup.construction.models.construction_tool_view import ConstructionToolView
 from core.models.geometry.position import Position
 from shared.ui.utils.nodes import draw_node
 from shared.ui.utils.station import draw_station
 from core.config.color import Color
 
-class BulldozeView(ConstructionView):
+class BulldozeView(ConstructionToolView):
     def render(self, world_pos: Position | None):
         self._state.preview.clear()
         

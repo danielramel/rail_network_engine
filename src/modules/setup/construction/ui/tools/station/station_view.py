@@ -1,4 +1,4 @@
-from modules.setup.construction.models.construction_view import ConstructionView
+from modules.setup.construction.models.construction_tool_view import ConstructionToolView
 from core.models.geometry.position import Position
 from core.models.station import Station
 from core.config.color import Color
@@ -6,7 +6,7 @@ from shared.ui.utils.lines import draw_dotted_line
 from shared.ui.utils.station import draw_station
 from .station_target import StationTargetType, find_station_target
 
-class StationView(ConstructionView):
+class StationView(ConstructionToolView):
     def render(self, world_pos: Position | None):
         if world_pos is None:
             return

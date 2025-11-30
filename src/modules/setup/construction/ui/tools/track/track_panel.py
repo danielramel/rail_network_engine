@@ -2,7 +2,7 @@ import pygame
 from core.config.color import Color
 from core.config.config import Config
 from modules.setup.construction.models.construction_state import ConstructionState
-from modules.setup.construction.models.construction_panel import ConstructionToolPanel
+from modules.setup.construction.models.construction_tool_panel import ConstructionToolPanel
 from core.models.event import Event
     
 class TrackPanel(ConstructionToolPanel):    
