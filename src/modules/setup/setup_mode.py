@@ -8,7 +8,7 @@ from core.models.railway.railway_system import RailwaySystem
 from modules.setup.setup_mode_strategy import SetupModeStrategy
 from modules.setup.setup_state import SetupState
 from modules.setup.ui.start_simulation_button import StartSimulationButton
-from shared.ui.components.route_button import RouteButton
+from modules.setup.ui.route_button import RouteButton
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
 from shared.ui.models.ui_component import UIComponent
 from shared.ui.models.ui_controller import UIController

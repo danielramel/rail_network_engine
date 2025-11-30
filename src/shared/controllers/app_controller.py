@@ -6,7 +6,7 @@ from core.models.app_state import AppState
 from core.models.event import Event
 from core.models.geometry.position import Position
 from core.graphics.graphics_context import GraphicsContext
-from shared.controllers.simulation_strategy import AppPhaseStrategy
+from shared.controllers.app_phase_strategy import AppPhaseStrategy
 from shared.ui.models.ui_component import UIComponent
 from shared.ui.models.ui_controller import UIController
 from shared.ui.models.full_screen_ui_component import FullScreenUIComponent
