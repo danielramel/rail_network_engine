@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.11.28)  1 DEC 2025 18:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.11.28)  1 DEC 2025 19:36
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1425,16 +1425,16 @@ File: user/images/signal_rotation.png Graphic file (type png)
 Package pdftex.def Info: user/images/signal_rotation.png  used on input line 168.
 (pdftex.def)             Requested size: 256.07741pt x 194.08525pt.
  [21 <./user/images/signal_placement.png> <./user/images/signal_rotation.png>]
-<user/images/deleting_track.png, id=341, 900.36375pt x 523.20468pt>
+<user/images/deleting_track.png, id=341, 900.36375pt x 353.06906pt>
 File: user/images/deleting_track.png Graphic file (type png)
 <use user/images/deleting_track.png>
 Package pdftex.def Info: user/images/deleting_track.png  used on input line 183.
-(pdftex.def)             Requested size: 341.43437pt x 198.4047pt.
-<user/images/deleting_signal.png, id=342, 685.05937pt x 532.99126pt>
+(pdftex.def)             Requested size: 341.43437pt x 133.88748pt.
+<user/images/deleting_signal.png, id=342, 685.05937pt x 373.395pt>
 File: user/images/deleting_signal.png Graphic file (type png)
 <use user/images/deleting_signal.png>
 Package pdftex.def Info: user/images/deleting_signal.png  used on input line 184.
-(pdftex.def)             Requested size: 341.43437pt x 265.64917pt.
+(pdftex.def)             Requested size: 341.43437pt x 186.10449pt.
 <user/images/train_placement.png, id=343, 624.08156pt x 472.76625pt>
 File: user/images/train_placement.png Graphic file (type png)
 <use user/images/train_placement.png>
@@ -1446,12 +1446,12 @@ File: user/images/train_deletion.png Graphic file (type png)
 <use user/images/train_deletion.png>
 Package pdftex.def Info: user/images/train_deletion.png  used on input line 208.
 (pdftex.def)             Requested size: 384.1096pt x 152.0259pt.
- [23 <./user/images/train_placement.png> <./user/images/train_deletion.png>]
-<user/images/timetable_list.png, id=361, 1444.64719pt x 755.07094pt>
+<user/images/timetable_list.png, id=353, 1444.64719pt x 755.07094pt>
 File: user/images/timetable_list.png Graphic file (type png)
 <use user/images/timetable_list.png>
 Package pdftex.def Info: user/images/timetable_list.png  used on input line 221.
 (pdftex.def)             Requested size: 405.45047pt x 211.91383pt.
+ [23 <./user/images/train_placement.png> <./user/images/train_deletion.png>]
 <user/images/timetable_editor.png, id=362, 557.83406pt x 689.57625pt>
 File: user/images/timetable_editor.png Graphic file (type png)
 <use user/images/timetable_editor.png>
@@ -1557,48 +1557,70 @@ File: lstlang1.sty 2023/02/27 1.9 listings language file
 ) [38] [39]
 \openout2 = `impl/app_architecture/app_architecture.aux'.
 
- (impl/app_architecture/app_architecture.tex (impl/app_architecture/core.tex
-LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 9.
+ (impl/app_architecture/app_architecture.tex
+<impl/app_architecture/entry_points_uml.png, id=532, 806.01125pt x 885.3075pt>
+File: impl/app_architecture/entry_points_uml.png Graphic file (type png)
+<use impl/app_architecture/entry_points_uml.png>
+Package pdftex.def Info: impl/app_architecture/entry_points_uml.png  used on input line 16.
+(pdftex.def)             Requested size: 405.45047pt x 445.34088pt.
  [40
 
-] (C:\Users\lemar\AppData\Local\MiKTeX\tex/latex/listings\lstlang1.sty
+] (impl/app_architecture/core.tex
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 9.
+ [41 <./impl/app_architecture/entry_points_uml.png>] (C:\Users\lemar\AppData\Local\MiKTeX\tex/latex/listings\lstlang1.sty
 File: lstlang1.sty 2023/02/27 1.9 listings language file
-) [41] [42]
-Underfull \hbox (badness 1783) in paragraph at lines 78--79
+) [42] [43]
+<impl/app_architecture/core_geometry_uml.png, id=585, 762.85pt x 399.4925pt>
+File: impl/app_architecture/core_geometry_uml.png Graphic file (type png)
+<use impl/app_architecture/core_geometry_uml.png>
+Package pdftex.def Info: impl/app_architecture/core_geometry_uml.png  used on input line 74.
+(pdftex.def)             Requested size: 405.45047pt x 212.3274pt.
+ [44 <./impl/app_architecture/core_geometry_uml.png>]
+Underfull \hbox (badness 1783) in paragraph at lines 86--87
 []\T1/cmtt/m/n/12 signalling_service.py\T1/cmr/bx/n/12 : \T1/cmr/m/n/12 A biz-to-sí-tó-be-ren-de-zés lo-gi-ká-ját imp-le-men-tál-ja.
  []
 
-[43]) (impl/app_architecture/shared.tex [44] [45] [46]
-<impl/app_architecture/ui_models_uml.png, id=647, 1557.82pt x 574.145pt>
+<impl/app_architecture/core_railway_uml.png, id=600, 1533.73pt x 497.86pt>
+File: impl/app_architecture/core_railway_uml.png Graphic file (type png)
+<use impl/app_architecture/core_railway_uml.png>
+Package pdftex.def Info: impl/app_architecture/core_railway_uml.png  used on input line 101.
+(pdftex.def)             Requested size: 405.45047pt x 131.6056pt.
+[45 <./impl/app_architecture/core_railway_uml.png>]) (impl/app_architecture/shared.tex [46] [47] [48]
+<impl/app_architecture/ui_models_uml.png, id=675, 1557.82pt x 574.145pt>
 File: impl/app_architecture/ui_models_uml.png Graphic file (type png)
 <use impl/app_architecture/ui_models_uml.png>
 Package pdftex.def Info: impl/app_architecture/ui_models_uml.png  used on input line 113.
 (pdftex.def)             Requested size: 405.45047pt x 149.42311pt.
- [47 <./impl/app_architecture/ui_models_uml.png>] [48]) (impl/app_architecture/setup_module.tex [49]
+ [49 <./impl/app_architecture/ui_models_uml.png>] [50]) (impl/app_architecture/setup_module.tex [51]
 Underfull \hbox (badness 1178) in paragraph at lines 34--35
 []\T1/cmtt/m/n/12 timetable_button.py\T1/cmr/m/n/12 : A menetrend-szerkeszt® fe-lü-let meg-nyi-tá-sá-ra
  []
 
-) (impl/app_architecture/construction_module.tex [50] [51]
-<impl/app_architecture/construction_module_uml.png, id=704, 1490.56876pt x 711.65875pt>
+<impl/app_architecture/setup_module_uml.png, id=709, 1448.41125pt x 733.74126pt>
+File: impl/app_architecture/setup_module_uml.png Graphic file (type png)
+<use impl/app_architecture/setup_module_uml.png>
+Package pdftex.def Info: impl/app_architecture/setup_module_uml.png  used on input line 47.
+(pdftex.def)             Requested size: 405.45047pt x 205.39017pt.
+) (impl/app_architecture/construction_module.tex [52 <./impl/app_architecture/setup_module_uml.png>] [53]
+<impl/app_architecture/construction_module_uml.png, id=724, 1490.56876pt x 711.65875pt>
 File: impl/app_architecture/construction_module_uml.png Graphic file (type png)
 <use impl/app_architecture/construction_module_uml.png>
 Package pdftex.def Info: impl/app_architecture/construction_module_uml.png  used on input line 44.
 (pdftex.def)             Requested size: 405.45047pt x 193.57295pt.
-) (impl/app_architecture/train_placement_module.tex [52 <./impl/app_architecture/construction_module_uml.png (PNG copy)>] [53]
-<impl/app_architecture/train_placement_module_uml.png, id=722, 1971.365pt x 822.07124pt>
+) (impl/app_architecture/train_placement_module.tex [54 <./impl/app_architecture/construction_module_uml.png (PNG copy)>] [55]
+<impl/app_architecture/train_placement_module_uml.png, id=743, 1971.365pt x 822.07124pt>
 File: impl/app_architecture/train_placement_module_uml.png Graphic file (type png)
 <use impl/app_architecture/train_placement_module_uml.png>
 Package pdftex.def Info: impl/app_architecture/train_placement_module_uml.png  used on input line 41.
 (pdftex.def)             Requested size: 405.45047pt x 169.06508pt.
-) (impl/app_architecture/simulation_module.tex [54 <./impl/app_architecture/train_placement_module_uml.png>] [55]
-<impl/app_architecture/simulation_module_uml.png, id=742, 1909.1325pt x 730.73pt>
+) (impl/app_architecture/simulation_module.tex [56 <./impl/app_architecture/train_placement_module_uml.png>] [57]
+<impl/app_architecture/simulation_module_uml.png, id=762, 1649.16125pt x 540.0175pt>
 File: impl/app_architecture/simulation_module_uml.png Graphic file (type png)
 <use impl/app_architecture/simulation_module_uml.png>
 Package pdftex.def Info: impl/app_architecture/simulation_module_uml.png  used on input line 57.
-(pdftex.def)             Requested size: 405.45047pt x 155.18608pt.
-) (impl/app_architecture/timetable_module.tex [56 <./impl/app_architecture/simulation_module_uml.png>]) (impl/app_architecture/assets_folder.tex [57])) [58]
+(pdftex.def)             Requested size: 405.45047pt x 132.76276pt.
+) (impl/app_architecture/timetable_module.tex [58 <./impl/app_architecture/simulation_module_uml.png>]) (impl/app_architecture/assets_folder.tex [59])) [60]
 \openout2 = `impl/testing.aux'.
 
  (impl/testing.tex
@@ -1791,7 +1813,7 @@ Overfull \hbox (24.3935pt too wide) in alignment at lines 37--44
  [] [] [] [] 
  []
 
-[59
+[61
 
 
 
@@ -1860,7 +1882,7 @@ Overfull \hbox (24.3935pt too wide) in alignment at lines 47--54
  [] [] [] [] 
  []
 
-[60]
+[62]
 Underfull \hbox (badness 10000) in paragraph at lines 58--58
 []|\T1/cmr/m/n/12 Jelz® el-he-lye-zés
  []
@@ -1925,7 +1947,7 @@ Overfull \hbox (24.3935pt too wide) in alignment at lines 57--64
  [] [] [] [] 
  []
 
-[61]
+[63]
 Underfull \hbox (badness 10000) in paragraph at lines 68--68
 []|\T1/cmr/m/n/12 Állomás épí-tés
  []
@@ -2115,7 +2137,7 @@ Overfull \hbox (24.3935pt too wide) in alignment at lines 78--83
  [] [] [] [] 
  []
 
-[62]
+[64]
 Underfull \hbox (badness 10000) in paragraph at lines 87--87
 []|\T1/cmr/m/n/12 Vágányszakasz
  []
@@ -2170,7 +2192,7 @@ Overfull \hbox (24.3935pt too wide) in alignment at lines 86--93
  [] [] [] [] 
  []
 
-[63]
+[65]
 Underfull \hbox (badness 10000) in paragraph at lines 97--97
 []|\T1/cmr/m/n/12 Szabályos vo-
  []
@@ -2250,7 +2272,7 @@ Overfull \hbox (24.3935pt too wide) in alignment at lines 103--106
  [] [] [] [] 
  []
 
-[64]
+[66]
 Underfull \hbox (badness 4582) in paragraph at lines 111--111
 []|\T1/cmr/m/n/12 Menetrend rész-
  []
@@ -2465,7 +2487,7 @@ Overfull \hbox (24.3935pt too wide) in alignment at lines 119--129
  [] [] [] [] 
  []
 
-[65]
+[67]
 Underfull \hbox (badness 6125) in paragraph at lines 134--134
 []|\T1/cmr/m/n/12 Szimuláció in-dí-
  []
@@ -2530,7 +2552,7 @@ Overfull \hbox (24.3935pt too wide) in alignment at lines 133--136
  [] [] [] [] 
  []
 
-[66]
+[68]
 Underfull \hbox (badness 10000) in paragraph at lines 140--140
 []|\T1/cmr/m/n/12 Szimuláció szü-
  []
@@ -2750,7 +2772,7 @@ Overfull \hbox (24.3935pt too wide) in alignment at lines 147--158
  [] [] [] [] 
  []
 
-[67]
+[69]
 Underfull \hbox (badness 10000) in paragraph at lines 162--162
 []|\T1/cmr/m/n/12 Helytelen jel-z®
  []
@@ -2905,7 +2927,7 @@ Overfull \hbox (24.3935pt too wide) in alignment at lines 161--172
  [] [] [] [] 
  []
 
-[68]
+[70]
 Underfull \hbox (badness 10000) in paragraph at lines 176--176
 []|\T1/cmr/m/n/12 Mentési pa-nel
  []
@@ -3035,7 +3057,7 @@ Overfull \hbox (24.3935pt too wide) in alignment at lines 175--184
  [] [] [] [] 
  []
 
-[69]
+[71]
 Underfull \hbox (badness 10000) in paragraph at lines 188--188
 []|\T1/cmr/m/n/12 Kilépés men-tet-
  []
@@ -3090,9 +3112,9 @@ Overfull \hbox (24.3935pt too wide) in alignment at lines 187--190
  [] [] [] [] 
  []
 
-[70]) [71]) (sum.tex
+[72]) [73]) (sum.tex
 4. fejezet.
-) [72
+) [74
 
 
 
@@ -3100,38 +3122,38 @@ Overfull \hbox (24.3935pt too wide) in alignment at lines 187--190
 
 ] (further_development.tex
 5. fejezet.
-) [73
+) [75
 
 
 
-] [74] [75
+] [76] [77
 
 ]
 Underfull \hbox (badness 2591) in paragraph at lines 78--78
 []\T1/cmr/m/n/12 ^^R  Timetabling for strategic pas-sen-ger ra-il-way plan-ning^^Q. \T1/cmr/m/it/12 Transportation
  []
 
-[76
+[78
 
-] [77] (elteikthesis_hu.lof [78
+] [79] (elteikthesis_hu.lof [80
 
 
 ])
 \tf@lof=\write8
 \openout8 = `elteikthesis_hu.lof'.
 
- [79] (elteikthesis_hu.lot)
+ [81] (elteikthesis_hu.lot)
 \tf@lot=\write9
 \openout9 = `elteikthesis_hu.lot'.
 
- [80
+ [82
 
 
 ] (elteikthesis_hu.lol)
 \tf@lol=\write10
 \openout10 = `elteikthesis_hu.lol'.
 
- [81
+ [83
 
 
 
@@ -3145,17 +3167,17 @@ Package logreq Info: Writing requests to 'elteikthesis_hu.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 40950 strings out of 474486
- 774962 string characters out of 5747975
+ 40988 strings out of 474486
+ 776514 string characters out of 5747975
  2068542 words of memory out of 5000000
- 62057 multiletter control sequences out of 15000+600000
+ 62089 multiletter control sequences out of 15000+600000
  581219 words of font info for 92 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  124i,13n,145p,1179b,2311s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbi1200.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1000.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0600.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsl1200.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2488.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1200.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1440.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1440.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2074.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\eccc1440.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\eccc1728.pk>
-Output written on elteikthesis_hu.pdf (82 pages, 1535999 bytes).
+Output written on elteikthesis_hu.pdf (84 pages, 1617314 bytes).
 PDF statistics:
- 1970 PDF objects out of 2073 (max. 8388607)
- 419 named destinations out of 1000 (max. 500000)
- 742 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1994 PDF objects out of 2073 (max. 8388607)
+ 425 named destinations out of 1000 (max. 500000)
+ 762 words of extra memory for PDF output out of 10000 (max. 10000000)
 

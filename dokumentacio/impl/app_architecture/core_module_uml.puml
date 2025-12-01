@@ -1,0 +1,122 @@
+@startuml Core Module
+skinparam classAttributeIconSize 0
+skinparam arrowColor #888
+skinparam classFontSize 12
+skinparam packageTitleFontSize 14
+
+' Geometry diagram (no references to Railway)
+package "Core Geometry" {
+	class Node {
+		+x: int
+		+y: int
+		+level: int
+		+distance_to(other: Node): float
+		+heuristic_to(other: Node): float
+	}
+
+	class Edge {
+		+a: Node
+		+b: Node
+		+direction: Direction
+		+level: int
+		+midpoint(): Position
+		+is_diagonal(): bool
+	}
+
+	class Position {
+		+x: float
+		+y: float
+		+snap_to_grid(): Node
+		+distance_to(other: Node): float
+	}
+
+	class Direction {
+		+x: int
+		+y: int
+		+opposite(): Direction
+		+is_zero(): bool
+	}
+
+	class Pose {
+		+node: Node
+		+direction: Direction
+		+get_next_in_direction(): Pose
+		+get_previous_in_direction(): Pose
+	}
+
+	Edge --> Node
+	Pose --> Node
+	Pose --> Direction
+	Edge --> Direction
+	Edge --> Position
+}
+
+' RailwaySystem diagram (no references to Geometry)
+package "Core Railway" {
+	class RailwaySystem {
+		+time: Time
+		+graph: GraphAdapter
+		+graph_service: GraphService
+		+signals: SignalRepository
+		+stations: StationRepository
+		+timetables: TimetableRepository
+		+trains: TrainRepository
+		+pathfinder: PathFinder
+		+signalling: SignallingService
+		+is_saved: bool
+	}
+
+	class GraphAdapter {
+		-_graph: Graph
+		+nodes: set
+		+edges: frozenset
+		+add_node(node)
+		+add_edge(a, b, speed, length, level=0)
+		+remove_edge(edge)
+		+neighbors(node): tuple
+	}
+
+	class GraphService {
+		+is_junction(node): bool
+		+is_curve(node): bool
+		+junctions: list
+		+remove_section(edges)
+		+add_section(nodes, speed, length)
+		+get_graph_middle(): Position
+	}
+
+	class PathFinder {
+		-_edge_blocked_cache: dict
+		-_node_blocked_cache: dict
+		+find_grid_path(start, end): tuple | None
+		+find_tunnel_path(start, end): tuple | None
+	}
+
+	class SignallingService {
+		-auto_signals: dict
+		+lock_path(edges)
+		+release_path(edges)
+		+is_edge_locked(edge): bool
+		+is_node_locked(node): bool
+		+connect_signals(from_signal, to_signal): bool
+		+find_path(start, end, ignore_locks=False): list | None
+	}
+
+	class SignalRepository
+	class StationRepository
+	class TimetableRepository
+	class TrainRepository
+	class Time
+
+	RailwaySystem --> GraphAdapter
+	RailwaySystem --> GraphService
+	RailwaySystem --> SignalRepository
+	RailwaySystem --> StationRepository
+	RailwaySystem --> TimetableRepository
+	RailwaySystem --> TrainRepository
+	RailwaySystem --> PathFinder
+	RailwaySystem --> SignallingService
+	RailwaySystem --> Time
+}
+
+@enduml

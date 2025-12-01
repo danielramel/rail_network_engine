@@ -69,6 +69,14 @@ A térbeli reprezentációért és a gráf-alapú koordinátákért felelős osz
         return neighbors
 \end{lstlisting}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{impl/app_architecture/core_geometry_uml.png}
+    \caption{A Core geometry UML osztálydiagramja}
+    \label{fig:core-geometry-uml}
+\end{figure}
+
+
 \paragraph{Railway (Vasúti Logika)}
 A különböző vasúti entitások és algoritmusait összekötő réteg.
 \begin{itemize}
@@ -78,6 +86,7 @@ A különböző vasúti entitások és algoritmusait összekötő réteg.
     \item \textbf{\texttt{signalling\_service.py}:} A biztosítóberendezés logikáját implementálja. Feladata a jelzők aspektusának (szabad/tilos) dinamikus frissítése és a vágányutak foglaltságának ellenőrzése.
     \item \textbf{\texttt{path\_finder.py}:} A nem gráfon végzett útvonalkeresést megvalósító osztály. A \texttt{A*} algoritmust alkalmazza két pont közötti legrövidebb vágány építésének meghatározására.
 \end{itemize}
+
 \paragraph{Repositories (Adattárolók)}
 A \textbf{Repository} tervezési minta alkalmazása az entitások életciklusának kezelésére. Ezek az osztályok felelősek az objektumok (vonatok, állomások, menetrendek) memóriában történő tárolásáért, lekérdezéséért és módosításáért.
 \begin{itemize}
@@ -86,6 +95,13 @@ A \textbf{Repository} tervezési minta alkalmazása az entitások életciklusán
     \item \texttt{train\_repository.py}
     \item \texttt{timetable\_repository.py}
 \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{impl/app_architecture/core_railway_uml.png}
+    \caption{A Core railway UML osztálydiagramja}
+    \label{fig:core-railway-uml}
+\end{figure}
 
 \paragraph{Domain Entities (Entitások)}
 A rendszer alapvető építőkövei:

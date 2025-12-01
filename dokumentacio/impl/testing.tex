@@ -26,13 +26,13 @@ A tesztjegyzőkönyv a következő struktúrát követi minden egyes funkció es
 	\caption{\TestTableCaption}\label{tab:test:\thetable}
 	\end{longtable}
 }
-\subsection{Setup modul}
-\begin{TestTable}[Setup modul - tesztesetek]
+\subsection{Setup}
+\begin{TestTable}[Setup - tesztesetek]
 Alkalmazás bezárása főmenüből & Menü mód aktív, nincs modális ablak nyitva & Felhasználó egyszer megnyomja a "Quit" gombot & Az alkalmazás főablaka bezár, folyamat szabályosan kilép (nincsenek futó háttérműveletek)\\\hline
 Hibás projekt betöltésének elutasítása & Menü mód aktív, nincs projekt megnyitva & Felhasználó hibás / hiányzó fájlokat tartalmazó projekt könyvtárat választ & A rendszer modális hibaüzenetet jelenít meg, projekt állapot változatlan\\\hline
 Érvényes projekt megnyitása & Menü mód aktív, projekt nincs betöltve & Felhasználó érvényes szerkezetű projektet tallóz és megerősít & A projekt állapota betöltődik, a szerkesztési mód elérhetővé válik\\\hline
 \end{TestTable}
-\subsection{Construction mód - pályaelemek}
+\subsection{Construction}
 \paragraph{Vágányok}
 \begin{TestTable}[Vágány építés - tesztesetek]
 Állomási területre építés tiltása & Vágány mód aktív, állomás kijelölhető & Felhasználó az állomás zónájára kattint a vágány építésekor & A rendszer nem hoz létre vágányelemet, modális vagy inline hibaüzenetet ad\\\hline
@@ -128,7 +128,7 @@ Megállási idő módosítása hatással & Szerkesztő panel aktív & Felhaszná
 Menetrend mentése érvényes adatokkal & Szerkesztő panel aktív, nincs validációs hiba & Felhasználó mentés gombot nyom & Menetrend perzisztálódik, összesítő listába bekerül\\\hline
 \end{TestTable}
 
-\subsection{Simulation mód}
+\subsection{Simulation}
 \paragraph{Szimuláció indítása és leállítása}
 \begin{TestTable}[Szimuláció indítása/leállítása - tesztesetek]
 Szimuláció indítása & Simulation mód aktív, nincs futó szimuláció & Felhasználó megnyomja az "Indítás" gombot & Idő előrehaladása elindul, minden vonat kezdeti álló státuszban marad\\\hline

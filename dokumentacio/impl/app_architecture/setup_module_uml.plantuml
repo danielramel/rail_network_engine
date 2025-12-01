@@ -1,0 +1,114 @@
+@startuml Setup Module
+skinparam classAttributeIconSize 0
+skinparam arrowColor #888
+skinparam classFontSize 12
+skinparam packageTitleFontSize 14
+
+package "Setup Module" {
+	class SetupMode {
+		- _state: SetupState
+		- _railway: RailwaySystem
+		- _graphics: GraphicsContext
+		- elements: List<UIComponent>
+	}
+
+	enum SetupView {
+		CONSTRUCTION
+		TRAIN_PLACEMENT
+	}
+
+	class SetupState {
+		+ switch_to(new_view: SetupView)
+		+ subscribe(callback)
+		- current_view: SetupView
+		- app_state: AppState
+		- _subscribers: List<Callable>
+	}
+
+	class SetupModeStrategy {
+		+ switch_to(new_mode: SetupView)
+		+ handle_event(event): bool
+		+ render(screen_pos)
+		+ tick()
+		- _state: SetupState
+		- _current_mode: UIController
+		- _modes: dict<SetupView, fn() -> UIController>
+	}
+
+	class ConstructionMode {
+		- state: ConstructionState
+		- elements: Tuple<UIComponent>
+	}
+
+	class TrainPlacementMode {
+		- state: TrainPlacementState
+		- elements: Tuple<UIComponent>
+	}
+
+	' Selected, relevant state attributes only
+	class ConstructionState {
+		- tool: ConstructionTool
+		- track_speed: int
+		- track_length: int
+		- moving_station: Station
+		- preview: ConstructionPreview
+	}
+
+	class TrainPlacementState {
+		- time: Time
+		- tool: TrainPlacementTool
+		- train_config: TrainConfig
+		- preview: TrainPlacementPreview
+	}
+
+	' UI elements (composed by SetupMode)
+	class SetupModeSelectorButtons {
+		+ render(screen_pos)
+		- _state: SetupState
+	}
+	class StartSimulationButton
+	class TimetableButton
+	class SaveButton
+	class OpenButton
+	class ExitButton
+
+	' External/context classes for clarity
+	class AppState
+	class RailwaySystem
+	class GraphicsContext
+	interface UIController
+	class UIComponent
+
+}
+
+' Composition and associations within the Setup module
+SetupMode o-- SetupState
+SetupMode --> RailwaySystem
+SetupMode --> GraphicsContext
+SetupMode o-- StartSimulationButton
+SetupMode o-- TimetableButton
+SetupMode o-- SaveButton
+SetupMode o-- OpenButton
+SetupMode o-- ExitButton
+SetupMode o-- SetupModeSelectorButtons
+SetupMode o-- SetupModeStrategy
+
+SetupState --> SetupView
+SetupState --> AppState
+
+SetupModeStrategy --> SetupState : subscribe()
+SetupModeStrategy ..> ConstructionMode : «creates»
+SetupModeStrategy ..> TrainPlacementMode : «creates»
+SetupModeStrategy --> UIController : _current_mode
+
+ConstructionMode --> ConstructionState
+TrainPlacementMode --> TrainPlacementState
+
+SetupModeSelectorButtons --> SetupState : switch_to()
+
+ConstructionState --> ConstructionPreview
+ConstructionState --> ConstructionTool
+TrainPlacementState --> TrainPlacementPreview
+TrainPlacementState --> TrainPlacementTool
+
+@enduml

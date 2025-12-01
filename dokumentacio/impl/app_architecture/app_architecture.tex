@@ -2,6 +2,7 @@
 
 Az alkalmazás fejlesztése során moduláris, rétegelt architektúrát alakítottam ki, amely elősegíti a kód átláthatóságát és a későbbi bővíthetőséget. A projekt forráskódja a \texttt{src} könyvtárban található, amely a felelősségi körök (Separation of Concerns) alapján az alábbi fő rétegekre és komponensekre tagolódik.
 
+\textbf{Megjegyzés:} Az áttekinthetőség érdekében az UML diagramok a lényeges komponensekre összpontosítanak, így nem feltétlenül tartalmazzák a teljes rendszer minden elemét.
 \subsection{Belépési pontok és vezérlés}
 Az alkalmazás indításáért és az életciklus-kezelésért felelős fájlok:
 \begin{itemize}
@@ -9,6 +10,13 @@ Az alkalmazás indításáért és az életciklus-kezelésért felelős fájlok:
     \item \texttt{menu\_manager.py}: Az alkalmazás központi állapotkezelője. Feladata az alkalmazás inicializálása, valamint a beérkező események (billentyűzet, egér) továbbítása a megfelelő vezérlő felé.
     \item \texttt{home\_page\_screen.py}: A kezdőképernyő megjelenítéséért és interakcióiért felelős osztály. Lehetővé teszi új projektek létrehozását, meglévők betöltését, valamint a legutóbbi projektek gyors elérését.
 \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{impl/app_architecture/entry_points_uml.png}
+    \caption{A program vezérlésének UML osztálydiagramja}
+    \label{fig:entry-points-uml}
+\end{figure}
 
 \input{impl/app_architecture/core.tex}
 \input{impl/app_architecture/shared.tex}

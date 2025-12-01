@@ -24,9 +24,13 @@
 \select@language {hungarian} \contentsline {figure}{\numberline {2.22.}{\ignorespaces Mentés, Betöltés és Kilépés gombok}}{30}{figure.caption.40}%
 \select@language {hungarian} \contentsline {figure}{\numberline {2.23.}{\ignorespaces Módosított állapotjelző}}{31}{figure.caption.42}%
 \select@language {hungarian} \addvspace {10\p@ }
-\select@language {hungarian} \contentsline {figure}{\numberline {3.1.}{\ignorespaces Az UI komponensek UML osztálydiagramja}}{47}{figure.caption.53}%
-\select@language {hungarian} \contentsline {figure}{\numberline {3.2.}{\ignorespaces A Construction modul és az eszközök UML osztálydiagramja}}{52}{figure.caption.64}%
-\select@language {hungarian} \contentsline {figure}{\numberline {3.3.}{\ignorespaces A Train Placement modul és az eszközök UML osztálydiagramja}}{54}{figure.caption.67}%
-\select@language {hungarian} \contentsline {figure}{\numberline {3.4.}{\ignorespaces A Simulation modul és komponenseinek UML osztálydiagramja}}{56}{figure.caption.72}%
+\select@language {hungarian} \contentsline {figure}{\numberline {3.1.}{\ignorespaces A program vezérlésének UML osztálydiagramja}}{41}{figure.caption.45}%
+\select@language {hungarian} \contentsline {figure}{\numberline {3.2.}{\ignorespaces A Core geometry UML osztálydiagramja}}{44}{figure.caption.50}%
+\select@language {hungarian} \contentsline {figure}{\numberline {3.3.}{\ignorespaces A Core railway UML osztálydiagramja}}{45}{figure.caption.53}%
+\select@language {hungarian} \contentsline {figure}{\numberline {3.4.}{\ignorespaces Az UI komponensek UML osztálydiagramja}}{49}{figure.caption.56}%
+\select@language {hungarian} \contentsline {figure}{\numberline {3.5.}{\ignorespaces A Setup modul UML osztálydiagramja}}{52}{figure.caption.65}%
+\select@language {hungarian} \contentsline {figure}{\numberline {3.6.}{\ignorespaces A Construction modul és az eszközök UML osztálydiagramja}}{54}{figure.caption.68}%
+\select@language {hungarian} \contentsline {figure}{\numberline {3.7.}{\ignorespaces A Train Placement modul és az eszközök UML osztálydiagramja}}{56}{figure.caption.71}%
+\select@language {hungarian} \contentsline {figure}{\numberline {3.8.}{\ignorespaces A Simulation modul és komponenseinek UML osztálydiagramja}}{58}{figure.caption.76}%
 \select@language {hungarian} \addvspace {10\p@ }
 \select@language {hungarian} \addvspace {10\p@ }

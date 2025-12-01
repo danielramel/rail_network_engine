@@ -1,0 +1,97 @@
+@startuml Entry Points
+skinparam classAttributeIconSize 0
+skinparam arrowColor #888
+skinparam classFontSize 12
+skinparam packageTitleFontSize 14
+
+title Entry Points and Flow
+
+package "Entry Points" {
+	class MenuManager {
+		- screen: pygame.Surface
+		- clock: pygame.time.Clock
+		- qt_app: QApplication
+		- _current_state: MenuView
+		- _states: dict<MenuView, UIController>
+		+ run()
+		- _load_map(filepath: str | None)
+		- _exit_map(message: str | None)
+	}
+
+	class HomePageScreen {
+		- _screen: pygame.Surface
+		- _start_callback: Callable
+		- _map_files: list<(str, str)>
+		- _map_buttons: list<(Rect, str, Surface)>
+		- _hovered_button: str | None
+		- _selected_filepath: str | None
+		- _alert_message: str | None
+		+ dispatch_event(event)
+		+ render()
+	}
+
+	class AppController {
+		- _railway: RailwaySystem
+		- _app_state: AppState
+		- _graphics: GraphicsContext
+		- _last_mouse_down_pos: Position | None
+		- elements: list<UIComponent>
+		+ dispatch_event(pygame_event)
+		+ render()
+		+ tick()
+	}
+
+	class AppPhaseStrategy {
+		- _state: AppState
+		- _modes: dict<AppPhase, fn() -> UIController>
+		- _current_mode: UIController
+		+ switch_to(phase: AppPhase)
+		+ handle_event(event): bool
+		+ render(screen_pos: Position | None)
+		+ tick()
+	}
+
+	' Bottom-level modes (leafs)
+	class SetupMode {
+		- _state: SetupState
+		- _railway: RailwaySystem
+		- _graphics: GraphicsContext
+		- elements: list<UIComponent>
+	}
+
+	class SimulationMode {
+		+ SimulationMode(...)
+	}
+
+	' Context classes referenced
+	class AppState
+	interface UIController
+	class GraphicsContext
+	class RailwaySystem
+	enum AppPhase
+	enum MenuView
+}
+
+' Relationships across entry points
+MenuManager o-- HomePageScreen
+MenuManager o-- AppController
+HomePageScreen --> MenuManager : start_callback(filepath)
+AppController o-- AppPhaseStrategy
+AppController --> RailwaySystem
+AppController --> AppState
+AppController --> GraphicsContext
+AppPhaseStrategy --> AppState : subscribe()
+AppPhaseStrategy ..> SetupMode : «creates»
+AppPhaseStrategy ..> SimulationMode : «creates»
+
+' Link enums and interfaces to their consumers/implementors
+MenuManager --> MenuView
+AppPhaseStrategy --> AppPhase
+AppState --> AppPhase
+HomePageScreen ..|> UIController
+AppController ..|> UIController
+AppPhaseStrategy ..|> UIController
+SetupMode ..|> UIController
+SimulationMode ..|> UIController
+
+@enduml
