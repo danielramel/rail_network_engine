@@ -122,9 +122,6 @@ class HomePageScreen:
                 self._alert_message = None
             return None
         
-        if pygame_event.type == pygame.KEYDOWN and pygame_event.key == pygame.K_ESCAPE:
-            pygame.quit()
-            raise SystemExit()
         if pygame_event.type == pygame.MOUSEMOTION:
             mouse_pos = Position(*pygame.mouse.get_pos())
             if self._new_button_rect.collidepoint(mouse_pos.x, mouse_pos.y):

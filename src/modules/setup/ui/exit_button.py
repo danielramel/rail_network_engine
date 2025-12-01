@@ -10,16 +10,13 @@ from shared.ui.models.button import Button
 from core.models.event import Event
 
 
-class ExitButton(ShortcutUIComponent, Button):
+class ExitButton(Button):
     def __init__(self, screen: pygame.Surface, on_exit: Callable):
         w, h = screen.get_size()
         rect = pygame.Rect(10, h - Config.BUTTON_SIZE - 10, Config.BUTTON_SIZE, Config.BUTTON_SIZE)
         super().__init__(rect, screen)
         self._icon = IconLoader().get_icon(ICON_PATHS["EXIT"], Config.BUTTON_SIZE)
         self._on_exit = on_exit
-        self._shortcuts = {
-            (pygame.K_ESCAPE, False): self._on_exit
-        }
 
     def _on_click(self, event: Event) -> None:
         if event.is_left_click:
