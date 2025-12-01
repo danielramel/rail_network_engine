@@ -773,6 +773,15 @@ OUTPUT impl\decisions.aux
 INPUT .\impl\decisions.tex
 INPUT .\impl\decisions.tex
 INPUT impl\decisions.tex
+INPUT C:\Users\lemar\AppData\Local\MiKTeX\fonts\tfm\jknappen\ec\ecrm1000.tfm
+INPUT C:\Users\lemar\AppData\Local\MiKTeX\fonts\tfm\jknappen\ec\ectt1000.tfm
+INPUT C:\Users\lemar\AppData\Local\MiKTeX\fonts\tfm\jknappen\ec\ecrm0600.tfm
+INPUT C:\Users\lemar\AppData\Local\MiKTeX\tex\latex\listings\lstlang1.sty
+INPUT C:\Users\lemar\AppData\Local\MiKTeX\tex\latex\listings\lstlang1.sty
+INPUT C:\Users\lemar\AppData\Local\MiKTeX\tex\latex\listings\lstlang1.sty
+INPUT C:\Users\lemar\AppData\Local\MiKTeX\tex\latex\listings\lstlang1.sty
+INPUT C:\Users\lemar\AppData\Local\MiKTeX\tex\latex\listings\lstlang1.sty
+INPUT C:\Users\lemar\AppData\Local\MiKTeX\tex\latex\listings\lstlang1.sty
 INPUT .\impl\app_architecture\app_architecture.tex
 OUTPUT impl\app_architecture\app_architecture.aux
 INPUT .\impl\app_architecture\app_architecture.tex
@@ -784,9 +793,6 @@ INPUT impl\app_architecture\core.tex
 INPUT C:\Users\lemar\AppData\Local\MiKTeX\tex\latex\listings\lstlang1.sty
 INPUT C:\Users\lemar\AppData\Local\MiKTeX\tex\latex\listings\lstlang1.sty
 INPUT C:\Users\lemar\AppData\Local\MiKTeX\tex\latex\listings\lstlang1.sty
-INPUT C:\Users\lemar\AppData\Local\MiKTeX\fonts\tfm\jknappen\ec\ecrm1000.tfm
-INPUT C:\Users\lemar\AppData\Local\MiKTeX\fonts\tfm\jknappen\ec\ectt1000.tfm
-INPUT C:\Users\lemar\AppData\Local\MiKTeX\fonts\tfm\jknappen\ec\ecrm0600.tfm
 INPUT .\impl\app_architecture\shared.tex
 INPUT .\impl\app_architecture\shared.tex
 INPUT impl\app_architecture\shared.tex
@@ -853,10 +859,6 @@ INPUT .\elteikthesis_hu.lot
 INPUT .\elteikthesis_hu.lot
 INPUT elteikthesis_hu.lot
 OUTPUT elteikthesis_hu.lot
-INPUT .\elteikthesis_hu.loa
-INPUT .\elteikthesis_hu.loa
-INPUT elteikthesis_hu.loa
-OUTPUT elteikthesis_hu.loa
 INPUT .\elteikthesis_hu.lol
 INPUT .\elteikthesis_hu.lol
 INPUT elteikthesis_hu.lol

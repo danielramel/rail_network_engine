@@ -1,6 +1,5 @@
 **/__pycache__/
 *.pyc
 sources.txt
-test*.py
 .vscode/
 maps/

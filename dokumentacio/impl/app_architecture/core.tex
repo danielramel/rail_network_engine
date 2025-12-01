@@ -52,7 +52,7 @@ A térbeli reprezentációért és a gráf-alapú koordinátákért felelős osz
     \item \textbf{\texttt{position.py}:} A folytonos (Euclideszi) tér egy pontját reprezentálja lebegőpontos koordinátákkal. Míg a \texttt{Node} a gráf csomópontjait jelöli, a \texttt{Position} a képpontok és a kurzor finommozgását írja le.
     \item \textbf{\texttt{edge.py}:} A gráf éleinek absztrakciója, amely két \texttt{Node} közötti kapcsolatot definiál.
     \item \textbf{\texttt{direction.py}:} A vektorirányok kezelését végző segédosztály. Kulcsszerepe van a gráfbejárás során a lehetséges haladási irányok meghatározásában.
-    \item \textbf{\texttt{pose.py}:} A \textit{Position} és \textit{Direction} kombinációja (pozíció és orientáció). Nélkülözhetetlen a jelzők és vonatok állapotának leírásához, ahol a térbeli elhelyezkedés mellett az irány is meghatározó.
+    \item \textbf{\texttt{pose.py}:} A \textit{Position} és \textit{Direction} kombinációja (pozíció és orientáció). Nélkülözhetetlen a jelzők és vonatok állapotának leírásához, ahol a térbeli elhelyezkedés mellett az irány is meghatározó.\cite{pose_stackexchange_definition}
 \end{itemize}
 
 \begin{lstlisting}[language=Python, caption={A Pose osztály \texttt{get\_connecting\_poses} metódusa, amely azokat a pozíciókat adja vissza, amelyek a vonatok által bevehető pályageometriájú szakaszokat reprezentálják}, label={lst:pose_get_connecting_poses}, inputencoding=utf8, extendedchars=true]
@@ -81,7 +81,10 @@ A különböző vasúti entitások és algoritmusait összekötő réteg.
 \paragraph{Repositories (Adattárolók)}
 A \textbf{Repository} tervezési minta alkalmazása az entitások életciklusának kezelésére. Ezek az osztályok felelősek az objektumok (vonatok, állomások, menetrendek) memóriában történő tárolásáért, lekérdezéséért és módosításáért.
 \begin{itemize}
-    \item \texttt{station\_repository.py}, \texttt{signal\_repository.py}, \texttt{train\_repository.py}, \texttt{timetable\_repository.py}
+    \item \texttt{station\_repository.py}
+    \item \texttt{signal\_repository.py}
+    \item \texttt{train\_repository.py}
+    \item \texttt{timetable\_repository.py}
 \end{itemize}
 
 \paragraph{Domain Entities (Entitások)}

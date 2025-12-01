@@ -5,19 +5,18 @@
 
 \section{Alkalmazott technológiák és fejlesztői környezet}
 \label{sec:technologies}
-A projekt implementációja \textbf{Python} programozási nyelven készült. A Python magas szintű absztrakciós képessége, valamint az elérhető könyvtárak és eszközök széles választéka lehetővé tette a gyors prototípus-fejlesztést és a komplex funkcionalitás hatékony megvalósítását.
+A projekt implementációja \textbf{Python} \cite{python_documentation} programozási nyelven készült. A Python magas szintű absztrakciós képessége, valamint az elérhető könyvtárak és eszközök széles választéka lehetővé tette a gyors prototípus-fejlesztést és a komplex funkcionalitás hatékony megvalósítását.
 
 \subsection{Felhasznált könyvtárak}
 \label{sec:used_libraries}
 A fejlesztés során számos külső könyvtár került integrálásra, amelyek specifikus feladatokat látnak el a rendszer különböző rétegeiben:
 
 \begin{description}
-    \item[Pygame:] A szimulációs tér vizualizációjáért és a grafikus felhasználói felület megjelenítéséért felelős könyvtár. Ez a modul az alkalmazás grafikus felületének mintegy 80\%-át adja. A Pygame multimédiás alkalmazások és játékok fejlesztésére tervezett keretrendszer, amely felelős a 2D grafikus elemek (sprite-ok) rendereléséért, a képfrissítési ciklus kezeléséért, valamint a felhasználói interakciók (billentyűzet- és egéresemények) valós idejű feldolgozásáért.
+    \item[Pygame:] \cite{pygame_documentation} A szimulációs tér vizualizációjáért és a grafikus felhasználói felület megjelenítéséért felelős könyvtár. Ez a modul az alkalmazás grafikus felületének mintegy 80\%-át adja. A Pygame multimédiás alkalmazások és játékok fejlesztésére tervezett keretrendszer, amely felelős a 2D grafikus elemek (sprite-ok) rendereléséért, a képfrissítési ciklus kezeléséért, valamint a felhasználói interakciók (billentyűzet- és egéresemények) valós idejű feldolgozásáért.
 
-    \item[NetworkX:] A vasúti hálózat topológiájának reprezentálására és kezelésére szolgáló könyvtár. A NetworkX komplex hálózatok és gráfok elemzésére specializálódott eszköz, amely gráf alapú adatszerkezetet (csomópontok és élek) biztosít. Alkalmazása jelentősen egyszerűsítette a hálózati topológia implementálását és a kapcsolati viszonyok kezelését.
+    \item[NetworkX:] \cite{networkx_documentation} A vasúti hálózat topológiájának reprezentálására és kezelésére szolgáló könyvtár. A NetworkX komplex hálózatok és gráfok elemzésére specializálódott eszköz, amely gráf alapú adatszerkezetet (csomópontok és élek) biztosít. Alkalmazása jelentősen egyszerűsítette a hálózati topológia implementálását és a kapcsolati viszonyok kezelését.
 
-    \item[PyQt6:] Míg a szimuláció megjelenítése Pygame alapú, a menetrendek szerkesztése PyQt6 keretrendszer segítségével valósult meg. A Qt könyvtár Python implementációja professzionális, eseményvezérelt GUI komponenseket (gombok, táblázatok, legördülő menük) nyújt, amelyek ergonómikusabb felhasználói élményt biztosítanak az adminisztratív műveletek során.
-
+    \item[PyQt6:] \cite{qt_documentation} Míg a szimuláció megjelenítése Pygame alapú, a menetrendek szerkesztése PyQt6 keretrendszer segítségével valósult meg. A Qt könyvtár Python implementációja professzionális, eseményvezérelt GUI komponenseket (gombok, táblázatok, legördülő menük) nyújt, amelyek ergonómikusabb felhasználói élményt biztosítanak az adminisztratív műveletek során.
     \item[Tkinter:] A Python standard könyvtárának grafikus eszközkészlete. Az alkalmazásban kizárólag modális párbeszédablakok (pl. hibaüzenetek, figyelmeztetések, megerősítő dialógusok) megjelenítésére kerül felhasználásra (\texttt{messagebox} modul). Használatát az indokolta, hogy natív rendszerintegrációt biztosít további külső függőségek nélkül.
 \end{description}
 
@@ -35,6 +34,69 @@ A mentett JSON struktúra a következő főbb komponenseket tartalmazza:
     \item[timetable\_repository:] A menetrendi útvonalak és időzítések definíciója.
     \item[train\_repository:] A járművek kezdeti pozíciója és paraméterezett tulajdonságai.
 \end{description}
+Rövidített példa JSON:
+\begin{lstlisting}[caption={Mentési JSON-struktúra (rövidített)}, label={lst:save_json_short}, inputencoding=utf8, extendedchars=true]
+{
+  "graph": {
+    "nodes": [
+      { "id": { "x": -12, "y": -6, "level": 0 }, "station": 1 },
+      { "id": { "x": -11, "y": -6, "level": 0 } }
+    ],
+    "edges": [
+      {
+        "source": { "x": -12, "y": -6, "level": 0 },
+        "target": { "x": -11, "y": -6, "level": 0 },
+        "length": 50,
+        "speed": 120
+      }
+    ]
+  },
+  "station_repository": {
+    "stations": [
+      {
+        "id": 1,
+        "name": "Nadorkert",
+        "platforms": [[ { "a": {"x": -12, "y": -6, "level": 0}, "b": {"x": -11, "y": -6, "level": 0} } ]]
+      }
+    ]
+  },
+  "signal_repository": [
+    { "node": { "x": -12, "y": -6, "level": 0 }, "direction": { "x": 1, "y": 0 } }
+  ],
+  "timetable_repository": [
+    { "code": "S50", "first_train": 286, "last_train": 1366, "frequency": 60, "stops": [ { "id": 1 } ] }
+  ],
+  "train_repository": {
+    "trains": [
+      {
+        "id": 1,
+        "path": [ { "a": {"x": -12, "y": -6, "level": 0}, "b": {"x": -11, "y": -6, "level": 0} } ],
+        "config": { "car_count": 6 }
+      }
+    ]
+  }
+}
+\end{lstlisting}
+
+\section{Az alkalmazás indítása}
+\label{sec:app_startup}
+Az alkalmazás belépési pontja a \texttt{src/main.py} modul, amely kétféle indítási móddal rendelkezik:
+
+\begin{description}
+    \item[Paraméter nélküli indítás:] Alapértelmezett esetben a program üres munkaterülettel indul, amely lehetőséget biztosít új projekt létrehozására vagy meglévő projektfájl megnyitására a grafikus felületen keresztül.
+    
+    \begin{lstlisting}[language=bash, caption={Alkalmazás indítása paraméterek nélkül}]
+python src/main.py
+    \end{lstlisting}
+    
+    \item[Projektfájllal történő indítás:] A parancssori argumentumként megadott projektfájl automatikus betöltését teszi lehetővé. Az első pozicionális paraméter a megnyitandó JSON formátumú projektfájl elérési útját várja.
+    
+    \begin{lstlisting}[language=bash, caption={Alkalmazás indítása projektfájl betöltésével}]
+python src/main.py maps/30a.json
+    \end{lstlisting}
+\end{description}
+
+Ez a megközelítés rugalmas munkafolyamatot támogat: lehetővé teszi az interaktív szerkesztést új projektekkel, valamint a korábban mentett konfigurációk gyors betöltését fejlesztési vagy tesztelési célokra.
 
 \include{impl/app_architecture/app_architecture.tex}
 

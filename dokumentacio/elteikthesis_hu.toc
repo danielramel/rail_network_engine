@@ -1,18 +1,18 @@
-\select@language {hungarian} \contentsline {chapter}{\numberline {1}Bevezetés}{6}{chapter.1}%
-\select@language {hungarian} \contentsline {section}{\numberline {1.1}Tématerület ismertetése}{6}{section.1.1}%
-\select@language {hungarian} \contentsline {section}{\numberline {1.2}Motiváció és célkitűzés}{6}{section.1.2}%
-\select@language {hungarian} \contentsline {section}{\numberline {1.3}Háttér és a menetrend-alapú tervezés koncepciója}{7}{section.1.3}%
-\select@language {hungarian} \contentsline {section}{\numberline {1.4}Hazai példák}{8}{section.1.4}%
-\select@language {hungarian} \contentsline {chapter}{\numberline {2}Felhasználói kézikönyv}{10}{chapter.2}%
-\select@language {hungarian} \contentsline {section}{\numberline {2.1}Rendszerkövetelmények és Telepítés}{10}{section.2.1}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {2.1.1}Rendszerkövetelmények}{10}{subsection.2.1.1}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {2.1.2}Az alkalmazás telepítése}{11}{subsection.2.1.2}%
-\select@language {hungarian} \contentsline {section}{\numberline {2.2}Működési környezet és jogosultságok}{11}{section.2.2}%
-\select@language {hungarian} \contentsline {section}{\numberline {2.3}Hardverkövetelmények és ergonómia}{12}{section.2.3}%
-\select@language {hungarian} \contentsline {section}{\numberline {2.4}Az alkalmazás funkcióinak részletes ismertetése}{12}{section.2.4}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {2.4.1}Kezdőoldal}{12}{subsection.2.4.1}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {2.4.2}Projekt nézet és navigáció}{13}{subsection.2.4.2}%
-\select@language {hungarian} \contentsline {subsubsection}{Interakciók és hibakezelés:}{13}{section*.6}%
+\select@language {hungarian} \contentsline {chapter}{\numberline {1}Bevezetés}{5}{chapter.1}%
+\select@language {hungarian} \contentsline {section}{\numberline {1.1}Tématerület ismertetése}{5}{section.1.1}%
+\select@language {hungarian} \contentsline {section}{\numberline {1.2}Motiváció és célkitűzés}{5}{section.1.2}%
+\select@language {hungarian} \contentsline {section}{\numberline {1.3}Háttér és a menetrend-alapú tervezés koncepciója}{6}{section.1.3}%
+\select@language {hungarian} \contentsline {section}{\numberline {1.4}Hazai példák}{7}{section.1.4}%
+\select@language {hungarian} \contentsline {chapter}{\numberline {2}Felhasználói kézikönyv}{9}{chapter.2}%
+\select@language {hungarian} \contentsline {section}{\numberline {2.1}Rendszerkövetelmények és Telepítés}{9}{section.2.1}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {2.1.1}Rendszerkövetelmények}{9}{subsection.2.1.1}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {2.1.2}Az alkalmazás telepítése}{10}{subsection.2.1.2}%
+\select@language {hungarian} \contentsline {section}{\numberline {2.2}Működési környezet és jogosultságok}{10}{section.2.2}%
+\select@language {hungarian} \contentsline {section}{\numberline {2.3}Hardverkövetelmények és ergonómia}{11}{section.2.3}%
+\select@language {hungarian} \contentsline {section}{\numberline {2.4}Az alkalmazás funkcióinak részletes ismertetése}{11}{section.2.4}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {2.4.1}Kezdőoldal}{11}{subsection.2.4.1}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {2.4.2}Projekt nézet és navigáció}{12}{subsection.2.4.2}%
+\select@language {hungarian} \contentsline {subsubsection}{Interakciók és hibakezelés:}{12}{section*.6}%
 \select@language {hungarian} \contentsline {subsubsection}{Navigáció a munkaterületen}{14}{section*.10}%
 \select@language {hungarian} \contentsline {subsubsection}{Infrastruktúra építése (Pályaszerkesztés)}{15}{section*.12}%
 \select@language {hungarian} \contentsline {subsubsection}{Vágány fektetése}{16}{section*.14}%
@@ -23,89 +23,90 @@
 \select@language {hungarian} \contentsline {subsection}{\numberline {2.4.3}Vonatok elhelyezése}{21}{subsection.2.4.3}%
 \select@language {hungarian} \contentsline {subsubsection}{Gördülőállomány elhelyezése}{21}{section*.24}%
 \select@language {hungarian} \contentsline {subsubsection}{Menetrendi tervezés}{22}{section*.27}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {2.4.4}Szimulációs üzemmód}{24}{subsection.2.4.4}%
-\select@language {hungarian} \contentsline {subsubsection}{Idővezérlés}{25}{section*.32}%
-\select@language {hungarian} \contentsline {subsubsection}{Forgalomirányítás (Vágányutak kezelése)}{25}{section*.33}%
-\select@language {hungarian} \contentsline {subsubsection}{Járműfelügyelet}{27}{section*.37}%
-\select@language {hungarian} \contentsline {subsubsection}{Szimuláció leállítása}{28}{section*.39}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {2.4.5}Projektkezelés (Mentés és betöltés)}{28}{subsection.2.4.5}%
-\select@language {hungarian} \contentsline {subsubsection}{Mentés (Save)}{28}{section*.41}%
-\select@language {hungarian} \contentsline {subsubsection}{Betöltés (Load)}{29}{section*.43}%
-\select@language {hungarian} \contentsline {subsubsection}{Visszalépés a főmenübe}{29}{section*.44}%
-\select@language {hungarian} \contentsline {chapter}{\numberline {3}Fejlesztői dokumentáció}{30}{chapter.3}%
-\select@language {hungarian} \contentsline {section}{\numberline {3.1}Technológiai döntések és alternatívák elemzése}{31}{section.3.1}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.1.1}Programozási nyelv: Python vs. C++ / C\#}{31}{subsection.3.1.1}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.1.2}Szimulációs környezet: Pygame vs. Game Engines (Unity/Unreal)}{31}{subsection.3.1.2}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.1.3}Gráfkezelés és algoritmusok: NetworkX}{32}{subsection.3.1.3}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.1.4}A felhasználói felület kihívásai: A hibrid architektúra indoklása}{32}{subsection.3.1.4}%
-\select@language {hungarian} \contentsline {section}{\numberline {3.2}Alkalmazott technológiák és fejlesztői környezet}{34}{section.3.2}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.2.1}Felhasznált könyvtárak}{34}{subsection.3.2.1}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.2.2}Adattárolás és perzisztencia}{35}{subsection.3.2.2}%
-\select@language {hungarian} \contentsline {section}{\numberline {3.3}Szoftverarchitektúra és rendszerfelépítés}{36}{section.3.3}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.3.1}Belépési pontok és vezérlés}{36}{subsection.3.3.1}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.3.2}Core (Mag) réteg}{36}{subsection.3.3.2}%
-\select@language {hungarian} \contentsline {subsubsection}{Config modul}{36}{section*.45}%
-\select@language {hungarian} \contentsline {subsubsection}{Graphics modul}{37}{section*.46}%
-\select@language {hungarian} \contentsline {subsubsection}{Models csomag}{38}{section*.47}%
-\select@language {hungarian} \contentsline {paragraph}{Geometry (Geometria és Térinformatika)}{38}{section*.48}%
-\select@language {hungarian} \contentsline {paragraph}{Railway (Vasúti Logika)}{39}{section*.49}%
-\select@language {hungarian} \contentsline {paragraph}{Repositories (Adattárolók)}{39}{section*.50}%
-\select@language {hungarian} \contentsline {paragraph}{Domain Entities (Entitások)}{40}{section*.51}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.3.3}Shared (Megosztott) réteg}{40}{subsection.3.3.3}%
-\select@language {hungarian} \contentsline {subsubsection}{UI Modellek és Alaposztályok}{40}{section*.52}%
-\select@language {hungarian} \contentsline {subsubsection}{Modellek (Models)}{43}{section*.54}%
-\select@language {hungarian} \contentsline {subsubsection}{Vezérlők (Controllers)}{44}{section*.55}%
-\select@language {hungarian} \contentsline {subsubsection}{Megosztott UI Komponensek}{44}{section*.56}%
-\select@language {hungarian} \contentsline {subsubsection}{Segédfunkciók és Szolgáltatások}{44}{section*.57}%
-\select@language {hungarian} \contentsline {paragraph}{Utils (Rajzolási segédfunkciók)}{45}{section*.58}%
-\select@language {hungarian} \contentsline {paragraph}{Services és Enums}{45}{section*.59}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.3.4}Setup Modul}{45}{subsection.3.3.4}%
-\select@language {hungarian} \contentsline {paragraph}{Vezérlők (Controllers)}{46}{section*.60}%
-\select@language {hungarian} \contentsline {paragraph}{UI Komponensek}{46}{section*.61}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.3.5}Construction (Pályaszerkesztő) Modul}{46}{subsection.3.3.5}%
-\select@language {hungarian} \contentsline {subparagraph}{Modellek és Absztrakciók (\texttt {models})}{47}{section*.62}%
-\select@language {hungarian} \contentsline {subparagraph}{Felhasználói Felület (\texttt {ui})}{47}{section*.63}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.3.6}Train Placement (Vonatelhelyező) Modul}{48}{subsection.3.3.6}%
-\select@language {hungarian} \contentsline {subparagraph}{Felhasználói Felület (\texttt {ui})}{49}{section*.65}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.3.7}Simulation (Szimulációs) Modul}{50}{subsection.3.3.7}%
-\select@language {hungarian} \contentsline {paragraph}{Modellek (\texttt {models})}{51}{section*.67}%
-\select@language {hungarian} \contentsline {subsubsection}{Felhasználói Felület (\texttt {ui})}{51}{section*.68}%
-\select@language {hungarian} \contentsline {paragraph}{Általános UI elemek}{51}{section*.69}%
-\select@language {hungarian} \contentsline {paragraph}{Vonatvezérlő Panelek (\texttt {ui/panel})}{51}{section*.70}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.3.8}Timetable (Menetrend) Modul}{52}{subsection.3.3.8}%
-\select@language {hungarian} \contentsline {subsubsection}{Ablakok és Dialógusok}{52}{section*.72}%
-\select@language {hungarian} \contentsline {subsubsection}{Stílusdefiníciók (\texttt {stylesheets})}{53}{section*.73}%
-\select@language {hungarian} \contentsline {section}{\numberline {3.4}Tesztelés}{54}{section.3.4}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.1}Tesztelési módszertan}{54}{subsection.3.4.1}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.2}Setup modul}{54}{subsection.3.4.2}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.3}Construction mód – pályaelemek}{54}{subsection.3.4.3}%
-\select@language {hungarian} \contentsline {paragraph}{Vágányok}{54}{section*.74}%
-\select@language {hungarian} \contentsline {paragraph}{Alagutak}{55}{section*.75}%
-\select@language {hungarian} \contentsline {paragraph}{Jelzők}{56}{section*.76}%
-\select@language {hungarian} \contentsline {paragraph}{Állomások}{57}{section*.77}%
-\select@language {hungarian} \contentsline {paragraph}{Peronok}{57}{section*.78}%
-\select@language {hungarian} \contentsline {paragraph}{Törlés mód}{58}{section*.79}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.4}Train Placement mód}{59}{subsection.3.4.4}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.5}Train Removal mód}{59}{subsection.3.4.5}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.6}Menetrend összesítése}{59}{subsection.3.4.6}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.7}Menetrend szerkesztő panel}{60}{subsection.3.4.7}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.8}Simulation mód – idő és vonatközlekedés}{61}{subsection.3.4.8}%
-\select@language {hungarian} \contentsline {paragraph}{Időkezelés}{61}{section*.80}%
-\select@language {hungarian} \contentsline {paragraph}{Vonatok}{61}{section*.81}%
-\select@language {hungarian} \contentsline {paragraph}{Jelzők és vágányutak}{63}{section*.82}%
-\select@language {hungarian} \contentsline {paragraph}{Szimuláció leállítása}{63}{section*.83}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.9}Mentés és betöltés}{64}{subsection.3.4.9}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.10}Kilépés}{65}{subsection.3.4.10}%
-\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.11}Teszt eredmények összefoglalása}{65}{subsection.3.4.11}%
-\select@language {hungarian} \contentsline {chapter}{\numberline {4}Összefoglalás}{66}{chapter.4}%
-\select@language {hungarian} \contentsline {chapter}{\numberline {5}További fejlesztési lehetőségek}{68}{chapter.5}%
-\select@language {hungarian} \contentsline {paragraph}{Vágányút előjegyzése és tárolása}{68}{section*.84}%
-\select@language {hungarian} \contentsline {paragraph}{A térképen kívüli forgalom kezelése}{68}{section*.85}%
-\select@language {hungarian} \contentsline {paragraph}{Szimuláció kiértékelése és visszajelzés}{68}{section*.86}%
-\select@language {hungarian} \contentsline {paragraph}{Hálózatos, többfelhasználós irányítás}{69}{section*.87}%
-\select@language {hungarian} \contentsline {chapter}{Köszönetnyilvánítás}{70}{chapter*.88}%
-\select@language {hungarian} \contentsline {chapter}{Irodalomjegyzék}{72}{section*.89}%
-\select@language {hungarian} \contentsline {chapter}{Ábrajegyzék}{72}{section*.90}%
-\select@language {hungarian} \contentsline {chapter}{Táblázatjegyzék}{74}{section*.91}%
-\select@language {hungarian} \contentsline {chapter}{Algoritmusjegyzék}{75}{section*.92}%
-\select@language {hungarian} \contentsline {chapter}{Forráskódjegyzék}{76}{section*.94}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {2.4.4}Szimulációs üzemmód}{25}{subsection.2.4.4}%
+\select@language {hungarian} \contentsline {subsubsection}{Idővezérlés}{26}{section*.32}%
+\select@language {hungarian} \contentsline {subsubsection}{Forgalomirányítás (Vágányutak kezelése)}{26}{section*.33}%
+\select@language {hungarian} \contentsline {subsubsection}{Járműfelügyelet}{28}{section*.37}%
+\select@language {hungarian} \contentsline {subsubsection}{Szimuláció leállítása}{29}{section*.39}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {2.4.5}Projektkezelés (Mentés és betöltés)}{29}{subsection.2.4.5}%
+\select@language {hungarian} \contentsline {subsubsection}{Mentés (Save)}{29}{section*.41}%
+\select@language {hungarian} \contentsline {subsubsection}{Betöltés (Load)}{30}{section*.43}%
+\select@language {hungarian} \contentsline {subsubsection}{Visszalépés a főmenübe}{30}{section*.44}%
+\select@language {hungarian} \contentsline {chapter}{\numberline {3}Fejlesztői dokumentáció}{31}{chapter.3}%
+\select@language {hungarian} \contentsline {section}{\numberline {3.1}Technológiai döntések és alternatívák elemzése}{32}{section.3.1}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.1.1}Programozási nyelv: Python vs. C++ / C\#}{32}{subsection.3.1.1}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.1.2}Szimulációs környezet: Pygame vs. Game Engines (Unity/Unreal)}{32}{subsection.3.1.2}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.1.3}Gráfkezelés és algoritmusok: NetworkX}{33}{subsection.3.1.3}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.1.4}A felhasználói felület kihívásai: A hibrid architektúra indoklása}{33}{subsection.3.1.4}%
+\select@language {hungarian} \contentsline {section}{\numberline {3.2}Alkalmazott technológiák és fejlesztői környezet}{35}{section.3.2}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.2.1}Felhasznált könyvtárak}{35}{subsection.3.2.1}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.2.2}Adattárolás és perzisztencia}{36}{subsection.3.2.2}%
+\select@language {hungarian} \contentsline {section}{\numberline {3.3}Az alkalmazás indítása}{37}{section.3.3}%
+\select@language {hungarian} \contentsline {section}{\numberline {3.4}Szoftverarchitektúra és rendszerfelépítés}{39}{section.3.4}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.1}Belépési pontok és vezérlés}{39}{subsection.3.4.1}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.2}Core (Mag) réteg}{39}{subsection.3.4.2}%
+\select@language {hungarian} \contentsline {subsubsection}{Config modul}{39}{section*.45}%
+\select@language {hungarian} \contentsline {subsubsection}{Graphics modul}{40}{section*.46}%
+\select@language {hungarian} \contentsline {subsubsection}{Models csomag}{41}{section*.47}%
+\select@language {hungarian} \contentsline {paragraph}{Geometry (Geometria és Térinformatika)}{41}{section*.48}%
+\select@language {hungarian} \contentsline {paragraph}{Railway (Vasúti Logika)}{42}{section*.49}%
+\select@language {hungarian} \contentsline {paragraph}{Repositories (Adattárolók)}{42}{section*.50}%
+\select@language {hungarian} \contentsline {paragraph}{Domain Entities (Entitások)}{43}{section*.51}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.3}Shared (Megosztott) réteg}{43}{subsection.3.4.3}%
+\select@language {hungarian} \contentsline {subsubsection}{UI Modellek és Alaposztályok}{43}{section*.52}%
+\select@language {hungarian} \contentsline {subsubsection}{Modellek (Models)}{47}{section*.54}%
+\select@language {hungarian} \contentsline {subsubsection}{Vezérlők (Controllers)}{47}{section*.55}%
+\select@language {hungarian} \contentsline {subsubsection}{Megosztott UI Komponensek}{47}{section*.56}%
+\select@language {hungarian} \contentsline {subsubsection}{Segédfunkciók és Szolgáltatások}{47}{section*.57}%
+\select@language {hungarian} \contentsline {paragraph}{Utils (Rajzolási segédfunkciók)}{48}{section*.58}%
+\select@language {hungarian} \contentsline {paragraph}{Services és Enums}{48}{section*.59}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.4}Setup Modul}{48}{subsection.3.4.4}%
+\select@language {hungarian} \contentsline {paragraph}{Vezérlők (Controllers)}{49}{section*.60}%
+\select@language {hungarian} \contentsline {paragraph}{UI Komponensek}{49}{section*.61}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.5}Construction (Pályaszerkesztő) Modul}{49}{subsection.3.4.5}%
+\select@language {hungarian} \contentsline {subparagraph}{Modellek és Absztrakciók (\texttt {models})}{50}{section*.62}%
+\select@language {hungarian} \contentsline {subparagraph}{Felhasználói Felület (\texttt {ui})}{50}{section*.63}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.6}Train Placement (Vonatelhelyező) Modul}{51}{subsection.3.4.6}%
+\select@language {hungarian} \contentsline {subparagraph}{Felhasználói Felület (\texttt {ui})}{52}{section*.65}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.7}Simulation (Szimulációs) Modul}{53}{subsection.3.4.7}%
+\select@language {hungarian} \contentsline {paragraph}{Modellek (\texttt {models})}{54}{section*.67}%
+\select@language {hungarian} \contentsline {subsubsection}{Felhasználói Felület (\texttt {ui})}{54}{section*.68}%
+\select@language {hungarian} \contentsline {paragraph}{Általános UI elemek}{54}{section*.69}%
+\select@language {hungarian} \contentsline {paragraph}{Vonatvezérlő Panelek (\texttt {ui/panel})}{54}{section*.70}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.4.8}Timetable (Menetrend) Modul}{55}{subsection.3.4.8}%
+\select@language {hungarian} \contentsline {subsubsection}{Ablakok és Dialógusok}{55}{section*.72}%
+\select@language {hungarian} \contentsline {subsubsection}{Stílusdefiníciók (\texttt {stylesheets})}{56}{section*.73}%
+\select@language {hungarian} \contentsline {section}{\numberline {3.5}Tesztelés}{57}{section.3.5}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.5.1}Tesztelési módszertan}{57}{subsection.3.5.1}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.5.2}Setup modul}{57}{subsection.3.5.2}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.5.3}Construction mód - pályaelemek}{57}{subsection.3.5.3}%
+\select@language {hungarian} \contentsline {paragraph}{Vágányok}{57}{section*.74}%
+\select@language {hungarian} \contentsline {paragraph}{Alagutak}{58}{section*.75}%
+\select@language {hungarian} \contentsline {paragraph}{Jelzők}{59}{section*.76}%
+\select@language {hungarian} \contentsline {paragraph}{Állomások}{60}{section*.77}%
+\select@language {hungarian} \contentsline {paragraph}{Peronok}{61}{section*.78}%
+\select@language {hungarian} \contentsline {paragraph}{Pályaelemek törlése}{61}{section*.79}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.5.4}Vonatelhelyezés}{62}{subsection.3.5.4}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.5.5}Vonateltávolítás}{62}{subsection.3.5.5}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.5.6}Menetrendek}{63}{subsection.3.5.6}%
+\select@language {hungarian} \contentsline {paragraph}{Menetrendek összesítése}{63}{section*.80}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.5.7}Menetrend szerkesztése}{63}{subsection.3.5.7}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.5.8}Simulation mód}{64}{subsection.3.5.8}%
+\select@language {hungarian} \contentsline {paragraph}{Szimuláció indítása és leállítása}{64}{section*.81}%
+\select@language {hungarian} \contentsline {paragraph}{Időkezelés}{65}{section*.82}%
+\select@language {hungarian} \contentsline {paragraph}{Vonatok}{65}{section*.83}%
+\select@language {hungarian} \contentsline {paragraph}{Jelzők és vágányutak}{66}{section*.84}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.5.9}Mentés és betöltés}{67}{subsection.3.5.9}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.5.10}Kilépés}{68}{subsection.3.5.10}%
+\select@language {hungarian} \contentsline {subsection}{\numberline {3.5.11}Teszt eredmények összefoglalása}{69}{subsection.3.5.11}%
+\select@language {hungarian} \contentsline {chapter}{\numberline {4}Összefoglalás}{70}{chapter.4}%
+\select@language {hungarian} \contentsline {chapter}{\numberline {5}További fejlesztési lehetőségek}{71}{chapter.5}%
+\select@language {hungarian} \contentsline {paragraph}{Vágányút előjegyzése és tárolása}{71}{section*.85}%
+\select@language {hungarian} \contentsline {paragraph}{A térképen kívüli forgalom kezelése}{71}{section*.86}%
+\select@language {hungarian} \contentsline {paragraph}{Szimuláció kiértékelése és visszajelzés}{71}{section*.87}%
+\select@language {hungarian} \contentsline {paragraph}{Hálózatos, többfelhasználós irányítás}{72}{section*.88}%
+\select@language {hungarian} \contentsline {chapter}{Köszönetnyilvánítás}{73}{chapter*.89}%
+\select@language {hungarian} \contentsline {chapter}{Irodalomjegyzék}{73}{section*.90}%
+\select@language {hungarian} \contentsline {chapter}{Ábrajegyzék}{76}{section*.92}%
+\select@language {hungarian} \contentsline {chapter}{Táblázatjegyzék}{78}{section*.93}%
+\select@language {hungarian} \contentsline {chapter}{Forráskódjegyzék}{79}{section*.94}%

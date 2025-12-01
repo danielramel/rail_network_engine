@@ -16,5 +16,202 @@
   {}
 \endgroup
 
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global}
+    \entry{timetabling2021_strategic}{article}{}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://www.sciencedirect.com/science/article/pii/S0191261521000278}}
+      \field{journaltitle}{Transportation Research Part B}
+      \field{note}{Elérés dátuma: 2025-12-01}
+      \field{title}{Timetabling for strategic passenger railway planning}
+      \field{year}{2021}
+    \endentry
+    \entry{fuchs2022_infrastructure_aware}{article}{}
+      \name{author}{3}{}{%
+        {{hash=4f85914afcd87652c006a8eeefee513f}{%
+           family={Fuchs},
+           familyi={F\bibinitperiod},
+           given={Peter},
+           giveni={P\bibinitperiod}}}%
+        {{hash=150755fd5b48d03524e7d7204b7bb625}{%
+           family={Trivella},
+           familyi={T\bibinitperiod},
+           given={Alessandra},
+           giveni={A\bibinitperiod}}}%
+        {{hash=48d3bb8c85018a276003a28e3ea68b4c}{%
+           family={Corman},
+           familyi={C\bibinitperiod},
+           given={Francesco},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{edd91cb5a8f71f348ddd593dabb538d0}
+      \strng{fullhash}{edd91cb5a8f71f348ddd593dabb538d0}
+      \strng{bibnamehash}{edd91cb5a8f71f348ddd593dabb538d0}
+      \strng{authorbibnamehash}{edd91cb5a8f71f348ddd593dabb538d0}
+      \strng{authornamehash}{edd91cb5a8f71f348ddd593dabb538d0}
+      \strng{authorfullhash}{edd91cb5a8f71f348ddd593dabb538d0}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://www.worldtransitresearch.info/research/9185/}}
+      \field{note}{Elérés dátuma: 2025-12-01}
+      \field{title}{Enhancing the interaction of railway timetabling and line planning with infrastructure awareness}
+      \field{year}{2022}
+    \endentry
+    \entry{robust_rail_2023_design}{article}{}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://arxiv.org/abs/2308.00483}}
+      \field{note}{Elérés dátuma: 2025-12-01}
+      \field{title}{Robust Railway Network Design based on Strategic Timetables}
+      \field{year}{2023}
+    \endentry
+    \entry{timetable_innovations2024_demand}{article}{}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://www.sciencedirect.com/science/article/pii/S1077291X24000109}}
+      \field{journaltitle}{Journal of Rail Transport Planning \& Management}
+      \field{note}{Elérés dátuma: 2025-12-01}
+      \field{title}{Radical timetable innovations in long-distance railway passenger transport: How might these affect railway passenger demand?}
+      \field{year}{2024}
+    \endentry
+    \entry{veke_m4_2020}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=f10f4d8d9a45016aa0c36de96a23c64d}{%
+           family={VEKE},
+           familyi={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{f10f4d8d9a45016aa0c36de96a23c64d}
+      \strng{fullhash}{f10f4d8d9a45016aa0c36de96a23c64d}
+      \strng{bibnamehash}{f10f4d8d9a45016aa0c36de96a23c64d}
+      \strng{authorbibnamehash}{f10f4d8d9a45016aa0c36de96a23c64d}
+      \strng{authornamehash}{f10f4d8d9a45016aa0c36de96a23c64d}
+      \strng{authorfullhash}{f10f4d8d9a45016aa0c36de96a23c64d}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{http://veke.hu/download/m4_tanulmany.pdf}}
+      \field{note}{Elérés dátuma: 2025-12-01}
+      \field{title}{M4 metró: Régi idők pazarló tervei}
+      \field{year}{2006}
+    \endentry
+    \entry{budapest_agglomeration_strategy}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=38f98595a1e8e284437fd0244798fdfa}{%
+           family={Zrt.},
+           familyi={Z\bibinitperiod},
+           given={Nemzeti\bibnamedelimb Közlekedési\bibnamedelima Központ},
+           giveni={N\bibinitperiod\bibinitdelim K\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+      }
+      \strng{namehash}{38f98595a1e8e284437fd0244798fdfa}
+      \strng{fullhash}{38f98595a1e8e284437fd0244798fdfa}
+      \strng{bibnamehash}{38f98595a1e8e284437fd0244798fdfa}
+      \strng{authorbibnamehash}{38f98595a1e8e284437fd0244798fdfa}
+      \strng{authornamehash}{38f98595a1e8e284437fd0244798fdfa}
+      \strng{authorfullhash}{38f98595a1e8e284437fd0244798fdfa}
+      \field{extraname}{1}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{http://bvs.hu/en/}}
+      \field{title}{Budapesti Agglomerációs Vasúti Stratégia}
+      \field{year}{2019}
+    \endentry
+    \entry{budapest_esztergom_nr_of_passenger}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=b63d3ca03fb8fb0d65a5e5ef7422706d}{%
+           family={Zrt.},
+           familyi={Z\bibinitperiod},
+           given={MÁV},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{b63d3ca03fb8fb0d65a5e5ef7422706d}
+      \strng{fullhash}{b63d3ca03fb8fb0d65a5e5ef7422706d}
+      \strng{bibnamehash}{b63d3ca03fb8fb0d65a5e5ef7422706d}
+      \strng{authorbibnamehash}{b63d3ca03fb8fb0d65a5e5ef7422706d}
+      \strng{authornamehash}{b63d3ca03fb8fb0d65a5e5ef7422706d}
+      \strng{authorfullhash}{b63d3ca03fb8fb0d65a5e5ef7422706d}
+      \field{extraname}{2}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://kimittud.hu/request/budapest_esztergom_vonal_utasfor\#incoming-31447}}
+      \field{note}{Elérés dátuma: 2025-12-01}
+      \field{title}{Budapest-Esztergom vasútvonal utasforgalom -- Közérdekű adatigénylés}
+      \field{year}{2023}
+    \endentry
+    \entry{delikorvasut_hu}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=7f1b5f83009ffd906c878232c8745a67}{%
+           family={Projekt},
+           familyi={P\bibinitperiod},
+           given={Déli\bibnamedelima Körvasút},
+           giveni={D\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+      }
+      \strng{namehash}{7f1b5f83009ffd906c878232c8745a67}
+      \strng{fullhash}{7f1b5f83009ffd906c878232c8745a67}
+      \strng{bibnamehash}{7f1b5f83009ffd906c878232c8745a67}
+      \strng{authorbibnamehash}{7f1b5f83009ffd906c878232c8745a67}
+      \strng{authornamehash}{7f1b5f83009ffd906c878232c8745a67}
+      \strng{authorfullhash}{7f1b5f83009ffd906c878232c8745a67}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://delikorvasut.hu}}
+      \field{note}{Elérés dátuma: 2025-12-01}
+      \field{title}{Déli Körvasút}
+    \endentry
+    \entry{python_documentation}{misc}{}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://docs.python.org/3/}}
+      \field{note}{Elérés dátuma: 2025-12-01}
+      \field{title}{Python Documentation}
+    \endentry
+    \entry{pygame_documentation}{misc}{}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://www.pygame.org/docs/}}
+      \field{note}{Elérés dátuma: 2025-12-01}
+      \field{title}{Pygame Documentation}
+    \endentry
+    \entry{networkx_documentation}{misc}{}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://networkx.org/documentation/stable/}}
+      \field{note}{Elérés dátuma: 2025-12-01}
+      \field{title}{NetworkX Documentation}
+    \endentry
+    \entry{qt_documentation}{misc}{}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://doc.qt.io/qtforpython-6/}}
+      \field{note}{Elérés dátuma: 2025-12-01}
+      \field{title}{Qt for Python Documentation}
+    \endentry
+    \entry{pose_stackexchange_definition}{misc}{}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://math.stackexchange.com/questions/892969/is-there-a-term-for-location-plus-orientation-without-magnitude}}
+      \field{note}{Elérés dátuma: 2025-12-01}
+      \field{title}{Is there a term for location plus orientation, without magnitude?}
+    \endentry
+  \enddatalist
+\endrefsection
 \endinput
 
