@@ -9,21 +9,24 @@ Jelen fejezet célja, hogy átfogó útmutatást nyújtson az alkalmazás telep�
 \label{sec:requirements}
 A szimulációs szoftver zökkenőmentes futtatásához az alábbi hardver- és szoftverkonfiguráció szükséges. Bár az alkalmazás 2D megjelenítést használ, a komplex útvonalkeresési algoritmusok és a szimulációs logika miatt a processzor teljesítménye meghatározó.
 
-\begin{center}
-\begin{tabular}{|l|p{6cm}|p{6cm}|}
-\hline
-\textbf{Komponens} & \textbf{Minimális követelmény} & \textbf{Ajánlott konfiguráció} \\
-\hline
-\textbf{Operációs rendszer} & Windows 10, macOS 10.13+, vagy modern Linux disztribúció & Windows 10/11 (64-bit) \\
-\hline
-\textbf{Processzor (CPU)} & Dual-core processzor (pl. Intel Core i3 / AMD Ryzen 3) & Quad-core processzor, 3.0 GHz+ (pl. Intel Core i5 / AMD Ryzen 5) \\
-\hline
-\textbf{Memória (RAM)} & 4 GB & 8 GB vagy több \\
-\hline
-\textbf{Kijelző} & 1280x720 felbontás & 1920x1080 (Full HD) felbontás \\
-\hline
-\end{tabular}
-\end{center}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ | m{0.25\textwidth} | m{0.3\textwidth} | m{0.3\textwidth} | }
+        \hline
+        \textbf{Komponens} & \textbf{Minimális követelmény} & \textbf{Ajánlott konfiguráció} \\
+        \hline
+        \emph{Operációs rendszer} & Windows 10, macOS 10.13+, vagy modern Linux disztribúció & Windows 10/11 (64-bit) \\
+        \hline
+        \emph{Processzor (CPU)} & Dual-core processzor (pl. Intel Core i3 / AMD Ryzen 3) & Quad-core processzor, 3.0 GHz+ (pl. Intel Core i5 / AMD Ryzen 5) \\
+        \hline
+        \emph{Memória (RAM)} & 4 GB & 8 GB vagy több \\
+        \hline
+        \emph{Kijelző} & 1280x720 felbontás & 1920x1080 (Full HD) felbontás \\
+        \hline
+    \end{tabular}
+    \caption{Rendszerkövetelmények táblázat}
+    \label{tab:requirements}
+\end{table}
 
 \subsection{Az alkalmazás telepítése}
 \label{sec:installation}
@@ -77,12 +80,12 @@ Az alábbiakban részletesen ismertetem az alkalmazás menürendszerét, a pály
 
 A projektfájlok kezelése az alkalmazás kulcsfontosságú funkciója, amely biztosítja a munkafolyamatok folytonosságát. A projektek tárolása szabványos \texttt{.json} formátumban történik, amely biztosítja az adatok hordozhatóságát.
 A fájlkezelő műveletek a képernyő bal alsó sarkában található funkciógombokkal, illetve gyorsbillentyűkkel érhetők el.
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.4\textwidth]{user/images/save_open_exit.png}
-        \caption{Mentés, Betöltés és Kilépés gombok}
-        \label{fig:save-load-buttons}
-    \end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.1\textwidth]{user/images/save_open_exit.png}
+    \caption{Mentés, Betöltés és Kilépés gombok}
+    \label{fig:save-load-buttons}
+\end{figure}
 \subsubsection{Mentés (Save)}
 A mentés állapota vizuálisan követhető a mentés ikon változásain keresztül:
 \begin{itemize}

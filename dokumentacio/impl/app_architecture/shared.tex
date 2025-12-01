@@ -110,7 +110,7 @@ A UI modellek közötti öröklődési és kapcsolati viszonyokat az \ref{fig:ui
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{impl/app_architecture/ui_models_uml.png}
+    \includegraphics[width=0.95\textwidth]{impl/app_architecture/ui_models_uml.png}
     \caption{Az UI komponensek UML osztálydiagramja}
     \label{fig:ui-models-uml}
 \end{figure}
@@ -128,7 +128,7 @@ A UI modellek közötti öröklődési és kapcsolati viszonyokat az \ref{fig:ui
 A \texttt{controllers} könyvtár tartalmazza az alkalmazás logikai vezérlőit.
 
 \begin{description}
-    \item[\texttt{app\_controller.py} (szülő: \texttt{ui\_controller})] 
+    \item[\texttt{app\_controller.py}] 
     A projekt nézet belépési pontja. Feladatai közé tartozik:
     \begin{itemize}
         \item A projekt inicializálása vagy betöltése.
@@ -137,7 +137,7 @@ A \texttt{controllers} könyvtár tartalmazza az alkalmazás logikai vezérlőit
         \item Események továbbítása az UI komponensek felé.
     \end{itemize}
 
-    \item[\texttt{app\_phase\_strategy.py} (szülő: \texttt{full\_screen\_ui\_component})] 
+    \item[\texttt{app\_phase\_strategy.py}] 
     Stratégia osztály, amely a projekt különböző fázisainak (pl. \textit{Setup}, \textit{Simulation}) állapotát kezeli és továbbítja a megfelelő modulok felé.
 
     \item[\texttt{camera\_controller.py}] 

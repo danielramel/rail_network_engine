@@ -10,6 +10,7 @@
 % The minted package is also supported for source highlighting
 % See elteikthesis_minted.tex for example
 %\usepackage[newfloat]{minted}
+\usepackage{longtable}
 
 \title{Vasúti vágányhálózat- és menetrendtervező alkalmazás} % title
 \date{2025} % year of defense
@@ -55,17 +56,26 @@
 \input{impl/impl.tex}
 \cleardoublepage
 
-\input{samples_hu/sum.tex}
+\input{sum.tex}
 \cleardoublepage
 
-% Acknowledgements (optional) - in case your thesis received funding or would like to express special thanks to someone
+\input{further_development.tex}
+
 \chapter*{\acklabel}
 \addcontentsline{toc}{chapter}{\acklabel}
-Amennyiben a szakdolgozati / diplomamunka projekted pénzügyi támogatást kapott egy projektből vagy az egyetemtől, jellemzően kötelező feltüntetni a dolgozatban is. A dolgozat elkészítéséhez segítséget nyújtó oktatók, hallgatótársak, kollégák felé is nyilvánítható külön köszönet.
+Köszönetnyilvánítási kötelezettségem teljesítése céljából elsőként Dr. Gombos Gergő témavezető úrnak kívánok hálával adózni, aki a jelen kutatómunka során nyújtott szakmai intervencióival és metodológiai iránymutatásával lehetővé tette, hogy egy számomra különösen kedves és releváns tudományos kérdéskörben folytathassak mélyreható elemzést.
+
+Ezentúl szeretném kifejezni hálámat édesanyám irányába, aki a szakdolgozat elkészítése során négy tudományos diplomával legitimált, multidiszciplináris megközelítésű szakértői konzultációjával és tudományelméleti orientációjával támogattott.
+
+Hálás elismeréssel tartozom Varga Borbálának és Godó Jánosnak, tisztelt hallgatótársaimnak, akik morális támogatást és a kutatási folyamat kritikus fázisaiban konstruktív asszisztenciát nyújtottak.
+
+Külön köszönettel tartozom Fadgyas Tibor úrnak és Schmieder László tanár úrnak, akik a programozási paradigmák és informatikai gondolkodás terén nyújtott alapozó oktatásukkal determinálták jelen karrierutat és tudományos érdeklődésemet.
 
 % Appendices (optional) - useful for detailed information in long tables, many and/or large figures, etc.
 \appendix
-\input{samples_hu/sim.tex}
+\cleardoublepage
+SZIMULÁCIÓS JEGYZÉK
+ide nem terveztem semmit tenni
 \cleardoublepage
 
 % Bibliography (mandatory)
@@ -84,12 +94,14 @@ Amennyiben a szakdolgozati / diplomamunka projekted pénzügyi támogatást kapo
 \phantomsection
 \addcontentsline{toc}{chapter}{\lsttablelabel}
 \listoftables
+IDE JONNEK MAJD A TESZT TÁBLÁK
 \cleardoublepage
 
 % List of algorithms (optional) - useful over 3-5 algorithms
 \phantomsection
 \addcontentsline{toc}{chapter}{\lstalgorithmlabel}
 \listofalgorithms
+ide nem terveztem semmit tenni
 \cleardoublepage
 
 % List of codes (optional) - useful over 3-5 code samples

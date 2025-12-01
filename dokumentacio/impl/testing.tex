@@ -1,0 +1,197 @@
+\section{Tesztelés}
+\label{sec:testing}
+
+\subsection{Tesztelési módszertan}
+
+A komponensalapú architektúra miatt a modul-fehér doboz és fekete doboz közötti különbség nem olyan éles, mint egy hagyományos alkalmazás esetében. Például egy komponens tesztelése során gyakran egyszerre vizsgáljuk annak belső logikáját (fehér doboz) és a felhasználói felületen megjelenő viselkedését (fekete doboz).
+
+
+A tesztjegyzőkönyv a következő struktúrát követi minden egyes funkció esetében:
+\begin{itemize}
+		\item \textbf{Given} (Adott): A kiindulási állapot vagy kontextus leírása.
+		\item \textbf{When} (Amikor): A felhasználó által végrehajtott művelet vagy esemény.
+		\item \textbf{Then} (Akkor): Az elvárt eredmény vagy végállapot.
+\end{itemize}
+
+% Táblázat fejlécek és környezet definíciója
+\newcommand{\TestHeader}{
+		\textbf{Teszteset} & \textbf{GIVEN} & \textbf{WHEN} & \textbf{THEN}\\\hline
+}
+\newenvironment{TestTable}{
+	\begin{longtable}{|p{0.21\linewidth}|p{0.21\linewidth}|p{0.26\linewidth}|p{0.26\linewidth}|}
+	\hline
+	\TestHeader
+}{
+	\hline
+	\end{longtable}
+}
+
+\subsection{Setup modul}
+\begin{TestTable}
+Alkalmazás bezárása főmenüből & Menü mód aktív, nincs modális ablak nyitva & Felhasználó egyszer megnyomja a "Quit" gombot & Az alkalmazás főablaka bezár, folyamat szabályosan kilép (nincsenek futó háttérműveletek)\\\hline
+Hibás projekt betöltésének elutasítása & Menü mód aktív, nincs projekt megnyitva & Felhasználó hibás / hiányzó fájlokat tartalmazó projekt könyvtárat választ & A rendszer modális hibaüzenetet jelenít meg, projekt állapot változatlan\\\hline
+Érvényes projekt megnyitása & Menü mód aktív, projekt nincs betöltve & Felhasználó érvényes szerkezetű projektet tallóz és megerősít & A projekt állapota betöltődik, a szerkesztési mód elérhetővé válik\\\hline
+\end{TestTable}
+\subsection{Construction mód – pályaelemek}
+\paragraph{Vágányok}
+\begin{TestTable}
+Állomási területre építés tiltása & Vágány mód aktív, állomás kijelölhető & Felhasználó az állomás zónájára kattint a vágány építésekor & A rendszer nem hoz létre vágányelemet, modális vagy inline hibaüzenetet ad\\\hline
+Tervezési sebesség módosítás visszajelzése & Vágány mód aktív, sebesség panel látható & Felhasználó sebességet vált (pl. 80→120 km/h) & A kurzort követő előnézeti csomópont színe az új sebességi kategóriát tükrözi\\\hline
+Egyszerű (kétpontos) egyenes szakasz létrehozása & Vágány mód aktív, nincs folyamatban építés & Felhasználó kijelöl két különböző pontot bal kattintással & Új vágányszakasz jön létre pontosan a két pont között, végpontok rögzülnek\\\hline
+Többpontos vágányvezetés létrehozása & Vágány mód aktív & Felhasználó egymás után 3 pontot kijelöl & Folyamatos, bejárható többszegmenses szakasz jön létre sorrendben összekötve\\\hline
+Kereszteződés kialakítása meglévő vágánnyal & Vágány mód aktív, meglévő vágány metszhető & Felhasználó új szakaszt húz át egy meglévő vágányon & A rendszer automatikusan kereszteződési elemre frissíti a metszés pontját\\\hline
+Vágányszakasz hossza konfigurációnak megfelelő & Vágány mód aktív, hossz paraméter beállítva & Felhasználó új szakaszt épít & Létrejött szakasz tényleges hossza (m) = konfigurált érték tolerancián belül\\\hline
+\end{TestTable}
+
+\paragraph{Alagutak}
+\begin{TestTable}
+Alagút start tiltása üres területen & Alagút mód aktív, nincs kezdőpont & Felhasználó üres térképi pontra kattint & A rendszer nem kezdi el az alagút építést, hibaüzenet jelenik meg\\\hline
+Alagút start tiltása állomás zónában & Alagút mód aktív & Felhasználó állomás területére kattint & Nincs kezdőpont, hibaüzenet jelenik meg\\\hline
+Alagút start tiltása jelzőn & Alagút mód aktív & Felhasználó jelző objektumra kattint & Nincs kezdőpont, hibaüzenet jelenik meg\\\hline
+Alagút start tiltása meglévő alagútban & Alagút mód aktív & Felhasználó alagútban futó vágányra kattint & Művelet visszautasítva, hibaüzenet\\\hline
+Nem érvényes végpont elutasítása & Első (start) pont érvényesen kijelölve & Felhasználó nem kompatibilis végpontot választ & A rendszer nem zárja le az alagutat, hibaüzenet\\\hline
+Érvényes alagút létrehozása & Alagút mód aktív, kompatibilis két végpont & Felhasználó kijelöli a második végpontot & Zárt alagút objektum jön létre a két végpont között, státusz: kész\\\hline
+\end{TestTable}
+
+\paragraph{Jelzők}
+\begin{TestTable}
+Jelző elhelyezés tiltása alagútban & Jelző mód aktív & Felhasználó alagútban futó vágányra kattint & Nincs létrehozás, hibaüzenet jelenik meg\\\hline
+Jelző elhelyezés tiltása állomáson & Jelző mód aktív & Felhasználó állomás területére kattint & Nincs létrehozás, hibaüzenet jelenik meg\\\hline
+Szabályos jelző telepítése & Jelző mód aktív, szabad vágány szakasz & Felhasználó vágányszegmensre kattint & Új jelző objektum létrejön rögzített iránnyal\\\hline
+Jelző irányának megfordítása & Jelző mód aktív, jelző kijelölhető & Felhasználó rákattint a jelzőre & Jelző iránya 180°-kal fordul, állapotok zachoválódnak\\\hline
+Íves vágányon jelző tiltása & Jelző mód aktív & Felhasználó íves szegmensre kattint & Nincs telepítés, hibaüzenet\\\hline
+Peronra jelző tiltása & Jelző mód aktív & Felhasználó peron objektumra kattint & Nincs telepítés, hibaüzenet\\\hline
+\end{TestTable}
+
+\paragraph{Állomások}
+\begin{TestTable}
+Állomás építés tiltása vágányon & Állomás mód aktív & Felhasználó vágányelemre kattint & Nincs állomás létrehozás, hibaüzenet\\\hline
+Állomás építés névadó panel indítása & Állomás mód aktív, üres terület szabad & Felhasználó üres területre kattint & Névmegadás panel modálisan megjelenik, fókusz a név mezőn\\\hline
+Üres állomásnév visszautasítása & Névpanel aktív & Felhasználó üres mezővel mentene & Hibaüzenet; állomás nem jön létre\\\hline
+Duplikált állomásnév visszautasítása & Névpanel aktív, már létezik név & Felhasználó meglévő nevet ment & Hibaüzenet; állomás nem jön létre\\\hline
+Szabályos állomásnév elfogadása & Névpanel aktív, név egyedi és valid & Felhasználó mentés gombot nyom & Új állomás létrejön, név tárolva\\\hline
+Másik állomásra építés tiltása & Állomás mód aktív & Felhasználó meglévő állomásra kattint & Nincs új állomás, hibaüzenet\\\hline
+Állomás áthelyezése draggel & Állomás mód aktív, állomás kijelölhető & Felhasználó kattint és húz új koordinátára & Állomás pozíciója frissül, kapcsolódó peronok relatív helye megmarad\\\hline
+\end{TestTable}
+
+\paragraph{Peronok}
+\begin{TestTable}
+Peron építés tiltása rövid szakaszon & Peron mód aktív, szakasz hossza < minimális & Felhasználó a rövid szakaszra kattint & Nincs peron létrehozás, hibaüzenet\\\hline
+Konfigurált peronhossz előnézete & Peron mód aktív, hossz paraméter ismert & Felhasználó a kurzort egy érvényes szakasz fölé viszi & Előnézeti peron grafika a konfigurált hossznak megfelelően jelenik meg\\\hline
+Peron előnézet megjelenítése kattintásra & Peron mód aktív & Felhasználó érvényes vágányszakaszra kattint & Peron előnézeti objektum rögzül a szakaszon állomás hozzárendelésig\\\hline
+Peron állomáshoz kapcsolása & Peron előnézet aktív, állomás elérhető & Felhasználó állomásra kattint & Peron véglegesül és kapcsolat létrejön az állomás entitással\\\hline
+\end{TestTable}
+
+\paragraph{Törlés mód}
+\begin{TestTable}
+Vágányszakasz törlése & Törlés mód aktív, szakasz létezik & Felhasználó a szakaszra kattint & Szakasz eltávolítva, kapcsolódó jelzők / peronok leválnak ha releváns\\\hline
+Alagút és csatlakozó vágány törlése & Törlés mód aktív, alagút tartalmaz szakaszt & Felhasználó a csatlakozó szakaszra kattint & Vágányszakasz és alagút objektumok törlődnek\\\hline
+Jelző törlése & Törlés mód aktív, jelző létezik & Felhasználó jelzőre kattint & Jelző entitás eltávolítva, vágányútak frissülnek\\\hline
+Állomás és peronjainak törlése & Törlés mód aktív, állomás létezik & Felhasználó az állomásra kattint & Állomás és hozzá kapcsolt peronok törlődnek\\\hline
+Peron törlése & Törlés mód aktív, peron létezik & Felhasználó peronra kattint & Peron entitás eltávolítva, állomás kapcsolata frissül\\\hline
+Üres terület törlése tiltott & Törlés mód aktív & Felhasználó üres területre kattint & Nincs változás, hibaüzenet jelenik meg\\\hline
+\end{TestTable}
+
+\subsection{Train Placement mód}
+\begin{TestTable}
+Szabályos vonatelhelyezés vágányon & Vonatelhelyezés mód aktív, szakasz szabad & Felhasználó szabad vágánypontot kijelöl & Új vonat jön létre alapállapotban (álló), pozíció = kattintás\\\hline
+Elhelyezés tiltása üres területen & Vonatelhelyezés mód aktív & Felhasználó üres területre kattint & Nincs vonat, hibaüzenet\\\hline
+Elhelyezés tiltása foglalt pozíción & Vonatelhelyezés mód aktív, pozíció foglalt & Felhasználó meglévő vonatra kattint & Nincs új vonat, hibaüzenet\\\hline
+\end{TestTable}
+
+\subsection{Train Removal mód}
+\begin{TestTable}
+Vonat eltávolítása & Vonateltávolítás mód aktív, vonat létezik & Felhasználó a vonatra kattint & Vonat entitás törlődik, menetrend hozzárendelés (ha volt) felszabadul\\\hline
+Eltávolítás tiltása üres területen & Vonateltávolítás mód aktív & Felhasználó üres területre kattint & Nincs törlés, hibaüzenet\\\hline
+\end{TestTable}
+
+\subsection{Menetrend összesítése}
+\begin{TestTable}
+Menetrend részletek kibontása & Menetrend összesítő látható & Felhasználó a menetrend sorára kattint & Teljes állomáslista és időadatok megjelennek\\\hline
+Menetrend összecsukása & Menetrend részletei nyitva & Felhasználó a fejléc területre kattint & Lista elrejti részleteket, összefoglaló sor marad\\\hline
+Menetrend törlése megerősítéssel & Menetrend kiválasztva & Felhasználó "Törlés" gombra kattint és megerősít & Menetrend objektum törlődik, lista frissül\\\hline
+Új menetrend létrehozás indítása & Összesítő panel aktív & Felhasználó "Hozzáadás" gombot nyom & Menetrend szerkesztő panel megjelenik üres mezőkkel\\\hline
+Meglévő menetrend szerkesztése & Menetrend kiválasztott & Felhasználó "Szerkesztés" gombot nyom & Szerkesztő panel megjelenik előtöltött adatmezőkkel\\\hline
+\end{TestTable}
+
+\subsection{Menetrend szerkesztő panel}
+\begin{TestTable}
+Üres menetrendkód tiltása & Szerkesztő panel aktív & Felhasználó üres kód mezőt próbál menteni & Hibaüzenet, mentés nem történik\\\hline
+Duplikált menetrendkód tiltása & Szerkesztő panel aktív, kód már létezik & Felhasználó meglévő kódot ment & Hibaüzenet, mentés nem történik\\\hline
+Első indulási idő módosítása & Szerkesztő panel aktív, első állomás sor látható & Felhasználó módosítja indulási idő mezőt & Függő érkezési / indulási idők újraszámolva\\\hline
+Megálló hozzáadása lista végére & Szerkesztő panel aktív & Felhasználó "Megálló hozzáadása" gombot nyom & Új sor jelenik meg alapértelmezett időkkel\\\hline
+Megálló beszúrása kijelölt után & Szerkesztő panel aktív, sor kijelölt & Felhasználó "Megálló beszúrása" gombot nyom & Új sor a kijelölt után jelenik meg, indexek frissülnek\\\hline
+Megálló törlése & Szerkesztő panel aktív, sor kijelölt & Felhasználó "Megálló törlése" gombot nyom & Sor eltávolítva, időlánc újraszámolva\\\hline
+Utazási idő módosítása hatással & Szerkesztő panel aktív & Felhasználó utazási idő mezőt változtat & Módosított szegmenst követő állomások ideje frissül\\\hline
+Megállási idő módosítása hatással & Szerkesztő panel aktív & Felhasználó megállási idő mezőt változtat & Érintett állomás elindulási ideje és következők frissülnek\\\hline
+Menetrend mentése érvényes adatokkal & Szerkesztő panel aktív, nincs validációs hiba & Felhasználó mentés gombot nyom & Menetrend perzisztálódik, összesítő listába bekerül\\\hline
+\end{TestTable}
+
+\subsection{Simulation mód – idő és vonatközlekedés}
+\begin{TestTable}
+Szimuláció indítása & Simulation mód aktív, nincs futó szimuláció & Felhasználó megnyomja az "Indítás" gombot & Idő előrehaladása elindul, minden vonat kezdeti álló státuszban marad\\\hline
+\end{TestTable}
+
+\paragraph{Időkezelés}
+\begin{TestTable}
+Szimuláció szünet / folytatás & Simulation mód fut & Felhasználó lenyomja SPACE billentyűt & Futó → szünet / szünet → fut állapotváltás, időszorzó megmarad\\\hline
+Sebesség 1× beállítása & Simulation mód aktív & Felhasználó "1×" gombra kattint & Időskála szorzó =1, frissítés UI-ban\\\hline
+Sebesség 5× beállítása & Simulation mód aktív & Felhasználó "5×" gombra kattint & Időskála szorzó =5\\\hline
+Sebesség 25× beállítása & Simulation mód aktív & Felhasználó "25×" gombra kattint & Időskála szorzó =25\\\hline
+\end{TestTable}
+
+\paragraph{Vonatok}
+\begin{TestTable}
+Vonatinfó panel megnyitása & Simulation mód aktív, vonat látható & Felhasználó a vonatra kattint & Információs panel megjelenik a vonat adataival\\\hline
+Menetrend hozzárendelés indítása & Simulation mód aktív & Felhasználó "Menetrend hozzáadás" gombot nyom & Menetrend választó / szerkesztő panel megjelenik\\\hline
+Menetrend hozzárendelése & Vonatinfó panel aktív, menetrend elérhető & Felhasználó kiválaszt egy menetrendet & Vonat menetrend attribútuma beáll, panel/vonat szín módosul\\\hline
+Vonat manuális indítása & Vonatinfó panel aktív, vonat áll & Felhasználó "Indítás" gombot nyom & Vonat státusza mozog-ra vált, sebesség >0\\\hline
+Menetrendi automatikus indulás & Vonatnak menetrendje van & Szimulált idő eléri indulási időt & Vonat státusza mozog-ra vált automatikusan\\\hline
+Menetrendi megállás & Vonat menetrenddel halad & Vonat megállóhoz érkezik & Vonat sebessége 0, várakozás időtartam = megállási idő\\\hline
+Késés kezelése megállónál & Vonat késésben érkezik & Vonat belép megálló szakaszra & Várakozás legalább 30 s vagy menetrendi indulási időig, státusz visszatartva\\\hline
+Célállomás elérése & Vonat menetrend utolsó állomásához ér & Szimulált idő >= érkezési idő & Vonat végállapot: leállt, nem indul tovább\\\hline
+Forgásirány megfordítása & Vonat leállt státuszban & Felhasználó "Fordítás" gombot nyom & Vonat irányvektor megfordul, állapot marad leállt\\\hline
+Menetrend törlése & Vonatinfó panel aktív, menetrend hozzárendelve & Felhasználó "Menetrend törlése" gombot nyom & Menetrend attribútum nullázva, szín visszaáll alapra\\\hline
+\end{TestTable}
+
+\paragraph{Jelzők és vágányutak}
+\begin{TestTable}
+Helytelen jelző összekötés tiltása & Simulation mód aktív & Felhasználó nem kompatibilis két jelzőt köt össze & Nincs vágányút, hibaüzenet\\\hline
+Szabályos jelző összekötés & Simulation mód aktív & Felhasználó kompatibilis jelzőket köt össze & Vágányút létrejön, érintett jelzők zöld állapotba váltanak\\\hline
+Kényszeroldás végrehajtása & Simulation mód aktív, vágányút aktív & Felhasználó jobb gombbal kényszeroldást indít & Vágányút megszűnik, jelző lezár (piros)\\\hline
+Jelző meghaladása & Aktív vágányút, vonat közelít & Vonat belép a jelző által fedezett szakaszba & Jelző állapota pirosra vált, vágányút részlegesen lezár\\\hline
+Helytelen térköz beállítás tiltása & Simulation mód aktív & Felhasználó Shift-tel kereszteződésen át próbál térközt & Nincs állítás, hibaüzenet\\\hline
+Térközjelző létesítése & Simulation mód aktív, jelző beállítható & Felhasználó Shift-tel jelzőt állít & Jelző térköz módban, állapot alap (zöld)\\\hline
+Térközjelző meghaladása & Térközjelző aktív & Vonat eléri a térközjelzőt & Jelző narancsra vált, fedezés aktív\\\hline
+Térköz automatikus feloldása & Térköz lezárt, vonat távolodik & Vonat elhagyja a fedezett szakaszt & Jelző zöldre vált, fedezés megszűnik\\\hline
+Többszakaszos vágányút létrehozása & Simulation mód aktív & Felhasználó sorban több jelzőt köt & Összefüggő vágányút jön létre, minden érintett jelző zöld\\\hline
+Kerülő vágányút állítása & Simulation mód aktív, akadályok elhelyezve & Felhasználó jelző állítást kezdeményez & Vágányút alternatív szakaszokon vezet, jelző zöld\\\hline
+\end{TestTable}
+
+\paragraph{Szimuláció leállítása}
+\begin{TestTable}
+Szimuláció szabályos leállítása & Simulation mód fut, nincs folyamatban kritikus művelet & Felhasználó "Leállítás" gombot nyom és megerősít & Idő előrehaladás megáll, mód visszalép konstrukciós módba, vonatok álló státuszra váltanak\\\hline
+\end{TestTable}
+
+\subsection{Mentés és betöltés}
+\begin{TestTable}
+Mentési panel megnyitása & Menü mód aktív & Felhasználó "Projekt mentése" gombot nyom & Mentési útvonal választó panel megjelenik\\\hline
+Projekt mentése érvényes útvonalra & Menü mód aktív, panel nyitva & Felhasználó érvényes elérési utat ad és ment & Fájlstruktúra létrejön / frissül, mentett ikon megjelenik\\\hline
+Gyorsmentés meglévő mentés után & Menü mód aktív, van korábbi mentés útvonal & Felhasználó CTRL+S billentyűt nyom & Projekt ugyanarra az útvonalra mentődik, időbélyeg frissül\\\hline
+Első gyorsmentés útvonal nélkül & Menü mód aktív, nincs korábbi mentés & Felhasználó CTRL+S-t nyom & Rendszer mentési panelt hoz fel útvonal választáshoz\\\hline
+Mentetlenség vizuális jelzése & Menü mód aktív, törzs betöltve & Felhasználó módosít állapotot & "Nincs mentve" jelző megjelenik amíg mentés nem történik\\\hline
+Megnyitás mentetlen módosítások mellett & Menü mód aktív, projekt módosított & Felhasználó másik projektet próbál megnyitni & Rendszer megerősítést kér mentetlen változások miatt\\\hline
+Projekt betöltése & Menü mód aktív & Felhasználó érvényes projektet választ & Projekt adatai betöltődnek, szerkesztés mód elérhető\\\hline
+Hibás projekt megnyitás tiltása & Menü mód aktív & Felhasználó hibás projektet választ & Betöltés elutasítva, hibaüzenet\\\hline
+\end{TestTable}
+
+\subsection{Kilépés}
+\begin{TestTable}
+Kilépés mentetlen állapotban & Menü mód aktív, vannak mentetlen módosítások & Felhasználó bezárja az alkalmazást & Rendszer mentési megerősítő panelt jelenít meg, kilépés csak jóváhagyás után\\\hline
+Kilépés mentett állapotban & Menü mód aktív, nincs mentetlen változás & Felhasználó bezárja az alkalmazást & Főfolyamat szabályosan leáll, nincs figyelmeztetés\\\hline
+\end{TestTable}
+
+
+\subsection{Teszt eredmények összefoglalása}
+
+Az alkalmazás minden tesztelt funkcionalitás esetében az elvárt viselkedést mutatta, a rendszer stabilan működött különböző használati szituációkban.

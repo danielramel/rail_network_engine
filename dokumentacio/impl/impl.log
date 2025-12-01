@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.11.28)  30 NOV 2025 23:35
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.11.28)  30 NOV 2025 23:45
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -3498,15 +3498,7 @@ Missing character: There is no t in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no l in font nullfont!
 Missing character: There is no s in font nullfont!
-
-Overfull \hbox (24.44444pt too wide) in paragraph at lines 41--43
-[]\/cmr/m/n/10 ^^Se
- []
-
-
-LaTeX Warning: \include should only be used after \begin{document} on input line 44.
-
-(testing.tex))
+)
 ! Emergency stop.
 <*> ...lgozat/simulator/dokumentacio/impl/impl.tex
                                                   
@@ -3514,10 +3506,10 @@ LaTeX Warning: \include should only be used after \begin{document} on input line
 
  
 Here is how much of TeX's memory you used:
- 60 strings out of 474486
- 1353 string characters out of 5747975
+ 51 strings out of 474486
+ 1105 string characters out of 5747975
  1935542 words of memory out of 5000000
- 22437 multiletter control sequences out of 15000+600000
+ 22432 multiletter control sequences out of 15000+600000
  558545 words of font info for 38 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  23i,5n,32p,630b,107s stack positions out of 10000i,1000n,20000p,200000b,200000s

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.11.28)  30 NOV 2025 23:36
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.11.28)  1 DEC 2025 15:28
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1099,27 +1099,27 @@ Package: luatex85 2016/06/15 v1.4 pdftex aliases for luatex
 )))
 Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
- (elteikthesis_hu.aux (impl/decisions.aux) (impl/app_architecture/app_architecture.aux))
+ (elteikthesis_hu.aux (impl/decisions.aux) (impl/app_architecture/app_architecture.aux) (impl/testing.aux))
 \openout1 = `elteikthesis_hu.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -1179,7 +1179,7 @@ Package: ltcaption 2021/01/08 v1.4c longtable captions (AR)
 )
 Package caption Info: rotating package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring OFF on input line 32.
+Package hyperref Info: Link coloring OFF on input line 33.
  (C:\Users\lemar\AppData\Local\MiKTeX\tex/latex/pdflscape\pdflscape.sty
 Package: pdflscape 2022-10-27 v0.13 Display of landscape pages in PDF
  (C:\Users\lemar\AppData\Local\MiKTeX\tex/latex/pdflscape\pdflscape-nometadata.sty
@@ -1216,18 +1216,18 @@ Package biblatex Info: Automatic encoding selection.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'elteikthesis_hu.bbl' found.
  (elteikthesis_hu.bbl)
-Package biblatex Info: Reference section=0 on input line 32.
-Package biblatex Info: Reference segment=0 on input line 32.
+Package biblatex Info: Reference section=0 on input line 33.
+Package biblatex Info: Reference segment=0 on input line 33.
 \c@lstlisting=\count500
  (C:\Users\lemar\AppData\Local\MiKTeX\tex/latex/base\report.cls
 LaTeX Info: Redefining \cal on input line 577.
 LaTeX Info: Redefining \mit on input line 578.
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 40.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 41.
  (C:\Users\lemar\AppData\Local\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 40.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 41.
  (C:\Users\lemar\AppData\Local\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
@@ -1238,19 +1238,19 @@ Package epstopdf Info: Source file: <./images/elte_cimer_szines.eps>
 (epstopdf)                    date: 2025-11-28 13:01:42
 (epstopdf)                    size: 119514 bytes
 (epstopdf)             Command: <miktex-epstopdf --outfile=./images/elte_cimer_szines-eps-converted-to.pdf ./images/elte_cimer_szines.eps>
-(epstopdf)             \includegraphics on input line 40.
+(epstopdf)             \includegraphics on input line 41.
 Package epstopdf Info: Output file is already uptodate.
 <./images/elte_cimer_szines-eps-converted-to.pdf, id=30, 399.4925pt x 399.4925pt>
 File: ./images/elte_cimer_szines-eps-converted-to.pdf Graphic file (type pdf)
 <use ./images/elte_cimer_szines-eps-converted-to.pdf>
-Package pdftex.def Info: ./images/elte_cimer_szines-eps-converted-to.pdf  used on input line 40.
+Package pdftex.def Info: ./images/elte_cimer_szines-eps-converted-to.pdf  used on input line 41.
 (pdftex.def)             Requested size: 106.69783pt x 106.69403pt.
 
-Overfull \vbox (30.11093pt too high) detected at line 40
+Overfull \vbox (30.11093pt too high) detected at line 41
  []
 
 
-Overfull \hbox (8.42561pt too wide) in paragraph at lines 40--40
+Overfull \hbox (8.42561pt too wide) in paragraph at lines 41--41
  [][] 
  []
 
@@ -1258,7 +1258,7 @@ Overfull \hbox (8.42561pt too wide) in paragraph at lines 40--40
 
 
 {C:/Users/lemar/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map} <./images/elte_cimer_szines-eps-converted-to.pdf>] (elteikthesis_hu.toc
-Underfull \hbox (badness 10000) in paragraph at lines 36--36
+Underfull \hbox (badness 10000) in paragraph at lines 38--38
  [][] [][]\T1/cmr/m/n/12 Szimulációs kör-nye-zet: Pygame vs. Game Engines 
  []
 
@@ -1270,228 +1270,259 @@ Underfull \hbox (badness 10000) in paragraph at lines 36--36
 pdfTeX warning (ext4): destination with the same identifier (name{page.}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.45 \tableofcontents
+l.46 \tableofcontents
                       [2]
+pdfTeX warning (ext4): destination with the same identifier (name{page.}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.46 \tableofcontents
+                      [3]
 \c@conpageno=\count501
- (intro.tex
+ (intro.tex [4
+
+
+
+
+] [5]
 1. fejezet.
-[3
+
+Underfull \hbox (badness 7047) in paragraph at lines 35--36
+[]\T1/cmr/m/n/12 A té-ma-vá-lasz-tást sze-mé-lyes és szak-mai in-dít-ta-tás egy-aránt ve-zé-rel-te.
+ []
+
+[6
+
+] [7]
+Underfull \hbox (badness 1442) in paragraph at lines 47--48
+[]\T1/cmr/m/n/12 Összességében a fej-lesz-tett al-kal-ma-zás nem he-lyet-te-sí-ti az infrastruktúra-
+ []
 
 
+Underfull \hbox (badness 6526) in paragraph at lines 51--52
+\T1/cmr/m/n/12 Vasúti Stratégia (BAVS) el®-ké-szí-té-se so-rán a ko-ráb-bi, el-s®-sor-ban ele-mi
+ []
 
-
-
-]) [4] (user/user.tex
+[8]) [9] (user/user.tex
 2. fejezet.
 
-Underfull \hbox (badness 4699) in paragraph at lines 17--17
-[]|\T1/cmr/m/n/12 Windows 10, ma-cOS 10.13+,
+Underfull \hbox (badness 10000) in paragraph at lines 16--16
+[]|\T1/cmr/bx/n/12 Minimális kö-ve-tel-
  []
 
 
-Underfull \hbox (badness 1924) in paragraph at lines 19--19
-[]|\T1/cmr/m/n/12 Dual-core pro-cesszor (pl. Intel
+Underfull \hbox (badness 10000) in paragraph at lines 18--18
+[]|\T1/cmr/m/n/12 Windows 10, ma-cOS
  []
 
 
-Overfull \hbox (64.4614pt too wide) in paragraph at lines 13--26
- [] 
+Underfull \hbox (badness 10000) in paragraph at lines 18--18
+\T1/cmr/m/n/12 10.13+, vagy mo-dern
  []
 
-[5
+
+Underfull \hbox (badness 1975) in paragraph at lines 20--20
+\T1/cmr/m/n/12 Intel Core i3 / AMD
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--21
+[]|\T1/cmr/m/n/12 Quad-core pro-cesszor,
+ []
+
+[10
 
 
 
 ]
-LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 33.
+LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 36.
  (C:\Users\lemar\AppData\Local\MiKTeX\tex/latex/base\t1cmtt.fd
 File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
-) [6] (user/pages.tex
-<user/images/home_page.png, id=177, 1444.64719pt x 812.28468pt>
+) [11] (user/pages.tex
+<user/images/home_page.png, id=224, 1444.64719pt x 812.28468pt>
 File: user/images/home_page.png Graphic file (type png)
 <use user/images/home_page.png>
 Package pdftex.def Info: user/images/home_page.png  used on input line 10.
 (pdftex.def)             Requested size: 341.43437pt x 191.97763pt.
- [7]
+ [12]
 Underfull \hbox (badness 10000) in paragraph at lines 17--19
 
  []
 
-<user/images/input_simulation_time.png, id=183, 392.21532pt x 138.5175pt>
+<user/images/input_simulation_time.png, id=231, 392.21532pt x 138.5175pt>
 File: user/images/input_simulation_time.png Graphic file (type png)
 <use user/images/input_simulation_time.png>
 Package pdftex.def Info: user/images/input_simulation_time.png  used on input line 25.
 (pdftex.def)             Requested size: 170.71393pt x 60.29054pt.
-<user/images/alert.png, id=184, 485.56406pt x 110.66344pt>
+<user/images/alert.png, id=232, 485.56406pt x 110.66344pt>
 File: user/images/alert.png Graphic file (type png)
 <use user/images/alert.png>
 Package pdftex.def Info: user/images/alert.png  used on input line 33.
 (pdftex.def)             Requested size: 170.71393pt x 38.9067pt.
-[8 <./user/images/home_page.png> <./user/images/input_simulation_time.png>]
-<user/images/project_view.png, id=194, 1444.64719pt x 812.28468pt>
+[13 <./user/images/home_page.png> <./user/images/input_simulation_time.png>]
+<user/images/project_view.png, id=242, 1444.64719pt x 812.28468pt>
 File: user/images/project_view.png Graphic file (type png)
 <use user/images/project_view.png>
 Package pdftex.def Info: user/images/project_view.png  used on input line 54.
 (pdftex.def)             Requested size: 341.43437pt x 191.97763pt.
- [9 <./user/images/alert.png> <./user/images/project_view.png>]
-<user/images/zoomed_in.png, id=206, 1444.64719pt x 812.28468pt>
+ [14 <./user/images/alert.png> <./user/images/project_view.png>]
+<user/images/zoomed_in.png, id=254, 1444.64719pt x 812.28468pt>
 File: user/images/zoomed_in.png Graphic file (type png)
 <use user/images/zoomed_in.png>
 Package pdftex.def Info: user/images/zoomed_in.png  used on input line 74.
 (pdftex.def)             Requested size: 213.39568pt x 119.97827pt.
-<user/images/construction_buttons.png, id=207, 325.215pt x 57.21375pt>
+<user/images/construction_buttons.png, id=255, 325.215pt x 57.21375pt>
 File: user/images/construction_buttons.png Graphic file (type png)
 <use user/images/construction_buttons.png>
 Package pdftex.def Info: user/images/construction_buttons.png  used on input line 94.
 (pdftex.def)             Requested size: 298.75264pt x 52.56218pt.
- [10 <./user/images/zoomed_in.png>]
-<user/images/track_placement_anchor.png, id=215, 722.7pt x 482.55281pt>
+ [15 <./user/images/zoomed_in.png>]
+<user/images/track_placement_anchor.png, id=263, 722.7pt x 482.55281pt>
 File: user/images/track_placement_anchor.png Graphic file (type png)
 <use user/images/track_placement_anchor.png>
 Package pdftex.def Info: user/images/track_placement_anchor.png  used on input line 116.
 (pdftex.def)             Requested size: 256.07741pt x 170.98714pt.
-<user/images/track_construction_different_speeds.png, id=216, 584.1825pt x 414.79968pt>
+<user/images/track_construction_different_speeds.png, id=264, 584.1825pt x 414.79968pt>
 File: user/images/track_construction_different_speeds.png Graphic file (type png)
 <use user/images/track_construction_different_speeds.png>
 Package pdftex.def Info: user/images/track_construction_different_speeds.png  used on input line 117.
 (pdftex.def)             Requested size: 256.07741pt x 181.83519pt.
-<user/images/track_construction_long.png, id=217, 730.98094pt x 422.32782pt>
+<user/images/track_construction_long.png, id=265, 730.98094pt x 422.32782pt>
 File: user/images/track_construction_long.png Graphic file (type png)
 <use user/images/track_construction_long.png>
 Package pdftex.def Info: user/images/track_construction_long.png  used on input line 118.
 (pdftex.def)             Requested size: 256.07741pt x 147.94583pt.
- [11 <./user/images/construction_buttons.png>] [12 <./user/images/track_placement_anchor.png> <./user/images/track_construction_different_speeds.png> <./user/images/track_construction_long.png>]
-<user/images/tunnel_placement.png, id=238, 552.56438pt x 547.2947pt>
+ [16 <./user/images/construction_buttons.png>] [17 <./user/images/track_placement_anchor.png> <./user/images/track_construction_different_speeds.png> <./user/images/track_construction_long.png>]
+<user/images/tunnel_placement.png, id=285, 552.56438pt x 547.2947pt>
 File: user/images/tunnel_placement.png Graphic file (type png)
 <use user/images/tunnel_placement.png>
 Package pdftex.def Info: user/images/tunnel_placement.png  used on input line 135.
 (pdftex.def)             Requested size: 256.07741pt x 253.62924pt.
-<user/images/station_placement.png, id=239, 622.57594pt x 442.65375pt>
+<user/images/station_placement.png, id=286, 622.57594pt x 442.65375pt>
 File: user/images/station_placement.png Graphic file (type png)
 <use user/images/station_placement.png>
 Package pdftex.def Info: user/images/station_placement.png  used on input line 152.
 (pdftex.def)             Requested size: 256.07741pt x 182.07007pt.
-<user/images/platform_placement.png, id=240, 516.42938pt x 559.33969pt>
+<user/images/platform_placement.png, id=287, 516.42938pt x 559.33969pt>
 File: user/images/platform_placement.png Graphic file (type png)
 <use user/images/platform_placement.png>
 Package pdftex.def Info: user/images/platform_placement.png  used on input line 153.
 (pdftex.def)             Requested size: 256.07741pt x 277.36475pt.
-<user/images/station_movement.png, id=241, 781.41937pt x 661.72218pt>
+<user/images/station_movement.png, id=288, 781.41937pt x 661.72218pt>
 File: user/images/station_movement.png Graphic file (type png)
 <use user/images/station_movement.png>
 Package pdftex.def Info: user/images/station_movement.png  used on input line 154.
 (pdftex.def)             Requested size: 256.07741pt x 216.85443pt.
- [13 <./user/images/tunnel_placement.png>]
+ [18 <./user/images/tunnel_placement.png>]
 Overfull \vbox (11.87187pt too high) has occurred while \output is active []
 
- [14 <./user/images/station_placement.png> <./user/images/platform_placement.png> <./user/images/station_movement.png>]
-<user/images/signal_placement.png, id=259, 377.15906pt x 275.52937pt>
+ [19 <./user/images/station_placement.png> <./user/images/platform_placement.png> <./user/images/station_movement.png>]
+<user/images/signal_placement.png, id=307, 377.15906pt x 275.52937pt>
 File: user/images/signal_placement.png Graphic file (type png)
 <use user/images/signal_placement.png>
 Package pdftex.def Info: user/images/signal_placement.png  used on input line 167.
 (pdftex.def)             Requested size: 256.07741pt x 187.0716pt.
-<user/images/signal_rotation.png, id=260, 382.42876pt x 289.83281pt>
+<user/images/signal_rotation.png, id=308, 382.42876pt x 289.83281pt>
 File: user/images/signal_rotation.png Graphic file (type png)
 <use user/images/signal_rotation.png>
 Package pdftex.def Info: user/images/signal_rotation.png  used on input line 168.
 (pdftex.def)             Requested size: 256.07741pt x 194.08525pt.
- [15 <./user/images/signal_placement.png> <./user/images/signal_rotation.png>]
-<user/images/deleting_track.png, id=270, 900.36375pt x 523.20468pt>
+ [20 <./user/images/signal_placement.png> <./user/images/signal_rotation.png>]
+<user/images/deleting_track.png, id=318, 900.36375pt x 523.20468pt>
 File: user/images/deleting_track.png Graphic file (type png)
 <use user/images/deleting_track.png>
 Package pdftex.def Info: user/images/deleting_track.png  used on input line 183.
 (pdftex.def)             Requested size: 256.07741pt x 148.80353pt.
-<user/images/deleting_signal.png, id=271, 685.05937pt x 532.99126pt>
+<user/images/deleting_signal.png, id=319, 685.05937pt x 532.99126pt>
 File: user/images/deleting_signal.png Graphic file (type png)
 <use user/images/deleting_signal.png>
 Package pdftex.def Info: user/images/deleting_signal.png  used on input line 184.
 (pdftex.def)             Requested size: 256.07741pt x 199.23688pt.
-<user/images/train_placement.png, id=272, 624.08156pt x 472.76625pt>
+<user/images/train_placement.png, id=320, 624.08156pt x 472.76625pt>
 File: user/images/train_placement.png Graphic file (type png)
 <use user/images/train_placement.png>
 Package pdftex.def Info: user/images/train_placement.png  used on input line 199.
 (pdftex.def)             Requested size: 298.75264pt x 226.31926pt.
- [16 <./user/images/deleting_track.png> <./user/images/deleting_signal.png>]
-<user/images/train_deletion.png, id=281, 895.84688pt x 354.57469pt>
+ [21 <./user/images/deleting_track.png> <./user/images/deleting_signal.png>]
+<user/images/train_deletion.png, id=329, 895.84688pt x 354.57469pt>
 File: user/images/train_deletion.png Graphic file (type png)
 <use user/images/train_deletion.png>
 Package pdftex.def Info: user/images/train_deletion.png  used on input line 208.
 (pdftex.def)             Requested size: 298.75264pt x 118.24356pt.
-<user/images/timetable_list.png, id=282, 1444.64719pt x 755.07094pt>
+<user/images/timetable_list.png, id=330, 1444.64719pt x 755.07094pt>
 File: user/images/timetable_list.png Graphic file (type png)
 <use user/images/timetable_list.png>
 Package pdftex.def Info: user/images/timetable_list.png  used on input line 221.
 (pdftex.def)             Requested size: 341.43437pt x 178.45558pt.
- [17 <./user/images/train_placement.png> <./user/images/train_deletion.png>]
-<user/images/timetable_editor.png, id=291, 557.83406pt x 689.57625pt>
+ [22 <./user/images/train_placement.png> <./user/images/train_deletion.png>]
+<user/images/timetable_editor.png, id=339, 557.83406pt x 689.57625pt>
 File: user/images/timetable_editor.png Graphic file (type png)
 <use user/images/timetable_editor.png>
 Package pdftex.def Info: user/images/timetable_editor.png  used on input line 231.
 (pdftex.def)             Requested size: 256.07741pt x 316.55655pt.
- [18 <./user/images/timetable_list.png> <./user/images/timetable_editor.png>]
-<user/images/timetable_editor_selected_station.png, id=301, 557.08125pt x 411.78844pt>
+ [23 <./user/images/timetable_list.png> <./user/images/timetable_editor.png>]
+<user/images/timetable_editor_selected_station.png, id=348, 557.08125pt x 411.78844pt>
 File: user/images/timetable_editor_selected_station.png Graphic file (type png)
 <use user/images/timetable_editor_selected_station.png>
 Package pdftex.def Info: user/images/timetable_editor_selected_station.png  used on input line 245.
 (pdftex.def)             Requested size: 341.43437pt x 252.39069pt.
-<user/images/simulation_page.png, id=302, 1444.64719pt x 812.28468pt>
+<user/images/simulation_page.png, id=349, 1444.64719pt x 812.28468pt>
 File: user/images/simulation_page.png Graphic file (type png)
 <use user/images/simulation_page.png>
 Package pdftex.def Info: user/images/simulation_page.png  used on input line 257.
 (pdftex.def)             Requested size: 341.43437pt x 191.97763pt.
- [19 <./user/images/timetable_editor_selected_station.png>]
-<user/images/route_preview.png, id=309, 1307.63531pt x 562.35094pt>
+ [24 <./user/images/timetable_editor_selected_station.png>]
+<user/images/route_preview.png, id=357, 1307.63531pt x 562.35094pt>
 File: user/images/route_preview.png Graphic file (type png)
 <use user/images/route_preview.png>
 Package pdftex.def Info: user/images/route_preview.png  used on input line 285.
 (pdftex.def)             Requested size: 298.75264pt x 128.47133pt.
- [20 <./user/images/simulation_page.png>]
-<user/images/route_before_blockers.png, id=321, 1202.99437pt x 428.35031pt>
+ [25 <./user/images/simulation_page.png>]
+<user/images/route_before_blockers.png, id=369, 1202.99437pt x 428.35031pt>
 File: user/images/route_before_blockers.png Graphic file (type png)
 <use user/images/route_before_blockers.png>
 Package pdftex.def Info: user/images/route_before_blockers.png  used on input line 295.
 (pdftex.def)             Requested size: 298.75264pt x 106.37488pt.
-<user/images/route_after_blockers.png, id=322, 1178.90437pt x 440.39531pt>
+<user/images/route_after_blockers.png, id=370, 1178.90437pt x 440.39531pt>
 File: user/images/route_after_blockers.png Graphic file (type png)
 <use user/images/route_after_blockers.png>
 Package pdftex.def Info: user/images/route_after_blockers.png  used on input line 296.
 (pdftex.def)             Requested size: 298.75264pt x 111.6038pt.
-<user/images/auto_signal.png, id=323, 508.14844pt x 172.39406pt>
+<user/images/auto_signal.png, id=371, 508.14844pt x 172.39406pt>
 File: user/images/auto_signal.png Graphic file (type png)
 <use user/images/auto_signal.png>
 Package pdftex.def Info: user/images/auto_signal.png  used on input line 306.
 (pdftex.def)             Requested size: 256.07741pt x 86.87811pt.
-<user/images/auto_signal_multiple.png, id=324, 480.29437pt x 152.06813pt>
+<user/images/auto_signal_multiple.png, id=372, 480.29437pt x 152.06813pt>
 File: user/images/auto_signal_multiple.png Graphic file (type png)
 <use user/images/auto_signal_multiple.png>
 Package pdftex.def Info: user/images/auto_signal_multiple.png  used on input line 307.
 (pdftex.def)             Requested size: 256.07741pt x 81.07835pt.
-<user/images/auto_signal_occupied.png, id=325, 574.39594pt x 256.70906pt>
+<user/images/auto_signal_occupied.png, id=373, 574.39594pt x 256.70906pt>
 File: user/images/auto_signal_occupied.png Graphic file (type png)
 <use user/images/auto_signal_occupied.png>
 Package pdftex.def Info: user/images/auto_signal_occupied.png  used on input line 308.
 (pdftex.def)             Requested size: 256.07741pt x 114.44864pt.
- [21 <./user/images/route_preview.png> <./user/images/route_before_blockers.png> <./user/images/route_after_blockers.png>]
-<user/images/train_panels_late_on_time.png, id=335, 1444.64719pt x 812.28468pt>
+ [26 <./user/images/route_preview.png> <./user/images/route_before_blockers.png> <./user/images/route_after_blockers.png>]
+<user/images/train_panels_late_on_time.png, id=383, 1444.64719pt x 812.28468pt>
 File: user/images/train_panels_late_on_time.png Graphic file (type png)
 <use user/images/train_panels_late_on_time.png>
 Package pdftex.def Info: user/images/train_panels_late_on_time.png  used on input line 322.
 (pdftex.def)             Requested size: 341.43437pt x 191.97763pt.
- [22 <./user/images/auto_signal.png> <./user/images/auto_signal_multiple.png> <./user/images/auto_signal_occupied.png>])
-<user/images/save_open_exit.png, id=345, 55.70813pt x 143.78719pt>
+ [27 <./user/images/auto_signal.png> <./user/images/auto_signal_multiple.png> <./user/images/auto_signal_occupied.png>])
+<user/images/save_open_exit.png, id=393, 55.70813pt x 143.78719pt>
 File: user/images/save_open_exit.png Graphic file (type png)
 <use user/images/save_open_exit.png>
-Package pdftex.def Info: user/images/save_open_exit.png  used on input line 82.
-(pdftex.def)             Requested size: 170.71393pt x 440.66312pt.
- [23 <./user/images/train_panels_late_on_time.png>]
-<user/images/unsaved.png, id=353, 53.44969pt x 51.19125pt>
+Package pdftex.def Info: user/images/save_open_exit.png  used on input line 85.
+(pdftex.def)             Requested size: 42.68173pt x 110.16577pt.
+ [28 <./user/images/train_panels_late_on_time.png> <./user/images/save_open_exit.png>]
+<user/images/unsaved.png, id=404, 53.44969pt x 51.19125pt>
 File: user/images/unsaved.png Graphic file (type png)
 <use user/images/unsaved.png>
-Package pdftex.def Info: user/images/unsaved.png  used on input line 93.
+Package pdftex.def Info: user/images/unsaved.png  used on input line 96.
 (pdftex.def)             Requested size: 42.68173pt x 40.87805pt.
- [24 <./user/images/save_open_exit.png>]) [25 <./user/images/unsaved.png>] (impl/impl.tex
+) [29 <./user/images/unsaved.png>] (impl/impl.tex
 3. fejezet.
-[26
+[30
 
 
 
@@ -1503,34 +1534,34 @@ Underfull \hbox (badness 2088) in paragraph at lines 17--17
 []\T1/cmr/bx/n/14.4 Szimulációs kör-nye-zet: Pygame vs. Game Engines
  []
 
-[27
+[31
 
-] [28]
+] [32]
 Underfull \hbox (badness 2302) in paragraph at lines 64--66
 []\T1/cmr/m/n/12 Ezen hi-á-nyos-sá-gok át-hi-da-lá-sá-ra vá-lasz-tot-tam a \T1/cmr/bx/n/12 PyQt6 \T1/cmr/m/n/12 ke-ret-rend-szert a
  []
 
-) [29]
+) [33]
 Underfull \hbox (badness 1205) in paragraph at lines 27--28
 []\T1/cmr/m/n/12 A pro-jek-tek ál-la-po-tá-nak men-té-se és be-töl-té-se \T1/cmr/bx/n/12 JSON \T1/cmr/m/n/12 (JavaScript Object
  []
 
-[30
+[34
 
 
-] [31]
+] [35]
 \openout2 = `impl/app_architecture/app_architecture.aux'.
 
  (impl/app_architecture/app_architecture.tex (impl/app_architecture/core.tex
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
 (Font)              Font shape `T1/cmtt/m/n' tried instead on input line 9.
- [32
+ [36
 
 ] (C:\Users\lemar\AppData\Local\MiKTeX\tex/latex/listings\lstlang1.sty
 File: lstlang1.sty 2023/02/27 1.9 listings language file
 )
 Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on input line 15.
- [33] [34]
+ [37] [38]
 Underfull \hbox (badness 1783) in paragraph at lines 78--79
 []\T1/cmtt/m/n/12 signalling_service.py\T1/cmr/bx/n/12 : \T1/cmr/m/n/12 A biz-to-sí-tó-be-ren-de-zés lo-gi-ká-ját imp-le-men-tál-ja.
  []
@@ -1540,80 +1571,1576 @@ Underfull \hbox (badness 1371) in paragraph at lines 84--85
 []\T1/cmtt/m/n/12 station_repository.py\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 signal_repository.py\T1/cmr/m/n/12 , \T1/cmtt/m/n/12 train_repository.py\T1/cmr/m/n/12 ,
  []
 
-[35]) (impl/app_architecture/shared.tex [36] [37] [38]
-<impl/app_architecture/ui_models_uml.png, id=514, 1557.82pt x 574.145pt>
+[39]) (impl/app_architecture/shared.tex [40] [41] [42]
+<impl/app_architecture/ui_models_uml.png, id=561, 1557.82pt x 574.145pt>
 File: impl/app_architecture/ui_models_uml.png Graphic file (type png)
 <use impl/app_architecture/ui_models_uml.png>
 Package pdftex.def Info: impl/app_architecture/ui_models_uml.png  used on input line 113.
-(pdftex.def)             Requested size: 341.43437pt x 125.83044pt.
- [39 <./impl/app_architecture/ui_models_uml.png>]
-Underfull \hbox (badness 1205) in paragraph at lines 132--134
-[]\T1/cmr/m/n/12 A pro-jekt né-zet be-lé-pé-si pont-ja.
- []
-
-[40]) (impl/app_architecture/setup_module.tex [41]
+(pdftex.def)             Requested size: 405.45047pt x 149.42311pt.
+ [43 <./impl/app_architecture/ui_models_uml.png>] [44]) (impl/app_architecture/setup_module.tex [45]
 Underfull \hbox (badness 1178) in paragraph at lines 34--35
 []\T1/cmtt/m/n/12 timetable_button.py\T1/cmr/m/n/12 : A menetrend-szerkeszt® fe-lü-let meg-nyi-tá-sá-ra
  []
 
-) (impl/app_architecture/construction_module.tex [42] [43]
-<impl/app_architecture/construction_module_uml.png, id=570, 1490.56876pt x 711.65875pt>
+) (impl/app_architecture/construction_module.tex [46] [47]
+<impl/app_architecture/construction_module_uml.png, id=613, 1490.56876pt x 711.65875pt>
 File: impl/app_architecture/construction_module_uml.png Graphic file (type png)
 <use impl/app_architecture/construction_module_uml.png>
 Package pdftex.def Info: impl/app_architecture/construction_module_uml.png  used on input line 44.
-(pdftex.def)             Requested size: 341.43437pt x 163.0048pt.
-) (impl/app_architecture/train_placement_module.tex [44 <./impl/app_architecture/construction_module_uml.png (PNG copy)>] [45]
-<impl/app_architecture/train_placement_module_uml.png, id=587, 1971.365pt x 822.07124pt>
+(pdftex.def)             Requested size: 405.45047pt x 193.57295pt.
+) (impl/app_architecture/train_placement_module.tex [48 <./impl/app_architecture/construction_module_uml.png (PNG copy)>] [49]
+<impl/app_architecture/train_placement_module_uml.png, id=631, 1971.365pt x 822.07124pt>
 File: impl/app_architecture/train_placement_module_uml.png Graphic file (type png)
 <use impl/app_architecture/train_placement_module_uml.png>
 Package pdftex.def Info: impl/app_architecture/train_placement_module_uml.png  used on input line 41.
-(pdftex.def)             Requested size: 341.43437pt x 142.3719pt.
-) (impl/app_architecture/simulation_module.tex [46 <./impl/app_architecture/train_placement_module_uml.png>]
-<impl/app_architecture/simulation_module_uml.png, id=599, 1909.1325pt x 730.73pt>
+(pdftex.def)             Requested size: 405.45047pt x 169.06508pt.
+) (impl/app_architecture/simulation_module.tex [50 <./impl/app_architecture/train_placement_module_uml.png>] [51]
+<impl/app_architecture/simulation_module_uml.png, id=650, 1909.1325pt x 730.73pt>
 File: impl/app_architecture/simulation_module_uml.png Graphic file (type png)
 <use impl/app_architecture/simulation_module_uml.png>
 Package pdftex.def Info: impl/app_architecture/simulation_module_uml.png  used on input line 57.
-(pdftex.def)             Requested size: 341.43437pt x 130.67831pt.
- [47]) (impl/app_architecture/timetable_module.tex [48 <./impl/app_architecture/simulation_module_uml.png>])) [49]) [50
+(pdftex.def)             Requested size: 405.45047pt x 155.18608pt.
+) (impl/app_architecture/timetable_module.tex [52 <./impl/app_architecture/simulation_module_uml.png>])) [53]
+\openout2 = `impl/testing.aux'.
+
+ (impl/testing.tex
+Underfull \hbox (badness 10000) in paragraph at lines 31--31
+[]|\T1/cmr/m/n/12 Felhasználó egy-szer
+ []
 
 
-] (samples_hu/sum.tex
-4. fejezet.
-) [51
+Underfull \hbox (badness 10000) in paragraph at lines 31--31
+\T1/cmr/m/n/12 sza-bá-lyo-san ki-lép
+ []
 
 
+Underfull \hbox (badness 10000) in paragraph at lines 31--31
+\T1/cmr/m/n/12 (nin-cse-nek fu-tó
+ []
 
-] (samples_hu/sim.tex [52
+
+Underfull \hbox (badness 1715) in paragraph at lines 32--32
+\T1/cmr/m/n/12 töl-té-sé-nek el-uta-
+ []
+
+
+Underfull \hbox (badness 5161) in paragraph at lines 32--32
+[]|\T1/cmr/m/n/12 Menü mód ak-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 32--32
+[]|\T1/cmr/m/n/12 Felhasználó hi-bás
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 32--32
+\T1/cmr/m/n/12 / hi-ány-zó fáj-lo-kat
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 32--32
+\T1/cmr/m/n/12 tar-tal-ma-zó pro-jekt
+ []
+
+
+Underfull \hbox (badness 3088) in paragraph at lines 32--32
+[]|\T1/cmr/m/n/12 A rend-szer mo-dá-lis
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 32--32
+\T1/cmr/m/n/12 hi-ba-üze-ne-tet je-le-nít
+ []
+
+
+Underfull \hbox (badness 1953) in paragraph at lines 33--33
+[]|\T1/cmr/m/n/12 Felhasználó ér-vé-nyes
+ []
+
+
+Underfull \hbox (badness 6268) in paragraph at lines 33--33
+\T1/cmr/m/n/12 szer-ke-ze-t¶ pro-jek-tet
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 33--33
+[]|\T1/cmr/m/n/12 A pro-jekt ál-la-po-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 33--33
+\T1/cmr/m/n/12 ta be-töl-t®-dik, a
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 33--33
+\T1/cmr/m/n/12 szer-kesz-té-si mód
+ []
+
+
+Overfull \hbox (24.3935pt too wide) in alignment at lines 30--34
+ [] [] [] [] 
+ []
+
+
+Underfull \hbox (badness 2142) in paragraph at lines 38--38
+[]|\T1/cmr/m/n/12 Felhasználó az ál-lo-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 38--38
+\T1/cmr/m/n/12 lét-re vá-gány-ele-met,
+ []
+
+
+Underfull \hbox (badness 2894) in paragraph at lines 38--38
+\T1/cmr/m/n/12 mo-dá-lis vagy in-line
+ []
+
+
+Underfull \hbox (badness 8189) in paragraph at lines 39--39
+[]|\T1/cmr/m/n/12 Tervezési se-bes-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 39--39
+\T1/cmr/m/n/12 ség mó-do-sí-tás
+ []
+
+
+Underfull \hbox (badness 6204) in paragraph at lines 39--39
+[]|\T1/cmr/m/n/12 Felhasználó se-bes-sé-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 40--40
+[]|\T1/cmr/m/n/12 Egyszer¶ (két-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 40--40
+\T1/cmr/m/n/12 pon-tos) egye-nes
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 40--40
+\T1/cmr/m/n/12 sza-kasz lét-re-ho-
+ []
+
+
+Underfull \hbox (badness 1635) in paragraph at lines 40--40
+\T1/cmr/m/n/12 tív, nincs fo-lya-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 41--41
+[]|\T1/cmr/m/n/12 Többpontos
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 41--41
+\T1/cmr/m/n/12 vá-gány-ve-ze-tés
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 41--41
+[]|\T1/cmr/m/n/12 Felhasználó egy-más
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 41--41
+[]|\T1/cmr/m/n/12 Folyamatos, be-jár-
+ []
+
+
+Underfull \hbox (badness 4981) in paragraph at lines 42--42
+[]|\T1/cmr/m/n/12 Felhasználó új sza-
+ []
+
+
+Underfull \hbox (badness 2460) in paragraph at lines 42--42
+\T1/cmr/m/n/12 ku-san ke-resz-te-z®-dé-si
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 43--43
+[]|\T1/cmr/m/n/12 Vágányszakasz
+ []
+
+
+Underfull \hbox (badness 2126) in paragraph at lines 43--43
+\T1/cmr/m/n/12 tív, hossz pa-ra-
+ []
+
+
+Underfull \hbox (badness 4981) in paragraph at lines 43--43
+[]|\T1/cmr/m/n/12 Felhasználó új sza-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 43--43
+[]|\T1/cmr/m/n/12 Létrejött sza-kasz
+ []
+
+
+Underfull \hbox (badness 3439) in paragraph at lines 43--43
+\T1/cmr/m/n/12 = kon-fi-gu-rált ér-ték
+ []
+
+
+Overfull \hbox (24.3935pt too wide) in alignment at lines 37--44
+ [] [] [] [] 
+ []
+
+[54
 
 
 
 ]
-A. f\"uggel\'ek.
-) [53
-
-] [54] [55
-
+Underfull \hbox (badness 10000) in paragraph at lines 49--49
+[]|\T1/cmr/m/n/12 Felhasználó ál-lo-más
+ []
 
 
-] (elteikthesis_hu.lof [56
+Underfull \hbox (badness 10000) in paragraph at lines 51--51
+[]|\T1/cmr/m/n/12 Alagút start
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 51--51
+\T1/cmr/m/n/12 til-tá-sa meg-lé-v®
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 51--51
+[]|\T1/cmr/m/n/12 Felhasználó alag-út-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 51--51
+\T1/cmr/m/n/12 ban fu-tó vá-gány-ra
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 52--52
+[]|\T1/cmr/m/n/12 Nem ér-vé-nyes
+ []
+
+
+Underfull \hbox (badness 6775) in paragraph at lines 52--52
+\T1/cmr/m/n/12 vég-pont el-uta-sí-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 52--52
+[]|\T1/cmr/m/n/12 Els® (start)
+ []
+
+
+Underfull \hbox (badness 5985) in paragraph at lines 52--52
+\T1/cmr/m/n/12 pont ér-vé-nye-sen
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 52--52
+[]|\T1/cmr/m/n/12 Felhasználó nem
+ []
+
+
+Underfull \hbox (badness 7203) in paragraph at lines 53--53
+[]|\T1/cmr/m/n/12 Érvényes alag-út
+ []
+
+
+Underfull \hbox (badness 2469) in paragraph at lines 53--53
+\T1/cmr/m/n/12 tív, kom-pa-ti-bi-lis
+ []
+
+
+Overfull \hbox (24.3935pt too wide) in alignment at lines 47--54
+ [] [] [] [] 
+ []
+
+[55]
+Underfull \hbox (badness 10000) in paragraph at lines 58--58
+[]|\T1/cmr/m/n/12 Jelz® el-he-lye-zés
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 58--58
+[]|\T1/cmr/m/n/12 Felhasználó alag-út-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 58--58
+\T1/cmr/m/n/12 ban fu-tó vá-gány-ra
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 59--59
+[]|\T1/cmr/m/n/12 Jelz® el-he-lye-zés
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 59--59
+[]|\T1/cmr/m/n/12 Felhasználó ál-lo-más
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 60--60
+[]|\T1/cmr/m/n/12 Szabályos jel-z®
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 60--60
+\T1/cmr/m/n/12 sza-bad vá-gány
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 60--60
+[]|\T1/cmr/m/n/12 Felhasználó vá-gány-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 60--60
+[]|\T1/cmr/m/n/12 Új jel-z® ob-jek-tum
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 60--60
+\T1/cmr/m/n/12 lét-re-jön rög-zí-tett
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 61--61
+[]|\T1/cmr/m/n/12 Jelz® irá-nyá-nak
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 61--61
+\T1/cmr/m/n/12 for-dul, ál-la-po-tok
+ []
+
+
+Overfull \hbox (24.3935pt too wide) in alignment at lines 57--64
+ [] [] [] [] 
+ []
+
+[56]
+Underfull \hbox (badness 10000) in paragraph at lines 68--68
+[]|\T1/cmr/m/n/12 Állomás épí-tés
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 68--68
+[]|\T1/cmr/m/n/12 Felhasználó vá-gány-
+ []
+
+
+Underfull \hbox (badness 1360) in paragraph at lines 68--68
+[]|\T1/cmr/m/n/12 Nincs ál-lo-más lét-re-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 69--69
+[]|\T1/cmr/m/n/12 Állomás épí-tés
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 69--69
+\T1/cmr/m/n/12 név-adó pa-nel
+ []
+
+
+Underfull \hbox (badness 1478) in paragraph at lines 69--69
+\T1/cmr/m/n/12 tív, üres te-rü-let
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 69--69
+[]|\T1/cmr/m/n/12 Névmegadás pa-nel
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 69--69
+\T1/cmr/m/n/12 mo-dá-li-san meg-je-
+ []
+
+
+Underfull \hbox (badness 1874) in paragraph at lines 69--69
+\T1/cmr/m/n/12 le-nik, fó-kusz a név
+ []
+
+
+Underfull \hbox (badness 2828) in paragraph at lines 70--70
+[]|\T1/cmr/m/n/12 Üres ál-lo-más-név
+ []
+
+
+Underfull \hbox (badness 5533) in paragraph at lines 70--70
+[]|\T1/cmr/m/n/12 Hibaüzenet; ál-lo-más
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 71--71
+[]|\T1/cmr/m/n/12 Duplikált ál-lo-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 71--71
+\T1/cmr/m/n/12 más-név vissza-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 71--71
+[]|\T1/cmr/m/n/12 Névpanel ak-tív,
+ []
+
+
+Underfull \hbox (badness 4505) in paragraph at lines 71--71
+[]|\T1/cmr/m/n/12 Felhasználó meg-lé-v®
+ []
+
+
+Underfull \hbox (badness 5533) in paragraph at lines 71--71
+[]|\T1/cmr/m/n/12 Hibaüzenet; ál-lo-más
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 72--72
+[]|\T1/cmr/m/n/12 Szabályos ál-lo-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 72--72
+[]|\T1/cmr/m/n/12 Névpanel ak-tív,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 72--72
+\T1/cmr/m/n/12 név egye-di és
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 72--72
+[]|\T1/cmr/m/n/12 Felhasználó men-tés
+ []
+
+
+Underfull \hbox (badness 1701) in paragraph at lines 72--72
+[]|\T1/cmr/m/n/12 Új ál-lo-más lét-re-jön,
+ []
+
+
+Underfull \hbox (badness 2828) in paragraph at lines 73--73
+[]|\T1/cmr/m/n/12 Másik ál-lo-más-ra
+ []
+
+
+Underfull \hbox (badness 4505) in paragraph at lines 73--73
+[]|\T1/cmr/m/n/12 Felhasználó meg-lé-v®
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 74--74
+[]|\T1/cmr/m/n/12 Állomás po-zí-ci-ó-ja
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 74--74
+\T1/cmr/m/n/12 fris-sül, kap-cso-ló-dó
+ []
+
+
+Overfull \hbox (24.3935pt too wide) in alignment at lines 67--75
+ [] [] [] [] 
+ []
+
+
+Underfull \hbox (badness 3009) in paragraph at lines 79--79
+[]|\T1/cmr/m/n/12 Felhasználó a rö-vid
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 80--80
+[]|\T1/cmr/m/n/12 Konfigurált
+ []
+
+
+Underfull \hbox (badness 3849) in paragraph at lines 80--80
+\T1/cmr/m/n/12 hossz pa-ra-mé-ter
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 80--80
+\T1/cmr/m/n/12 fi-ka a kon-fi-gu-rált
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 81--81
+[]|\T1/cmr/m/n/12 Peron el®-né-zet
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 81--81
+\T1/cmr/m/n/12 meg-je-le-ní-té-se
+ []
+
+
+Underfull \hbox (badness 1953) in paragraph at lines 81--81
+[]|\T1/cmr/m/n/12 Felhasználó ér-vé-nyes
+ []
+
+
+Underfull \hbox (badness 3312) in paragraph at lines 81--81
+[]|\T1/cmr/m/n/12 Peron el®-né-ze-ti ob-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 82--82
+[]|\T1/cmr/m/n/12 Peron el®-né-zet
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 82--82
+\T1/cmr/m/n/12 ak-tív, ál-lo-más
+ []
+
+
+Underfull \hbox (badness 3209) in paragraph at lines 82--82
+[]|\T1/cmr/m/n/12 Peron vég-le-ge-sül és
+ []
+
+
+Overfull \hbox (24.3935pt too wide) in alignment at lines 78--83
+ [] [] [] [] 
+ []
+
+[57]
+Underfull \hbox (badness 10000) in paragraph at lines 87--87
+[]|\T1/cmr/m/n/12 Vágányszakasz
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 87--87
+[]|\T1/cmr/m/n/12 Felhasználó a sza-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 87--87
+[]|\T1/cmr/m/n/12 Szakasz el-tá-vo-lít-va,
+ []
+
+
+Underfull \hbox (badness 2894) in paragraph at lines 87--87
+\T1/cmr/m/n/12 kap-cso-ló-dó jel-z®k /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 88--88
+[]|\T1/cmr/m/n/12 Vágányszakasz és
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 88--88
+\T1/cmr/m/n/12 alag-út ob-jek-tu-mok
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 89--89
+[]|\T1/cmr/m/n/12 Felhasználó jel-z®-re
+ []
+
+
+Underfull \hbox (badness 1184) in paragraph at lines 89--89
+[]|\T1/cmr/m/n/12 Jelz® en-ti-tás el-tá-vo-
+ []
+
+
+Underfull \hbox (badness 2142) in paragraph at lines 90--90
+[]|\T1/cmr/m/n/12 Felhasználó az ál-lo-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 91--91
+[]|\T1/cmr/m/n/12 Felhasználó pe-ron-ra
+ []
+
+
+Overfull \hbox (24.3935pt too wide) in alignment at lines 86--93
+ [] [] [] [] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 97--97
+[]|\T1/cmr/m/n/12 Szabályos vo-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 97--97
+\T1/cmr/m/n/12 nat-el-he-lye-zés
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 97--97
+[]|\T1/cmr/m/n/12 Vonatelhelyezés
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 97--97
+\T1/cmr/m/n/12 mód ak-tív,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 97--97
+[]|\T1/cmr/m/n/12 Felhasználó sza-bad
+ []
+
+
+Underfull \hbox (badness 3525) in paragraph at lines 97--97
+[]|\T1/cmr/m/n/12 Új vo-nat jön lét-re
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 98--98
+[]|\T1/cmr/m/n/12 Vonatelhelyezés
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 99--99
+[]|\T1/cmr/m/n/12 Vonatelhelyezés
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 99--99
+\T1/cmr/m/n/12 mód ak-tív,
+ []
+
+
+Underfull \hbox (badness 4505) in paragraph at lines 99--99
+[]|\T1/cmr/m/n/12 Felhasználó meg-lé-v®
+ []
+
+
+Overfull \hbox (24.3935pt too wide) in alignment at lines 96--100
+ [] [] [] [] 
+ []
+
+[58]
+Underfull \hbox (badness 10000) in paragraph at lines 104--104
+[]|\T1/cmr/m/n/12 Vonateltávolítás
+ []
+
+
+Underfull \hbox (badness 1701) in paragraph at lines 104--104
+[]|\T1/cmr/m/n/12 Vonat en-ti-tás tör-l®-
+ []
+
+
+Underfull \hbox (badness 1533) in paragraph at lines 104--104
+\T1/cmr/m/n/12 zá-ren-de-lés (ha volt)
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 105--105
+[]|\T1/cmr/m/n/12 Vonateltávolítás
+ []
+
+
+Overfull \hbox (24.3935pt too wide) in alignment at lines 103--106
+ [] [] [] [] 
+ []
+
+
+Underfull \hbox (badness 4582) in paragraph at lines 110--110
+[]|\T1/cmr/m/n/12 Menetrend rész-
+ []
+
+
+Underfull \hbox (badness 5667) in paragraph at lines 110--110
+\T1/cmr/m/n/12 id®-ada-tok meg-je-len-
+ []
+
+
+Underfull \hbox (badness 4582) in paragraph at lines 111--111
+[]|\T1/cmr/m/n/12 Menetrend rész-
+ []
+
+
+Underfull \hbox (badness 3009) in paragraph at lines 111--111
+[]|\T1/cmr/m/n/12 Felhasználó a fej-léc
+ []
+
+
+Underfull \hbox (badness 1629) in paragraph at lines 111--111
+\T1/cmr/m/n/12 ket, össze-fog-la-ló sor
+ []
+
+
+Underfull \hbox (badness 2556) in paragraph at lines 112--112
+[]|\T1/cmr/m/n/12 Menetrend ki-vá-
+ []
+
+
+Underfull \hbox (badness 1052) in paragraph at lines 112--112
+[]|\T1/cmr/m/n/12 Felhasználó "Törlés"
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 112--112
+\T1/cmr/m/n/12 gomb-ra kat-tint és
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 113--113
+[]|\T1/cmr/m/n/12 Összesít® pa-nel
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 113--113
+[]|\T1/cmr/m/n/12 Felhasználó
+ []
+
+
+Underfull \hbox (badness 7832) in paragraph at lines 114--114
+[]|\T1/cmr/m/n/12 Meglév® me-net-
+ []
+
+
+Underfull \hbox (badness 2556) in paragraph at lines 114--114
+[]|\T1/cmr/m/n/12 Menetrend ki-vá-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 114--114
+[]|\T1/cmr/m/n/12 Felhasználó
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 114--114
+[]|\T1/cmr/m/n/12 Szerkeszt® pa-nel
+ []
+
+
+Underfull \hbox (badness 1577) in paragraph at lines 114--114
+\T1/cmr/m/n/12 meg-je-le-nik el®-töl-tött
+ []
+
+
+Overfull \hbox (24.3935pt too wide) in alignment at lines 109--115
+ [] [] [] [] 
+ []
+
+[59]
+Underfull \hbox (badness 1132) in paragraph at lines 119--119
+[]|\T1/cmr/m/n/12 Üres me-net-rend-
+ []
+
+
+Underfull \hbox (badness 2065) in paragraph at lines 119--119
+[]|\T1/cmr/m/n/12 Szerkeszt® pa-nel
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 119--119
+[]|\T1/cmr/m/n/12 Hibaüzenet, men-tés
+ []
+
+
+Underfull \hbox (badness 2065) in paragraph at lines 120--120
+[]|\T1/cmr/m/n/12 Szerkeszt® pa-nel
+ []
+
+
+Underfull \hbox (badness 4505) in paragraph at lines 120--120
+[]|\T1/cmr/m/n/12 Felhasználó meg-lé-v®
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 120--120
+[]|\T1/cmr/m/n/12 Hibaüzenet, men-tés
+ []
+
+
+Underfull \hbox (badness 2065) in paragraph at lines 121--121
+[]|\T1/cmr/m/n/12 Szerkeszt® pa-nel
+ []
+
+
+Underfull \hbox (badness 2368) in paragraph at lines 121--121
+\T1/cmr/m/n/12 ak-tív, el-s® ál-lo-
+ []
+
+
+Underfull \hbox (badness 2197) in paragraph at lines 121--121
+\T1/cmr/m/n/12 du-lá-si id®k új-ra-szá-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 122--122
+[]|\T1/cmr/m/n/12 Megálló hoz-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 122--122
+\T1/cmr/m/n/12 zá-adá-sa lis-ta
+ []
+
+
+Underfull \hbox (badness 2065) in paragraph at lines 122--122
+[]|\T1/cmr/m/n/12 Szerkeszt® pa-nel
+ []
+
+
+Underfull \hbox (badness 1838) in paragraph at lines 122--122
+\T1/cmr/m/n/12 hoz-zá-adá-sa" gom-bot
+ []
+
+
+Underfull \hbox (badness 2671) in paragraph at lines 122--122
+[]|\T1/cmr/m/n/12 Új sor je-le-nik meg
+ []
+
+
+Underfull \hbox (badness 2065) in paragraph at lines 123--123
+[]|\T1/cmr/m/n/12 Szerkeszt® pa-nel
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 123--123
+\T1/cmr/m/n/12 be-szú-rá-sa" gom-bot
+ []
+
+
+Underfull \hbox (badness 2065) in paragraph at lines 124--124
+[]|\T1/cmr/m/n/12 Szerkeszt® pa-nel
+ []
+
+
+Underfull \hbox (badness 1902) in paragraph at lines 124--124
+[]|\T1/cmr/m/n/12 Sor el-tá-vo-lít-va, id®-
+ []
+
+
+Underfull \hbox (badness 2065) in paragraph at lines 125--125
+[]|\T1/cmr/m/n/12 Szerkeszt® pa-nel
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 125--125
+[]|\T1/cmr/m/n/12 Felhasználó uta-zá-si
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 125--125
+[]|\T1/cmr/m/n/12 Módosított szeg-
+ []
+
+
+Underfull \hbox (badness 2065) in paragraph at lines 126--126
+[]|\T1/cmr/m/n/12 Szerkeszt® pa-nel
+ []
+
+
+Underfull \hbox (badness 1783) in paragraph at lines 127--127
+[]|\T1/cmr/m/n/12 Menetrend men-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 127--127
+\T1/cmr/m/n/12 té-se ér-vé-nyes
+ []
+
+
+Underfull \hbox (badness 2065) in paragraph at lines 127--127
+[]|\T1/cmr/m/n/12 Szerkeszt® pa-nel
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 127--127
+[]|\T1/cmr/m/n/12 Felhasználó men-tés
+ []
+
+
+Overfull \hbox (24.3935pt too wide) in alignment at lines 118--128
+ [] [] [] [] 
+ []
+
+[60]
+Underfull \hbox (badness 6125) in paragraph at lines 132--132
+[]|\T1/cmr/m/n/12 Szimuláció in-dí-
+ []
+
+
+Underfull \hbox (badness 6944) in paragraph at lines 132--132
+[]|\T1/cmr/m/n/12 Simulation mód
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 132--132
+[]|\T1/cmr/m/n/12 Felhasználó meg-
+ []
+
+
+Underfull \hbox (badness 1221) in paragraph at lines 132--132
+\T1/cmr/m/n/12 kez-de-ti ál-ló stá-tusz-
+ []
+
+
+Overfull \hbox (24.3935pt too wide) in alignment at lines 131--133
+ [] [] [] [] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 137--137
+[]|\T1/cmr/m/n/12 Szimuláció szü-
+ []
+
+
+Underfull \hbox (badness 6944) in paragraph at lines 137--137
+[]|\T1/cmr/m/n/12 Simulation mód
+ []
+
+
+Underfull \hbox (badness 2409) in paragraph at lines 137--137
+\T1/cmr/m/n/12 net \TS1/cmr/m/n/12 ^^Y \T1/cmr/m/n/12 fut ál-la-pot-
+ []
+
+
+Underfull \hbox (badness 6944) in paragraph at lines 138--138
+[]|\T1/cmr/m/n/12 Simulation mód
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 138--138
+[]|\T1/cmr/m/n/12 Felhasználó "1\TS1/cmr/m/n/12 Ö\T1/cmr/m/n/12 "
+ []
+
+
+Underfull \hbox (badness 2617) in paragraph at lines 138--138
+[]|\T1/cmr/m/n/12 Id®skála szor-zó =1,
+ []
+
+
+Underfull \hbox (badness 6944) in paragraph at lines 139--139
+[]|\T1/cmr/m/n/12 Simulation mód
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 139--139
+[]|\T1/cmr/m/n/12 Felhasználó "5\TS1/cmr/m/n/12 Ö\T1/cmr/m/n/12 "
+ []
+
+
+Underfull \hbox (badness 6944) in paragraph at lines 140--140
+[]|\T1/cmr/m/n/12 Simulation mód
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 140--140
+[]|\T1/cmr/m/n/12 Felhasználó "25\TS1/cmr/m/n/12 Ö\T1/cmr/m/n/12 "
+ []
+
+
+Overfull \hbox (24.3935pt too wide) in alignment at lines 136--141
+ [] [] [] [] 
+ []
+
+
+Underfull \hbox (badness 7832) in paragraph at lines 145--145
+[]|\T1/cmr/m/n/12 Vonatinfó pa-nel
+ []
+
+
+Underfull \hbox (badness 6944) in paragraph at lines 145--145
+[]|\T1/cmr/m/n/12 Simulation mód
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 145--145
+[]|\T1/cmr/m/n/12 Információs pa-nel
+ []
+
+
+Underfull \hbox (badness 4608) in paragraph at lines 145--145
+\T1/cmr/m/n/12 meg-je-le-nik a vo-nat
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 146--146
+[]|\T1/cmr/m/n/12 Menetrend
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 146--146
+\T1/cmr/m/n/12 hoz-zá-ren-de-lés
+ []
+
+
+Underfull \hbox (badness 6944) in paragraph at lines 146--146
+[]|\T1/cmr/m/n/12 Simulation mód
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 146--146
+[]|\T1/cmr/m/n/12 Felhasználó
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 146--146
+\T1/cmr/m/n/12 "Menetrend hoz-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 146--146
+\T1/cmr/m/n/12 zá-adás" gom-bot
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 147--147
+[]|\T1/cmr/m/n/12 Menetrend hoz-
+ []
+
+
+Underfull \hbox (badness 7832) in paragraph at lines 147--147
+[]|\T1/cmr/m/n/12 Vonatinfó pa-nel
+ []
+
+
+Underfull \hbox (badness 2486) in paragraph at lines 147--147
+\T1/cmr/m/n/12 ri-bú-tu-ma be-áll, pa-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 148--148
+[]|\T1/cmr/m/n/12 Vonat ma-nu-á-lis
+ []
+
+
+Underfull \hbox (badness 7832) in paragraph at lines 148--148
+[]|\T1/cmr/m/n/12 Vonatinfó pa-nel
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 148--148
+[]|\T1/cmr/m/n/12 Vonat stá-tu-sza
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 149--149
+[]|\T1/cmr/m/n/12 Vonat stá-tu-sza
+ []
+
+
+Underfull \hbox (badness 1728) in paragraph at lines 149--149
+\T1/cmr/m/n/12 mozog-ra vált au-to-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 150--150
+[]|\T1/cmr/m/n/12 Vonat me-net-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 151--151
+[]|\T1/cmr/m/n/12 Késés ke-ze-lé-se
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 151--151
+[]|\T1/cmr/m/n/12 Vonat ké-sés-ben
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 151--151
+[]|\T1/cmr/m/n/12 Várakozás leg-alább
+ []
+
+
+Underfull \hbox (badness 3849) in paragraph at lines 152--152
+\T1/cmr/m/n/12 utol-só ál-lo-má-sá-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 153--153
+[]|\T1/cmr/m/n/12 Felhasználó
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 153--153
+\T1/cmr/m/n/12 "Fordítás" gom-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 153--153
+[]|\T1/cmr/m/n/12 Vonat irány-vek-tor
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 153--153
+\T1/cmr/m/n/12 meg-for-dul, ál-la-pot
+ []
+
+
+Underfull \hbox (badness 7832) in paragraph at lines 154--154
+[]|\T1/cmr/m/n/12 Vonatinfó pa-nel
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 154--154
+[]|\T1/cmr/m/n/12 Felhasználó
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 154--154
+\T1/cmr/m/n/12 "Menetrend tör-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 154--154
+[]|\T1/cmr/m/n/12 Menetrend att-ri-bú-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 154--154
+\T1/cmr/m/n/12 tum nul-láz-va, szín
+ []
+
+
+Overfull \hbox (24.3935pt too wide) in alignment at lines 144--155
+ [] [] [] [] 
+ []
+
+[61]
+Underfull \hbox (badness 10000) in paragraph at lines 159--159
+[]|\T1/cmr/m/n/12 Helytelen jel-z®
+ []
+
+
+Underfull \hbox (badness 6944) in paragraph at lines 159--159
+[]|\T1/cmr/m/n/12 Simulation mód
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 159--159
+[]|\T1/cmr/m/n/12 Felhasználó nem
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 159--159
+\T1/cmr/m/n/12 kom-pa-ti-bi-lis két
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 160--160
+[]|\T1/cmr/m/n/12 Szabályos jel-z®
+ []
+
+
+Underfull \hbox (badness 6944) in paragraph at lines 160--160
+[]|\T1/cmr/m/n/12 Simulation mód
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 160--160
+[]|\T1/cmr/m/n/12 Vágányút lét-re-jön,
+ []
+
+
+Underfull \hbox (badness 5288) in paragraph at lines 160--160
+\T1/cmr/m/n/12 érin-tett jel-z®k zöld
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 161--161
+[]|\T1/cmr/m/n/12 Kényszeroldás
+ []
+
+
+Underfull \hbox (badness 6944) in paragraph at lines 161--161
+[]|\T1/cmr/m/n/12 Simulation mód
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 161--161
+\T1/cmr/m/n/12 ak-tív, vá-gá-nyút
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 161--161
+[]|\T1/cmr/m/n/12 Felhasználó jobb
+ []
+
+
+Underfull \hbox (badness 5519) in paragraph at lines 161--161
+\T1/cmr/m/n/12 gomb-bal kény-szer-ol-
+ []
+
+
+Underfull \hbox (badness 4096) in paragraph at lines 162--162
+[]|\T1/cmr/m/n/12 Aktív vá-gá-nyút,
+ []
+
+
+Underfull \hbox (badness 3019) in paragraph at lines 163--163
+[]|\T1/cmr/m/n/12 Helytelen tér-köz
+ []
+
+
+Underfull \hbox (badness 6944) in paragraph at lines 163--163
+[]|\T1/cmr/m/n/12 Simulation mód
+ []
+
+
+Underfull \hbox (badness 3895) in paragraph at lines 163--163
+[]|\T1/cmr/m/n/12 Felhasználó Shift-tel
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 163--163
+\T1/cmr/m/n/12 ke-resz-te-z®-dé-sen át
+ []
+
+
+Underfull \hbox (badness 1776) in paragraph at lines 164--164
+[]|\T1/cmr/m/n/12 Térközjelz® lé-te-
+ []
+
+
+Underfull \hbox (badness 6944) in paragraph at lines 164--164
+[]|\T1/cmr/m/n/12 Simulation mód
+ []
+
+
+Underfull \hbox (badness 3895) in paragraph at lines 164--164
+[]|\T1/cmr/m/n/12 Felhasználó Shift-tel
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 167--167
+[]|\T1/cmr/m/n/12 Többszakaszos
+ []
+
+
+Underfull \hbox (badness 6944) in paragraph at lines 167--167
+[]|\T1/cmr/m/n/12 Simulation mód
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 167--167
+[]|\T1/cmr/m/n/12 Felhasználó sor-ban
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 167--167
+\T1/cmr/m/n/12 jön lét-re, min-den
+ []
+
+
+Underfull \hbox (badness 1184) in paragraph at lines 168--168
+[]|\T1/cmr/m/n/12 Kerül® vá-gá-nyút
+ []
+
+
+Underfull \hbox (badness 6944) in paragraph at lines 168--168
+[]|\T1/cmr/m/n/12 Simulation mód
+ []
+
+
+Underfull \hbox (badness 2142) in paragraph at lines 168--168
+\T1/cmr/m/n/12 ak-tív, aka-dá-lyok
+ []
+
+
+Underfull \hbox (badness 4967) in paragraph at lines 168--168
+[]|\T1/cmr/m/n/12 Vágányút al-ter-na-tív
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 168--168
+\T1/cmr/m/n/12 sza-ka-szo-kon ve-zet,
+ []
+
+
+Overfull \hbox (24.3935pt too wide) in alignment at lines 158--169
+ [] [] [] [] 
+ []
+
+[62]
+Underfull \hbox (badness 6944) in paragraph at lines 173--173
+[]|\T1/cmr/m/n/12 Simulation mód
+ []
+
+
+Underfull \hbox (badness 1331) in paragraph at lines 173--173
+\T1/cmr/m/n/12 fut, nincs fo-lya-
+ []
+
+
+Underfull \hbox (badness 5245) in paragraph at lines 173--173
+\T1/cmr/m/n/12 mat-ban kri-ti-kus
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 173--173
+[]|\T1/cmr/m/n/12 Felhasználó
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 173--173
+\T1/cmr/m/n/12 "Leállítás" gom-bot
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 173--173
+[]|\T1/cmr/m/n/12 Id® el®-re-ha-la-dás
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 173--173
+\T1/cmr/m/n/12 konst-ruk-ci-ós mód-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 173--173
+\T1/cmr/m/n/12 ba, vo-na-tok ál-ló
+ []
+
+
+Overfull \hbox (24.3935pt too wide) in alignment at lines 172--174
+ [] [] [] [] 
+ []
+
+[63]
+Underfull \hbox (badness 10000) in paragraph at lines 178--178
+[]|\T1/cmr/m/n/12 Mentési pa-nel
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 178--178
+\T1/cmr/m/n/12 men-té-se" gom-bot
+ []
+
+
+Underfull \hbox (badness 1389) in paragraph at lines 178--178
+[]|\T1/cmr/m/n/12 Mentési út-vo-nal vá-
+ []
+
+
+Underfull \hbox (badness 3158) in paragraph at lines 179--179
+[]|\T1/cmr/m/n/12 Projekt men-té-se
+ []
+
+
+Underfull \hbox (badness 1953) in paragraph at lines 179--179
+[]|\T1/cmr/m/n/12 Felhasználó ér-vé-nyes
+ []
+
+
+Underfull \hbox (badness 6842) in paragraph at lines 179--179
+\T1/cmr/m/n/12 el-éré-si utat ad és
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 180--180
+[]|\T1/cmr/m/n/12 Gyorsmentés
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 180--180
+\T1/cmr/m/n/12 meg-lé-v® men-tés
+ []
+
+
+Underfull \hbox (badness 4316) in paragraph at lines 180--180
+\T1/cmr/m/n/12 út-vo-nal-ra men-t®-dik,
+ []
+
+
+Underfull \hbox (badness 5161) in paragraph at lines 181--181
+[]|\T1/cmr/m/n/12 Menü mód ak-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 181--181
+[]|\T1/cmr/m/n/12 Felhasználó
+ []
+
+
+Underfull \hbox (badness 1715) in paragraph at lines 182--182
+[]|\T1/cmr/m/n/12 Mentetlenség vi-
+ []
+
+
+Underfull \hbox (badness 5036) in paragraph at lines 182--182
+[]|\T1/cmr/m/n/12 Felhasználó mó-do-sít
+ []
+
+
+Underfull \hbox (badness 5985) in paragraph at lines 183--183
+[]|\T1/cmr/m/n/12 Megnyitás men-
+ []
+
+
+Underfull \hbox (badness 2469) in paragraph at lines 183--183
+\T1/cmr/m/n/12 tet-len mó-do-sí-tá-
+ []
+
+
+Underfull \hbox (badness 5161) in paragraph at lines 183--183
+[]|\T1/cmr/m/n/12 Menü mód ak-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 183--183
+[]|\T1/cmr/m/n/12 Felhasználó má-sik
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 183--183
+\T1/cmr/m/n/12 pro-jek-tet pró-bál
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 183--183
+[]|\T1/cmr/m/n/12 Rendszer meg-er®-sí-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 183--183
+\T1/cmr/m/n/12 tést kér men-tet-len
+ []
+
+
+Underfull \hbox (badness 1953) in paragraph at lines 184--184
+[]|\T1/cmr/m/n/12 Felhasználó ér-vé-nyes
+ []
+
+
+Underfull \hbox (badness 7468) in paragraph at lines 184--184
+[]|\T1/cmr/m/n/12 Projekt ada-tai be-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 185--185
+[]|\T1/cmr/m/n/12 Hibás pro-jekt
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 185--185
+[]|\T1/cmr/m/n/12 Felhasználó hi-bás
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 185--185
+[]|\T1/cmr/m/n/12 Betöltés el-uta-sít-va,
+ []
+
+
+Overfull \hbox (24.3935pt too wide) in alignment at lines 177--186
+ [] [] [] [] 
+ []
+
+[64]
+Underfull \hbox (badness 10000) in paragraph at lines 190--190
+[]|\T1/cmr/m/n/12 Kilépés men-tet-
+ []
+
+
+Underfull \hbox (badness 5161) in paragraph at lines 190--190
+[]|\T1/cmr/m/n/12 Menü mód ak-
+ []
+
+
+Underfull \hbox (badness 2469) in paragraph at lines 190--190
+\T1/cmr/m/n/12 tet-len mó-do-sí-tá-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 190--190
+[]|\T1/cmr/m/n/12 Felhasználó be-zár-ja
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 190--190
+[]|\T1/cmr/m/n/12 Rendszer men-té-si
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 190--190
+\T1/cmr/m/n/12 meg-er®-sí-t® pa-nelt
+ []
+
+
+Underfull \hbox (badness 3386) in paragraph at lines 190--190
+\T1/cmr/m/n/12 je-le-nít meg, ki-lé-pés
+ []
+
+
+Underfull \hbox (badness 6792) in paragraph at lines 191--191
+[]|\T1/cmr/m/n/12 Kilépés men-tett
+ []
+
+
+Underfull \hbox (badness 5161) in paragraph at lines 191--191
+[]|\T1/cmr/m/n/12 Menü mód ak-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 191--191
+[]|\T1/cmr/m/n/12 Felhasználó be-zár-ja
+ []
+
+
+Overfull \hbox (24.3935pt too wide) in alignment at lines 189--192
+ [] [] [] [] 
+ []
+
+) [65]) (sum.tex
+4. fejezet.
+[66
+
+
+
+
+
+]) [67] (further_development.tex
+5. fejezet.
+) [68
+
+
+
+] [69] [70
+
+] [71
+
+
+]
+
+LaTeX Warning: Empty bibliography on input line 84.
+
+(elteikthesis_hu.lof [72
+
+
 
 
 ])
 \tf@lof=\write8
 \openout8 = `elteikthesis_hu.lof'.
 
- [57] (elteikthesis_hu.lot)
+ [73] (elteikthesis_hu.lot)
 \tf@lot=\write9
 \openout9 = `elteikthesis_hu.lot'.
 
- [58
+ [74
 
 
 ] (elteikthesis_hu.loa)
 \tf@loa=\write10
 \openout10 = `elteikthesis_hu.loa'.
 
- [59
+ [75
 
 
 
@@ -1621,11 +3148,11 @@ A. f\"uggel\'ek.
 \tf@lol=\write11
 \openout11 = `elteikthesis_hu.lol'.
 
- [60
+ [76
 
 
 
-] (elteikthesis_hu.aux (impl/decisions.aux) (impl/app_architecture/app_architecture.aux))
+] (elteikthesis_hu.aux (impl/decisions.aux) (impl/app_architecture/app_architecture.aux) (impl/testing.aux))
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
@@ -1635,17 +3162,17 @@ Package logreq Info: Writing requests to 'elteikthesis_hu.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 40613 strings out of 474486
- 768383 string characters out of 5747975
- 2042542 words of memory out of 5000000
- 61859 multiletter control sequences out of 15000+600000
+ 40536 strings out of 474486
+ 765945 string characters out of 5747975
+ 2021542 words of memory out of 5000000
+ 61714 multiletter control sequences out of 15000+600000
  581219 words of font info for 92 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 124i,13n,145p,1103b,2311s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 124i,13n,145p,1108b,2311s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbi1200.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1000.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0600.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsl1200.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2488.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1200.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1440.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1440.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2074.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\eccc1440.pk> <C:\Users\lemar\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\eccc1728.pk>
-Output written on elteikthesis_hu.pdf (61 pages, 1439090 bytes).
+Output written on elteikthesis_hu.pdf (77 pages, 1503638 bytes).
 PDF statistics:
- 1588 PDF objects out of 1728 (max. 8388607)
- 290 named destinations out of 1000 (max. 500000)
- 630 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1788 PDF objects out of 2073 (max. 8388607)
+ 352 named destinations out of 1000 (max. 500000)
+ 734 words of extra memory for PDF output out of 10000 (max. 10000000)
 

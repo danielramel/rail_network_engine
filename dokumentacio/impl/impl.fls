@@ -6,10 +6,3 @@ INPUT C:\Users\lemar\AppData\Local\MiKTeX\fonts\tfm\public\cm\cmbx10.tfm
 INPUT C:\Users\lemar\AppData\Local\MiKTeX\fonts\tfm\public\cm\cmtt10.tfm
 OUTPUT impl.pdf
 INPUT C:\Users\lemar\AppData\Local\MiKTeX\fonts\map\pdftex\pdftex.map
-INPUT .\testing.tex
-INPUT .\testing.tex
-INPUT .\testing.tex
-INPUT .\testing.tex
-INPUT .\testing.tex
-INPUT .\testing.tex
-INPUT testing.tex

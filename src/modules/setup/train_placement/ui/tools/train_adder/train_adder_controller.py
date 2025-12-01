@@ -15,7 +15,7 @@ class TrainAdderController(TrainPlacementToolController):
             return
         
         if self._state.preview.invalid_train_placement_edges:
-            self._graphics.alert_component.show_alert('Cannot place train here! The path is blocked or invalid.')
+            self._graphics.alert_component.show_alert('Cannot place train here! The path is already occupied or invalid.')
             return
         if self._state.preview.train_to_preview is None:
             self._graphics.alert_component.show_alert('Click on a section of track to place a train.')
