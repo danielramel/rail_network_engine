@@ -21,8 +21,8 @@ ICON_CATEGORIES = {
     "simulation/": {
         "PLAY": "play.png",
         "PAUSE": "pause.png",
-        "FAST_FORWARD": "3x.png",
-        "SUPER_FAST_FORWARD": "10x.png",
+        "FAST_FORWARD": "fast.png",
+        "SUPER_FAST_FORWARD": "super_fast.png",
     },
     "train_placement/": {
         "PLACE_TRAIN": "place_train.png",

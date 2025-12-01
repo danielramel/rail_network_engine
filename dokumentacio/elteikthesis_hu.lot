@@ -1,23 +1,23 @@
 \select@language {hungarian} \addvspace {10\p@ }
 \select@language {hungarian} \addvspace {10\p@ }
-\select@language {hungarian} \contentsline {table}{\numberline {2.1.}{\ignorespaces Rendszerkövetelmények táblázat}}{9}{table.caption.4}%
+\select@language {hungarian} \contentsline {table}{\numberline {2.1.}{\ignorespaces Rendszerkövetelmények}}{10}{table.caption.4}%
 \select@language {hungarian} \addvspace {10\p@ }
-\select@language {hungarian} \contentsline {table}{\numberline {3.1.}{\ignorespaces Setup modul - tesztesetek}}{57}{table.3.1}%
-\select@language {hungarian} \contentsline {table}{\numberline {3.2.}{\ignorespaces Vágány építés - tesztesetek}}{58}{table.3.2}%
-\select@language {hungarian} \contentsline {table}{\numberline {3.3.}{\ignorespaces Alagút építés - tesztesetek}}{59}{table.3.3}%
-\select@language {hungarian} \contentsline {table}{\numberline {3.4.}{\ignorespaces Jelző építés - tesztesetek}}{60}{table.3.4}%
-\select@language {hungarian} \contentsline {table}{\numberline {3.5.}{\ignorespaces Állomás építés - tesztesetek}}{60}{table.3.5}%
-\select@language {hungarian} \contentsline {table}{\numberline {3.6.}{\ignorespaces Peron építés - tesztesetek}}{61}{table.3.6}%
-\select@language {hungarian} \contentsline {table}{\numberline {3.7.}{\ignorespaces Pályaelemek törlése - tesztesetek}}{62}{table.3.7}%
-\select@language {hungarian} \contentsline {table}{\numberline {3.8.}{\ignorespaces Vonatelhelyezés - tesztesetek}}{62}{table.3.8}%
-\select@language {hungarian} \contentsline {table}{\numberline {3.9.}{\ignorespaces Vonateltávolítás - tesztesetek}}{63}{table.3.9}%
-\select@language {hungarian} \contentsline {table}{\numberline {3.10.}{\ignorespaces Menetrendek összesítése - tesztesetek}}{63}{table.3.10}%
-\select@language {hungarian} \contentsline {table}{\numberline {3.11.}{\ignorespaces Menetrend szerkesztő panel - tesztesetek}}{64}{table.3.11}%
-\select@language {hungarian} \contentsline {table}{\numberline {3.12.}{\ignorespaces Szimuláció indítása/leállítása - tesztesetek}}{65}{table.3.12}%
-\select@language {hungarian} \contentsline {table}{\numberline {3.13.}{\ignorespaces Időkezelés - tesztesetek}}{65}{table.3.13}%
-\select@language {hungarian} \contentsline {table}{\numberline {3.14.}{\ignorespaces Vonatok - tesztesetek}}{66}{table.3.14}%
-\select@language {hungarian} \contentsline {table}{\numberline {3.15.}{\ignorespaces Jelzők és vágányutak - tesztesetek}}{67}{table.3.15}%
-\select@language {hungarian} \contentsline {table}{\numberline {3.16.}{\ignorespaces Mentés és betöltés - tesztesetek}}{68}{table.3.16}%
-\select@language {hungarian} \contentsline {table}{\numberline {3.17.}{\ignorespaces Kilépés - tesztesetek}}{69}{table.3.17}%
+\select@language {hungarian} \contentsline {table}{\numberline {3.1.}{\ignorespaces Setup modul - tesztesetek}}{59}{table.3.1}%
+\select@language {hungarian} \contentsline {table}{\numberline {3.2.}{\ignorespaces Vágány építés - tesztesetek}}{60}{table.3.2}%
+\select@language {hungarian} \contentsline {table}{\numberline {3.3.}{\ignorespaces Alagút építés - tesztesetek}}{61}{table.3.3}%
+\select@language {hungarian} \contentsline {table}{\numberline {3.4.}{\ignorespaces Jelző építés - tesztesetek}}{62}{table.3.4}%
+\select@language {hungarian} \contentsline {table}{\numberline {3.5.}{\ignorespaces Állomás építés - tesztesetek}}{62}{table.3.5}%
+\select@language {hungarian} \contentsline {table}{\numberline {3.6.}{\ignorespaces Peron építés - tesztesetek}}{63}{table.3.6}%
+\select@language {hungarian} \contentsline {table}{\numberline {3.7.}{\ignorespaces Pályaelemek törlése - tesztesetek}}{64}{table.3.7}%
+\select@language {hungarian} \contentsline {table}{\numberline {3.8.}{\ignorespaces Vonatelhelyezés - tesztesetek}}{64}{table.3.8}%
+\select@language {hungarian} \contentsline {table}{\numberline {3.9.}{\ignorespaces Vonateltávolítás - tesztesetek}}{65}{table.3.9}%
+\select@language {hungarian} \contentsline {table}{\numberline {3.10.}{\ignorespaces Menetrendek összesítése - tesztesetek}}{65}{table.3.10}%
+\select@language {hungarian} \contentsline {table}{\numberline {3.11.}{\ignorespaces Menetrend szerkesztő panel - tesztesetek}}{66}{table.3.11}%
+\select@language {hungarian} \contentsline {table}{\numberline {3.12.}{\ignorespaces Szimuláció indítása/leállítása - tesztesetek}}{67}{table.3.12}%
+\select@language {hungarian} \contentsline {table}{\numberline {3.13.}{\ignorespaces Időkezelés - tesztesetek}}{67}{table.3.13}%
+\select@language {hungarian} \contentsline {table}{\numberline {3.14.}{\ignorespaces Vonatok - tesztesetek}}{68}{table.3.14}%
+\select@language {hungarian} \contentsline {table}{\numberline {3.15.}{\ignorespaces Jelzők és vágányutak - tesztesetek}}{69}{table.3.15}%
+\select@language {hungarian} \contentsline {table}{\numberline {3.16.}{\ignorespaces Mentés és betöltés - tesztesetek}}{70}{table.3.16}%
+\select@language {hungarian} \contentsline {table}{\numberline {3.17.}{\ignorespaces Kilépés - tesztesetek}}{71}{table.3.17}%
 \select@language {hungarian} \addvspace {10\p@ }
 \select@language {hungarian} \addvspace {10\p@ }

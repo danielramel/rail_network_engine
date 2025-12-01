@@ -1,0 +1,46 @@
+\subsection{Assets (Erőforrások) mappa}
+\label{subsec:assets_folder}
+
+A \texttt{assets} könyvtár az alkalmazás által használt statikus erőforrásokat tartalmazza, elsősorban a grafikus felhasználói felülethez (GUI) kapcsolódó ikonokat és képeket. Az ikonok a \texttt{assets/icons/} útvonalon érhetők el; mindegyik különálló, PNG formátumú fájl. A fájlnevek a betöltött funkciót tükrözik, ami támogatja a következetes hivatkozást és a könnyű karbantarthatóságot. Az ikonok és képek elsődleges forrása a The Noun Project (https://thenounproject.com/).
+
+\paragraph{Fő ikonok}
+Az általános, alkalmazásszintű ikonok a \texttt{assets/icons/} gyökérben találhatók:
+\begin{description}
+    \item[\texttt{app.png}] Az alkalmazás fő ikonja.
+    \item[\texttt{save.png}] Mentés művelet ikonja.
+    \item[\texttt{saved.png}] Mentett állapot vizuális jelzése.
+    \item[\texttt{unsaved.png}] Módosított (nem mentett) állapot jelzése.
+    \item[\texttt{open.png}] Megnyitás művelet ikonja.
+    \item[\texttt{exit.png}] Kilépés művelet ikonja.
+    \item[\texttt{construction.png}] Pályaszerkesztő mód jelzése.
+    \item[\texttt{train\_placement.png}] Vonatelhelyező mód jelzése.
+    \item[\texttt{timetable.png}] Menetrend ablak/mód jelzése.
+\end{description}
+
+\paragraph{Alkönyvtárak és modulikonok}
+Az ikonok moduláris szervezésben, témakörönkénti alkönyvtárakban is megtalálhatók:
+\begin{description}
+    \item[\texttt{assets/icons/construction/}] Pályaszerkesztő módhoz kapcsolódó ikonok:
+        \begin{description}
+            \item[\texttt{bulldoze.png}] Törlés eszköz ikonja.
+            \item[\texttt{rail.png}] Vágány eszköz ikonja.
+            \item[\texttt{signal.png}] Jelző eszköz ikonja.
+            \item[\texttt{station.png}] Állomás eszköz ikonja.
+            \item[\texttt{platform.png}] Peron eszköz ikonja.
+            \item[\texttt{tunnel.png}] Alagút eszköz ikonja.
+        \end{description}
+    \item[\texttt{assets/icons/train\_placement/}] Vonatelhelyező mód ikonok:
+        \begin{description}
+            \item[\texttt{place\_train.png}] Vonat elhelyezése ikon.
+            \item[\texttt{remove\_train.png}] Vonat eltávolítása ikon.
+        \end{description}
+    \item[\texttt{assets/icons/simulation/}] Szimulációs vezérlés ikonok:
+        \begin{description}
+            \item[\texttt{play.png}] Szimuláció indítása.
+            \item[\texttt{pause.png}] Szimuláció szüneteltetése.
+            \item[\texttt{fast.png}] Gyorsított lejátszás.
+            \item[\texttt{super\_fast.png}] Nagy mértékű gyorsítás.
+        \end{description}
+\end{description}
+
+Az itt felsorolt struktúra a felhasználói felület komponensei közötti konzisztens ikonhasználatot szolgálja, és megkönnyíti az erőforrások azonosítását, cseréjét és bővítését.

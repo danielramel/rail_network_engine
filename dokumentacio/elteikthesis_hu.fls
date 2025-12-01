@@ -840,6 +840,9 @@ INPUT .\impl\app_architecture\simulation_module_uml.png
 INPUT .\impl\app_architecture\timetable_module.tex
 INPUT .\impl\app_architecture\timetable_module.tex
 INPUT impl\app_architecture\timetable_module.tex
+INPUT .\impl\app_architecture\assets_folder.tex
+INPUT .\impl\app_architecture\assets_folder.tex
+INPUT impl\app_architecture\assets_folder.tex
 INPUT .\impl\testing.tex
 OUTPUT impl\testing.aux
 INPUT .\impl\testing.tex
