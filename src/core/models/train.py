@@ -54,6 +54,7 @@ class Train:
                 dep_time = self.schedule.get_departure_time()
                 if dep_time is None:
                     self.shutdown()
+                    self.schedule = None
                 if dep_time is not None and dep_time <= self._railway.time.in_minutes() and self._stop_time_counter >= Config.MIN_TRAIN_STOP_TIME:
                     if len(self.path) == self._occupied_edge_count:
                         #no more path ahead, stay stopped
@@ -140,10 +141,10 @@ class Train:
             speed = min(rail.speed, self.get_max_speed(rail.length, speed))
         
     def get_max_speed(self, distance: float, speed: float) -> float:
-        if distance <= 1.0:
+        if distance <= 0.1:
             return speed
             # FORMULA: V = sqrt(u^2 + 2as)
-        return (speed**2 + (2 * distance * self.config.deceleration)) ** 0.5
+        return (((speed/3.6)**2 + (2 * distance * (self.config.deceleration/3.6))) ** 0.5) * 3.6
                 
     def get_locomotive_pose(self) -> Pose:
         return Pose.from_edge(self.path[self._occupied_edge_count - 1].edge)
