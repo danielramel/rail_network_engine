@@ -24,7 +24,9 @@ class TrainPanelManager(UIController):
     def on_train_selected(self, train_id: int) -> None:
         if train_id not in self.panels:
             train = self._railway.trains.get(train_id)
-            new_index = len(self.panels)
+            # Find the first available gap in panel indices, or use the next index
+            existing_indices = {panel.index for panel in self.panels.values()}
+            new_index = next((i for i in range(4) if i not in existing_indices), len(self.panels))
             
             if len(self.panels) >= 4:
                 # Limit to 4 panels - remove the oldest one and use its index
