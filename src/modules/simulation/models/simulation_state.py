@@ -10,7 +10,7 @@ class TimeControlMode(Enum):
     PAUSE = 0
     PLAY = 1
     FAST_FORWARD = 5
-    SUPER_FAST_FORWARD = 25
+    SUPER_FAST_FORWARD = 30
     
 
 class TimeControlState:
