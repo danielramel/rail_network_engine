@@ -34,7 +34,7 @@ class HomePageScreen:
         self._map_buttons: list[tuple[pygame.Rect, str, pygame.Surface]] = []
         maps_start_y = 220 
         columns = 2
-        rows = 4
+        rows = 3
         max_buttons = columns * rows
         grid_total_width = columns * map_button_width + (columns - 1) * map_button_h_spacing
         grid_start_x = center_x - grid_total_width // 2
