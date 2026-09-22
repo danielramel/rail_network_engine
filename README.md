@@ -6,6 +6,28 @@ Rail Simulator is a professional-grade decision-support application designed to 
 
 ---
 
+## Screenshots
+
+| Project selection | Infrastructure construction |
+|---|---|
+| ![Rail Simulator project selection](dokumentacio/user/images/home_page.png) | ![Railway infrastructure construction](dokumentacio/user/images/project_view.png) |
+
+| Route preview | Route before blockers |
+|---|---|
+| ![Route preview](dokumentacio/user/images/route_preview.png) | ![Route before blockers](dokumentacio/user/images/route_before_blockers.png) |
+
+| Route after blockers | Simulation |
+|---|---|
+| ![Route after blockers](dokumentacio/user/images/route_after_blockers.png) | ![Railway simulation](dokumentacio/user/images/simulation_page.png) |
+
+| Timetable list | Timetable editor |
+|---|---|
+| ![Timetable list](dokumentacio/user/images/timetable_list.png) | ![Timetable editor](dokumentacio/user/images/timetable_editor.png) |
+
+| Train status panels | Selected timetable station |
+|---|---|
+| ![Train panels showing late and on-time trains](dokumentacio/user/images/train_panels_late_on_time.png) | ![Selected station in the timetable editor](dokumentacio/user/images/timetable_editor_selected_station.png) |
+
 # Functional Capabilities
 
 ## Infrastructure Construction
@@ -18,8 +40,6 @@ Implements a **graph-based representation** of railway networks where:
 
 ### Geometric Constraints
 Supports complex infrastructure geometry including:
-
-- Multi-level track layouts  
 - Flyovers  
 - Tunnels  
 
@@ -30,45 +50,27 @@ Hierarchical modeling of railway facilities:
 
 - Stations
 - Platforms
-- Passenger service nodes
 
-Facilities can be logically linked to the **primary track network** to represent operational passenger flow.
+Platforms can be logically linked to the track network, enabling **train stopping and boarding operations**.
 
 ### Advanced Signaling
-Implements a signaling interlocking system managing signal states:
-
-| Aspect | Meaning |
-|------|------|
-| Clear | Track ahead available |
-| Caution | Next block occupied or restricted |
-| Danger | Stop — block occupied |
-
-The interlocking logic ensures **safe separation of trains** and prevents route conflicts.
+Implements an ETCS level-2 inspired signalling system with manually adjustable signal aspects and interlocking logic. The interlocking logic ensures **safe separation of trains** and prevents route conflicts.
 
 ---
 
 # Timetable Engineering
 
 ## Periodic Scheduling
-Native support for **Integrated Periodic Timetables (ITF / Ütemes menetrend)** enabling:
+Native support for **Integrated Periodic Timetables (ITF)** enabling:
 
 - Predictable repeating schedules
-- Structured transfer nodes
 - Passenger-friendly clockface services
 
 ## Temporal Logic
-Arrival and departure times are **automatically derived** from:
-
-- User-defined dwell times
-- Inter-station travel times
-- Infrastructure speed limits
+Arrival and departure times are **automatically derived** from user-defined dwell times
 
 ## Operational Monitoring
-During simulation execution the system tracks:
-
-- Train punctuality
-- Delay propagation
-- Schedule adherence relative to planned timetable
+During simulation execution the system tracks train punctuality and provides **real-time feedback** on operational performance.
 
 ---
 
@@ -81,6 +83,9 @@ Train movement simulation includes:
 - Deceleration profiles
 - Braking distances
 - Infrastructure speed limits
+- Signal aspects
+- Dwell times
+- Passenger boarding and alighting times
 
 Vehicle behavior reacts dynamically to signaling and route availability.
 
@@ -92,22 +97,10 @@ Route finding and signal path allocation utilize:
 
 Routes are automatically established between signaling nodes while maintaining **conflict-free operations**.
 
-## Bottleneck Detection
-Traffic simulation identifies:
-
-- Capacity constraints
-- Conflict-prone junctions
-- Infrastructure limitations
-
-This allows infrastructure redesign **before physical investment**.
 
 ## Temporal Control
-Simulation runtime can be accelerated using **variable time scaling**:
+Simulation runtime can be accelerated using **variable time scaling**, which allows for rapid evaluation of timetable performance over extended periods.
 
-- Up to **25× real-time speed**
-- Enables long-term timetable stability analysis
-
----
 
 # Technical Architecture
 
@@ -118,29 +111,3 @@ Simulation runtime can be accelerated using **variable time scaling**:
 | Administration UI | PyQt6 | Event-driven interface for professional data entry |
 | Graph Logic | NetworkX | Optimized algorithms for topology and connectivity |
 | Persistence | JSON | Human-readable project serialization and portability |
-
----
-
-# Future Development Scope
-
-## Advanced Interlocking
-Implementation of:
-
-- Route pre-booking
-- Automated signal clearing
-- Conflict anticipation logic
-
-## Boundary Integration
-Management of trains:
-
-- Entering simulation boundaries
-- Exiting simulated infrastructure
-
-Supports integration with external railway networks.
-
-## Quantitative Analytics
-Integrated reporting tools for:
-
-- Network capacity utilization
-- Infrastructure resilience
-- Timetable robustness
