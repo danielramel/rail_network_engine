@@ -2,31 +2,46 @@
 
 ## Overview
 
-Rail Simulator is a professional-grade decision-support application designed to bridge the gap between railway infrastructure engineering and service-oriented timetable planning. The application implements a **service-first paradigm** where infrastructure developments are derived from desired operational service levels rather than existing physical constraints.
+Rail Simulator is my thesis project: a decision-support application for exploring the relationship between railway infrastructure and service-oriented timetable planning. It brings infrastructure design, timetable creation, and train movement simulation together in one environment, allowing users to evaluate how network changes influence day-to-day railway operations.
 
 ---
 
 ## Screenshots
 
-| Project selection | Infrastructure construction |
-|---|---|
-| ![Rail Simulator project selection](dokumentacio/user/images/home_page.png) | ![Railway infrastructure construction](dokumentacio/user/images/project_view.png) |
+<p align="center">
+	<strong>Train status panels showing late and on-time trains</strong><br><br>
+	<img src="dokumentacio/user/images/train_panels_late_on_time.png" alt="Train status panels showing late and on-time trains" width="70%">
+</p>
 
-| Route preview | Route before blockers |
-|---|---|
-| ![Route preview](dokumentacio/user/images/route_preview.png) | ![Route before blockers](dokumentacio/user/images/route_before_blockers.png) |
+<p align="center">
+	<strong>Railway infrastructure construction and project view</strong><br><br>
+	<img src="dokumentacio/user/images/project_view.png" alt="Railway infrastructure construction and project view" width="70%">
+</p>
 
-| Route after blockers | Simulation |
-|---|---|
-| ![Route after blockers](dokumentacio/user/images/route_after_blockers.png) | ![Railway simulation](dokumentacio/user/images/simulation_page.png) |
+<p align="center">
+	<strong>Preview of a calculated train route</strong><br><br>
+	<img src="dokumentacio/user/images/route_preview.png" alt="Preview of a calculated train route" width="70%">
+</p>
 
-| Timetable list | Timetable editor |
-|---|---|
-| ![Timetable list](dokumentacio/user/images/timetable_list.png) | ![Timetable editor](dokumentacio/user/images/timetable_editor.png) |
+<p align="center">
+	<strong>Railway network simulation</strong><br><br>
+	<img src="dokumentacio/user/images/simulation_page.png" alt="Railway network simulation" width="70%">
+</p>
 
-| Train status panels | Selected timetable station |
-|---|---|
-| ![Train panels showing late and on-time trains](dokumentacio/user/images/train_panels_late_on_time.png) | ![Selected station in the timetable editor](dokumentacio/user/images/timetable_editor_selected_station.png) |
+<p align="center">
+	<strong>Timetable overview and list of services</strong><br><br>
+	<img src="dokumentacio/user/images/timetable_list.png" alt="Timetable overview and list of services" width="70%">
+</p>
+
+<p align="center">
+	<strong>Timetable editor for configuring train services</strong><br><br>
+	<img src="dokumentacio/user/images/timetable_editor.png" alt="Timetable editor for configuring train services" width="70%">
+</p>
+
+<p align="center">
+	<strong>Selected station in the timetable editor</strong><br><br>
+	<img src="dokumentacio/user/images/timetable_editor_selected_station.png" alt="Selected station in the timetable editor" width="70%">
+</p>
 
 # Functional Capabilities
 
